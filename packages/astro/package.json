@@ -1,0 +1,27 @@
+{
+	"name": "@desering/shifter-astro",
+	"type": "module",
+	"version": "0.0.1",
+	"scripts": {
+		"prepare": "panda codegen",
+		"dev": "panda codegen && astro dev",
+		"start": "astro dev",
+		"build": "panda codegen && astro check && astro build",
+		"preview": "astro preview",
+		"astro": "astro"
+	},
+	"dependencies": {
+		"@ark-ui/solid": "^4.5.1",
+		"@astrojs/solid-js": "^4.4.3",
+		"astro": "^4.16.13",
+		"@astrojs/check": "^0.9.4",
+		"solid-js": "^1.9.3",
+		"typescript": "^5.6.3",
+		"vite": "^5.4.11"
+	},
+	"devDependencies": {
+		"@pandacss/dev": "^0.48.0",
+		"@pandacss/preset-base": "^0.48.0",
+		"@park-ui/panda-preset": "^0.43.0"
+	}
+}
