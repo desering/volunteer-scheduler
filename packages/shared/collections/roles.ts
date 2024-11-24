@@ -13,6 +13,7 @@ export const Roles: CollectionConfig = {
 			label: "Section",
 			required: true,
 			hasMany: false,
+			admin: {},
 		},
 		{
 			name: "title",
