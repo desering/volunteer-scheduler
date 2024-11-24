@@ -1,13 +1,17 @@
 {
-  "name": "@desering/shifter-shared",
-  "version": "1.0.0",
-  "type": "module",
-  "dependencies": {
-    "@payloadcms/richtext-lexical": "^3.0.2",
-    "@payloadcms/db-postgres": "^3.0.2",
-    "@payloadcms/ui": "^3.0.2",
-    "dotenv": "^16.4.5",
-    "payload": "^3.0.2",
-    "sharp": "0.32.6"
-  }
+	"name": "@desering/shifter-shared",
+	"version": "1.0.0",
+	"type": "module",
+	"scripts": {
+		"generate:importmap": "PAYLOAD_CONFIG_PATH=payload.config.ts payload generate:importmap --disable-transpile",
+		"generate:types": "PAYLOAD_CONFIG_PATH=payload.config.ts payload generate:types --disable-transpile"
+	},
+	"dependencies": {
+		"@payloadcms/richtext-lexical": "^3.1.0",
+		"@payloadcms/db-postgres": "^3.1.0",
+		"@payloadcms/ui": "^3.1.0",
+		"dotenv": "^16.4.5",
+		"payload": "^3.1.0",
+		"sharp": "0.32.6"
+	}
 }

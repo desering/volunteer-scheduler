@@ -4,7 +4,10 @@
     "baseUrl": ".",
     "paths": {
       "styled-system": ["./styled-system"],
-      "~/*": ["./src/*"]
+      "~/*": ["./src/*"],
+      "@payload-config": [
+        "../shared/payload.config.ts"
+      ]
     },
     "jsx": "preserve",
     "jsxImportSource": "solid-js"

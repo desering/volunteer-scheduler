@@ -1,7 +1,13 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import Card from "../components/Card.astro";
 import { Button } from "~/components/ui/button";
+import { getPayload } from "~/payload";
+import Card from "../components/Card.astro";
+import Layout from "../layouts/Layout.astro";
+
+const payload = await getPayload();
+const shifts = await payload.find({
+	collection: "shifts",
+});
 ---
 
 <Layout title="Welcome to Astro.">
@@ -64,6 +70,8 @@ import { Button } from "~/components/ui/button";
 			/>
 		</ul>
 	</main>
+
+	{shifts.docs.map((shift) => <div>{shift.title}</div>)}
 </Layout>
 
 <style>

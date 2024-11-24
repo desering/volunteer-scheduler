@@ -1,5 +1,8 @@
 {
   "name": "@desering/shifter",
   "version": "0.0.1",
-  "workspaces": ["packages/*"]
+  "workspaces": ["packages/*"],
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4"
+  }
 }

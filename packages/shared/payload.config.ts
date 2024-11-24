@@ -13,28 +13,31 @@ import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { buildConfig } from "payload";
 import sharp from "sharp";
 
-import { Users } from "./collections/users.ts";
-import { Events } from "./collections/events.ts";
+import { Users } from "./collections/users";
+import { Shifts } from "./collections/shifts";
+import { Sections } from "./collections/sections";
+import { Roles } from "./collections/roles";
+import { Signups } from "./collections/signups";
 
 export default buildConfig({
-  admin: {
-    user: Users.slug,
-    importMap: {
-      baseDir: path.resolve(dirname),
-    },
-  },
+	admin: {
+		user: Users.slug,
+		importMap: {
+			baseDir: path.resolve(dirname),
+		},
+	},
 
-  collections: [Users, Events],
-  editor: lexicalEditor(),
-  secret: process.env.PAYLOAD_SECRET || "",
-  typescript: {
-    outputFile: path.resolve(dirname, "payload-types.ts"),
-  },
-  db: postgresAdapter({
-    pool: {
-      connectionString: process.env.DATABASE_URI || "",
-    },
-  }),
-  sharp,
-  plugins: [],
+	collections: [Users, Shifts, Sections, Roles, Signups],
+	editor: lexicalEditor(),
+	secret: process.env.PAYLOAD_SECRET || "",
+	typescript: {
+		outputFile: path.resolve(dirname, "payload-types.ts"),
+	},
+	db: postgresAdapter({
+		pool: {
+			connectionString: process.env.DATABASE_URI || "",
+		},
+	}),
+	sharp,
+	plugins: [],
 });

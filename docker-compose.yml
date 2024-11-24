@@ -1,30 +1,30 @@
 services:
-  astro:
-    image: oven/bun:latest
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./astro:/home/bun/app/astro
-    working_dir: /home/bun/app/astro
-    command: sh -c "bun install && bun dev"
-    depends_on:
-      - payload
-      - postgres
-    env_file:
-      - ./shared/.env
+  # astro:
+  #   image: oven/bun:latest
+  #   ports:
+  #     - "3000:3000"
+  #   volumes:
+  #     - ./astro:/home/bun/app/astro
+  #   working_dir: /home/bun/app/astro
+  #   command: sh -c "bun install && bun dev"
+  #   depends_on:
+  #     - payload
+  #     - postgres
+  #   env_file:
+  #     - ./packages/shared/.env
 
-  payload:
-    image: oven/bun:latest
-    ports:
-      - "3001:3001"
-    volumes:
-      - ./payload:/home/bun/app/payload
-    working_dir: /home/bun/app/payload
-    command: sh -c "bun install && bun run dev"
-    depends_on:
-      - postgres
-    env_file:
-      - ./shared/.env
+  # payload:
+  #   image: oven/bun:latest
+  #   ports:
+  #     - "3001:3001"
+  #   volumes:
+  #     - ./payload:/home/bun/app/payload
+  #   working_dir: /home/bun/app/payload
+  #   command: sh -c "bun install && bun run dev"
+  #   depends_on:
+  #     - postgres
+  #   env_file:
+  #     - ./packages/shared/.env
 
   postgres:
     restart: always
@@ -39,6 +39,4 @@ services:
       POSTGRES_DB: shifter
 
 volumes:
-  data:
   pgdata:
-  node_modules:
