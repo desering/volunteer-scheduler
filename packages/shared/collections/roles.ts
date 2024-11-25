@@ -4,6 +4,7 @@ export const Roles: CollectionConfig = {
 	slug: "roles",
 	admin: {
 		useAsTitle: "title",
+		defaultColumns: ["title", "section", "signups"],
 	},
 	fields: [
 		{
@@ -13,7 +14,10 @@ export const Roles: CollectionConfig = {
 			label: "Section",
 			required: true,
 			hasMany: false,
-			admin: {},
+			maxDepth: 0,
+			admin: {
+				readOnly: true,
+			},
 		},
 		{
 			name: "title",
@@ -23,6 +27,14 @@ export const Roles: CollectionConfig = {
 			name: "description",
 			label: "Description",
 			type: "richText",
+		},
+
+		{
+			name: "signups",
+			label: "Signups",
+			type: "join",
+			collection: "signups",
+			on: "role",
 		},
 	],
 };

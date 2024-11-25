@@ -14,7 +14,7 @@ const virtualTitle: Field = {
 				delete siblingData.virtualTitle;
 			},
 		],
-		afterRead: [({ data }) => data?.title ?? "Untitled Section"],
+		afterRead: [({ data }) => data?.title || "Untitled Section"],
 	},
 };
 
@@ -22,7 +22,6 @@ export const Sections: CollectionConfig = {
 	slug: "sections",
 	admin: {
 		useAsTitle: "virtualTitle",
-		defaultColumns: ["title", "shift"],
 	},
 	fields: [
 		{
@@ -32,6 +31,10 @@ export const Sections: CollectionConfig = {
 			label: "Shift",
 			required: true,
 			hasMany: false,
+			admin: {
+				allowEdit: false,
+				readOnly: true,
+			},
 		},
 		virtualTitle,
 		{
@@ -42,20 +45,59 @@ export const Sections: CollectionConfig = {
 			},
 		},
 		{
+			type: "row",
+			fields: [
+				{
+					name: "start",
+					type: "date",
+					label: "Start Time",
+					admin: {
+						date: {
+							pickerAppearance: "timeOnly",
+							displayFormat: "HH:mm",
+							timeFormat: "HH:mm",
+						},
+					},
+				},
+				{
+					name: "end",
+					type: "date",
+					label: "End Time",
+					admin: {
+						date: {
+							pickerAppearance: "timeOnly",
+							displayFormat: "HH:mm",
+							timeFormat: "HH:mm",
+						},
+					},
+				},
+			],
+		},
+		{
 			name: "description",
 			label: "Description",
 			type: "richText",
 		},
 		{
-			name: "roles",
-			label: "Roles",
-			type: "join",
-			collection: "roles",
-			on: "section",
-			virtual: true,
-			admin: {
-				disableListColumn: true,
-			},
+			type: "tabs",
+			tabs: [
+				{
+					label: "Roles",
+					fields: [
+						{
+							name: "roles",
+							label: "",
+							type: "join",
+							collection: "roles",
+							on: "section",
+							virtual: true,
+							admin: {
+								disableListColumn: true,
+							},
+						},
+					],
+				},
+			],
 		},
 	],
 };

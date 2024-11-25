@@ -22,42 +22,35 @@ export const Shifts: CollectionConfig = {
 	},
 	fields: [
 		{
-			name: "title",
-			label: "Title",
-			type: "text",
-			required: true,
-		},
-		{
-			name: "start_date",
-			label: "Start Date",
-			type: "date",
-			required: true,
-			admin: {
-				date: {
-					pickerAppearance: "dayAndTime",
-				},
-			},
-		},
-		{
-			name: "end_date",
-			label: "End Date",
-			type: "date",
-			admin: {
-				date: {
-					pickerAppearance: "dayAndTime",
-				},
-			},
-		},
-		{
-			name: "description",
-			label: "Description",
-			type: "richText",
-		},
-		{
 			type: "tabs",
 			tabs: [
 				{
+					label: "General",
+					fields: [
+						{
+							name: "title",
+							type: "text",
+							required: true,
+						},
+						{
+							name: "date",
+							type: "date",
+							required: true,
+							admin: {
+								date: {
+									pickerAppearance: "dayOnly",
+								},
+							},
+						},
+						{
+							name: "description",
+							type: "richText",
+						},
+					],
+				},
+				{
 					label: "Sections",
+					virtual: true,
 					fields: [
 						{
 							name: "sections",
@@ -65,11 +58,16 @@ export const Shifts: CollectionConfig = {
 							type: "join",
 							collection: "sections",
 							on: "shift",
+							virtual: true,
+							admin: {
+								disableListColumn: true,
+							},
 						},
 					],
 				},
 				{
 					label: "Roles",
+					virtual: true,
 					fields: [
 						{
 							name: "roles",
@@ -77,6 +75,11 @@ export const Shifts: CollectionConfig = {
 							type: "join",
 							collection: "roles",
 							on: "section",
+							virtual: true,
+							admin: {
+								allowCreate: false,
+								disableListColumn: true,
+							},
 						},
 					],
 				},
@@ -89,6 +92,10 @@ export const Shifts: CollectionConfig = {
 							type: "join",
 							collection: "signups",
 							on: "role",
+							admin: {
+								allowCreate: false,
+								disableListColumn: true,
+							},
 						},
 					],
 				},

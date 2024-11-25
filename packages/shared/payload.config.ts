@@ -25,8 +25,8 @@ export default buildConfig({
 		importMap: {
 			baseDir: path.resolve(dirname),
 		},
+		dateFormat: "dd/MM/yyyy HH:mm",
 	},
-
 	collections: [Users, Shifts, Sections, Roles, Signups],
 	editor: lexicalEditor(),
 	secret: process.env.PAYLOAD_SECRET || "",
@@ -40,4 +40,8 @@ export default buildConfig({
 	}),
 	sharp,
 	plugins: [],
+	localization: {
+		defaultLocale: "en",
+		locales: ["en", "nl"],
+	},
 });

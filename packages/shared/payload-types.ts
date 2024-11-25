@@ -27,7 +27,10 @@ export interface Config {
       Signups: 'signups';
     };
     sections: {
-      relatedRoles: 'roles';
+      roles: 'roles';
+    };
+    roles: {
+      signups: 'signups';
     };
   };
   collectionsSelect: {
@@ -45,7 +48,7 @@ export interface Config {
   };
   globals: {};
   globalsSelect: {};
-  locale: null;
+  locale: 'en' | 'nl';
   user: User & {
     collection: 'users';
   };
@@ -96,8 +99,7 @@ export interface User {
 export interface Shift {
   id: number;
   title: string;
-  start_date: string;
-  end_date?: string | null;
+  date: string;
   description?: {
     root: {
       type: string;
@@ -135,7 +137,10 @@ export interface Shift {
 export interface Section {
   id: number;
   shift: number | Shift;
+  virtualTitle?: string | null;
   title?: string | null;
+  start?: string | null;
+  end?: string | null;
   description?: {
     root: {
       type: string;
@@ -151,7 +156,7 @@ export interface Section {
     };
     [k: string]: unknown;
   } | null;
-  relatedRoles?: {
+  roles?: {
     docs?: (number | Role)[] | null;
     hasNextPage?: boolean | null;
   } | null;
@@ -164,6 +169,7 @@ export interface Section {
  */
 export interface Role {
   id: number;
+  section: number | Section;
   title?: string | null;
   description?: {
     root: {
@@ -180,8 +186,10 @@ export interface Role {
     };
     [k: string]: unknown;
   } | null;
-  section: number | Role;
-  parentShift?: (number | null) | Shift;
+  signups?: {
+    docs?: (number | Signup)[] | null;
+    hasNextPage?: boolean | null;
+  } | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -191,8 +199,9 @@ export interface Role {
  */
 export interface Signup {
   id: number;
-  user: number | User;
   role: number | Role;
+  user: number | User;
+  title?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -286,8 +295,7 @@ export interface UsersSelect<T extends boolean = true> {
  */
 export interface ShiftsSelect<T extends boolean = true> {
   title?: T;
-  start_date?: T;
-  end_date?: T;
+  date?: T;
   description?: T;
   sections?: T;
   roles?: T;
@@ -301,9 +309,12 @@ export interface ShiftsSelect<T extends boolean = true> {
  */
 export interface SectionsSelect<T extends boolean = true> {
   shift?: T;
+  virtualTitle?: T;
   title?: T;
+  start?: T;
+  end?: T;
   description?: T;
-  relatedRoles?: T;
+  roles?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -312,10 +323,10 @@ export interface SectionsSelect<T extends boolean = true> {
  * via the `definition` "roles_select".
  */
 export interface RolesSelect<T extends boolean = true> {
+  section?: T;
   title?: T;
   description?: T;
-  section?: T;
-  parentShift?: T;
+  signups?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -324,8 +335,9 @@ export interface RolesSelect<T extends boolean = true> {
  * via the `definition` "signups_select".
  */
 export interface SignupsSelect<T extends boolean = true> {
-  user?: T;
   role?: T;
+  user?: T;
+  title?: T;
   updatedAt?: T;
   createdAt?: T;
 }
