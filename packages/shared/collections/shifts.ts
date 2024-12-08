@@ -1,19 +1,5 @@
 import type { CollectionAfterChangeHook, CollectionConfig } from "payload";
 
-// const createDefaultSection: CollectionAfterChangeHook = async ({ req,context }) => {
-// 	if (context. === "published") return;
-
-// 	const defaultSection = {
-// 		title: "Default Section",
-// 		shift: doc.id,
-// 	};
-
-// 	await req.payload.create({
-// 		collection: "sections",
-// 		data: defaultSection,
-// 	});
-// };
-
 export const Shifts: CollectionConfig = {
 	slug: "shifts",
 	admin: {
@@ -33,13 +19,40 @@ export const Shifts: CollectionConfig = {
 							required: true,
 						},
 						{
-							name: "date",
+							name: "start_date",
+							label: "Start Date",
 							type: "date",
 							required: true,
 							admin: {
 								date: {
-									pickerAppearance: "dayOnly",
+									pickerAppearance: "dayAndTime",
 								},
+							},
+						},
+						{
+							name: "end_date",
+							label: "End Date",
+							type: "date",
+							required: true,
+							admin: {
+								date: {
+									pickerAppearance: "dayAndTime",
+								},
+							},
+							validate: (
+								val,
+								{ siblingData }: { siblingData: { start_date?: Date } },
+							) => {
+								// Make sure end date is after start date
+								if (
+									val &&
+									siblingData.start_date &&
+									val <= siblingData.start_date
+								) {
+									return "End date must be after the starting date";
+								}
+
+								return true;
 							},
 						},
 						{
@@ -50,7 +63,6 @@ export const Shifts: CollectionConfig = {
 				},
 				{
 					label: "Sections",
-					virtual: true,
 					fields: [
 						{
 							name: "sections",
@@ -58,7 +70,7 @@ export const Shifts: CollectionConfig = {
 							type: "join",
 							collection: "sections",
 							on: "shift",
-							virtual: true,
+							maxDepth: 0,
 							admin: {
 								disableListColumn: true,
 							},
@@ -67,17 +79,16 @@ export const Shifts: CollectionConfig = {
 				},
 				{
 					label: "Roles",
-					virtual: true,
 					fields: [
 						{
 							name: "roles",
-							label: "",
+							label: false,
 							type: "join",
 							collection: "roles",
-							on: "section",
-							virtual: true,
+							on: "shift",
+							maxDepth: 0,
 							admin: {
-								allowCreate: false,
+								// allowCreate: false,
 								disableListColumn: true,
 							},
 						},
@@ -87,13 +98,14 @@ export const Shifts: CollectionConfig = {
 					label: "Signups",
 					fields: [
 						{
-							name: "Signups",
-							label: "",
+							name: "signups",
+							label: false,
 							type: "join",
 							collection: "signups",
-							on: "role",
+							on: "shift",
+							maxDepth: 0,
 							admin: {
-								allowCreate: false,
+								// allowCreate: false,
 								disableListColumn: true,
 							},
 						},
@@ -102,7 +114,4 @@ export const Shifts: CollectionConfig = {
 			],
 		},
 	],
-	hooks: {
-		// afterChange: [createDefaultSection],
-	},
 };

@@ -1,0 +1,163 @@
+---
+// https://github.com/payloadcms/payload/blob/main/packages/next/src/routes/rest/auth/login.ts
+// Astro alternative on above file
+
+import { generatePayloadCookie } from "payload";
+import { css } from "styled-system/css";
+import { panda } from "styled-system/jsx";
+import { vstack } from "styled-system/patterns";
+import { button, input } from "styled-system/recipes";
+import Layout from "~/layouts/layout.astro";
+
+if (Astro.locals.user) {
+  return Astro.redirect("/");
+}
+
+const errors: string[] = [];
+
+if (Astro.request.method === "POST") {
+  const data = await Astro.request.formData();
+
+  const email = data.get("email") as string;
+  const password = data.get("password") as string;
+
+  if (!email) errors.push("Email is required.");
+  if (!password) errors.push("Password is required.");
+
+  if (email && password) {
+    try {
+      const collection = Astro.locals.payload.collections.users;
+
+      const result = await Astro.locals.payload.login({
+        collection: "users",
+        data: {
+          email,
+          password,
+        },
+      });
+
+      if (!result.token) {
+        throw new Error("Login failed. Token expected.");
+      }
+
+      const cookie = generatePayloadCookie({
+        collectionAuthConfig: collection.config.auth,
+        cookiePrefix: Astro.locals.payload.config.cookiePrefix,
+        token: result.token,
+        returnCookieAsObject: true,
+      });
+
+      Astro.cookies.set(cookie.name, cookie.value ?? "", {
+        maxAge: cookie.maxAge,
+        httpOnly: cookie.httpOnly,
+        secure: cookie.secure,
+        sameSite: cookie.sameSite?.toLowerCase() as
+          | "lax"
+          | "strict"
+          | "none"
+          | undefined,
+        domain: cookie.domain,
+        expires: cookie.expires ? new Date(cookie.expires) : undefined,
+        path: cookie.path,
+      });
+
+      return Astro.redirect("/");
+    } catch (error) {
+      if (error instanceof Error) {
+        errors.push(error.message);
+      } else {
+        errors.push("Login failed. An unknown error occurred.");
+      }
+    }
+  }
+
+  // if (typeof email !== "string" || !isValidEmail(email)) {
+  //   errors.email += "Email is not valid. ";
+  // } else if (await isRegistered(email)) {
+  //   errors.email += "Email is already registered. ";
+  // }
+  // if (typeof password !== "string" || password.length < 6) {
+  //   errors.password += "Password must be at least 6 characters. ";
+  // }
+  // const hasErrors = Object.values(errors).some((msg) => msg);
+  // if (!hasErrors) {
+  //   await registerUser({ name, email, password });
+  //   return Astro.redirect("/login");
+  // }
+}
+
+// Astro.cookies.set("token", result.token);
+---
+
+<Layout title="Sering Volunteer Scheduling | Login">
+  <panda.div
+    display="flex"
+    minHeight="screen"
+    width="screen"
+    justifyContent="center"
+    alignItems="center"
+  >
+    <form method="POST" class={vstack({ alignItems: "stretch" })}>
+      {
+        errors.map((error) => (
+          <panda.div
+            class={css({
+              color: "gray.1",
+              backgroundColor: "tomato",
+              paddingX: "4",
+              paddingY: "2",
+            })}
+          >
+            <panda.div>{error}</panda.div>
+          </panda.div>
+        ))
+      }
+
+      <div>
+        <label for="email">Email:</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          required
+          class={input({
+            size: "lg",
+          })}
+        />
+      </div>
+      <panda.div width="full">
+        <label for="password">Password:</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          required
+          class={input({
+            size: "lg",
+          })}
+        />
+      </panda.div>
+
+      <button
+        type="submit"
+        class:list={[
+          button({ size: "lg", variant: "solid" }),
+          css({ flexGrow: 1 }),
+        ]}
+      >
+        Login
+      </button>
+
+      <a
+        type="button"
+        onclick="window.location.href='/'"
+        class:list={[
+          button({ size: "lg", variant: "outline" }),
+          css({ flexGrow: 1 }),
+        ]}
+      >
+        Return
+      </a>
+    </form>
+  </panda.div>
+</Layout>

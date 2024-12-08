@@ -1,6 +1,6 @@
-import { config } from "dotenv";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { config } from "dotenv";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -13,11 +13,11 @@ import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { buildConfig } from "payload";
 import sharp from "sharp";
 
-import { Users } from "./collections/users";
-import { Shifts } from "./collections/shifts";
-import { Sections } from "./collections/sections";
 import { Roles } from "./collections/roles";
+import { Sections } from "./collections/sections";
+import { Shifts } from "./collections/shifts";
 import { Signups } from "./collections/signups";
+import { Users } from "./collections/users";
 
 export default buildConfig({
 	admin: {
@@ -28,20 +28,20 @@ export default buildConfig({
 		dateFormat: "dd/MM/yyyy HH:mm",
 	},
 	collections: [Users, Shifts, Sections, Roles, Signups],
-	editor: lexicalEditor(),
-	secret: process.env.PAYLOAD_SECRET || "",
-	typescript: {
-		outputFile: path.resolve(dirname, "payload-types.ts"),
+	localization: {
+		defaultLocale: "en",
+		locales: ["en", "nl"],
 	},
+	secret: process.env.PAYLOAD_SECRET || "",
 	db: postgresAdapter({
 		pool: {
 			connectionString: process.env.DATABASE_URI || "",
 		},
 	}),
-	sharp,
+	editor: lexicalEditor(),
 	plugins: [],
-	localization: {
-		defaultLocale: "en",
-		locales: ["en", "nl"],
+	typescript: {
+		outputFile: path.resolve(dirname, "payload-types.ts"),
 	},
+	sharp,
 });

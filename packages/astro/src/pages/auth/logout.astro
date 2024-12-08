@@ -1,0 +1,10 @@
+---
+Astro.cookies.delete("payload-token", {
+  httpOnly: true,
+  path: "/",
+  sameSite: "lax",
+});
+return Astro.redirect("/");
+---
+
+You are logged out, return to the <a href="/">home</a>.

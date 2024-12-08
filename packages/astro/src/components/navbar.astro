@@ -1,0 +1,36 @@
+---
+import { panda } from "styled-system/jsx";
+import { button } from "styled-system/recipes";
+import { ThemeSwitchButton } from "./theme-switch-button";
+---
+
+<panda.nav display="flex" justifyContent="space-between">
+  <a href="/" class={button({ size: "lg", variant: "outline" })}>Shifts</a>
+  <panda.div display="flex" gap="4">
+    <ThemeSwitchButton client:idle />
+    {
+      Astro.locals.user ? (
+        <>
+          <a href="/account" class={button({ size: "lg", variant: "solid" })}>
+            {Astro.locals.user.email}
+          </a>
+        </>
+      ) : (
+        <>
+          <a
+            href="/auth/login"
+            class={button({ size: "lg", variant: "outline" })}
+          >
+            Login
+          </a>
+          <a
+            href="/auth/register"
+            class={button({ size: "lg", variant: "solid" })}
+          >
+            Register
+          </a>
+        </>
+      )
+    }
+  </panda.div>
+</panda.nav>

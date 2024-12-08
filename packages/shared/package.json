@@ -3,15 +3,16 @@
 	"version": "1.0.0",
 	"type": "module",
 	"scripts": {
-		"generate:importmap": "PAYLOAD_CONFIG_PATH=payload.config.ts payload generate:importmap --disable-transpile",
-		"generate:types": "PAYLOAD_CONFIG_PATH=payload.config.ts payload generate:types --disable-transpile"
+		"generate:importmap": "PAYLOAD_CONFIG_PATH=payload.config.ts payload generate:importmap",
+		"generate:types": "PAYLOAD_CONFIG_PATH=payload.config.ts payload generate:types"
 	},
 	"dependencies": {
-		"@payloadcms/richtext-lexical": "^3.1.0",
-		"@payloadcms/db-postgres": "^3.1.0",
-		"@payloadcms/ui": "^3.1.0",
-		"dotenv": "^16.4.5",
-		"payload": "^3.1.0",
+		"@payloadcms/db-postgres": "^3.5.0",
+		"@payloadcms/plugin-nested-docs": "^3.5.0",
+		"@payloadcms/richtext-lexical": "^3.5.0",
+		"@payloadcms/ui": "^3.5.0",
+		"dotenv": "^16.4.7",
+		"payload": "^3.5.0",
 		"sharp": "0.32.6"
 	}
 }

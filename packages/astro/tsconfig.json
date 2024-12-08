@@ -1,16 +1,20 @@
 {
-  "extends": "astro/tsconfigs/strict",
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "styled-system": ["./styled-system"],
-      "~/*": ["./src/*"],
-      "@payload-config": [
-        "../shared/payload.config.ts"
-      ]
-    },
-    "jsx": "preserve",
-    "jsxImportSource": "solid-js"
-  },
-  "include": ["src", "styled-system"]
+	"extends": "astro/tsconfigs/strict",
+	"compilerOptions": {
+		"baseUrl": ".",
+		"paths": {
+			"styled-system": ["./styled-system"],
+			"@payload-config": ["../shared/payload.config.ts"],
+			"~/*": ["./src/*"]
+		},
+		"jsx": "preserve",
+		"jsxImportSource": "solid-js"
+	},
+	"include": [
+		"src",
+		"styled-system",
+		".astro/types.d.ts",
+		"unplugin-icons/types/solid"
+	],
+	"exclude": ["dist"]
 }

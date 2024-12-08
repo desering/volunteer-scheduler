@@ -4,28 +4,17 @@ import NavBar from "~/components/navbar.astro";
 import { ShiftOverview } from "~/components/shift-overview";
 import { groupAndSortShiftsByDate } from "~/utils/map-shifts";
 import Layout from "../layouts/layout.astro";
-
-const shifts = await Astro.locals.payload.find({
-  collection: "shifts",
-
-  joins: {
-    roles: false,
-    sections: false,
-  },
-});
-
-const shiftsByDay = await groupAndSortShiftsByDate(shifts.docs);
+import { button } from "styled-system/recipes";
 ---
 
 <Layout title="Shifter">
   <Container marginTop={{ base: 4, xl: 20 }}>
     <Flex flexDir="column" gap="10">
       <NavBar />
-      <ShiftOverview
-        user={Astro.locals.user}
-        shifts={shiftsByDay}
-        client:load
-      />
+
+      <a href="/auth/logout" class={button({ size: "lg", variant: "outline" })}>
+        Logout
+      </a>
     </Flex>
   </Container>
 </Layout>

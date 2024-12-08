@@ -1,27 +1,9 @@
 import type { CollectionConfig, Field } from "payload";
 
-const virtualTitle: Field = {
-	name: "virtualTitle",
-	label: "Title",
-	type: "text",
-	admin: {
-		hidden: true,
-	},
-	hooks: {
-		beforeChange: [
-			({ siblingData }) => {
-				// biome-ignore lint/performance/noDelete: ensures data is not stored in DB
-				delete siblingData.virtualTitle;
-			},
-		],
-		afterRead: [({ data }) => data?.title || "Untitled Section"],
-	},
-};
-
 export const Sections: CollectionConfig = {
 	slug: "sections",
 	admin: {
-		useAsTitle: "virtualTitle",
+		useAsTitle: "title",
 	},
 	fields: [
 		{
@@ -31,47 +13,16 @@ export const Sections: CollectionConfig = {
 			label: "Shift",
 			required: true,
 			hasMany: false,
+			maxDepth: 0,
 			admin: {
 				allowEdit: false,
 				readOnly: true,
 			},
 		},
-		virtualTitle,
 		{
 			name: "title",
 			type: "text",
-			admin: {
-				disableListColumn: true,
-			},
-		},
-		{
-			type: "row",
-			fields: [
-				{
-					name: "start",
-					type: "date",
-					label: "Start Time",
-					admin: {
-						date: {
-							pickerAppearance: "timeOnly",
-							displayFormat: "HH:mm",
-							timeFormat: "HH:mm",
-						},
-					},
-				},
-				{
-					name: "end",
-					type: "date",
-					label: "End Time",
-					admin: {
-						date: {
-							pickerAppearance: "timeOnly",
-							displayFormat: "HH:mm",
-							timeFormat: "HH:mm",
-						},
-					},
-				},
-			],
+			required: true,
 		},
 		{
 			name: "description",
