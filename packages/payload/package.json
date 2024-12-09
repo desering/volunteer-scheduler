@@ -13,19 +13,21 @@
 		"start": "next start"
 	},
 	"dependencies": {
-		"@payloadcms/next": "^3.5.0",
+		"@payloadcms/next": "3.5.0",
+		"@payloadcms/richtext-lexical": "^3.5.0",
+		"@payloadcms/ui": "3.5.0",
 		"graphql": "^16.9.0",
-		"lucide-solid": "^0.468.0",
-		"next": "^15.0.4",
-		"payload": "^3.5.0",
-		"react": "19.0.0-rc.1",
-		"react-dom": "19.0.0-rc.1",
-		"sharp": "0.32.6"
+		"next": "15.0.4",
+		"payload": "3.5.0",
+		"react": "19.0.0",
+		"react-dom": "19.0.0",
+		"sharp": "0.32.6",
+		"@desering/shifter-shared": "workspace:*"
 	},
 	"devDependencies": {
 		"@types/node": "^22.10.1",
-		"@types/react": "npm:types-react@19.0.0-rc.1",
-		"@types/react-dom": "npm:types-react-dom@19.0.0-rc.1",
+		"@types/react": "19.0.1",
+		"@types/react-dom": "19.0.1",
 		"typescript": "5.6.3"
 	},
 	"engines": {

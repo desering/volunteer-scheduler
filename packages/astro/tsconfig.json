@@ -4,7 +4,7 @@
 		"baseUrl": ".",
 		"paths": {
 			"styled-system": ["./styled-system"],
-			"@payload-config": ["../shared/payload.config.ts"],
+			"@payload-config": ["payload.config.ts"],
 			"~/*": ["./src/*"]
 		},
 		"jsx": "preserve",

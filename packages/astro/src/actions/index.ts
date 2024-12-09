@@ -24,6 +24,7 @@ export const server = {
 	}),
 	createSignup: defineAction({
 		input: z.object({
+			shift: z.number(),
 			role: z.number(),
 		}),
 		handler: async (input, context) => {
@@ -36,6 +37,7 @@ export const server = {
 			const signup = await context.locals.payload.create({
 				collection: "signups",
 				data: {
+					shift: input.shift,
 					role: input.role,
 					user: context.locals.user.id,
 				},
@@ -80,6 +82,7 @@ export const server = {
 			// Signups are added to the relevant roles
 			const s = {
 				...shift,
+				id: forceNumber(shift.id),
 				sections: {
 					...shift.sections,
 					docs: mapObjects(shift.sections?.docs, (section) => ({

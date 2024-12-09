@@ -7,12 +7,9 @@
 		"generate:types": "PAYLOAD_CONFIG_PATH=payload.config.ts payload generate:types"
 	},
 	"dependencies": {
-		"@payloadcms/db-postgres": "^3.5.0",
-		"@payloadcms/plugin-nested-docs": "^3.5.0",
-		"@payloadcms/richtext-lexical": "^3.5.0",
-		"@payloadcms/ui": "^3.5.0",
+		"@payloadcms/db-postgres": "3.5.0",
 		"dotenv": "^16.4.7",
-		"payload": "^3.5.0",
+		"payload": "3.5.0",
 		"sharp": "0.32.6"
 	}
 }

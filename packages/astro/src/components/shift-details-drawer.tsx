@@ -43,8 +43,8 @@ export const ShiftDetailsDrawer = (props: Props) => {
 					<Drawer.Content>
 						<Drawer.Header>
 							<Drawer.Title>{props.shift?.doc.title}</Drawer.Title>
-							<Show when={props.shift?.html}>
-								<Drawer.Description innerHTML={props.shift?.html} />
+							<Show when={props.shift?.descriptionHtml}>
+								<Drawer.Description innerHTML={props.shift?.descriptionHtml} />
 							</Show>
 							<Drawer.CloseTrigger
 								position="absolute"
@@ -154,8 +154,8 @@ const RoleRows = (props: RoleRowsProps) => {
 		props.handleRefresh?.();
 	};
 
-	const createSignup = async (role: number) => {
-		await actions.createSignup({ role });
+	const createSignup = async (shift: number, role: number) => {
+		await actions.createSignup({ shift, role });
 		props.handleRefresh?.();
 	};
 
@@ -188,7 +188,12 @@ const RoleRows = (props: RoleRowsProps) => {
 											<Button
 												variant="solid"
 												size="lg"
-												onClick={() => createSignup(role.id)}
+												onClick={() => {
+													if (!props.details?.id)
+														throw new Error("Unexpected, missing shift id");
+
+													createSignup(props.details?.id, role.id);
+												}}
 												_before={{
 													content: '"Signup"',
 													_hover: {

@@ -1,13 +1,11 @@
-import payloadConfig from "@payload-config";
-import { defineMiddleware, sequence } from "astro:middleware";
-import { getPayload } from "payload";
+import { defineMiddleware } from "astro:middleware";
+import { getPayloadInstance } from "./utils/global-payload";
 
 export const onRequest = defineMiddleware(async (context, next) => {
-	const payload = await getPayload({ config: payloadConfig });
-	context.locals.payload = payload;
+	context.locals.payload = await getPayloadInstance();
 
 	if (context.cookies.get("payload-token")) {
-		const auth = await payload.auth({
+		const auth = await context.locals.payload.auth({
 			headers: context.request.headers,
 		});
 

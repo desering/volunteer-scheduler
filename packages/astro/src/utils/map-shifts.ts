@@ -1,23 +1,43 @@
-import LexicalHTMLRenderer from "@tryghost/kg-lexical-html-renderer";
 import type { Shift } from "../../../shared/payload-types";
-
-const renderer = new LexicalHTMLRenderer();
+import {
+	consolidateHTMLConverters,
+	convertLexicalToHTML,
+	defaultEditorConfig,
+	defaultEditorFeatures,
+	HTMLConverterFeature,
+	sanitizeServerEditorConfig,
+} from "@payloadcms/richtext-lexical";
+import { getPayloadInstance } from "./global-payload";
 
 export const groupAndSortShiftsByDate = async (
 	shifts: Shift[],
 ): Promise<ShiftsByDay> => {
+	// https://payloadcms.com/docs/lexical/converters#generating-html-anywhere-on-the-server
+	const editorConfig = defaultEditorConfig;
+	editorConfig.features = [...defaultEditorFeatures, HTMLConverterFeature({})];
+	const sanitizedEditorConfig = await sanitizeServerEditorConfig(
+		editorConfig,
+		(await getPayloadInstance()).config,
+	);
+
 	const mappedShifts = await Promise.all(
 		shifts.map(async (doc) => {
-			const html =
-				(doc.description && (await renderer.render(doc.description))) ??
-				undefined;
+			let descriptionHtml: string | undefined = undefined;
+			if (doc.description) {
+				descriptionHtml = await convertLexicalToHTML({
+					converters: consolidateHTMLConverters({
+						editorConfig: sanitizedEditorConfig,
+					}),
+					data: doc.description,
+				});
+			}
 
 			return {
 				doc,
-				html,
+				descriptionHtml,
 				start_date: new Date(doc.start_date),
 				end_date: new Date(doc.end_date),
-			};
+			} satisfies RenderedShift;
 		}),
 	);
 
@@ -42,7 +62,7 @@ export const groupAndSortShiftsByDate = async (
 
 export type RenderedShift = {
 	doc: Shift;
-	html?: string;
+	descriptionHtml?: string;
 	start_date: Date;
 	end_date: Date;
 };

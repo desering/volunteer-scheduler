@@ -1,12 +1,11 @@
 {
-	"name": "@desering/shifter",
-	"version": "0.0.1",
-	"workspaces": ["packages/*"],
-	"devDependencies": {
-		"@biomejs/biome": "^1.9.4"
-	},
-	"overrides": {
-		"@types/react": "npm:types-react@19.0.0-rc.1",
-		"@types/react-dom": "npm:types-react-dom@19.0.0-rc.1"
-	}
+  "name": "@desering/shifter",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {},
+  "workspaces": ["packages/*"],
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4"
+  },
+  "trustedDependencies": ["@biomejs/biome", "@desering/shifter-astro", "esbuild", "sharp"]
 }

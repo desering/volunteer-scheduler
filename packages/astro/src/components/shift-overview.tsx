@@ -31,7 +31,7 @@ export const ShiftOverview = (props: Props) => {
 	);
 
 	return (
-		<Show when={shifts()} fallback={"Something went wrong :("}>
+		<Show when={shifts.latest} fallback={"Something went wrong :("}>
 			{(shifts) => (
 				<>
 					<Flex gap="4">
@@ -96,7 +96,7 @@ export const ShiftOverview = (props: Props) => {
 														{shift.doc.title}
 													</panda.h5>
 
-													<Show when={shift.html}>
+													<Show when={shift.descriptionHtml}>
 														{(html) => (
 															<panda.div
 																color="colorPalette.3"

@@ -1,17 +1,15 @@
+import { config } from "dotenv";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { config } from "dotenv";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
 
 config({ path: path.resolve(dirname, ".env") });
 
-import process from "node:process";
 import { postgresAdapter } from "@payloadcms/db-postgres";
-import { lexicalEditor } from "@payloadcms/richtext-lexical";
-import { buildConfig } from "payload";
-import sharp from "sharp";
+import process from "node:process";
+import type { Config } from "payload";
 
 import { Roles } from "./collections/roles";
 import { Sections } from "./collections/sections";
@@ -19,7 +17,7 @@ import { Shifts } from "./collections/shifts";
 import { Signups } from "./collections/signups";
 import { Users } from "./collections/users";
 
-export default buildConfig({
+export const sharedConfig: Config = {
 	admin: {
 		user: Users.slug,
 		importMap: {
@@ -38,10 +36,7 @@ export default buildConfig({
 			connectionString: process.env.DATABASE_URI || "",
 		},
 	}),
-	editor: lexicalEditor(),
-	plugins: [],
 	typescript: {
 		outputFile: path.resolve(dirname, "payload-types.ts"),
 	},
-	sharp,
-});
+};
