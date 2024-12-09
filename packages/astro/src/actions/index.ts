@@ -1,7 +1,63 @@
-import { defineAction } from "astro:actions";
+import { ActionError, defineAction } from "astro:actions";
 import { z } from "astro:schema";
+import { groupAndSortShiftsByDate } from "~/utils/map-shifts";
 
 export const server = {
+	cancelSignup: defineAction({
+		input: z.object({
+			id: z.number(),
+		}),
+		handler: async (input, context) => {
+			const signup = await context.locals.payload.delete({
+				collection: "signups",
+				id: input.id,
+			});
+
+			if (!signup)
+				throw new ActionError({
+					code: "BAD_REQUEST",
+					message: "Signup not found",
+				});
+
+			return true;
+		},
+	}),
+	createSignup: defineAction({
+		input: z.object({
+			role: z.number(),
+		}),
+		handler: async (input, context) => {
+			if (!context.locals.user)
+				throw new ActionError({
+					code: "UNAUTHORIZED",
+					message: "User must be logged in",
+				});
+
+			const signup = await context.locals.payload.create({
+				collection: "signups",
+				data: {
+					role: input.role,
+					user: context.locals.user.id,
+				},
+			});
+
+			return signup;
+		},
+	}),
+	getShiftsByDay: defineAction({
+		handler: async (_, context) => {
+			const shifts = await context.locals.payload.find({
+				collection: "shifts",
+
+				joins: {
+					roles: false,
+					sections: false,
+				},
+			});
+
+			return await groupAndSortShiftsByDate(shifts.docs);
+		},
+	}),
 	getShiftDetails: defineAction({
 		input: z.object({
 			id: z.number(),

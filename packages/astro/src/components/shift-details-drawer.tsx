@@ -1,23 +1,14 @@
 import { actions } from "astro:actions";
-import {
-	For,
-	Match,
-	Show,
-	Switch,
-	children,
-	createEffect,
-	createResource,
-	createSelector,
-	type JSX,
-} from "solid-js";
+import { For, Show, createResource } from "solid-js";
 import { Portal } from "solid-js/web";
+import { Bleed, Divider, Flex, HStack, panda } from "styled-system/jsx";
+import { button } from "styled-system/recipes";
 import type { RenderedShift } from "~/utils/map-shifts";
 import XIcon from "~icons/lucide/x";
+import type { Role, User } from "../../../shared/payload-types";
 import { Button } from "./ui/button";
 import { Drawer } from "./ui/drawer";
 import { IconButton } from "./ui/icon-button";
-import { Bleed, Divider, Flex, HStack, panda } from "styled-system/jsx";
-import type { Role, Signup, User } from "../../../shared/payload-types";
 
 type Props = {
 	user?: User;
@@ -30,7 +21,7 @@ type Props = {
 };
 
 export const ShiftDetailsDrawer = (props: Props) => {
-	const [details] = createResource(
+	const [details, { refetch }] = createResource(
 		() => props.shift?.doc.id,
 		async (id) => {
 			if (!id) return;
@@ -78,16 +69,17 @@ export const ShiftDetailsDrawer = (props: Props) => {
 							{/* Unsectioned roles */}
 
 							<RoleRows
-								details={details()?.data}
+								details={details.latest?.data}
 								roles={
-									details()?.data?.roles?.docs.filter(
+									details.latest?.data?.roles?.docs.filter(
 										(role) => !role.section,
 									) ?? []
 								}
 								user={props.user}
+								handleRefresh={refetch}
 							/>
 
-							<For each={details()?.data?.sections?.docs}>
+							<For each={details.latest?.data?.sections?.docs}>
 								{(section) => (
 									<panda.div marginTop="8">
 										<panda.h3
@@ -103,19 +95,29 @@ export const ShiftDetailsDrawer = (props: Props) => {
 										</Bleed>
 
 										<RoleRows
-											details={details()?.data}
+											details={details.latest?.data}
 											roles={section.roles?.docs ?? []}
 											user={props.user}
+											handleRefresh={refetch}
 										/>
 									</panda.div>
 								)}
 							</For>
 						</Drawer.Body>
-						{/* <Drawer.Footer gap="3">
-							<Button variant="solid" size="lg">
-								Signup
-							</Button>
-						</Drawer.Footer> */}
+						<Drawer.Footer>
+							<Show when={!props.user}>
+								<HStack>
+									Want to help out?
+									<a class={button({})} href="/auth/login">
+										Sign in
+									</a>
+									or
+									<a class={button({})} href="/auth/register">
+										Register
+									</a>
+								</HStack>
+							</Show>
+						</Drawer.Footer>
 					</Drawer.Content>
 				</Drawer.Positioner>
 			</Portal>
@@ -137,6 +139,8 @@ type RoleRowsProps = {
 	details?: Awaited<ReturnType<typeof actions.getShiftDetails>>["data"];
 	roles: Role[];
 	user?: User;
+
+	handleRefresh: () => void;
 };
 
 const RoleRows = (props: RoleRowsProps) => {
@@ -144,6 +148,16 @@ const RoleRows = (props: RoleRowsProps) => {
 		props.details?.signups?.docs.filter(
 			(signup) => signup.user === props.user?.id,
 		);
+
+	const removeShift = async (id: number) => {
+		await actions.cancelSignup({ id });
+		props.handleRefresh?.();
+	};
+
+	const createSignup = async (role: number) => {
+		await actions.createSignup({ role });
+		props.handleRefresh?.();
+	};
 
 	return (
 		<For each={props.roles} fallback={<RolesNotFoundRow />}>
@@ -153,18 +167,35 @@ const RoleRows = (props: RoleRowsProps) => {
 						<panda.div>{role.title}</panda.div>
 						<HStack>
 							<Show
-								when={userSignups()?.some((su) => su.role === role.id)}
+								when={(() => {
+									const su = userSignups()?.find((su) => su.role === role.id);
+									return su ? su : false;
+								})()}
 								fallback={
 									<>
 										<p>
 											{props.details?.signups.docs
 												.filter((su) => su.role === role.id)
 												.map((su) => su.title)
-												.join(", ")}
+												.join(", ") || "No signups yet"}
 										</p>
-										<Show when={role.maxSignups !== role.signups?.docs?.length}>
-											<Button variant="solid" size="lg">
-												Signup
+										<Show
+											when={
+												props.user &&
+												role.maxSignups !== role.signups?.docs?.length
+											}
+										>
+											<Button
+												variant="solid"
+												size="lg"
+												onClick={() => createSignup(role.id)}
+												_before={{
+													content: '"Signup"',
+													_hover: {
+														content: '"😍 Almost there!"',
+													},
+												}}
+											>
 												<Show when={role.maxSignups > 1}>
 													{` (${role.signups?.docs?.length}/${role.maxSignups})`}
 												</Show>
@@ -173,11 +204,21 @@ const RoleRows = (props: RoleRowsProps) => {
 									</>
 								}
 							>
-								<HStack>
-									<Button variant="outline" size="lg">
-										😭 Cancel Signup
-									</Button>
-								</HStack>
+								{(su) => (
+									<HStack>
+										<Button
+											variant="outline"
+											size="lg"
+											onClick={() => removeShift(su().id)}
+											_before={{
+												content: '"🫡 Signed up"',
+												_hover: {
+													content: '"😭 Cancel Signup"',
+												},
+											}}
+										/>
+									</HStack>
+								)}
 							</Show>
 						</HStack>
 					</Flex>

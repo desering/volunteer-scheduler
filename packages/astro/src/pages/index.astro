@@ -1,20 +1,11 @@
 ---
+import { actions } from "astro:actions";
 import { Container, Flex } from "styled-system/jsx";
 import NavBar from "~/components/navbar.astro";
 import { ShiftOverview } from "~/components/shift-overview";
-import { groupAndSortShiftsByDate } from "~/utils/map-shifts";
 import Layout from "../layouts/layout.astro";
 
-const shifts = await Astro.locals.payload.find({
-  collection: "shifts",
-
-  joins: {
-    roles: false,
-    sections: false,
-  },
-});
-
-const shiftsByDay = await groupAndSortShiftsByDate(shifts.docs);
+const shiftsByDay = await Astro.callAction(actions.getShiftsByDay, {});
 ---
 
 <Layout title="Shifter">
@@ -23,7 +14,7 @@ const shiftsByDay = await groupAndSortShiftsByDate(shifts.docs);
       <NavBar />
       <ShiftOverview
         user={Astro.locals.user}
-        shifts={shiftsByDay}
+        shifts={shiftsByDay.data}
         client:load
       />
     </Flex>
