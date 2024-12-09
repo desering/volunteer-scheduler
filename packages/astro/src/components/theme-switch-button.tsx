@@ -1,7 +1,9 @@
 import { createSignal } from "solid-js";
 import { IconButton } from "./ui/icon-button";
 import { isServer } from "solid-js/web";
+// @ts-ignore
 import SunIcon from "~icons/lucide/sun";
+// @ts-ignore
 import MoonIcon from "~icons/lucide/moon";
 
 export const ThemeSwitchButton = () => {

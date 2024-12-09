@@ -4,6 +4,7 @@ import { Portal } from "solid-js/web";
 import { Bleed, Divider, Flex, HStack, panda } from "styled-system/jsx";
 import { button } from "styled-system/recipes";
 import type { RenderedShift } from "~/utils/map-shifts";
+// @ts-ignore
 import XIcon from "~icons/lucide/x";
 import type { Role, User } from "../../../shared/payload-types";
 import { Button } from "./ui/button";
