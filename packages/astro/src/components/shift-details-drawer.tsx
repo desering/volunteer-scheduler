@@ -1,5 +1,5 @@
 import { actions } from "astro:actions";
-import { For, Show, createResource } from "solid-js";
+import { For, Show, Suspense, createResource } from "solid-js";
 import { Portal } from "solid-js/web";
 import { Bleed, Divider, Flex, HStack, panda } from "styled-system/jsx";
 import { button } from "styled-system/recipes";
@@ -57,53 +57,55 @@ export const ShiftDetailsDrawer = (props: Props) => {
 								)}
 							/>
 						</Drawer.Header>
-						<Drawer.Body justifyContent="end">
-							<panda.h2 fontSize="2xl" fontWeight="semibold" marginBottom="2">
-								Select a role
-							</panda.h2>
+						{/* With suspence the load doesn't propagate to root, removing the flash on first open */}
+						<Suspense>
+							<Drawer.Body justifyContent="end">
+								<panda.h2 fontSize="2xl" fontWeight="semibold" marginBottom="2">
+									Select a role
+								</panda.h2>
 
-							<Bleed inline="6">
-								<Divider />
-							</Bleed>
+								<Bleed inline="6">
+									<Divider />
+								</Bleed>
 
-							{/* Unsectioned roles */}
+								{/* Unsectioned roles */}
+								<RoleRows
+									details={details.latest?.data}
+									roles={
+										details.latest?.data?.roles?.docs.filter(
+											(role) => !role.section,
+										) ?? []
+									}
+									user={props.user}
+									handleRefresh={refetch}
+								/>
 
-							<RoleRows
-								details={details.latest?.data}
-								roles={
-									details.latest?.data?.roles?.docs.filter(
-										(role) => !role.section,
-									) ?? []
-								}
-								user={props.user}
-								handleRefresh={refetch}
-							/>
+								<For each={details.latest?.data?.sections?.docs}>
+									{(section) => (
+										<panda.div marginTop="8">
+											<panda.h3
+												fontSize="xl"
+												fontWeight="semibold"
+												marginBottom="2"
+											>
+												{section.title}
+											</panda.h3>
 
-							<For each={details.latest?.data?.sections?.docs}>
-								{(section) => (
-									<panda.div marginTop="8">
-										<panda.h3
-											fontSize="xl"
-											fontWeight="semibold"
-											marginBottom="2"
-										>
-											{section.title}
-										</panda.h3>
+											<Bleed inline="6">
+												<Divider />
+											</Bleed>
 
-										<Bleed inline="6">
-											<Divider />
-										</Bleed>
-
-										<RoleRows
-											details={details.latest?.data}
-											roles={section.roles?.docs ?? []}
-											user={props.user}
-											handleRefresh={refetch}
-										/>
-									</panda.div>
-								)}
-							</For>
-						</Drawer.Body>
+											<RoleRows
+												details={details.latest?.data}
+												roles={section.roles?.docs ?? []}
+												user={props.user}
+												handleRefresh={refetch}
+											/>
+										</panda.div>
+									)}
+								</For>
+							</Drawer.Body>
+						</Suspense>
 						<Drawer.Footer>
 							<Show when={!props.user}>
 								<HStack>
