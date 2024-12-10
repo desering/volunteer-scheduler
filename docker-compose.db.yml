@@ -1,0 +1,15 @@
+services:
+  postgres:
+    restart: always
+    image: postgres:latest
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: schedule
+      POSTGRES_USER: schedule
+      POSTGRES_PASSWORD: schedule
+
+volumes:
+  pgdata:
