@@ -13,28 +13,33 @@
 
 ## How to get started with development
 
-Install all dependencies:
+1. Install all dependencies:
+   ```shell
+   bun install
+   ```
 
-```shell
-bun install
-```
+2. Create a `.env` file and generate a secret key for Payload:
+   ```shell
+   cp packages/shared/.env.example packages/shared/.env
+   sed -i -e "s/YOUR_SECRET_HERE/$(openssl rand -hex 32)/g" packages/shared/.env
+   ```
 
-Start a database container:
-```shell
-docker-compose -f docker-compose.db.yml up
-```
+3. Start a database container:
+   ```shell
+   docker-compose -f docker-compose.db.yml up
+   ```
 
-Start Payload:
-```shell
-cd packages/payload
-bun run dev
-```
+4. Start Payload:
+   ```shell
+   cd packages/payload
+   bun run dev
+   ```
 
-Start Astro:
-```shell
-cd packages/astro
-bun run dev
-```
+5. Start Astro:
+   ```shell
+   cd packages/astro
+   bun run dev
+   ```
 
 ## Production deployment
 
