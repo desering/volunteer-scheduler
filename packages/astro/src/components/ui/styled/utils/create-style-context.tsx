@@ -1,6 +1,6 @@
 import { type JSX, createContext, useContext } from "solid-js";
 import { Dynamic } from "solid-js/web";
-import { cx } from "styled-system/css";
+import { cx } from "styled-system/css/cx";
 import { isCssProperty, panda } from "styled-system/jsx";
 import type { ElementType, PandaComponent } from "styled-system/types";
 

@@ -1,15 +1,12 @@
-import { createSignal } from "solid-js";
+import MoonIcon from "lucide-solid/icons/moon";
+import SunIcon from "lucide-solid/icons/sun";
+import { createSignal, onMount } from "solid-js";
 import { IconButton } from "./ui/icon-button";
-import { isServer } from "solid-js/web";
-// @ts-ignore
-import SunIcon from "~icons/lucide/sun";
-// @ts-ignore
-import MoonIcon from "~icons/lucide/moon";
 
 export const ThemeSwitchButton = () => {
-	const [isDark, setIsDark] = createSignal(
-		!isServer && document.documentElement.classList.contains("dark"),
-	);
+	const [isDark, setIsDark] = createSignal(false);
+
+	onMount(() => setIsDark(document.documentElement.classList.contains("dark")));
 
 	const toggleTheme = () => {
 		document.documentElement.classList.toggle("dark");

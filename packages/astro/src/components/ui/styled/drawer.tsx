@@ -1,6 +1,8 @@
-import { type Assign, Dialog, type PolymorphicProps, ark } from "@ark-ui/solid";
+import type { Assign, PolymorphicProps } from "@ark-ui/solid";
+import { Dialog } from "@ark-ui/solid/dialog";
+import { ark } from "@ark-ui/solid/factory";
 import type { ComponentProps } from "solid-js";
-import { type DrawerVariantProps, drawer } from "styled-system/recipes";
+import { type DrawerVariantProps, drawer } from "styled-system/recipes/drawer";
 import type { HTMLPandaProps } from "styled-system/types";
 import { createStyleContext } from "./utils/create-style-context";
 
@@ -63,7 +65,5 @@ export const Footer = withContext<
 	Assign<HTMLPandaProps<"div">, PolymorphicProps<"div">>
 >(ark.div, "footer");
 
-export {
-	DialogContext as Context,
-	type DialogContextProps as ContextProps,
-} from "@ark-ui/solid";
+export type { DialogContextProps as ContextProps } from "@ark-ui/solid";
+export { DialogContext as Context } from "@ark-ui/solid/dialog";

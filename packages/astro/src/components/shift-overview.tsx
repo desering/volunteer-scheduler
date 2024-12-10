@@ -1,5 +1,5 @@
 import { actions } from "astro:actions";
-import { format } from "date-fns";
+import { format } from "date-fns/format";
 import {
 	For,
 	Match,
