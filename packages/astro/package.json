@@ -17,6 +17,7 @@
 		"@astrojs/solid-js": "^5.0.0",
 		"astro": "^5.0.3",
 		"date-fns": "^4.1.0",
+		"lucide-solid": "^0.468.0",
 		"mutative": "^1.1.0",
 		"payload": "^3.5.0",
 		"solid-js": "^1.9.3",
@@ -24,12 +25,10 @@
 		"vite": "^6.0.3"
 	},
 	"devDependencies": {
-		"@iconify/json": "^2.2.280",
 		"@pandacss/dev": "^0.48.1",
 		"@pandacss/preset-base": "^0.48.1",
 		"@park-ui/panda-preset": "^0.43.1",
 		"prettier": "^3.4.2",
-		"prettier-plugin-astro": "^0.14.1",
-		"unplugin-icons": "^0.21.0"
+		"prettier-plugin-astro": "^0.14.1"
 	}
 }
