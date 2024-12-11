@@ -16,7 +16,7 @@ RUN bun run build
 
 FROM oven/bun:1.1.38-alpine
 
-WORKDIR /home/node/app/
+WORKDIR /home/bun/app
 
 COPY --from=build /home/bun/app/packages/astro/dist/ ./
 
