@@ -2,7 +2,8 @@ FROM oven/bun:1.1.38-alpine as build
 
 WORKDIR /home/bun/app
 
-COPY package.json ./
+COPY package.json bun.lockb ./
+COPY packages/astro ./packages/astro
 COPY packages/payload ./packages/payload
 COPY packages/shared ./packages/shared
 
