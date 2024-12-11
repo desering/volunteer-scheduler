@@ -3,7 +3,7 @@
 ## Frontend Stack
 
 * [Park UI](https://park-ui.com/) ([Panda CSS](https://panda-css.com/) & [Ark UI](https://ark-ui.com/)) - Style, UI components, etc.
-* [SolidJS](https://www.solidjs.com/) - Reactivity, State, Routing, etc.
+* [SolidJS](https://www.solidjs.com/) - Rendering, Reactivity (like React, Vue, ...)
 * [Astro](https://astro.build/) - Server, SSR or SSG, etc. (similar to Next.js, Nuxt.js)
 
 ## Backend Stack
