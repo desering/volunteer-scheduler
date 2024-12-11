@@ -152,7 +152,7 @@ const RoleRows = (props: RoleRowsProps) => {
 		);
 
 	const removeShift = async (id: number) => {
-		await actions.cancelSignup({ id });
+		await actions.deleteSignup({ id });
 		props.handleRefresh?.();
 	};
 

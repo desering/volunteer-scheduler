@@ -1,4 +1,6 @@
-// import icons from 'unplugin-icons/vite'
+import { config } from "dotenv";
+config({ path: "../shared/.env" });
+
 import node from "@astrojs/node";
 import solid from "@astrojs/solid-js";
 import { defineConfig, envField } from "astro/config";
