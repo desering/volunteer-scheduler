@@ -4,8 +4,8 @@ import sharp from "sharp";
 import { sharedConfig } from "../shared/shared-payload-config";
 
 export default buildConfig({
-	...sharedConfig(),
-	// editor: lexicalEditor(),
-	plugins: [],
-	sharp,
+  ...sharedConfig(),
+  // editor: lexicalEditor(),
+  plugins: [],
+  sharp,
 });
