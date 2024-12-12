@@ -8,5 +8,6 @@ jobs:
     runs-on: [ ubuntu-22.04 ]
     steps:
       - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
       - run: bun install
       - run: bunx biome format ./packages
