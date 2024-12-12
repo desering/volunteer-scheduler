@@ -5,5 +5,5 @@ import { type ButtonVariantProps, button } from "styled-system/recipes/button";
 
 export type IconButtonProps = ComponentProps<typeof IconButton>;
 export const IconButton = panda(ark.button, button, {
-	defaultProps: { px: "0" } as ButtonVariantProps,
+  defaultProps: { px: "0" } as ButtonVariantProps,
 });

@@ -18,25 +18,25 @@ import { Signups } from "./collections/signups";
 import { Users } from "./collections/users";
 
 export const sharedConfig: Config = {
-	admin: {
-		user: Users.slug,
-		importMap: {
-			baseDir: path.resolve(dirname),
-		},
-		dateFormat: "dd/MM/yyyy HH:mm",
-	},
-	collections: [Users, Shifts, Sections, Roles, Signups],
-	localization: {
-		defaultLocale: "en",
-		locales: ["en", "nl"],
-	},
-	secret: process.env.PAYLOAD_SECRET || "",
-	db: postgresAdapter({
-		pool: {
-			connectionString: process.env.DATABASE_URI || "",
-		},
-	}),
-	typescript: {
-		outputFile: path.resolve(dirname, "payload-types.ts"),
-	},
+  admin: {
+    user: Users.slug,
+    importMap: {
+      baseDir: path.resolve(dirname),
+    },
+    dateFormat: "dd/MM/yyyy HH:mm",
+  },
+  collections: [Users, Shifts, Sections, Roles, Signups],
+  localization: {
+    defaultLocale: "en",
+    locales: ["en", "nl"],
+  },
+  secret: process.env.PAYLOAD_SECRET || "",
+  db: postgresAdapter({
+    pool: {
+      connectionString: process.env.DATABASE_URI || "",
+    },
+  }),
+  typescript: {
+    outputFile: path.resolve(dirname, "payload-types.ts"),
+  },
 };

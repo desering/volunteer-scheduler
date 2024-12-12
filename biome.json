@@ -8,7 +8,8 @@
 	"files": {
 		"ignoreUnknown": false,
 		"ignore": [
-			"packages/astro/dist/*"
+			"packages/astro/dist/*",
+			"packages/astro/styled-system/*"
 		]
 	},
 	"formatter": {
