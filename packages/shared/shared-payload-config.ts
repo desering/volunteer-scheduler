@@ -25,12 +25,12 @@ const dirname = path.dirname(filename);
 export const sharedConfig = (): Config => {
 	if (!process.env.DATABASE_URI) {
 		console.error("Please provide a DATABASE_URI in the .env file");
-		process.exit(1);
+		// process.exit(1);
 	}
 
 	if (!process.env.PAYLOAD_SECRET) {
 		console.error("Please provide a PAYLOAD_SECRET in the .env file");
-		process.exit(1);
+		// process.exit(1);
 	}
 
 	const emailAdapter =
