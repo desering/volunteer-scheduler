@@ -67,7 +67,7 @@ export const sharedConfig = (): Config => {
 			defaultLocale: "en",
 			locales: ["en", "nl"],
 		},
-		secret: process.env.PAYLOAD_SECRET,
+		secret: process.env.PAYLOAD_SECRET || "",
 		db: postgresAdapter({
 			pool: {
 				connectionString: process.env.DATABASE_URI,
