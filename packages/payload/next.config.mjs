@@ -8,6 +8,7 @@ const nextConfig = {
 	experimental: {
 		turbo: false,
 	},
+	output: "standalone",
 };
 
 export default withPayload(nextConfig);

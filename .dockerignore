@@ -1,0 +1,6 @@
+.astro
+.github
+.idea
+.vscode
+node_modules
+docker-compose.*
