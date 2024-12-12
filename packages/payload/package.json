@@ -1,35 +1,35 @@
 {
-	"name": "@desering/shifter-payload",
-	"version": "1.0.0",
-	"description": "A blank template to get started with Payload 3.0",
-	"license": "MIT",
-	"type": "module",
-	"scripts": {
-		"dev": "next dev --port 3001",
-		"devsafe": "rm -rf .next && next dev",
-		"build": "next build",
-		"lint": "next lint",
-		"payload": "payload",
-		"start": "next start"
-	},
-	"dependencies": {
-		"@payloadcms/next": "3.5.0",
-		"@payloadcms/ui": "3.5.0",
-		"graphql": "^16.9.0",
-		"next": "15.0.4",
-		"payload": "3.5.0",
-		"react": "19.0.0",
-		"react-dom": "19.0.0",
-		"sharp": "0.32.6",
-		"@desering/shifter-shared": "workspace:*"
-	},
-	"devDependencies": {
-		"@types/node": "^22.10.1",
-		"@types/react": "19.0.1",
-		"@types/react-dom": "19.0.1",
-		"typescript": "5.6.3"
-	},
-	"engines": {
-		"node": "^18.20.2 || >=20.9.0"
-	}
+  "name": "@desering/shifter-payload",
+  "version": "1.0.0",
+  "description": "A blank template to get started with Payload 3.0",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "next dev --port 3001",
+    "devsafe": "rm -rf .next && next dev",
+    "build": "next build",
+    "lint": "next lint",
+    "payload": "payload",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@payloadcms/next": "3.5.0",
+    "@payloadcms/ui": "3.5.0",
+    "graphql": "^16.9.0",
+    "next": "15.0.4",
+    "payload": "3.5.0",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "sharp": "0.32.6",
+    "@desering/shifter-shared": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.1",
+    "@types/react": "19.0.1",
+    "@types/react-dom": "19.0.1",
+    "typescript": "5.6.3"
+  },
+  "engines": {
+    "node": "^18.20.2 || >=20.9.0"
+  }
 }
