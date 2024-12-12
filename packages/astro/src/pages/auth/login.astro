@@ -2,7 +2,7 @@
 // https://github.com/payloadcms/payload/blob/main/packages/next/src/routes/rest/auth/login.ts
 // Astro alternative on above file
 
-import { generatePayloadCookie } from "payload";
+import { actions } from "astro:actions";
 import { css } from "styled-system/css/css";
 import { panda } from "styled-system/jsx";
 import { vstack } from "styled-system/patterns";
@@ -27,42 +27,13 @@ if (Astro.request.method === "POST") {
 
   if (email && password) {
     try {
-      const collection = Astro.locals.payload.collections.users;
-
-      const result = await Astro.locals.payload.login({
-        collection: "users",
-        data: {
-          email,
-          password,
-        },
+      const loginResult = await Astro.callAction(actions.loginUser, {
+        email,
+        password,
       });
 
-      if (!result.token) {
-        throw new Error("Login failed. Token expected.");
-      }
-
-      const cookie = generatePayloadCookie({
-        collectionAuthConfig: collection.config.auth,
-        cookiePrefix: Astro.locals.payload.config.cookiePrefix,
-        token: result.token,
-        returnCookieAsObject: true,
-      });
-
-      Astro.cookies.set(cookie.name, cookie.value ?? "", {
-        maxAge: cookie.maxAge,
-        httpOnly: cookie.httpOnly,
-        secure: cookie.secure,
-        sameSite: cookie.sameSite?.toLowerCase() as
-          | "lax"
-          | "strict"
-          | "none"
-          | undefined,
-        domain: cookie.domain,
-        expires: cookie.expires ? new Date(cookie.expires) : undefined,
-        path: cookie.path,
-      });
-
-      return Astro.redirect("/");
+      if (loginResult.data) return Astro.redirect("/");
+      if (loginResult.error?.message) errors.push(loginResult.error?.message);
     } catch (error) {
       if (error instanceof Error) {
         errors.push(error.message);
@@ -71,23 +42,7 @@ if (Astro.request.method === "POST") {
       }
     }
   }
-
-  // if (typeof email !== "string" || !isValidEmail(email)) {
-  //   errors.email += "Email is not valid. ";
-  // } else if (await isRegistered(email)) {
-  //   errors.email += "Email is already registered. ";
-  // }
-  // if (typeof password !== "string" || password.length < 6) {
-  //   errors.password += "Password must be at least 6 characters. ";
-  // }
-  // const hasErrors = Object.values(errors).some((msg) => msg);
-  // if (!hasErrors) {
-  //   await registerUser({ name, email, password });
-  //   return Astro.redirect("/login");
-  // }
 }
-
-// Astro.cookies.set("token", result.token);
 ---
 
 <Layout title="Sering Volunteer Scheduling | Login">

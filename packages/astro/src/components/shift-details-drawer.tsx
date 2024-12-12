@@ -4,11 +4,11 @@ import { Portal } from "solid-js/web";
 import { Bleed, Divider, Flex, HStack, panda } from "styled-system/jsx";
 import { button } from "styled-system/recipes/button";
 import type { RenderedShift } from "~/utils/map-shifts";
-import type { Role, User } from "../../../shared/payload-types";
 import { Button } from "./ui/button";
 import { Drawer } from "./ui/drawer";
 import { IconButton } from "./ui/icon-button";
 import XIcon from "lucide-solid/icons/x";
+import type { Role, User } from "@payload-types";
 
 type Props = {
   user?: User;
@@ -152,7 +152,7 @@ const RoleRows = (props: RoleRowsProps) => {
     );
 
   const removeShift = async (id: number) => {
-    await actions.cancelSignup({ id });
+    await actions.deleteSignup({ id });
     props.handleRefresh?.();
   };
 

@@ -1,4 +1,8 @@
 ---
+if (!Astro.locals.user) {
+  return Astro.redirect("/auth/login");
+}
+
 Astro.cookies.delete("payload-token", {
   httpOnly: true,
   path: "/",

@@ -1,15 +1,21 @@
 {
-  "name": "@desering/shifter-shared",
-  "version": "1.0.0",
-  "type": "module",
-  "scripts": {
-    "generate:importmap": "PAYLOAD_CONFIG_PATH=payload.config.ts payload generate:importmap",
-    "generate:types": "PAYLOAD_CONFIG_PATH=payload.config.ts payload generate:types"
-  },
-  "dependencies": {
-    "@payloadcms/db-postgres": "3.5.0",
-    "dotenv": "^16.4.7",
-    "payload": "3.5.0",
-    "sharp": "0.32.6"
-  }
+	"name": "@desering/shifter-shared",
+	"version": "1.0.0",
+	"type": "module",
+	"scripts": {
+		"generate:importmap": "PAYLOAD_CONFIG_PATH=payload.config.ts payload generate:importmap",
+		"generate:types": "PAYLOAD_CONFIG_PATH=payload.config.ts payload generate:types"
+	},
+	"dependencies": {
+		"@payloadcms/db-postgres": "3.5.0",
+		"@payloadcms/email-nodemailer": "^3.5.0",
+		"@payloadcms/richtext-lexical": "^3.5.0",
+		"dotenv": "^16.4.7",
+		"nodemailer": "^6.9.16",
+		"payload": "3.5.0",
+		"sharp": "0.32.6"
+	},
+	"devDependencies": {
+		"@types/nodemailer": "^6.4.17"
+	}
 }

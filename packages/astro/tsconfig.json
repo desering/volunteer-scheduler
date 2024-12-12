@@ -5,6 +5,7 @@
     "paths": {
       "styled-system": ["./styled-system"],
       "@payload-config": ["payload.config.ts"],
+      "@payload-types": ["../shared/payload-types"],
       "~/*": ["./src/*"]
     },
     "jsx": "preserve",

@@ -1,11 +1,11 @@
 {
-  "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
-    "moduleResolution": "bundler",
-    "module": "ESNext",
-    "strict": true,
-    "noEmit": true
-  },
-  "include": ["."],
-  "exclude": ["node_modules", "**/*.spec.ts"]
+	"compilerOptions": {
+		"allowSyntheticDefaultImports": true,
+		"moduleResolution": "bundler",
+		"module": "ESNext",
+		"strict": true,
+		"noEmit": true
+	},
+	"include": ["."],
+	"exclude": ["node_modules", "**/*.spec.ts"]
 }
