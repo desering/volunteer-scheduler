@@ -7,5 +7,10 @@
   "devDependencies": {
     "@biomejs/biome": "^1.9.4"
   },
-  "trustedDependencies": ["@biomejs/biome", "@desering/shifter-astro", "esbuild", "sharp"]
+  "trustedDependencies": [
+    "@biomejs/biome",
+    "@desering/shifter-astro",
+    "esbuild",
+    "sharp"
+  ]
 }
