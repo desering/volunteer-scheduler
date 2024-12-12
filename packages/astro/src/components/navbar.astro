@@ -12,7 +12,7 @@ import { ThemeSwitchButton } from "./theme-switch-button";
       Astro.locals.user ? (
         <>
           <a href="/account" class={button({ size: "lg", variant: "solid" })}>
-            {Astro.locals.user.email}
+            {Astro.locals.user.preferredName}
           </a>
         </>
       ) : (

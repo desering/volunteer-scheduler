@@ -14,7 +14,6 @@
 	},
 	"dependencies": {
 		"@payloadcms/next": "3.5.0",
-		"@payloadcms/richtext-lexical": "^3.5.0",
 		"@payloadcms/ui": "3.5.0",
 		"graphql": "^16.9.0",
 		"next": "15.0.4",
