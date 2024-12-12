@@ -3,7 +3,7 @@
 ## Frontend Stack
 
 * [Park UI](https://park-ui.com/) ([Panda CSS](https://panda-css.com/) & [Ark UI](https://ark-ui.com/)) - Style, UI components, etc.
-* [SolidJS](https://www.solidjs.com/) - Reactivity, State, Routing, etc.
+* [SolidJS](https://www.solidjs.com/) - Rendering, Reactivity (like React, Vue, ...)
 * [Astro](https://astro.build/) - Server, SSR or SSG, etc. (similar to Next.js, Nuxt.js)
 
 ## Backend Stack
@@ -43,8 +43,18 @@
 
 ## Production deployment
 
-This builds docker images for both Payload and Astro, and then starts a PostgreSQL database and both applications:
-
+Use `docker-compose` to build and run the whole stack including a database container:
 ```shell
 docker-compose -f docker-compose.deploy.yml up
+```
+
+Or build and run the images individually:
+```shell
+# Astro:
+docker build -f astro.Dockerfile -t docker.io/library/astro .
+docker run -p 3000:3000 --env-file packages/shared/.env docker.io/library/astro
+
+# Payload:
+docker build -f payload.Dockerfile -t docker.io/library/payload .
+docker run -p 3000:3000 --env-file packages/shared/.env docker.io/library/payload
 ```
