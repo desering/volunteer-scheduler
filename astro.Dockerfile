@@ -1,4 +1,4 @@
-FROM oven/bun:1.1.38-alpine
+FROM oven/bun:1.1.38-alpine as build
 
 WORKDIR /home/bun/app
 
@@ -14,4 +14,12 @@ ENV ASTRO_TELEMETRY_DISABLED=1
 
 RUN bun run build
 
+FROM oven/bun:1.1.38-alpine
+
+WORKDIR /home/node/app/
+
+COPY --from=build /home/bun/app/packages/astro/dist/ ./
+
 EXPOSE 3000
+
+CMD ["bun", "run", "./server/entry.mjs"]

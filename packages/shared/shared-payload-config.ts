@@ -1,8 +1,13 @@
 import { postgresAdapter } from "@payloadcms/db-postgres";
-import type { Config } from "payload";
+import { buildConfig, type Config } from "payload";
 
 import { nodemailerAdapter } from "@payloadcms/email-nodemailer";
 import nodemailer from "nodemailer";
+
+import {
+	HTMLConverterFeature,
+	lexicalEditor,
+} from "@payloadcms/richtext-lexical";
 
 import { Roles } from "./collections/roles";
 import { Sections } from "./collections/sections";
@@ -72,5 +77,12 @@ export const sharedConfig = (): Config => {
 			outputFile: path.resolve(dirname, "payload-types.ts"),
 		},
 		email: emailAdapter,
+
+		editor: lexicalEditor({
+			features: ({ defaultFeatures }) => [
+				...defaultFeatures,
+				HTMLConverterFeature({}),
+			],
+		}),
 	};
 };

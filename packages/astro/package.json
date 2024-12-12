@@ -15,7 +15,6 @@
 		"@astrojs/check": "^0.9.4",
 		"@astrojs/node": "^9.0.0",
 		"@astrojs/solid-js": "^5.0.0",
-		"@payloadcms/richtext-lexical": "^3.5.0",
 		"astro": "^5.0.3",
 		"date-fns": "^4.1.0",
 		"lucide-solid": "^0.468.0",

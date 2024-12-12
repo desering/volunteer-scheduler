@@ -9,6 +9,7 @@
 	"dependencies": {
 		"@payloadcms/db-postgres": "3.5.0",
 		"@payloadcms/email-nodemailer": "^3.5.0",
+		"@payloadcms/richtext-lexical": "^3.5.0",
 		"dotenv": "^16.4.7",
 		"nodemailer": "^6.9.16",
 		"payload": "3.5.0",
