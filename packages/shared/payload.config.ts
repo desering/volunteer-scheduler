@@ -1,5 +1,3 @@
-// this file is used for generating the typescript definitions for the collections
-
 import { config } from "dotenv";
 config({ path: "../shared/.env" });
 

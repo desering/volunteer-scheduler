@@ -1,4 +1,3 @@
-// import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { buildConfig } from "payload";
 import sharp from "sharp";
 import { sharedConfig } from "../shared/shared-payload-config";
@@ -12,9 +11,9 @@ const dirname = path.dirname(filename);
 const baseConfig = sharedConfig({
   baseDir: path.resolve(dirname, "src"),
 });
+
 export default buildConfig({
   ...baseConfig,
-  // editor: lexicalEditor(import type path from "path";
   plugins: [],
   sharp,
   admin: {
