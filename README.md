@@ -51,10 +51,10 @@ docker-compose -f docker-compose.deploy.yml up
 Or build and run the images individually:
 ```shell
 # Astro:
-docker build -f Dockerfile.astro -t ghcr.io/desering/astro:latest .
-docker run -p 3000:3000 --env-file packages/shared/.env ghcr.io/desering/astro:latest
+docker build -f Dockerfile.astro -t ghcr.io/desering/volunteer-scheduler-astro:dev .
+docker run -p 3000:3000 --env-file packages/shared/.env ghcr.io/desering/volunteer-scheduler-astro:dev
 
 # Payload:
-docker build -f Dockerfile.payload -t ghcr.io/desering/payload:latest .
-docker run -p 3000:3000 --env-file packages/shared/.env ghcr.io/desering/payload:latest
+docker build -f Dockerfile.payload -t ghcr.io/desering/volunteer-scheduler-payload:dev .
+docker run -p 3000:3000 --env-file packages/shared/.env ghcr.io/desering/volunteer-scheduler-payload:dev
 ```

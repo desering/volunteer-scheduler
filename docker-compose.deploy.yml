@@ -1,6 +1,6 @@
 services:
   astro:
-    image: ghcr.io/desering/astro:latest
+    image: ghcr.io/desering/volunteer-scheduler-astro:latest
     ports:
       - "3000:3000"
     depends_on:
@@ -9,7 +9,7 @@ services:
       - packages/shared/.env
 
   payload:
-    image: ghcr.io/desering/payload:latest
+    image: ghcr.io/desering/volunteer-scheduler-payload:latest
     ports:
       - "3001:3001"
     depends_on:
