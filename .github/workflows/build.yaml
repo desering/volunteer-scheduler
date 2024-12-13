@@ -3,19 +3,35 @@ name: build
 on:
   push:
 
-jobs:
-  astro:
-    runs-on: [ ubuntu-22.04 ]
-    steps:
-      - uses: actions/checkout@v4
-      - uses: docker/build-push-action@v6
-        with:
-          file: astro.Dockerfile
+env:
+  DOCKER_REPO: ghcr.io/desering
 
-  payload:
+permissions:
+  packages: write
+
+jobs:
+  docker:
     runs-on: [ ubuntu-22.04 ]
+    strategy:
+      matrix:
+        package: [astro, payload]
     steps:
       - uses: actions/checkout@v4
+
+      - if: ${{ github.ref != 'refs/heads/main' }}
+        run: echo "IMAGE_TAGS=${{ env.DOCKER_REPO }}/${{ github.event.repository.name }}-${{ matrix.package }}:${{ github.sha }}" >> "$GITHUB_ENV"
+
+      - if: ${{ github.ref == 'refs/heads/main' }}
+        run: echo "IMAGE_TAGS=${{ env.DOCKER_REPO }}/${{ github.event.repository.name }}-${{ matrix.package }}:${{ github.sha }},${{ env.DOCKER_REPO }}/${{ matrix.package }}:latest" >> "$GITHUB_ENV"
+
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - uses: docker/build-push-action@v6
         with:
-          file: payload.Dockerfile
+          file: Dockerfile.${{ matrix.package }}
+          push: true
+          tags: ${{ env.IMAGE_TAGS }}
