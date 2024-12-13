@@ -6,6 +6,9 @@ on:
 env:
   DOCKER_REPO: ghcr.io/desering
 
+permissions:
+  packages: write
+
 jobs:
   docker:
     runs-on: [ ubuntu-22.04 ]
