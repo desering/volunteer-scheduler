@@ -1,5 +1,5 @@
+import type { Config } from "payload";
 import { postgresAdapter } from "@payloadcms/db-postgres";
-import { buildConfig, type Config } from "payload";
 
 import { nodemailerAdapter } from "@payloadcms/email-nodemailer";
 import nodemailer from "nodemailer";
@@ -22,17 +22,7 @@ import { fileURLToPath } from "node:url";
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
 
-export const sharedConfig = (): Config => {
-  if (!process.env.DATABASE_URI) {
-    console.error("Please provide a DATABASE_URI in the .env file");
-    // process.exit(1);
-  }
-
-  if (!process.env.PAYLOAD_SECRET) {
-    console.error("Please provide a PAYLOAD_SECRET in the .env file");
-    // process.exit(1);
-  }
-
+export const sharedConfig = ({ baseDir }: { baseDir: string }): Config => {
   const emailAdapter =
     process.env.EMAIL_FROM_ADDRESS &&
     process.env.EMAIL_FROM_NAME &&
@@ -58,7 +48,7 @@ export const sharedConfig = (): Config => {
     admin: {
       user: Users.slug,
       importMap: {
-        baseDir: path.resolve(dirname),
+        baseDir,
       },
       dateFormat: "dd/MM/yyyy HH:mm",
     },

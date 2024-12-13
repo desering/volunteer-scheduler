@@ -2,6 +2,9 @@ import { defineMiddleware } from "astro:middleware";
 import { getPayloadInstance } from "./utils/global-payload";
 
 export const onRequest = defineMiddleware(async (context, next) => {
+  // Skip requests for prerendered pages
+  if (context.isPrerendered) return next();
+
   context.locals.payload = await getPayloadInstance();
 
   if (context.cookies.get("payload-token")) {

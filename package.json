@@ -1,5 +1,5 @@
 {
-  "name": "@desering/shifter",
+  "name": "@desering/volunteer-scheduler",
   "version": "0.0.1",
   "private": true,
   "scripts": {},
@@ -9,7 +9,7 @@
   },
   "trustedDependencies": [
     "@biomejs/biome",
-    "@desering/shifter-astro",
+    "@desering/volunteer-scheduler-astro",
     "esbuild",
     "sharp"
   ]
