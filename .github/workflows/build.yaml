@@ -22,7 +22,7 @@ jobs:
         run: echo "IMAGE_TAGS=${{ env.DOCKER_REPO }}/${{ github.event.repository.name }}-${{ matrix.package }}:${{ github.sha }}" >> "$GITHUB_ENV"
 
       - if: ${{ github.ref == 'refs/heads/main' }}
-        run: echo "IMAGE_TAGS=${{ env.DOCKER_REPO }}/${{ github.event.repository.name }}-${{ matrix.package }}:${{ github.sha }},${{ env.DOCKER_REPO }}/${{ matrix.package }}:latest" >> "$GITHUB_ENV"
+        run: echo "IMAGE_TAGS=${{ env.DOCKER_REPO }}/${{ github.event.repository.name }}-${{ matrix.package }}:${{ github.sha }},${{ env.DOCKER_REPO }}/${{ github.event.repository.name }}-${{ matrix.package }}:latest" >> "$GITHUB_ENV"
 
       - uses: docker/login-action@v3
         with:
