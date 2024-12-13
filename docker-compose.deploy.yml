@@ -1,7 +1,6 @@
 services:
   astro:
-    build:
-      dockerfile: astro.Dockerfile
+    image: ghcr.io/desering/astro:latest
     ports:
       - "3000:3000"
     depends_on:
@@ -10,8 +9,7 @@ services:
       - packages/shared/.env
 
   payload:
-    build:
-      dockerfile: payload.Dockerfile
+    image: ghcr.io/desering/payload:latest
     ports:
       - "3001:3001"
     depends_on:
