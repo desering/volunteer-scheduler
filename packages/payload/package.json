@@ -1,5 +1,5 @@
 {
-  "name": "@desering/shifter-payload",
+  "name": "@desering/volunteer-scheduler-payload",
   "version": "1.0.0",
   "description": "A blank template to get started with Payload 3.0",
   "license": "MIT",
@@ -21,7 +21,7 @@
     "react": "19.0.0",
     "react-dom": "19.0.0",
     "sharp": "0.32.6",
-    "@desering/shifter-shared": "workspace:*"
+    "@desering/volunteer-scheduler-shared": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^22.10.1",
