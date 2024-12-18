@@ -19,13 +19,7 @@ export default buildConfig({
   admin: {
     ...baseConfig.admin,
     components: {
-      views: {
-        prepareShifts: {
-          Component: "/components/prepare-shifts#MyCustomView",
-          path: "/prepare-shifts",
-        },
-      },
-      beforeDashboard: ["@/components/link-to-prepare-shifts"],
+      beforeDashboard: ["@/components/dashboard-header#DashboardHeader"],
     },
   },
 });

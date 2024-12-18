@@ -8,7 +8,7 @@ import Layout from "../layouts/layout.astro";
 const shiftsByDay = await Astro.callAction(actions.getShiftsByDay, {});
 ---
 
-<Layout title="Volunteer Scheduler">
+<Layout title="Volunteering Schedule">
   <Container marginTop={{ base: 4, xl: 20 }}>
     <Flex flexDir="column" gap="10">
       <NavBar />

@@ -12,6 +12,7 @@ export interface Config {
   };
   collections: {
     users: User;
+    'shift-templates': ShiftTemplate;
     shifts: Shift;
     sections: Section;
     roles: Role;
@@ -35,6 +36,7 @@ export interface Config {
   };
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
+    'shift-templates': ShiftTemplatesSelect<false> | ShiftTemplatesSelect<true>;
     shifts: ShiftsSelect<false> | ShiftsSelect<true>;
     sections: SectionsSelect<false> | SectionsSelect<true>;
     roles: RolesSelect<false> | RolesSelect<true>;
@@ -91,6 +93,109 @@ export interface User {
   salt?: string | null;
   hash?: string | null;
   password?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "shift-templates".
+ */
+export interface ShiftTemplate {
+  id: number;
+  template_title: string;
+  shift_title: string;
+  shift_start_time: string;
+  shift_end_time: string;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  sections?:
+    | {
+        section_title: string;
+        section_description?: {
+          root: {
+            type: string;
+            children: {
+              type: string;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        roles: {
+          title: string;
+          description?: {
+            root: {
+              type: string;
+              children: {
+                type: string;
+                version: number;
+                [k: string]: unknown;
+              }[];
+              direction: ('ltr' | 'rtl') | null;
+              format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+              indent: number;
+              version: number;
+            };
+            [k: string]: unknown;
+          } | null;
+          maxSignups: number;
+          signups?:
+            | {
+                user: number | User;
+                id?: string | null;
+              }[]
+            | null;
+          id?: string | null;
+        }[];
+        id?: string | null;
+      }[]
+    | null;
+  roles?:
+    | {
+        title: string;
+        description?: {
+          root: {
+            type: string;
+            children: {
+              type: string;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        maxSignups: number;
+        signups?:
+          | {
+              user: number | User;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -218,6 +323,10 @@ export interface PayloadLockedDocument {
         value: number | User;
       } | null)
     | ({
+        relationTo: 'shift-templates';
+        value: number | ShiftTemplate;
+      } | null)
+    | ({
         relationTo: 'shifts';
         value: number | Shift;
       } | null)
@@ -289,6 +398,54 @@ export interface UsersSelect<T extends boolean = true> {
   resetPasswordExpiration?: T;
   salt?: T;
   hash?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "shift-templates_select".
+ */
+export interface ShiftTemplatesSelect<T extends boolean = true> {
+  template_title?: T;
+  shift_title?: T;
+  shift_start_time?: T;
+  shift_end_time?: T;
+  description?: T;
+  sections?:
+    | T
+    | {
+        section_title?: T;
+        section_description?: T;
+        roles?:
+          | T
+          | {
+              title?: T;
+              description?: T;
+              maxSignups?: T;
+              signups?:
+                | T
+                | {
+                    user?: T;
+                    id?: T;
+                  };
+              id?: T;
+            };
+        id?: T;
+      };
+  roles?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        maxSignups?: T;
+        signups?:
+          | T
+          | {
+              user?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

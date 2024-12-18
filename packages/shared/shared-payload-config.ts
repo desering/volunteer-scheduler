@@ -18,6 +18,7 @@ import { Users } from "./collections/users";
 import process from "node:process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { ShiftTemplates } from "./collections/shift-templates";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -52,7 +53,7 @@ export const sharedConfig = ({ baseDir }: { baseDir: string }): Config => {
       },
       dateFormat: "dd/MM/yyyy HH:mm",
     },
-    collections: [Users, Shifts, Sections, Roles, Signups],
+    collections: [Users, ShiftTemplates, Shifts, Sections, Roles, Signups],
     localization: {
       defaultLocale: "en",
       locales: ["en", "nl"],
