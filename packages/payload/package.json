@@ -11,20 +11,25 @@
     "lint": "next lint",
     "payload": "payload",
     "start": "next start",
-    "generate:importmap": "PAYLOAD_CONFIG_PATH=payload.config.ts payload generate:importmap"
+    "generate:importmap": "PAYLOAD_CONFIG_PATH=payload.config.ts payload generate:importmap",
+    "prepare": "panda codegen"
   },
   "dependencies": {
+    "@ark-ui/react": "^4.5.0",
+    "@desering/volunteer-scheduler-shared": "workspace:*",
     "@payloadcms/next": "3.5.0",
     "@payloadcms/ui": "3.5.0",
+    "date-fns": "^4.1.0",
     "graphql": "^16.9.0",
     "next": "15.0.4",
     "payload": "3.5.0",
     "react": "19.0.0",
     "react-dom": "19.0.0",
-    "sharp": "0.32.6",
-    "@desering/volunteer-scheduler-shared": "workspace:*"
+    "sharp": "0.32.6"
   },
   "devDependencies": {
+    "@pandacss/dev": "^0.49.0",
+    "@park-ui/panda-preset": "^0.43.1",
     "@types/node": "^22.10.1",
     "@types/react": "19.0.1",
     "@types/react-dom": "19.0.1",

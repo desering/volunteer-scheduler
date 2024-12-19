@@ -40,3 +40,7 @@ next-env.d.ts
 .env
 
 /media
+
+## Panda
+styled-system
+styled-system-studio

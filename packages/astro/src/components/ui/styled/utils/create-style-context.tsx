@@ -27,7 +27,7 @@ export const createStyleContext = <R extends Recipe>(recipe: R) => {
   const withRootProvider = <P extends {}>(
     Component: ElementType,
   ): ((props: P) => JSX.Element) => {
-    const StyledComponent = (props: P) => {
+    const PandaComponent = (props: P) => {
       const [variantProps, localProps] = recipe.splitVariantProps(props);
       const slotStyles = recipe(variantProps) as Record<Slot<R>, string>;
 
@@ -37,7 +37,7 @@ export const createStyleContext = <R extends Recipe>(recipe: R) => {
         </StyleContext.Provider>
       );
     };
-    return StyledComponent;
+    return PandaComponent;
   };
 
   const withProvider = <P extends { class?: string }>(
@@ -45,7 +45,7 @@ export const createStyleContext = <R extends Recipe>(recipe: R) => {
     slot: Slot<R>,
     options?: Options,
   ): ((props: P) => JSX.Element) => {
-    const StyledComponent = panda(
+    const PandaComponent = panda(
       Component,
       {},
       {
@@ -61,7 +61,7 @@ export const createStyleContext = <R extends Recipe>(recipe: R) => {
       return (
         <StyleContext.Provider value={slotStyles}>
           <Dynamic
-            component={StyledComponent}
+            component={PandaComponent}
             {...localProps}
             class={cx(slotStyles?.[slot], props.class)}
           />
@@ -74,13 +74,13 @@ export const createStyleContext = <R extends Recipe>(recipe: R) => {
     Component: ElementType,
     slot: Slot<R>,
   ): ((props: P) => JSX.Element) => {
-    const StyledComponent = panda(Component);
+    const PandaComponent = panda(Component);
 
     const Foo = (props: P) => {
       const slotStyles = useContext(StyleContext);
       return (
         <Dynamic
-          component={StyledComponent}
+          component={PandaComponent}
           {...props}
           class={cx(slotStyles?.[slot], props.class)}
         />

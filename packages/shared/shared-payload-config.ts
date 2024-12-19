@@ -14,11 +14,11 @@ import { Sections } from "./collections/sections";
 import { Shifts } from "./collections/shifts";
 import { Signups } from "./collections/signups";
 import { Users } from "./collections/users";
+import { ShiftTemplates } from "./collections/shift-templates";
 
 import process from "node:process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { ShiftTemplates } from "./collections/shift-templates";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);

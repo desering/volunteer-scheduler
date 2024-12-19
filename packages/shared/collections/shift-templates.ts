@@ -59,6 +59,21 @@ export const ShiftTemplates: CollectionConfig = {
   admin: {
     useAsTitle: "template_title",
     group: "Shift Management",
+    components: {
+      views: {
+        edit: {
+          publish: {
+            Component:
+              "/components/publish-shift-template#PublishShiftTemplate",
+            path: "/publish",
+            tab: {
+              label: "Publish",
+              href: "/publish",
+            },
+          },
+        },
+      },
+    },
   },
   defaultSort: ["template_title"],
   fields: [
