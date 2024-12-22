@@ -20,6 +20,13 @@ export default buildConfig({
     ...baseConfig.admin,
     components: {
       beforeDashboard: ["@/components/dashboard-header#DashboardHeader"],
+
+      views: {
+        calender: {
+          Component: "/components/views/calender-view#CalenderView",
+          path: "/calender/:collectionSlug",
+        },
+      },
     },
   },
 });

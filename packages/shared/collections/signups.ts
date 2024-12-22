@@ -5,7 +5,7 @@ export const Signups: CollectionConfig = {
   admin: {
     useAsTitle: "title",
     defaultColumns: ["role", "user"],
-    group: "Advanced",
+    group: false,
   },
   fields: [
     {

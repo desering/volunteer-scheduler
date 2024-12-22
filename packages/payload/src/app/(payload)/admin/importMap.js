@@ -21,7 +21,9 @@ import { UnderlineFeatureClient as UnderlineFeatureClient_e70f5e05f09f93e00b997e
 import { BoldFeatureClient as BoldFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { ItalicFeatureClient as ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { PublishShiftTemplate as PublishShiftTemplate_09b69e7d2d7fb5be2feec0e99a31e0da } from 'src/components/publish-shift-template'
+import { SwitchToCalenderView as SwitchToCalenderView_e5f36b9c46b66f6eca00310c58741220 } from 'src/components/switch-to-calender-view'
 import { DashboardHeader as DashboardHeader_0c59d0d196f0404bf841cd4d190d7596 } from '@/components/dashboard-header'
+import { CalenderView as CalenderView_be9dacc6b4cc95fb62b6a657f4b9b68a } from 'src/components/views/calender-view'
 
 export const importMap = {
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalCell": RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e,
@@ -47,5 +49,7 @@ export const importMap = {
   "@payloadcms/richtext-lexical/client#BoldFeatureClient": BoldFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#ItalicFeatureClient": ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "/components/publish-shift-template#PublishShiftTemplate": PublishShiftTemplate_09b69e7d2d7fb5be2feec0e99a31e0da,
-  "@/components/dashboard-header#DashboardHeader": DashboardHeader_0c59d0d196f0404bf841cd4d190d7596
+  "/components/switch-to-calender-view#SwitchToCalenderView": SwitchToCalenderView_e5f36b9c46b66f6eca00310c58741220,
+  "@/components/dashboard-header#DashboardHeader": DashboardHeader_0c59d0d196f0404bf841cd4d190d7596,
+  "/components/views/calender-view#CalenderView": CalenderView_be9dacc6b4cc95fb62b6a657f4b9b68a
 }

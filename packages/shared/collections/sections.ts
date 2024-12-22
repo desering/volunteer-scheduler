@@ -5,7 +5,7 @@ export const Sections: CollectionConfig = {
   slug: "sections",
   admin: {
     useAsTitle: "title",
-    group: "Advanced",
+    group: false,
   },
   fields: [
     {

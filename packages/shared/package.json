@@ -3,15 +3,16 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "generate:types": "PAYLOAD_CONFIG_PATH=payload.config.ts payload generate:types"
+    "generate:types": "PAYLOAD_CONFIG_PATH=payload.config.ts payload generate:types",
+    "generate:db-schema": "PAYLOAD_CONFIG_PATH=payload.config.ts payload generate:db-schema"
   },
   "dependencies": {
-    "@payloadcms/db-postgres": "3.5.0",
-    "@payloadcms/email-nodemailer": "^3.5.0",
-    "@payloadcms/richtext-lexical": "^3.5.0",
+    "@payloadcms/db-postgres": "^3.11.0",
+    "@payloadcms/email-nodemailer": "^3.11.0",
+    "@payloadcms/richtext-lexical": "^3.11.0",
     "dotenv": "^16.4.7",
     "nodemailer": "^6.9.16",
-    "payload": "3.5.0",
+    "payload": "^3.11.0",
     "sharp": "0.32.6"
   },
   "devDependencies": {

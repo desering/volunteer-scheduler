@@ -5,7 +5,7 @@ export const Roles: CollectionConfig = {
   admin: {
     useAsTitle: "title",
     defaultColumns: ["title", "shift", "section", "signups"],
-    group: "Advanced",
+    group: false,
   },
   fields: [
     {
@@ -19,6 +19,7 @@ export const Roles: CollectionConfig = {
       admin: {
         allowCreate: false,
         condition: (siblingData) => {
+          // hide field if creating from sections screen
           return !(
             siblingData?.shift === undefined &&
             siblingData?.section !== undefined
@@ -65,6 +66,7 @@ export const Roles: CollectionConfig = {
     {
       name: "title",
       type: "text",
+      required: true,
     },
     {
       name: "description",

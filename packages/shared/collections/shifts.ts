@@ -1,10 +1,22 @@
-import type { CollectionAfterChangeHook, CollectionConfig } from "payload";
+import type { CollectionConfig } from "payload";
 
 export const Shifts: CollectionConfig = {
   slug: "shifts",
+  defaultSort: "-start_date",
   admin: {
     useAsTitle: "title",
     group: "Shift Management",
+    components: {
+      views: {
+        list: {
+          actions: [
+            {
+              path: "/components/switch-to-calender-view#SwitchToCalenderView",
+            },
+          ],
+        },
+      },
+    },
   },
   fields: [
     {
@@ -12,6 +24,7 @@ export const Shifts: CollectionConfig = {
       tabs: [
         {
           label: "General",
+          virtual: true,
           fields: [
             {
               name: "title",
@@ -63,6 +76,7 @@ export const Shifts: CollectionConfig = {
         },
         {
           label: "Sections",
+          virtual: true,
           fields: [
             {
               name: "sections",
@@ -71,6 +85,7 @@ export const Shifts: CollectionConfig = {
               collection: "sections",
               on: "shift",
               maxDepth: 0,
+              virtual: true,
               admin: {
                 disableListColumn: true,
               },
@@ -79,6 +94,7 @@ export const Shifts: CollectionConfig = {
         },
         {
           label: "Roles",
+          virtual: true,
           fields: [
             {
               name: "roles",
@@ -87,6 +103,7 @@ export const Shifts: CollectionConfig = {
               collection: "roles",
               on: "shift",
               maxDepth: 0,
+              virtual: true,
               admin: {
                 // allowCreate: false,
                 disableListColumn: true,
@@ -96,6 +113,7 @@ export const Shifts: CollectionConfig = {
         },
         {
           label: "Signups",
+          virtual: true,
           fields: [
             {
               name: "signups",
@@ -104,6 +122,7 @@ export const Shifts: CollectionConfig = {
               collection: "signups",
               on: "shift",
               maxDepth: 0,
+              virtual: true,
               admin: {
                 // allowCreate: false,
                 disableListColumn: true,
@@ -114,4 +133,19 @@ export const Shifts: CollectionConfig = {
       ],
     },
   ],
+  hooks: {
+    beforeDelete: [
+      async ({ id, req }) => {
+        // Delete all related sections first, as of 22-12-2024 payload does not do cascade delete on one to one relationships
+        await req.payload.delete({
+          collection: "sections",
+          where: {
+            shift: {
+              equals: id,
+            },
+          },
+        });
+      },
+    ],
+  },
 };

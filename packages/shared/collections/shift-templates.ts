@@ -2,14 +2,14 @@ import type { ArrayField, CollectionConfig } from "payload";
 import { admins } from "./access/admins";
 
 const rolesField = (arg?: {
-  description?: string;
+  adminDescription?: string;
   required?: boolean;
 }): ArrayField => ({
   name: "roles",
   type: "array",
   required: arg?.required,
   admin: {
-    description: arg?.description,
+    description: arg?.adminDescription,
   },
   fields: [
     {
@@ -96,7 +96,7 @@ export const ShiftTemplates: CollectionConfig = {
       type: "row",
       fields: [
         {
-          name: "shift_start_time",
+          name: "start_time",
           label: "Start Time",
           type: "date",
           required: true,
@@ -109,7 +109,7 @@ export const ShiftTemplates: CollectionConfig = {
           },
         },
         {
-          name: "shift_end_time",
+          name: "end_time",
           label: "End Time",
           type: "date",
           required: true,
@@ -148,14 +148,14 @@ export const ShiftTemplates: CollectionConfig = {
       type: "array",
       fields: [
         {
-          name: "section_title",
+          name: "title",
           label: "Section Title",
           type: "text",
           required: true,
         },
 
         {
-          name: "section_description",
+          name: "description",
           label: "Section Description",
           type: "richText",
         },
@@ -163,7 +163,7 @@ export const ShiftTemplates: CollectionConfig = {
       ],
     },
     rolesField({
-      description: "Add roles that are not specific to a section",
+      adminDescription: "Add roles that are not specific to a section",
     }),
   ],
 };

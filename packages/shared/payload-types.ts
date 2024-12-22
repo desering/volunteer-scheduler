@@ -102,8 +102,8 @@ export interface ShiftTemplate {
   id: number;
   template_title: string;
   shift_title: string;
-  shift_start_time: string;
-  shift_end_time: string;
+  start_time: string;
+  end_time: string;
   description?: {
     root: {
       type: string;
@@ -121,8 +121,8 @@ export interface ShiftTemplate {
   } | null;
   sections?:
     | {
-        section_title: string;
-        section_description?: {
+        title: string;
+        description?: {
           root: {
             type: string;
             children: {
@@ -154,6 +154,9 @@ export interface ShiftTemplate {
             };
             [k: string]: unknown;
           } | null;
+          /**
+           * The maximum number of signups allowed for this role, 0 for unlimited
+           */
           maxSignups: number;
           signups?:
             | {
@@ -166,6 +169,9 @@ export interface ShiftTemplate {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Add roles that are not specific to a section
+   */
   roles?:
     | {
         title: string;
@@ -184,6 +190,9 @@ export interface ShiftTemplate {
           };
           [k: string]: unknown;
         } | null;
+        /**
+         * The maximum number of signups allowed for this role, 0 for unlimited
+         */
         maxSignups: number;
         signups?:
           | {
@@ -274,7 +283,7 @@ export interface Role {
   id: number;
   shift?: (number | null) | Shift;
   section?: (number | null) | Section;
-  title?: string | null;
+  title: string;
   description?: {
     root: {
       type: string;
@@ -290,6 +299,9 @@ export interface Role {
     };
     [k: string]: unknown;
   } | null;
+  /**
+   * The maximum number of signups allowed for this role, 0 for unlimited
+   */
   maxSignups: number;
   signups?: {
     docs?: (number | Signup)[] | null;
@@ -406,14 +418,14 @@ export interface UsersSelect<T extends boolean = true> {
 export interface ShiftTemplatesSelect<T extends boolean = true> {
   template_title?: T;
   shift_title?: T;
-  shift_start_time?: T;
-  shift_end_time?: T;
+  start_time?: T;
+  end_time?: T;
   description?: T;
   sections?:
     | T
     | {
-        section_title?: T;
-        section_description?: T;
+        title?: T;
+        description?: T;
         roles?:
           | T
           | {
