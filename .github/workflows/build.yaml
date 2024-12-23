@@ -52,5 +52,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '${{ matrix.package }}: `docker run -p 3000:3000 --env-file packages/shared/.env ${{ env.DOCKER_REPO }}/volunteer-scheduler-${{ matrix.package }}:${{ github.sha }}`'
+              body: '`docker pull ${{ env.DOCKER_REPO }}/volunteer-scheduler-${{ matrix.package }}:${{ github.sha }}`'
             })
