@@ -76,7 +76,6 @@ export const Shifts: CollectionConfig = {
         },
         {
           label: "Sections",
-          virtual: true,
           fields: [
             {
               name: "sections",
@@ -85,7 +84,6 @@ export const Shifts: CollectionConfig = {
               collection: "sections",
               on: "shift",
               maxDepth: 0,
-              virtual: true,
               admin: {
                 disableListColumn: true,
               },
@@ -94,7 +92,6 @@ export const Shifts: CollectionConfig = {
         },
         {
           label: "Roles",
-          virtual: true,
           fields: [
             {
               name: "roles",
@@ -103,7 +100,6 @@ export const Shifts: CollectionConfig = {
               collection: "roles",
               on: "shift",
               maxDepth: 0,
-              virtual: true,
               admin: {
                 // allowCreate: false,
                 disableListColumn: true,
@@ -113,7 +109,6 @@ export const Shifts: CollectionConfig = {
         },
         {
           label: "Signups",
-          virtual: true,
           fields: [
             {
               name: "signups",
@@ -122,7 +117,6 @@ export const Shifts: CollectionConfig = {
               collection: "signups",
               on: "shift",
               maxDepth: 0,
-              virtual: true,
               admin: {
                 // allowCreate: false,
                 disableListColumn: true,

@@ -13,6 +13,7 @@ import {
 } from "date-fns";
 import Link from "next/link";
 import type { AdminViewProps, CollectionSlug } from "payload";
+import { css } from "styled-system/css";
 import { Box, Center, Grid, panda, VStack } from "styled-system/jsx";
 
 const supportedSlugs: CollectionSlug[] = ["shifts"];
@@ -121,6 +122,12 @@ export const CalenderView = async ({
                       <Link
                         key={shift.id}
                         href={`/admin/collections/shifts/${shift.id}`}
+                        className={css({
+                          lineHeight: "1",
+                          _hover: {
+                            textDecoration: "underline",
+                          },
+                        })}
                       >{`${format(shift.start_date, "HH:mm")} ${shift.title}`}</Link>
                     ))}
                   </VStack>
