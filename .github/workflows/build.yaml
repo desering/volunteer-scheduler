@@ -12,6 +12,7 @@ env:
   DOCKER_REPO: ghcr.io/desering
 
 permissions:
+  pull-requests: write
   packages: write
 
 jobs:
