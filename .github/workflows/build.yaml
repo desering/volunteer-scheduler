@@ -55,8 +55,13 @@ jobs:
               body: '`docker pull ${{ env.DOCKER_REPO }}/volunteer-scheduler-${{ matrix.package }}:${{ github.sha }}`'
             })
 
-      - if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: |
+  deploy-to-coolify:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [ docker ]
+    runs-on: [ ubuntu-22.04 ]
+    environment: production
+    steps:
+      - run: |
           # trigger deployment for astro
           curl --request GET --header 'Authorization: Bearer ${{ secrets.COOLIFY_API_TOKEN }}' '${{ secrets.COOLIFY_DEPLOY_ASTRO_WEBHOOK }}'
           # trigger deployment for payload
