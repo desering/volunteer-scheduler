@@ -15,6 +15,7 @@ jobs:
     strategy:
       matrix:
         package: [astro, payload]
+      fail-fast: false
     steps:
       - uses: actions/checkout@v4
 
