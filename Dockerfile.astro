@@ -4,6 +4,7 @@ WORKDIR /home/bun/app
 
 COPY package.json bun.lockb ./
 COPY packages/astro/package.json ./packages/astro/package.json
+COPY packages/payload/package.json ./packages/payload/package.json
 COPY packages/shared/package.json ./packages/shared/package.json
 
 FROM base AS prod-deps
@@ -15,6 +16,7 @@ RUN bun install
 FROM build-deps AS build
 
 COPY packages/astro ./packages/astro
+COPY packages/payload ./packages/payload
 COPY packages/shared ./packages/shared
 
 WORKDIR /home/bun/app/packages/astro
