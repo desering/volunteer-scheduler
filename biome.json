@@ -8,9 +8,14 @@
   "files": {
     "ignoreUnknown": false,
     "ignore": [
-      "packages/astro/dist/*",
+      "packages/astro/.astro/*",
       "packages/astro/styled-system/*",
+      "packages/astro/dist/*",
+
+      "packages/payload/.next/*",
       "packages/payload/styled-system/*",
+      "packages/payload/src/app/(payload)/admin/importMap.js",
+
       "packages/shared/payload-types.ts"
     ]
   },
