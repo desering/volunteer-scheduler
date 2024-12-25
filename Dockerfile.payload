@@ -19,8 +19,9 @@ FROM oven/bun:1.1.38-alpine
 
 WORKDIR /home/bun/app
 
-COPY --from=build /home/bun/app/packages/payload/.next/ ./
+COPY --from=build /home/bun/app/packages/payload/.next/standalone ./
+COPY --from=build /home/bun/app/packages/payload/.next/static ./packages/payload/.next/static
 
 EXPOSE 3000
 
-CMD ["node", "standalone/packages/payload/server.js"]
+CMD ["node", "packages/payload/server.js"]
