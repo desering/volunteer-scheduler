@@ -8,7 +8,7 @@ import {
   createResource,
   createSignal,
 } from "solid-js";
-import { Flex, panda } from "styled-system/jsx";
+import { Flex, type FlexProps, panda, splitCssProps } from "styled-system/jsx";
 import type { RenderedShift, ShiftsByDay } from "~/utils/map-shifts";
 import type { User } from "../../../shared/payload-types";
 import { ShiftDetailsDrawer } from "./shift-details-drawer";
@@ -18,7 +18,8 @@ type Props = {
   shifts?: ShiftsByDay;
 };
 
-export const ShiftOverview = (props: Props) => {
+export const ShiftOverview = (props: Props & FlexProps) => {
+  const [cssProps, localProps] = splitCssProps(props);
   const [selectedShift, setSelectedShift] = createSignal<RenderedShift>();
   const [isDrawerOpen, setIsDrawerOpen] = createSignal(false);
 
@@ -34,7 +35,7 @@ export const ShiftOverview = (props: Props) => {
     <Show when={shifts.latest} fallback={"Something went wrong :("}>
       {(shifts) => (
         <>
-          <Flex gap="4">
+          <Flex gap="4" overflow="auto" {...(cssProps as FlexProps)}>
             <For each={Object.entries(shifts())}>
               {([, shifts]) => (
                 <panda.div>
@@ -56,80 +57,71 @@ export const ShiftOverview = (props: Props) => {
                     width={{ base: "100%", md: "300px" }}
                   >
                     <For each={shifts}>
-                      {(shift) => (
-                        <panda.button
-                          onClick={() => {
-                            setIsDrawerOpen(true);
-                            setSelectedShift(shift);
-                          }}
-                          backgroundColor="colorPalette.12"
-                          color="colorPalette.1"
-                          padding="4"
-                          cursor="pointer"
-                          textAlign="left"
-                          _hover={{
-                            backgroundColor: "colorPalette.1",
-                            color: "colorPalette.12",
-                            boxShadow: "inset 0 0 0 2px",
-                            boxShadowColor: "colorPalette.12",
-                          }}
-                          _focusVisible={{
-                            outline: "2px solid",
-                            outlineColor: "colorPalette.12",
-                            outlineOffset: "2px",
-                          }}
-                          class="group"
-                        >
-                          <panda.p>
-                            {format(shift.start_date, "HH:mm")} -{" "}
-                            {format(shift.end_date, "HH:mm")}
-                          </panda.p>
-
-                          <panda.h5
-                            color="colorPalette.1"
-                            fontSize="xl"
-                            fontWeight="semibold"
-                            _groupHover={{
-                              color: "colorPalette.12",
+                      {(shift) => {
+                        const length = shift.doc.signups?.docs?.length ?? 0;
+                        return (
+                          <panda.button
+                            onClick={() => {
+                              setIsDrawerOpen(true);
+                              setSelectedShift(shift);
                             }}
+                            backgroundColor="colorPalette.12"
+                            color="colorPalette.1"
+                            padding="4"
+                            cursor="pointer"
+                            textAlign="left"
+                            _hover={{
+                              backgroundColor: "colorPalette.1",
+                              color: "colorPalette.12",
+                              boxShadow: "inset 0 0 0 2px",
+                              boxShadowColor: "colorPalette.12",
+                            }}
+                            _focusVisible={{
+                              outline: "2px solid",
+                              outlineColor: "colorPalette.12",
+                              outlineOffset: "2px",
+                            }}
+                            class="group"
                           >
-                            {shift.doc.title}
-                          </panda.h5>
+                            <panda.p>
+                              {format(shift.start_date, "HH:mm")} -{" "}
+                              {format(shift.end_date, "HH:mm")}
+                            </panda.p>
 
-                          <Show when={shift.descriptionHtml}>
-                            {(html) => (
-                              <panda.div
-                                color="colorPalette.3"
-                                _groupHover={{ color: "colorPalette.11" }}
-                                innerHTML={html()}
-                              />
-                            )}
-                          </Show>
+                            <panda.h5
+                              color="colorPalette.1"
+                              fontSize="xl"
+                              fontWeight="semibold"
+                              _groupHover={{
+                                color: "colorPalette.12",
+                              }}
+                            >
+                              {shift.doc.title}
+                            </panda.h5>
 
-                          <panda.div marginTop="4">
-                            <Switch>
-                              <Match
-                                when={shift.doc.signups?.docs?.length === 0}
-                              >
-                                Nobody signed up yet 🥲 be the first!
-                              </Match>
-                              <Match
-                                when={shift.doc.signups?.docs?.length === 1}
-                              >
-                                1 person signed up!
-                              </Match>
-                              <Match
-                                when={
-                                  (shift.doc.signups?.docs?.length ?? 0) > 1
-                                }
-                              >
-                                {shift.doc.signups?.docs?.length} people signed
-                                up!
-                              </Match>
-                            </Switch>
-                          </panda.div>
-                        </panda.button>
-                      )}
+                            <Show when={shift.descriptionHtml}>
+                              {(html) => (
+                                <panda.div
+                                  color="colorPalette.3"
+                                  _groupHover={{ color: "colorPalette.11" }}
+                                  innerHTML={html()}
+                                />
+                              )}
+                            </Show>
+
+                            <panda.div marginTop="4">
+                              <Switch>
+                                <Match when={length === 0}>
+                                  Nobody signed up yet :( be the first!
+                                </Match>
+                                <Match when={length !== 0}>
+                                  {`${length} ${length === 1 ? "person" : "people"} signed up!`}
+                                </Match>
+                              </Switch>
+                            </panda.div>
+                          </panda.button>
+                        );
+                      }}
                     </For>
                   </Flex>
                 </panda.div>

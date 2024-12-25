@@ -131,6 +131,8 @@ export const server = {
           roles: false,
           sections: false,
         },
+
+        pagination: false,
       });
 
       return await groupAndSortShiftsByDate(shifts.docs);

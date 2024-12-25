@@ -1,9 +1,11 @@
 import type { CollectionConfig, Field } from "payload";
+import { admins } from "./access/admins";
 
 export const Sections: CollectionConfig = {
   slug: "sections",
   admin: {
     useAsTitle: "title",
+    group: false,
   },
   fields: [
     {

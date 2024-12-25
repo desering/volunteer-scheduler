@@ -10,6 +10,7 @@
   "trustedDependencies": [
     "@biomejs/biome",
     "@desering/volunteer-scheduler-astro",
+    "@parcel/watcher",
     "esbuild",
     "sharp"
   ]

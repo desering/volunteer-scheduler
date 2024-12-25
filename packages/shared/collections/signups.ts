@@ -5,6 +5,7 @@ export const Signups: CollectionConfig = {
   admin: {
     useAsTitle: "title",
     defaultColumns: ["role", "user"],
+    group: false,
   },
   fields: [
     {
@@ -23,7 +24,7 @@ export const Signups: CollectionConfig = {
         },
       },
       hooks: {
-        // 	// When creating from sections screen, get shift from section
+        // When creating from sections screen, get shift from section
         beforeValidate: [
           async ({ siblingData, req }) => {
             if (!siblingData?.shift && siblingData?.role) {

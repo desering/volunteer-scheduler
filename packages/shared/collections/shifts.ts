@@ -1,10 +1,22 @@
-import type { CollectionAfterChangeHook, CollectionConfig } from "payload";
+import type { CollectionConfig } from "payload";
 
 export const Shifts: CollectionConfig = {
   slug: "shifts",
+  defaultSort: "-start_date",
   admin: {
     useAsTitle: "title",
     group: "Shift Management",
+    components: {
+      views: {
+        list: {
+          actions: [
+            {
+              path: "/components/switch-to-calender-view#SwitchToCalenderView",
+            },
+          ],
+        },
+      },
+    },
   },
   fields: [
     {
@@ -12,6 +24,7 @@ export const Shifts: CollectionConfig = {
       tabs: [
         {
           label: "General",
+          virtual: true,
           fields: [
             {
               name: "title",
@@ -114,4 +127,19 @@ export const Shifts: CollectionConfig = {
       ],
     },
   ],
+  hooks: {
+    beforeDelete: [
+      async ({ id, req }) => {
+        // Delete all related sections first, as of 22-12-2024 payload does not do cascade delete on one to one relationships
+        await req.payload.delete({
+          collection: "sections",
+          where: {
+            shift: {
+              equals: id,
+            },
+          },
+        });
+      },
+    ],
+  },
 };

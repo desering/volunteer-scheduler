@@ -1,5 +1,15 @@
 # volunteer-scheduler
 
+Mono-repo for the Volunteer Scheduler project.
+
+## Project structure
+
+[packages/astro](packages/astro) - Frontend (Astro)
+
+[packages/payload](packages/payload) - Backend (Payload) | [README](packages/payload/README.md)
+
+[packages/shared](packages/shared) - Shared configuration, etc.
+
 ## Frontend Stack
 
 * [Park UI](https://park-ui.com/) ([Panda CSS](https://panda-css.com/) & [Ark UI](https://ark-ui.com/)) - Style, UI components, etc.

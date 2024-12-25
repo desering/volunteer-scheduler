@@ -5,6 +5,7 @@ export const Roles: CollectionConfig = {
   admin: {
     useAsTitle: "title",
     defaultColumns: ["title", "shift", "section", "signups"],
+    group: false,
   },
   fields: [
     {
@@ -18,6 +19,7 @@ export const Roles: CollectionConfig = {
       admin: {
         allowCreate: false,
         condition: (siblingData) => {
+          // hide field if creating from sections screen
           return !(
             siblingData?.shift === undefined &&
             siblingData?.section !== undefined
@@ -64,6 +66,7 @@ export const Roles: CollectionConfig = {
     {
       name: "title",
       type: "text",
+      required: true,
     },
     {
       name: "description",
@@ -76,6 +79,10 @@ export const Roles: CollectionConfig = {
       type: "number",
       required: true,
       defaultValue: 1,
+      admin: {
+        description:
+          "The maximum number of signups allowed for this role, 0 for unlimited",
+      },
     },
     {
       name: "signups",

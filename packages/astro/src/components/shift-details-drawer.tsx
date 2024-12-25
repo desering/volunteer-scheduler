@@ -1,4 +1,6 @@
+import type { Role, User } from "@payload-types";
 import { actions } from "astro:actions";
+import XIcon from "lucide-solid/icons/x";
 import { For, Show, Suspense, createResource } from "solid-js";
 import { Portal } from "solid-js/web";
 import { Bleed, Divider, Flex, HStack, panda } from "styled-system/jsx";
@@ -7,8 +9,6 @@ import type { RenderedShift } from "~/utils/map-shifts";
 import { Button } from "./ui/button";
 import { Drawer } from "./ui/drawer";
 import { IconButton } from "./ui/icon-button";
-import XIcon from "lucide-solid/icons/x";
-import type { Role, User } from "@payload-types";
 
 type Props = {
   user?: User;
@@ -183,8 +183,9 @@ const RoleRows = (props: RoleRowsProps) => {
                     </p>
                     <Show
                       when={
-                        props.user &&
-                        role.maxSignups !== role.signups?.docs?.length
+                        (props.user &&
+                          role.maxSignups !== role.signups?.docs?.length) ||
+                        role.maxSignups === 0
                       }
                     >
                       <Button

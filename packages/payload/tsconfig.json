@@ -20,7 +20,9 @@
     ],
     "paths": {
       "@/*": ["./src/*"],
-      "@payload-config": ["payload.config.ts"]
+      "@payload-config": ["payload.config.ts"],
+      "@payload-types": ["../shared/payload-types"],
+      "styled-system": ["./styled-system"]
     },
     "target": "ES2017"
   },

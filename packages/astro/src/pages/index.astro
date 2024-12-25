@@ -4,19 +4,25 @@ import { Container, Flex } from "styled-system/jsx";
 import NavBar from "~/components/navbar.astro";
 import { ShiftOverview } from "~/components/shift-overview";
 import Layout from "../layouts/layout.astro";
+import { bleed } from "styled-system/patterns";
 
 const shiftsByDay = await Astro.callAction(actions.getShiftsByDay, {});
 ---
 
 <Layout title="Volunteering Schedule">
-  <Container marginTop={{ base: 4, xl: 20 }}>
-    <Flex flexDir="column" gap="10">
-      <NavBar />
-      <ShiftOverview
-        user={Astro.locals.user}
-        shifts={shiftsByDay.data}
-        client:load
-      />
-    </Flex>
+  <Container
+    marginTop={{ base: 4, xl: 20 }}
+    display="flex"
+    minHeight="screen"
+    flexDir="column"
+    gap="10"
+  >
+    <NavBar />
+    <ShiftOverview
+      user={Astro.locals.user}
+      shifts={shiftsByDay.data}
+      client:load
+      flex="1"
+    />
   </Container>
 </Layout>
