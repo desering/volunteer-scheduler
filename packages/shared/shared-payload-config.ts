@@ -32,6 +32,7 @@ export const sharedConfig = ({ baseDir }: { baseDir: string }): Config => {
     process.env.SMTP_USER &&
     process.env.SMTP_PASS
       ? nodemailerAdapter({
+          skipVerify: true,
           defaultFromAddress: process.env.EMAIL_FROM_ADDRESS,
           defaultFromName: process.env.EMAIL_FROM_NAME,
           transport: nodemailer.createTransport({
@@ -61,7 +62,7 @@ export const sharedConfig = ({ baseDir }: { baseDir: string }): Config => {
     secret: process.env.PAYLOAD_SECRET || "",
     db: postgresAdapter({
       pool: {
-        connectionString: process.env.DATABASE_URI,
+        connectionString: process.env.DATABASE_URI || "",
       },
     }),
     typescript: {

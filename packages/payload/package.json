@@ -18,6 +18,7 @@
     "@desering/volunteer-scheduler-shared": "workspace:*",
     "@payloadcms/next": "^3.11.0",
     "@payloadcms/ui": "^3.11.0",
+    "@tanstack/react-query": "^5.62.10",
     "date-fns": "^4.1.0",
     "graphql": "^16.10.0",
     "next": "^15.1.2",
