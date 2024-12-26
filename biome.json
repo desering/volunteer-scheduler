@@ -14,7 +14,7 @@
 
       "packages/payload/.next/*",
       "packages/payload/styled-system/*",
-      "packages/payload/src/app/(payload)/admin/importMap.js",
+      "packages/payload/src/app/(payload)/importMap.js",
 
       "packages/shared/payload-types.ts"
     ]
