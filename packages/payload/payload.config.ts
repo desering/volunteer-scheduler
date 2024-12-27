@@ -13,6 +13,9 @@ const baseConfig = sharedConfig({
 });
 
 export default buildConfig({
+  routes: {
+    admin: "/",
+  },
   ...baseConfig,
   plugins: [],
   sharp,
