@@ -1,4 +1,7 @@
-import type { Access } from "payload";
+import type { PayloadRequest } from "payload";
 
-export const admins: Access = ({ req }) =>
-  req.user?.roles?.includes("admin") || false;
+export const admins = ({ req }: { req: PayloadRequest }) => {
+  if (!req?.user) return false;
+
+  return Boolean(req.user?.roles?.includes("admin"));
+};
