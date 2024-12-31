@@ -12,12 +12,12 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { css, cx } from "styled-system/css";
 import { Box, Center, Grid, HStack, VStack, panda } from "styled-system/jsx";
-import { getShiftsInPeriod } from "../../actions";
+import { getEventsInPeriod } from "../../actions";
 import { Button } from "../ui/button";
-import type { Shift, ShiftTemplate } from "@payload-types";
+import type { Event, EventTemplate } from "@payload-types";
 import type { PaginatedDocs } from "payload";
 import { daysOfWeek } from "./constants";
-import { useCreateShifts } from "./use-create-shifts";
+import { useCreateEvents } from "./use-create-events";
 
 const gutterX = css({
   paddingX: "60px",
@@ -34,26 +34,26 @@ const divider = css({
   borderBottomColor: "border.muted",
 });
 
-export const PublishShiftTemplateForm = (props: { doc: ShiftTemplate }) => {
+export const PublishEventTemplateForm = (props: { doc: EventTemplate }) => {
   const [start, setStart] = useState(startOfMonth(new Date()));
   const [end, setEnd] = useState(endOfMonth(new Date()));
   const [selectedDays, setSelectedDays] = useState<Date[]>([]);
   const [shouldRefresh, setShouldRefresh] = useState(true);
 
-  const { createShifts, isCreating, error } = useCreateShifts(
+  const { createEvents, isCreating, error } = useCreateEvents(
     props.doc.id,
     selectedDays,
     () => {
       setSelectedDays([]);
-      setExistingShifts(undefined);
+      setExistingEvents(undefined);
       setShouldRefresh(true);
     },
   );
 
   const canPublish = selectedDays.length > 0;
 
-  const [isLoadingCreatedShifts, setIsLoadingCreatedShifts] = useState(false);
-  const [existingShifts, setExistingShifts] = useState<PaginatedDocs<Shift>>();
+  const [isLoadingCreatedEvents, setIsLoadingCreatedEvents] = useState(false);
+  const [existingEvents, setExistingEvents] = useState<PaginatedDocs<Event>>();
 
   const groupedDays = useMemo(() => {
     const allDays = eachDayOfInterval({
@@ -61,19 +61,19 @@ export const PublishShiftTemplateForm = (props: { doc: ShiftTemplate }) => {
       end,
     });
 
-    const withShifts = allDays.map((day) => ({
+    const withEvents = allDays.map((day) => ({
       day,
-      relatedShifts: existingShifts?.docs.filter((shift) =>
-        isSameDay(shift.start_date, day),
+      relatedEvents: existingEvents?.docs.filter((event) =>
+        isSameDay(event.start_date, day),
       ),
     }));
 
-    const groupedByMonth = Object.groupBy(withShifts, ({ day }) =>
+    const groupedByMonth = Object.groupBy(withEvents, ({ day }) =>
       format(day, "MMMM"),
     );
 
     return groupedByMonth;
-  }, [start, end, existingShifts]);
+  }, [start, end, existingEvents]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => setShouldRefresh(true), [start, end]);
@@ -82,14 +82,14 @@ export const PublishShiftTemplateForm = (props: { doc: ShiftTemplate }) => {
   useEffect(() => {
     const fetch = async () => {
       console.log("fetching");
-      const data = await getShiftsInPeriod(start, end);
+      const data = await getEventsInPeriod(start, end);
 
-      setIsLoadingCreatedShifts(false);
-      setExistingShifts(data);
+      setIsLoadingCreatedEvents(false);
+      setExistingEvents(data);
     };
 
     if (shouldRefresh) {
-      setIsLoadingCreatedShifts(true);
+      setIsLoadingCreatedEvents(true);
       setShouldRefresh(false);
       fetch();
     }
@@ -106,9 +106,9 @@ export const PublishShiftTemplateForm = (props: { doc: ShiftTemplate }) => {
         <Button
           variant="solid"
           disabled={!canPublish || isCreating}
-          onClick={() => createShifts()}
+          onClick={() => createEvents()}
         >
-          Create Shifts
+          Create Events
         </Button>
       </HStack>
 
@@ -159,9 +159,9 @@ export const PublishShiftTemplateForm = (props: { doc: ShiftTemplate }) => {
         <VStack alignSelf="stretch" alignItems="stretch">
           <div>
             <panda.h3>
-              Calender {isLoadingCreatedShifts && "(loading shifts...)"}
+              Calender {isLoadingCreatedEvents && "(loading events...)"}
             </panda.h3>
-            <p>Select the days you want to create shifts for.</p>
+            <p>Select the days you want to create events for.</p>
           </div>
 
           {Object.keys(groupedDays).map((month) => {
@@ -195,7 +195,7 @@ export const PublishShiftTemplateForm = (props: { doc: ShiftTemplate }) => {
                     <Box key={`empty-${month}-${i}`} />
                   ))}
 
-                  {groupedDays[month]?.map(({ day, relatedShifts }) => (
+                  {groupedDays[month]?.map(({ day, relatedEvents }) => (
                     <Button
                       key={day.getTime()}
                       alignItems="start"
@@ -216,16 +216,16 @@ export const PublishShiftTemplateForm = (props: { doc: ShiftTemplate }) => {
                     >
                       <panda.p marginBottom="2">{format(day, "dd")}</panda.p>
 
-                      {relatedShifts?.map((shift) => (
+                      {relatedEvents?.map((event) => (
                         <p
-                          key={shift.id}
-                        >{`${format(shift.start_date, "HH:mm")} ${shift.title}`}</p>
+                          key={event.id}
+                        >{`${format(event.start_date, "HH:mm")} ${event.title}`}</p>
                       ))}
 
                       {selectedDays.includes(day) && (
                         <p>
                           + New <br />
-                          {`${format(props.doc.start_time, "HH:mm")} ${props.doc.shift_title}`}
+                          {`${format(props.doc.start_time, "HH:mm")} ${props.doc.event_title}`}
                         </p>
                       )}
                     </Button>

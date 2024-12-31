@@ -1,12 +1,11 @@
 ---
 import { actions } from "astro:actions";
-import { Container, Flex } from "styled-system/jsx";
+import { Container } from "styled-system/jsx";
+import { EventOverview } from "~/components/event-overview";
 import NavBar from "~/components/navbar.astro";
-import { ShiftOverview } from "~/components/shift-overview";
 import Layout from "../layouts/layout.astro";
-import { bleed } from "styled-system/patterns";
 
-const shiftsByDay = await Astro.callAction(actions.getShiftsByDay, {});
+const eventsByDay = await Astro.callAction(actions.getEventsByDay, {});
 ---
 
 <Layout title="Volunteering Schedule">
@@ -18,9 +17,9 @@ const shiftsByDay = await Astro.callAction(actions.getShiftsByDay, {});
     gap="10"
   >
     <NavBar />
-    <ShiftOverview
+    <EventOverview
       user={Astro.locals.user}
-      shifts={shiftsByDay.data}
+      events={eventsByDay.data}
       client:load
       flex="1"
     />

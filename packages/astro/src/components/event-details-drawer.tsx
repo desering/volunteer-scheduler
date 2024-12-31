@@ -5,7 +5,7 @@ import { For, Show, Suspense, createResource } from "solid-js";
 import { Portal } from "solid-js/web";
 import { Bleed, Divider, Flex, HStack, panda } from "styled-system/jsx";
 import { button } from "styled-system/recipes/button";
-import type { RenderedShift } from "~/utils/map-shifts";
+import type { RenderedEvent } from "~/utils/map-events";
 import { Button } from "./ui/button";
 import { Drawer } from "./ui/drawer";
 import { IconButton } from "./ui/icon-button";
@@ -13,19 +13,19 @@ import { IconButton } from "./ui/icon-button";
 type Props = {
   user?: User;
 
-  shift?: RenderedShift;
+  event?: RenderedEvent;
 
   open: boolean;
   onClose: () => void;
   onExitComplete?: () => void;
 };
 
-export const ShiftDetailsDrawer = (props: Props) => {
+export const EventDetailsDrawer = (props: Props) => {
   const [details, { refetch }] = createResource(
-    () => props.shift?.doc.id,
+    () => props.event?.doc.id,
     async (id) => {
       if (!id) return;
-      return await actions.getShiftDetails({ id });
+      return await actions.getEventDetails({ id });
     },
   );
 
@@ -42,9 +42,9 @@ export const ShiftDetailsDrawer = (props: Props) => {
         <Drawer.Positioner width={{ base: "100vw", sm: "xl", md: "2xl" }}>
           <Drawer.Content>
             <Drawer.Header>
-              <Drawer.Title>{props.shift?.doc.title}</Drawer.Title>
-              <Show when={props.shift?.descriptionHtml}>
-                <Drawer.Description innerHTML={props.shift?.descriptionHtml} />
+              <Drawer.Title>{props.event?.doc.title}</Drawer.Title>
+              <Show when={props.event?.descriptionHtml}>
+                <Drawer.Description innerHTML={props.event?.descriptionHtml} />
               </Show>
               <Drawer.CloseTrigger
                 position="absolute"
@@ -138,7 +138,7 @@ const RolesNotFoundRow = () => (
 );
 
 type RoleRowsProps = {
-  details?: Awaited<ReturnType<typeof actions.getShiftDetails>>["data"];
+  details?: Awaited<ReturnType<typeof actions.getEventDetails>>["data"];
   roles: Role[];
   user?: User;
 
@@ -151,13 +151,13 @@ const RoleRows = (props: RoleRowsProps) => {
       (signup) => signup.user === props.user?.id,
     );
 
-  const removeShift = async (id: number) => {
+  const removeEvent = async (id: number) => {
     await actions.deleteSignup({ id });
     props.handleRefresh?.();
   };
 
-  const createSignup = async (shift: number, role: number) => {
-    await actions.createSignup({ shift, role });
+  const createSignup = async (event: number, role: number) => {
+    await actions.createSignup({ event, role });
     props.handleRefresh?.();
   };
 
@@ -193,7 +193,7 @@ const RoleRows = (props: RoleRowsProps) => {
                         size="lg"
                         onClick={() => {
                           if (!props.details?.id)
-                            throw new Error("Unexpected, missing shift id");
+                            throw new Error("Unexpected, missing event id");
 
                           createSignup(props.details?.id, role.id);
                         }}
@@ -217,7 +217,7 @@ const RoleRows = (props: RoleRowsProps) => {
                     <Button
                       variant="outline"
                       size="lg"
-                      onClick={() => removeShift(su().id)}
+                      onClick={() => removeEvent(su().id)}
                       _before={{
                         content: '"🫡 Signed up"',
                         _hover: {

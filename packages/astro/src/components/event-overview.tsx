@@ -9,38 +9,38 @@ import {
   createSignal,
 } from "solid-js";
 import { Flex, type FlexProps, panda, splitCssProps } from "styled-system/jsx";
-import type { RenderedShift, ShiftsByDay } from "~/utils/map-shifts";
+import type { RenderedEvent, EventsByDay } from "~/utils/map-events";
 import type { User } from "../../../shared/payload-types";
-import { ShiftDetailsDrawer } from "./shift-details-drawer";
+import { EventDetailsDrawer } from "./event-details-drawer";
 
 type Props = {
   user?: User;
-  shifts?: ShiftsByDay;
+  events?: EventsByDay;
 };
 
-export const ShiftOverview = (props: Props & FlexProps) => {
+export const EventOverview = (props: Props & FlexProps) => {
   const [cssProps, localProps] = splitCssProps(props);
-  const [selectedShift, setSelectedShift] = createSignal<RenderedShift>();
+  const [selectedEvent, setSelectedEvent] = createSignal<RenderedEvent>();
   const [isDrawerOpen, setIsDrawerOpen] = createSignal(false);
 
-  const [shifts, { refetch }] = createResource(
-    async () => (await actions.getShiftsByDay()).data,
+  const [events, { refetch }] = createResource(
+    async () => (await actions.getEventsByDay()).data,
     {
-      initialValue: props.shifts,
+      initialValue: props.events,
       ssrLoadFrom: "initial",
     },
   );
 
   return (
-    <Show when={shifts.latest} fallback={"Something went wrong :("}>
-      {(shifts) => (
+    <Show when={events.latest} fallback={"Something went wrong :("}>
+      {(events) => (
         <>
           <Flex gap="4" overflow="auto" {...(cssProps as FlexProps)}>
-            <For each={Object.entries(shifts())}>
-              {([, shifts]) => (
+            <For each={Object.entries(events())}>
+              {([, events]) => (
                 <panda.div>
                   <panda.h1 fontSize="6xl" fontWeight="bold" textAlign="center">
-                    {format(shifts[0].start_date, "dd")}
+                    {format(events[0].start_date, "dd")}
                   </panda.h1>
 
                   <panda.h3
@@ -48,7 +48,7 @@ export const ShiftOverview = (props: Props & FlexProps) => {
                     fontWeight="semibold"
                     marginBottom="4"
                   >
-                    {format(shifts[0].start_date, "iii")}
+                    {format(events[0].start_date, "iii")}
                   </panda.h3>
 
                   <Flex
@@ -56,14 +56,14 @@ export const ShiftOverview = (props: Props & FlexProps) => {
                     gap="4"
                     width={{ base: "100%", md: "300px" }}
                   >
-                    <For each={shifts}>
-                      {(shift) => {
-                        const length = shift.doc.signups?.docs?.length ?? 0;
+                    <For each={events}>
+                      {(event) => {
+                        const length = event.doc.signups?.docs?.length ?? 0;
                         return (
                           <panda.button
                             onClick={() => {
                               setIsDrawerOpen(true);
-                              setSelectedShift(shift);
+                              setSelectedEvent(event);
                             }}
                             backgroundColor="colorPalette.12"
                             color="colorPalette.1"
@@ -84,8 +84,8 @@ export const ShiftOverview = (props: Props & FlexProps) => {
                             class="group"
                           >
                             <panda.p>
-                              {format(shift.start_date, "HH:mm")} -{" "}
-                              {format(shift.end_date, "HH:mm")}
+                              {format(event.start_date, "HH:mm")} -{" "}
+                              {format(event.end_date, "HH:mm")}
                             </panda.p>
 
                             <panda.h5
@@ -96,10 +96,10 @@ export const ShiftOverview = (props: Props & FlexProps) => {
                                 color: "colorPalette.12",
                               }}
                             >
-                              {shift.doc.title}
+                              {event.doc.title}
                             </panda.h5>
 
-                            <Show when={shift.descriptionHtml}>
+                            <Show when={event.descriptionHtml}>
                               {(html) => (
                                 <panda.div
                                   color="colorPalette.3"
@@ -128,15 +128,15 @@ export const ShiftOverview = (props: Props & FlexProps) => {
               )}
             </For>
           </Flex>
-          <ShiftDetailsDrawer
+          <EventDetailsDrawer
             user={props.user}
             open={isDrawerOpen()}
-            shift={selectedShift()}
+            event={selectedEvent()}
             onClose={() => {
               setIsDrawerOpen(false);
               refetch();
             }}
-            onExitComplete={() => setSelectedShift(undefined)}
+            onExitComplete={() => setSelectedEvent(undefined)}
           />
         </>
       )}

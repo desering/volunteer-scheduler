@@ -48,8 +48,8 @@ const rolesField = (arg?: {
   ],
 });
 
-export const ShiftTemplates: CollectionConfig = {
-  slug: "shift-templates",
+export const EventTemplates: CollectionConfig = {
+  slug: "event-templates",
   access: {
     read: admins,
     create: admins,
@@ -58,13 +58,13 @@ export const ShiftTemplates: CollectionConfig = {
   },
   admin: {
     useAsTitle: "template_title",
-    group: "Shift Management",
+    group: "Event Management",
     components: {
       views: {
         edit: {
           publish: {
             Component:
-              "/components/publish-shift-template#PublishShiftTemplate",
+              "/components/publish-event-template#PublishEventTemplate",
             path: "/publish",
             tab: {
               label: "Publish",
@@ -87,8 +87,8 @@ export const ShiftTemplates: CollectionConfig = {
       },
     },
     {
-      name: "shift_title",
-      label: "Shift Title",
+      name: "event_title",
+      label: "Event Title",
       type: "text",
       required: true,
     },

@@ -1,7 +1,7 @@
 "use server";
 
 import config from "@payload-config";
-import type { ShiftTemplate } from "@payload-types";
+import type { EventTemplate } from "@payload-types";
 import { getDate, getHours, getMinutes, getMonth, getYear } from "date-fns";
 import { type RequiredDataFromCollectionSlug, getPayload } from "payload";
 
@@ -9,9 +9,9 @@ const payload = await getPayload({
   config,
 });
 
-export const getShiftsInPeriod = async (start: Date, end: Date) => {
-  const shifts = await payload.find({
-    collection: "shifts",
+export const getEventsInPeriod = async (start: Date, end: Date) => {
+  const events = await payload.find({
+    collection: "events",
     where: {
       start_date: {
         greater_than_equal: start,
@@ -23,15 +23,15 @@ export const getShiftsInPeriod = async (start: Date, end: Date) => {
     sort: "start_date",
     pagination: false,
   });
-  return shifts;
+  return events;
 };
 
-export const createShiftsFromTemplate = async (
+export const createEventsFromTemplate = async (
   templateId: number,
   selectedDays: Date[],
 ) => {
   const template = await payload.findByID({
-    collection: "shift-templates",
+    collection: "event-templates",
     id: templateId,
   });
 
@@ -47,20 +47,20 @@ export const createShiftsFromTemplate = async (
 
   try {
     for (const day of selectedDays) {
-      const createdShift = await payload.create({
-        collection: "shifts",
-        data: shiftTemplateToShift(template, day),
+      const createdEvent = await payload.create({
+        collection: "events",
+        data: eventTemplateToEvent(template, day),
         req: { transactionID },
       });
 
-      if (!createdShift) throw new Error("Failed to create shift");
+      if (!createdEvent) throw new Error("Failed to create event");
 
       if (template.sections) {
         for (const templateSection of template.sections) {
           const createdSection = await payload.create({
             collection: "sections",
             data: {
-              shift: createdShift.id,
+              event: createdEvent.id,
               title: templateSection.title,
               description: templateSection.description,
             },
@@ -70,7 +70,7 @@ export const createShiftsFromTemplate = async (
           if (!createdSection) throw new Error("Failed to create section");
 
           await createRoles(
-            createdShift.id,
+            createdEvent.id,
             transactionID,
             templateSection.roles,
             createdSection.id,
@@ -79,7 +79,7 @@ export const createShiftsFromTemplate = async (
       }
 
       if (template.roles) {
-        await createRoles(createdShift.id, transactionID, template.roles);
+        await createRoles(createdEvent.id, transactionID, template.roles);
       }
     }
 
@@ -90,7 +90,7 @@ export const createShiftsFromTemplate = async (
   }
 };
 
-const shiftTemplateToShift = (template: ShiftTemplate, day: Date) => {
+const eventTemplateToEvent = (template: EventTemplate, day: Date) => {
   const startTime = new Date(
     getYear(day),
     getMonth(day),
@@ -108,17 +108,17 @@ const shiftTemplateToShift = (template: ShiftTemplate, day: Date) => {
   );
 
   return {
-    title: template.shift_title,
+    title: template.event_title,
     description: template.description,
     start_date: startTime.toISOString(),
     end_date: endTime.toISOString(),
-  } satisfies RequiredDataFromCollectionSlug<"shifts">;
+  } satisfies RequiredDataFromCollectionSlug<"events">;
 };
 
 const createRoles = async (
-  shiftId: number,
+  eventId: number,
   transactionID: string | number,
-  roles: ShiftTemplate["roles"],
+  roles: EventTemplate["roles"],
   sectionId?: number,
 ) => {
   if (!roles) return;
@@ -127,7 +127,7 @@ const createRoles = async (
     const createdRole = await payload.create({
       collection: "roles",
       data: {
-        shift: shiftId,
+        event: eventId,
         section: sectionId,
         title: role.title,
         description: role.description,
@@ -143,7 +143,7 @@ const createRoles = async (
         const createdSignup = await payload.create({
           collection: "signups",
           data: {
-            shift: shiftId,
+            event: eventId,
             role: createdRole.id,
             user: signup.user,
           },

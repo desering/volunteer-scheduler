@@ -64,8 +64,8 @@ export const users = pgTable(
   }),
 );
 
-export const shift_templates_sections_roles_signups = pgTable(
-  "shift_templates_sections_roles_signups",
+export const event_templates_sections_roles_signups = pgTable(
+  "event_templates_sections_roles_signups",
   {
     _order: integer("_order").notNull(),
     _parentID: varchar("_parent_id").notNull(),
@@ -77,25 +77,25 @@ export const shift_templates_sections_roles_signups = pgTable(
       }),
   },
   (columns) => ({
-    _orderIdx: index("shift_templates_sections_roles_signups_order_idx").on(
+    _orderIdx: index("event_templates_sections_roles_signups_order_idx").on(
       columns._order,
     ),
     _parentIDIdx: index(
-      "shift_templates_sections_roles_signups_parent_id_idx",
+      "event_templates_sections_roles_signups_parent_id_idx",
     ).on(columns._parentID),
-    shift_templates_sections_roles_signups_user_idx: index(
-      "shift_templates_sections_roles_signups_user_idx",
+    event_templates_sections_roles_signups_user_idx: index(
+      "event_templates_sections_roles_signups_user_idx",
     ).on(columns.user),
     _parentIDFk: foreignKey({
       columns: [columns["_parentID"]],
-      foreignColumns: [shift_templates_sections_roles.id],
-      name: "shift_templates_sections_roles_signups_parent_id_fk",
+      foreignColumns: [event_templates_sections_roles.id],
+      name: "event_templates_sections_roles_signups_parent_id_fk",
     }).onDelete("cascade"),
   }),
 );
 
-export const shift_templates_sections_roles = pgTable(
-  "shift_templates_sections_roles",
+export const event_templates_sections_roles = pgTable(
+  "event_templates_sections_roles",
   {
     _order: integer("_order").notNull(),
     _parentID: varchar("_parent_id").notNull(),
@@ -105,22 +105,22 @@ export const shift_templates_sections_roles = pgTable(
     maxSignups: numeric("max_signups").notNull().default("1"),
   },
   (columns) => ({
-    _orderIdx: index("shift_templates_sections_roles_order_idx").on(
+    _orderIdx: index("event_templates_sections_roles_order_idx").on(
       columns._order,
     ),
-    _parentIDIdx: index("shift_templates_sections_roles_parent_id_idx").on(
+    _parentIDIdx: index("event_templates_sections_roles_parent_id_idx").on(
       columns._parentID,
     ),
     _parentIDFk: foreignKey({
       columns: [columns["_parentID"]],
-      foreignColumns: [shift_templates_sections.id],
-      name: "shift_templates_sections_roles_parent_id_fk",
+      foreignColumns: [event_templates_sections.id],
+      name: "event_templates_sections_roles_parent_id_fk",
     }).onDelete("cascade"),
   }),
 );
 
-export const shift_templates_sections = pgTable(
-  "shift_templates_sections",
+export const event_templates_sections = pgTable(
+  "event_templates_sections",
   {
     _order: integer("_order").notNull(),
     _parentID: integer("_parent_id").notNull(),
@@ -129,20 +129,20 @@ export const shift_templates_sections = pgTable(
     description: jsonb("description"),
   },
   (columns) => ({
-    _orderIdx: index("shift_templates_sections_order_idx").on(columns._order),
-    _parentIDIdx: index("shift_templates_sections_parent_id_idx").on(
+    _orderIdx: index("event_templates_sections_order_idx").on(columns._order),
+    _parentIDIdx: index("event_templates_sections_parent_id_idx").on(
       columns._parentID,
     ),
     _parentIDFk: foreignKey({
       columns: [columns["_parentID"]],
-      foreignColumns: [shift_templates.id],
-      name: "shift_templates_sections_parent_id_fk",
+      foreignColumns: [event_templates.id],
+      name: "event_templates_sections_parent_id_fk",
     }).onDelete("cascade"),
   }),
 );
 
-export const shift_templates_roles_signups = pgTable(
-  "shift_templates_roles_signups",
+export const event_templates_roles_signups = pgTable(
+  "event_templates_roles_signups",
   {
     _order: integer("_order").notNull(),
     _parentID: varchar("_parent_id").notNull(),
@@ -154,25 +154,25 @@ export const shift_templates_roles_signups = pgTable(
       }),
   },
   (columns) => ({
-    _orderIdx: index("shift_templates_roles_signups_order_idx").on(
+    _orderIdx: index("event_templates_roles_signups_order_idx").on(
       columns._order,
     ),
-    _parentIDIdx: index("shift_templates_roles_signups_parent_id_idx").on(
+    _parentIDIdx: index("event_templates_roles_signups_parent_id_idx").on(
       columns._parentID,
     ),
-    shift_templates_roles_signups_user_idx: index(
-      "shift_templates_roles_signups_user_idx",
+    event_templates_roles_signups_user_idx: index(
+      "event_templates_roles_signups_user_idx",
     ).on(columns.user),
     _parentIDFk: foreignKey({
       columns: [columns["_parentID"]],
-      foreignColumns: [shift_templates_roles.id],
-      name: "shift_templates_roles_signups_parent_id_fk",
+      foreignColumns: [event_templates_roles.id],
+      name: "event_templates_roles_signups_parent_id_fk",
     }).onDelete("cascade"),
   }),
 );
 
-export const shift_templates_roles = pgTable(
-  "shift_templates_roles",
+export const event_templates_roles = pgTable(
+  "event_templates_roles",
   {
     _order: integer("_order").notNull(),
     _parentID: integer("_parent_id").notNull(),
@@ -182,24 +182,24 @@ export const shift_templates_roles = pgTable(
     maxSignups: numeric("max_signups").notNull().default("1"),
   },
   (columns) => ({
-    _orderIdx: index("shift_templates_roles_order_idx").on(columns._order),
-    _parentIDIdx: index("shift_templates_roles_parent_id_idx").on(
+    _orderIdx: index("event_templates_roles_order_idx").on(columns._order),
+    _parentIDIdx: index("event_templates_roles_parent_id_idx").on(
       columns._parentID,
     ),
     _parentIDFk: foreignKey({
       columns: [columns["_parentID"]],
-      foreignColumns: [shift_templates.id],
-      name: "shift_templates_roles_parent_id_fk",
+      foreignColumns: [event_templates.id],
+      name: "event_templates_roles_parent_id_fk",
     }).onDelete("cascade"),
   }),
 );
 
-export const shift_templates = pgTable(
-  "shift_templates",
+export const event_templates = pgTable(
+  "event_templates",
   {
     id: serial("id").primaryKey(),
     template_title: varchar("template_title").notNull(),
-    shift_title: varchar("shift_title").notNull(),
+    event_title: varchar("event_title").notNull(),
     start_time: timestamp("start_time", {
       mode: "string",
       withTimezone: true,
@@ -227,17 +227,17 @@ export const shift_templates = pgTable(
       .notNull(),
   },
   (columns) => ({
-    shift_templates_updated_at_idx: index("shift_templates_updated_at_idx").on(
+    event_templates_updated_at_idx: index("event_templates_updated_at_idx").on(
       columns.updatedAt,
     ),
-    shift_templates_created_at_idx: index("shift_templates_created_at_idx").on(
+    event_templates_created_at_idx: index("event_templates_created_at_idx").on(
       columns.createdAt,
     ),
   }),
 );
 
-export const shifts = pgTable(
-  "shifts",
+export const events = pgTable(
+  "events",
   {
     id: serial("id").primaryKey(),
     title: varchar("title").notNull(),
@@ -268,8 +268,8 @@ export const shifts = pgTable(
       .notNull(),
   },
   (columns) => ({
-    shifts_updated_at_idx: index("shifts_updated_at_idx").on(columns.updatedAt),
-    shifts_created_at_idx: index("shifts_created_at_idx").on(columns.createdAt),
+    events_updated_at_idx: index("events_updated_at_idx").on(columns.updatedAt),
+    events_created_at_idx: index("events_created_at_idx").on(columns.createdAt),
   }),
 );
 
@@ -277,9 +277,9 @@ export const sections = pgTable(
   "sections",
   {
     id: serial("id").primaryKey(),
-    shift: integer("shift_id")
+    event: integer("event_id")
       .notNull()
-      .references(() => shifts.id, {
+      .references(() => events.id, {
         onDelete: "set null",
       }),
     title: varchar("title").notNull(),
@@ -300,7 +300,7 @@ export const sections = pgTable(
       .notNull(),
   },
   (columns) => ({
-    sections_shift_idx: index("sections_shift_idx").on(columns.shift),
+    sections_event_idx: index("sections_event_idx").on(columns.event),
     sections_updated_at_idx: index("sections_updated_at_idx").on(
       columns.updatedAt,
     ),
@@ -314,7 +314,7 @@ export const roles = pgTable(
   "roles",
   {
     id: serial("id").primaryKey(),
-    shift: integer("shift_id").references(() => shifts.id, {
+    event: integer("event_id").references(() => events.id, {
       onDelete: "set null",
     }),
     section: integer("section_id").references(() => sections.id, {
@@ -339,7 +339,7 @@ export const roles = pgTable(
       .notNull(),
   },
   (columns) => ({
-    roles_shift_idx: index("roles_shift_idx").on(columns.shift),
+    roles_event_idx: index("roles_event_idx").on(columns.event),
     roles_section_idx: index("roles_section_idx").on(columns.section),
     roles_updated_at_idx: index("roles_updated_at_idx").on(columns.updatedAt),
     roles_created_at_idx: index("roles_created_at_idx").on(columns.createdAt),
@@ -350,7 +350,7 @@ export const signups = pgTable(
   "signups",
   {
     id: serial("id").primaryKey(),
-    shift: integer("shift_id").references(() => shifts.id, {
+    event: integer("event_id").references(() => events.id, {
       onDelete: "set null",
     }),
     role: integer("role_id")
@@ -380,7 +380,7 @@ export const signups = pgTable(
       .notNull(),
   },
   (columns) => ({
-    signups_shift_idx: index("signups_shift_idx").on(columns.shift),
+    signups_event_idx: index("signups_event_idx").on(columns.event),
     signups_role_idx: index("signups_role_idx").on(columns.role),
     signups_user_idx: index("signups_user_idx").on(columns.user),
     signups_updated_at_idx: index("signups_updated_at_idx").on(
@@ -433,8 +433,8 @@ export const payload_locked_documents_rels = pgTable(
     parent: integer("parent_id").notNull(),
     path: varchar("path").notNull(),
     usersID: integer("users_id"),
-    "shift-templatesID": integer("shift_templates_id"),
-    shiftsID: integer("shifts_id"),
+    "event-templatesID": integer("event_templates_id"),
+    eventsID: integer("events_id"),
     sectionsID: integer("sections_id"),
     rolesID: integer("roles_id"),
     signupsID: integer("signups_id"),
@@ -448,12 +448,12 @@ export const payload_locked_documents_rels = pgTable(
     payload_locked_documents_rels_users_id_idx: index(
       "payload_locked_documents_rels_users_id_idx",
     ).on(columns.usersID),
-    payload_locked_documents_rels_shift_templates_id_idx: index(
-      "payload_locked_documents_rels_shift_templates_id_idx",
-    ).on(columns["shift-templatesID"]),
-    payload_locked_documents_rels_shifts_id_idx: index(
-      "payload_locked_documents_rels_shifts_id_idx",
-    ).on(columns.shiftsID),
+    payload_locked_documents_rels_event_templates_id_idx: index(
+      "payload_locked_documents_rels_event_templates_id_idx",
+    ).on(columns["event-templatesID"]),
+    payload_locked_documents_rels_events_id_idx: index(
+      "payload_locked_documents_rels_events_id_idx",
+    ).on(columns.eventsID),
     payload_locked_documents_rels_sections_id_idx: index(
       "payload_locked_documents_rels_sections_id_idx",
     ).on(columns.sectionsID),
@@ -473,15 +473,15 @@ export const payload_locked_documents_rels = pgTable(
       foreignColumns: [users.id],
       name: "payload_locked_documents_rels_users_fk",
     }).onDelete("cascade"),
-    "shift-templatesIdFk": foreignKey({
-      columns: [columns["shift-templatesID"]],
-      foreignColumns: [shift_templates.id],
-      name: "payload_locked_documents_rels_shift_templates_fk",
+    "event-templatesIdFk": foreignKey({
+      columns: [columns["event-templatesID"]],
+      foreignColumns: [event_templates.id],
+      name: "payload_locked_documents_rels_event_templates_fk",
     }).onDelete("cascade"),
-    shiftsIdFk: foreignKey({
-      columns: [columns["shiftsID"]],
-      foreignColumns: [shifts.id],
-      name: "payload_locked_documents_rels_shifts_fk",
+    eventsIdFk: foreignKey({
+      columns: [columns["eventsID"]],
+      foreignColumns: [events.id],
+      name: "payload_locked_documents_rels_events_fk",
     }).onDelete("cascade"),
     sectionsIdFk: foreignKey({
       columns: [columns["sectionsID"]],
@@ -596,99 +596,99 @@ export const payload_migrations = pgTable(
 );
 
 export const relations_users = relations(users, () => ({}));
-export const relations_shift_templates_sections_roles_signups = relations(
-  shift_templates_sections_roles_signups,
+export const relations_event_templates_sections_roles_signups = relations(
+  event_templates_sections_roles_signups,
   ({ one }) => ({
-    _parentID: one(shift_templates_sections_roles, {
-      fields: [shift_templates_sections_roles_signups._parentID],
-      references: [shift_templates_sections_roles.id],
+    _parentID: one(event_templates_sections_roles, {
+      fields: [event_templates_sections_roles_signups._parentID],
+      references: [event_templates_sections_roles.id],
       relationName: "signups",
     }),
     user: one(users, {
-      fields: [shift_templates_sections_roles_signups.user],
+      fields: [event_templates_sections_roles_signups.user],
       references: [users.id],
       relationName: "user",
     }),
   }),
 );
-export const relations_shift_templates_sections_roles = relations(
-  shift_templates_sections_roles,
+export const relations_event_templates_sections_roles = relations(
+  event_templates_sections_roles,
   ({ one, many }) => ({
-    _parentID: one(shift_templates_sections, {
-      fields: [shift_templates_sections_roles._parentID],
-      references: [shift_templates_sections.id],
+    _parentID: one(event_templates_sections, {
+      fields: [event_templates_sections_roles._parentID],
+      references: [event_templates_sections.id],
       relationName: "roles",
     }),
-    signups: many(shift_templates_sections_roles_signups, {
+    signups: many(event_templates_sections_roles_signups, {
       relationName: "signups",
     }),
   }),
 );
-export const relations_shift_templates_sections = relations(
-  shift_templates_sections,
+export const relations_event_templates_sections = relations(
+  event_templates_sections,
   ({ one, many }) => ({
-    _parentID: one(shift_templates, {
-      fields: [shift_templates_sections._parentID],
-      references: [shift_templates.id],
+    _parentID: one(event_templates, {
+      fields: [event_templates_sections._parentID],
+      references: [event_templates.id],
       relationName: "sections",
     }),
-    roles: many(shift_templates_sections_roles, {
+    roles: many(event_templates_sections_roles, {
       relationName: "roles",
     }),
   }),
 );
-export const relations_shift_templates_roles_signups = relations(
-  shift_templates_roles_signups,
+export const relations_event_templates_roles_signups = relations(
+  event_templates_roles_signups,
   ({ one }) => ({
-    _parentID: one(shift_templates_roles, {
-      fields: [shift_templates_roles_signups._parentID],
-      references: [shift_templates_roles.id],
+    _parentID: one(event_templates_roles, {
+      fields: [event_templates_roles_signups._parentID],
+      references: [event_templates_roles.id],
       relationName: "signups",
     }),
     user: one(users, {
-      fields: [shift_templates_roles_signups.user],
+      fields: [event_templates_roles_signups.user],
       references: [users.id],
       relationName: "user",
     }),
   }),
 );
-export const relations_shift_templates_roles = relations(
-  shift_templates_roles,
+export const relations_event_templates_roles = relations(
+  event_templates_roles,
   ({ one, many }) => ({
-    _parentID: one(shift_templates, {
-      fields: [shift_templates_roles._parentID],
-      references: [shift_templates.id],
+    _parentID: one(event_templates, {
+      fields: [event_templates_roles._parentID],
+      references: [event_templates.id],
       relationName: "roles",
     }),
-    signups: many(shift_templates_roles_signups, {
+    signups: many(event_templates_roles_signups, {
       relationName: "signups",
     }),
   }),
 );
-export const relations_shift_templates = relations(
-  shift_templates,
+export const relations_event_templates = relations(
+  event_templates,
   ({ many }) => ({
-    sections: many(shift_templates_sections, {
+    sections: many(event_templates_sections, {
       relationName: "sections",
     }),
-    roles: many(shift_templates_roles, {
+    roles: many(event_templates_roles, {
       relationName: "roles",
     }),
   }),
 );
-export const relations_shifts = relations(shifts, () => ({}));
+export const relations_events = relations(events, () => ({}));
 export const relations_sections = relations(sections, ({ one }) => ({
-  shift: one(shifts, {
-    fields: [sections.shift],
-    references: [shifts.id],
-    relationName: "shift",
+  event: one(events, {
+    fields: [sections.event],
+    references: [events.id],
+    relationName: "event",
   }),
 }));
 export const relations_roles = relations(roles, ({ one }) => ({
-  shift: one(shifts, {
-    fields: [roles.shift],
-    references: [shifts.id],
-    relationName: "shift",
+  event: one(events, {
+    fields: [roles.event],
+    references: [events.id],
+    relationName: "event",
   }),
   section: one(sections, {
     fields: [roles.section],
@@ -697,10 +697,10 @@ export const relations_roles = relations(roles, ({ one }) => ({
   }),
 }));
 export const relations_signups = relations(signups, ({ one }) => ({
-  shift: one(shifts, {
-    fields: [signups.shift],
-    references: [shifts.id],
-    relationName: "shift",
+  event: one(events, {
+    fields: [signups.event],
+    references: [events.id],
+    relationName: "event",
   }),
   role: one(roles, {
     fields: [signups.role],
@@ -726,15 +726,15 @@ export const relations_payload_locked_documents_rels = relations(
       references: [users.id],
       relationName: "users",
     }),
-    "shift-templatesID": one(shift_templates, {
-      fields: [payload_locked_documents_rels["shift-templatesID"]],
-      references: [shift_templates.id],
-      relationName: "shift-templates",
+    "event-templatesID": one(event_templates, {
+      fields: [payload_locked_documents_rels["event-templatesID"]],
+      references: [event_templates.id],
+      relationName: "event-templates",
     }),
-    shiftsID: one(shifts, {
-      fields: [payload_locked_documents_rels.shiftsID],
-      references: [shifts.id],
-      relationName: "shifts",
+    eventsID: one(events, {
+      fields: [payload_locked_documents_rels.eventsID],
+      references: [events.id],
+      relationName: "events",
     }),
     sectionsID: one(sections, {
       fields: [payload_locked_documents_rels.sectionsID],
@@ -793,13 +793,13 @@ type DatabaseSchema = {
   enum__locales: typeof enum__locales;
   enum_users_roles: typeof enum_users_roles;
   users: typeof users;
-  shift_templates_sections_roles_signups: typeof shift_templates_sections_roles_signups;
-  shift_templates_sections_roles: typeof shift_templates_sections_roles;
-  shift_templates_sections: typeof shift_templates_sections;
-  shift_templates_roles_signups: typeof shift_templates_roles_signups;
-  shift_templates_roles: typeof shift_templates_roles;
-  shift_templates: typeof shift_templates;
-  shifts: typeof shifts;
+  event_templates_sections_roles_signups: typeof event_templates_sections_roles_signups;
+  event_templates_sections_roles: typeof event_templates_sections_roles;
+  event_templates_sections: typeof event_templates_sections;
+  event_templates_roles_signups: typeof event_templates_roles_signups;
+  event_templates_roles: typeof event_templates_roles;
+  event_templates: typeof event_templates;
+  events: typeof events;
   sections: typeof sections;
   roles: typeof roles;
   signups: typeof signups;
@@ -809,13 +809,13 @@ type DatabaseSchema = {
   payload_preferences_rels: typeof payload_preferences_rels;
   payload_migrations: typeof payload_migrations;
   relations_users: typeof relations_users;
-  relations_shift_templates_sections_roles_signups: typeof relations_shift_templates_sections_roles_signups;
-  relations_shift_templates_sections_roles: typeof relations_shift_templates_sections_roles;
-  relations_shift_templates_sections: typeof relations_shift_templates_sections;
-  relations_shift_templates_roles_signups: typeof relations_shift_templates_roles_signups;
-  relations_shift_templates_roles: typeof relations_shift_templates_roles;
-  relations_shift_templates: typeof relations_shift_templates;
-  relations_shifts: typeof relations_shifts;
+  relations_event_templates_sections_roles_signups: typeof relations_event_templates_sections_roles_signups;
+  relations_event_templates_sections_roles: typeof relations_event_templates_sections_roles;
+  relations_event_templates_sections: typeof relations_event_templates_sections;
+  relations_event_templates_roles_signups: typeof relations_event_templates_roles_signups;
+  relations_event_templates_roles: typeof relations_event_templates_roles;
+  relations_event_templates: typeof relations_event_templates;
+  relations_events: typeof relations_events;
   relations_sections: typeof relations_sections;
   relations_roles: typeof relations_roles;
   relations_signups: typeof relations_signups;

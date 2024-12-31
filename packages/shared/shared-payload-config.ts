@@ -11,10 +11,10 @@ import {
 
 import { Roles } from "./collections/roles";
 import { Sections } from "./collections/sections";
-import { Shifts } from "./collections/shifts";
+import { Events } from "./collections/events";
 import { Signups } from "./collections/signups";
 import { Users } from "./collections/users";
-import { ShiftTemplates } from "./collections/shift-templates";
+import { EventTemplates } from "./collections/event-templates";
 
 import process from "node:process";
 import path from "node:path";
@@ -54,7 +54,7 @@ export const sharedConfig = ({ baseDir }: { baseDir: string }): Config => {
       },
       dateFormat: "dd/MM/yyyy HH:mm",
     },
-    collections: [Users, ShiftTemplates, Shifts, Sections, Roles, Signups],
+    collections: [Users, EventTemplates, Events, Sections, Roles, Signups],
     localization: {
       defaultLocale: "en",
       locales: ["en", "nl"],

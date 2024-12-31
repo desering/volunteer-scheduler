@@ -1,4 +1,4 @@
-import type { Shift } from "../../../shared/payload-types";
+import type { Event } from "../../../shared/payload-types";
 import {
   consolidateHTMLConverters,
   convertLexicalToHTML,
@@ -9,9 +9,9 @@ import {
 } from "@payloadcms/richtext-lexical";
 import { getPayloadInstance } from "./global-payload";
 
-export const groupAndSortShiftsByDate = async (
-  shifts: Shift[],
-): Promise<ShiftsByDay> => {
+export const groupAndSortEventsByDate = async (
+  events: Event[],
+): Promise<EventsByDay> => {
   // https://payloadcms.com/docs/lexical/converters#generating-html-anywhere-on-the-server
   const editorConfig = defaultEditorConfig;
   editorConfig.features = [...defaultEditorFeatures, HTMLConverterFeature({})];
@@ -20,8 +20,8 @@ export const groupAndSortShiftsByDate = async (
     (await getPayloadInstance()).config,
   );
 
-  const mappedShifts = await Promise.all(
-    shifts.map(async (doc) => {
+  const mappedEvents = await Promise.all(
+    events.map(async (doc) => {
       let descriptionHtml: string | undefined = undefined;
       if (doc.description) {
         descriptionHtml = await convertLexicalToHTML({
@@ -37,33 +37,33 @@ export const groupAndSortShiftsByDate = async (
         descriptionHtml,
         start_date: new Date(doc.start_date),
         end_date: new Date(doc.end_date),
-      } satisfies RenderedShift;
+      } satisfies RenderedEvent;
     }),
   );
 
-  const sorted = mappedShifts.sort(
+  const sorted = mappedEvents.sort(
     (a, b) => a.start_date.getTime() - b.start_date.getTime(),
   );
 
   const groupedByDay = sorted.reduce(
-    (acc, shift) => {
-      const date = shift.start_date.toDateString();
+    (acc, event) => {
+      const date = event.start_date.toDateString();
       if (!acc[date]) {
         acc[date] = [];
       }
-      acc[date].push(shift);
+      acc[date].push(event);
       return acc;
     },
-    {} as Record<string, typeof mappedShifts>,
+    {} as Record<string, typeof mappedEvents>,
   );
 
   return groupedByDay;
 };
 
-export type RenderedShift = {
-  doc: Shift;
+export type RenderedEvent = {
+  doc: Event;
   descriptionHtml?: string;
   start_date: Date;
   end_date: Date;
 };
-export type ShiftsByDay = Record<string, RenderedShift[]>;
+export type EventsByDay = Record<string, RenderedEvent[]>;

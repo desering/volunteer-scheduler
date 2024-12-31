@@ -4,15 +4,15 @@ export const Roles: CollectionConfig = {
   slug: "roles",
   admin: {
     useAsTitle: "title",
-    defaultColumns: ["title", "shift", "section", "signups"],
+    defaultColumns: ["title", "event", "section", "signups"],
     group: false,
   },
   fields: [
     {
-      name: "shift",
+      name: "event",
       type: "relationship",
-      relationTo: "shifts",
-      label: "Shift",
+      relationTo: "events",
+      label: "Event",
       required: true,
       hasMany: false,
       maxDepth: 0,
@@ -21,16 +21,16 @@ export const Roles: CollectionConfig = {
         condition: (siblingData) => {
           // hide field if creating from sections screen
           return !(
-            siblingData?.shift === undefined &&
+            siblingData?.event === undefined &&
             siblingData?.section !== undefined
           );
         },
       },
       hooks: {
-        // 	// When creating from sections screen, get shift from section
+        // 	// When creating from sections screen, get event from section
         beforeValidate: [
           async ({ siblingData, req }) => {
-            if (!siblingData?.shift && siblingData?.section) {
+            if (!siblingData?.event && siblingData?.section) {
               const section = await req.payload.findByID({
                 collection: "sections",
                 id: siblingData.section,
@@ -38,7 +38,7 @@ export const Roles: CollectionConfig = {
               });
 
               if (section) {
-                return section.shift;
+                return section.event;
               }
             }
           },
@@ -54,10 +54,10 @@ export const Roles: CollectionConfig = {
       maxDepth: 0,
       filterOptions: ({ siblingData }) => {
         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-        const shift = (siblingData as any).shift;
-        if (!shift) return false;
+        const event = (siblingData as any).event;
+        if (!event) return false;
 
-        return { shift: { equals: shift } };
+        return { event: { equals: event } };
       },
       admin: {
         allowCreate: false,
