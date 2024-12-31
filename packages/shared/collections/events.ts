@@ -1,11 +1,11 @@
 import type { CollectionConfig } from "payload";
 
-export const Shifts: CollectionConfig = {
-  slug: "shifts",
+export const Events: CollectionConfig = {
+  slug: "events",
   defaultSort: "-start_date",
   admin: {
     useAsTitle: "title",
-    group: "Shift Management",
+    group: "Event Management",
     components: {
       views: {
         list: {
@@ -82,7 +82,7 @@ export const Shifts: CollectionConfig = {
               label: false,
               type: "join",
               collection: "sections",
-              on: "shift",
+              on: "event",
               maxDepth: 0,
               admin: {
                 disableListColumn: true,
@@ -98,7 +98,7 @@ export const Shifts: CollectionConfig = {
               label: false,
               type: "join",
               collection: "roles",
-              on: "shift",
+              on: "event",
               maxDepth: 0,
               admin: {
                 // allowCreate: false,
@@ -115,7 +115,7 @@ export const Shifts: CollectionConfig = {
               label: false,
               type: "join",
               collection: "signups",
-              on: "shift",
+              on: "event",
               maxDepth: 0,
               admin: {
                 // allowCreate: false,
@@ -134,7 +134,7 @@ export const Shifts: CollectionConfig = {
         await req.payload.delete({
           collection: "sections",
           where: {
-            shift: {
+            event: {
               equals: id,
             },
           },

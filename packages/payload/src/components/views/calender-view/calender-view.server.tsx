@@ -3,7 +3,7 @@ import type { AdminViewProps, CollectionSlug } from "payload";
 import { CalenderViewClient } from "./calender-view.client";
 import Providers from "@/app/providers";
 
-const supportedSlugs: CollectionSlug[] = ["shifts"];
+const supportedSlugs: CollectionSlug[] = ["events"];
 
 export const CalenderView = async ({
   params,

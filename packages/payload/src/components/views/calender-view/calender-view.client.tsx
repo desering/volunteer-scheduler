@@ -1,7 +1,7 @@
 "use client";
 
-import { getShiftsInPeriod } from "@/actions";
-import { daysOfWeek } from "@/components/publish-shift-template/constants";
+import { getEventsInPeriod } from "@/actions";
+import { daysOfWeek } from "@/components/publish-event-template/constants";
 import { Gutter } from "@payloadcms/ui";
 import {
   QueryClient,
@@ -21,7 +21,7 @@ import { useMemo, useState } from "react";
 import { css } from "styled-system/css";
 import { Box, Center, Grid, panda, VStack } from "styled-system/jsx";
 
-const useShiftsByMonth = (start: Date, end: Date) => {
+const useEventsByMonth = (start: Date, end: Date) => {
   const allDays = useMemo(
     () =>
       eachDayOfInterval({
@@ -34,16 +34,16 @@ const useShiftsByMonth = (start: Date, end: Date) => {
   const { data: groupedByMonth } = useQuery({
     queryKey: ["calender"],
     queryFn: async () => {
-      const data = await getShiftsInPeriod(start, end);
+      const data = await getEventsInPeriod(start, end);
 
-      const withShifts = allDays.map((day) => ({
+      const withEvents = allDays.map((day) => ({
         day,
-        relatedShifts: data?.docs.filter((shift) =>
-          isSameDay(shift.start_date, day),
+        relatedEvents: data?.docs.filter((event) =>
+          isSameDay(event.start_date, day),
         ),
       }));
 
-      const groupedByMonth = Object.groupBy(withShifts, ({ day }) =>
+      const groupedByMonth = Object.groupBy(withEvents, ({ day }) =>
         format(day, "MMMM"),
       );
 
@@ -58,7 +58,7 @@ export const CalenderViewClient = () => {
   const [start, setStart] = useState(startOfMonth(new Date()));
   const [end, setEnd] = useState(endOfMonth(new Date()));
 
-  const { groupedByMonth } = useShiftsByMonth(start, end);
+  const { groupedByMonth } = useEventsByMonth(start, end);
 
   return (
     <Gutter>
@@ -96,7 +96,7 @@ export const CalenderViewClient = () => {
                   <Box key={`empty-${month}-${i}`} />
                 ))}
 
-                {groupedByMonth[month]?.map(({ day, relatedShifts }) => (
+                {groupedByMonth[month]?.map(({ day, relatedEvents }) => (
                   <VStack
                     key={day.getTime()}
                     alignItems="start"
@@ -112,17 +112,17 @@ export const CalenderViewClient = () => {
                   >
                     <panda.p marginBottom="2">{format(day, "dd")}</panda.p>
 
-                    {relatedShifts?.map((shift) => (
+                    {relatedEvents?.map((event) => (
                       <Link
-                        key={shift.id}
-                        href={`/admin/collections/shifts/${shift.id}`}
+                        key={event.id}
+                        href={`/admin/collections/events/${event.id}`}
                         className={css({
                           lineHeight: "1",
                           _hover: {
                             textDecoration: "underline",
                           },
                         })}
-                      >{`${format(shift.start_date, "HH:mm")} ${shift.title}`}</Link>
+                      >{`${format(event.start_date, "HH:mm")} ${event.title}`}</Link>
                     ))}
                   </VStack>
                 ))}

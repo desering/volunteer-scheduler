@@ -3,5 +3,5 @@
 import Link from "next/link";
 
 export const SwitchToCalenderView = () => (
-  <Link href="/admin/calender/shifts">Switch to calender view</Link>
+  <Link href="/admin/calender/events">Switch to calender view</Link>
 );

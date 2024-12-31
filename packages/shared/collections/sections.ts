@@ -9,10 +9,10 @@ export const Sections: CollectionConfig = {
   },
   fields: [
     {
-      name: "shift",
+      name: "event",
       type: "relationship",
-      relationTo: "shifts",
-      label: "Shift",
+      relationTo: "events",
+      label: "Event",
       required: true,
       hasMany: false,
       maxDepth: 0,
