@@ -12,8 +12,8 @@ export interface Config {
   };
   collections: {
     users: User;
-    'shift-templates': ShiftTemplate;
-    shifts: Shift;
+    'event-templates': EventTemplate;
+    events: Event;
     sections: Section;
     roles: Role;
     signups: Signup;
@@ -22,7 +22,7 @@ export interface Config {
     'payload-migrations': PayloadMigration;
   };
   collectionsJoins: {
-    shifts: {
+    events: {
       sections: 'sections';
       roles: 'roles';
       signups: 'signups';
@@ -36,8 +36,8 @@ export interface Config {
   };
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
-    'shift-templates': ShiftTemplatesSelect<false> | ShiftTemplatesSelect<true>;
-    shifts: ShiftsSelect<false> | ShiftsSelect<true>;
+    'event-templates': EventTemplatesSelect<false> | EventTemplatesSelect<true>;
+    events: EventsSelect<false> | EventsSelect<true>;
     sections: SectionsSelect<false> | SectionsSelect<true>;
     roles: RolesSelect<false> | RolesSelect<true>;
     signups: SignupsSelect<false> | SignupsSelect<true>;
@@ -96,12 +96,12 @@ export interface User {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "shift-templates".
+ * via the `definition` "event-templates".
  */
-export interface ShiftTemplate {
+export interface EventTemplate {
   id: number;
   template_title: string;
-  shift_title: string;
+  event_title: string;
   start_time: string;
   end_time: string;
   description?: {
@@ -208,9 +208,9 @@ export interface ShiftTemplate {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "shifts".
+ * via the `definition` "events".
  */
-export interface Shift {
+export interface Event {
   id: number;
   title: string;
   start_date: string;
@@ -251,7 +251,7 @@ export interface Shift {
  */
 export interface Section {
   id: number;
-  shift: number | Shift;
+  event: number | Event;
   title: string;
   description?: {
     root: {
@@ -281,7 +281,7 @@ export interface Section {
  */
 export interface Role {
   id: number;
-  shift?: (number | null) | Shift;
+  event?: (number | null) | Event;
   section?: (number | null) | Section;
   title: string;
   description?: {
@@ -316,7 +316,7 @@ export interface Role {
  */
 export interface Signup {
   id: number;
-  shift?: (number | null) | Shift;
+  event?: (number | null) | Event;
   role: number | Role;
   user: number | User;
   title?: string | null;
@@ -335,12 +335,12 @@ export interface PayloadLockedDocument {
         value: number | User;
       } | null)
     | ({
-        relationTo: 'shift-templates';
-        value: number | ShiftTemplate;
+        relationTo: 'event-templates';
+        value: number | EventTemplate;
       } | null)
     | ({
-        relationTo: 'shifts';
-        value: number | Shift;
+        relationTo: 'events';
+        value: number | Event;
       } | null)
     | ({
         relationTo: 'sections';
@@ -413,11 +413,11 @@ export interface UsersSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "shift-templates_select".
+ * via the `definition` "event-templates_select".
  */
-export interface ShiftTemplatesSelect<T extends boolean = true> {
+export interface EventTemplatesSelect<T extends boolean = true> {
   template_title?: T;
-  shift_title?: T;
+  event_title?: T;
   start_time?: T;
   end_time?: T;
   description?: T;
@@ -461,9 +461,9 @@ export interface ShiftTemplatesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "shifts_select".
+ * via the `definition` "events_select".
  */
-export interface ShiftsSelect<T extends boolean = true> {
+export interface EventsSelect<T extends boolean = true> {
   title?: T;
   start_date?: T;
   end_date?: T;
@@ -479,7 +479,7 @@ export interface ShiftsSelect<T extends boolean = true> {
  * via the `definition` "sections_select".
  */
 export interface SectionsSelect<T extends boolean = true> {
-  shift?: T;
+  event?: T;
   title?: T;
   description?: T;
   roles?: T;
@@ -491,7 +491,7 @@ export interface SectionsSelect<T extends boolean = true> {
  * via the `definition` "roles_select".
  */
 export interface RolesSelect<T extends boolean = true> {
-  shift?: T;
+  event?: T;
   section?: T;
   title?: T;
   description?: T;
@@ -505,7 +505,7 @@ export interface RolesSelect<T extends boolean = true> {
  * via the `definition` "signups_select".
  */
 export interface SignupsSelect<T extends boolean = true> {
-  shift?: T;
+  event?: T;
   role?: T;
   user?: T;
   title?: T;

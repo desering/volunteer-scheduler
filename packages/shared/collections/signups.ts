@@ -9,25 +9,25 @@ export const Signups: CollectionConfig = {
   },
   fields: [
     {
-      name: "shift",
+      name: "event",
       type: "relationship",
-      relationTo: "shifts",
-      label: "Shift",
+      relationTo: "events",
+      label: "Event",
       hasMany: false,
       required: true,
       maxDepth: 0,
       admin: {
         condition: (siblingData) => {
           return !(
-            siblingData?.shift === undefined && siblingData?.role !== undefined
+            siblingData?.event === undefined && siblingData?.role !== undefined
           );
         },
       },
       hooks: {
-        // When creating from sections screen, get shift from section
+        // When creating from sections screen, get event from section
         beforeValidate: [
           async ({ siblingData, req }) => {
-            if (!siblingData?.shift && siblingData?.role) {
+            if (!siblingData?.event && siblingData?.role) {
               const section = await req.payload.findByID({
                 collection: "roles",
                 id: siblingData.role,
@@ -35,7 +35,7 @@ export const Signups: CollectionConfig = {
               });
 
               if (section) {
-                return section.shift;
+                return section.event;
               }
             }
           },
@@ -52,7 +52,7 @@ export const Signups: CollectionConfig = {
       maxDepth: 0,
       filterOptions: ({ siblingData }) => {
         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-        return { shift: { equals: (siblingData as any).shift } };
+        return { event: { equals: (siblingData as any).event } };
       },
       hooks: {
         beforeValidate: [

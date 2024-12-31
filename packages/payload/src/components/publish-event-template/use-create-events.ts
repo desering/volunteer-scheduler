@@ -1,8 +1,8 @@
-import { createShiftsFromTemplate } from "@/actions";
+import { createEventsFromTemplate } from "@/actions";
 import { toast } from "@payloadcms/ui";
 import { useState } from "react";
 
-export const useCreateShifts = (
+export const useCreateEvents = (
   templateId: number,
   selectedDays: Date[],
   onCreated: () => void,
@@ -10,24 +10,24 @@ export const useCreateShifts = (
   const [isCreating, setIsCreating] = useState(false);
   const [error, setError] = useState<string>();
 
-  const createShifts = async () => {
+  const createEvents = async () => {
     if (isCreating) return;
     setIsCreating(true);
     setError(undefined);
 
     try {
-      await createShiftsFromTemplate(templateId, selectedDays);
-      toast.success("Shifts created successfully");
+      await createEventsFromTemplate(templateId, selectedDays);
+      toast.success("Events created successfully");
       onCreated();
     } catch (error) {
       setError(
         error instanceof Error ? error.message : "An unknown error occurred",
       );
-      toast.error("Failed to create shifts");
+      toast.error("Failed to create events");
     } finally {
       setIsCreating(false);
     }
   };
 
-  return { isCreating, createShifts, error };
+  return { isCreating, createEvents, error };
 };
