@@ -1,5 +1,5 @@
 import type { CollectionConfig } from "payload";
-import { adminAndthemself } from "./access/admins-and-themself";
+import { adminAndThemselves } from "./access/admin-and-themselves";
 import { anyone } from "../access/anyone";
 import { admins } from "../access/admins";
 
@@ -9,8 +9,8 @@ export const Users: CollectionConfig = {
     admin: admins,
     create: anyone,
     read: anyone,
-    update: adminAndthemself,
-    delete: adminAndthemself,
+    update: adminAndThemselves,
+    delete: adminAndThemselves,
   },
   admin: {
     useAsTitle: "email",
