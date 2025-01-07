@@ -19,6 +19,7 @@ import { EventTemplates } from "./collections/event-templates";
 import process from "node:process";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { migrations } from "./migrations";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -64,6 +65,8 @@ export const sharedConfig = ({ baseDir }: { baseDir: string }): Config => {
       pool: {
         connectionString: process.env.DATABASE_URI || "",
       },
+      migrationDir: "./migrations",
+      prodMigrations: migrations,
     }),
     typescript: {
       outputFile: path.resolve(dirname, "payload-types.ts"),
