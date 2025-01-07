@@ -67,6 +67,7 @@ export const sharedConfig = ({ baseDir }: { baseDir: string }): Config => {
       },
       migrationDir: "./migrations",
       prodMigrations: migrations,
+      push: process.env.NODE_ENV !== "production",
     }),
     typescript: {
       outputFile: path.resolve(dirname, "payload-types.ts"),
