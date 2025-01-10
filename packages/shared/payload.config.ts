@@ -13,5 +13,6 @@ const dirname = path.dirname(filename);
 export default buildConfig(
   sharedConfig({
     baseDir: path.resolve(dirname),
+    enableMigrations: false,
   }),
 );
