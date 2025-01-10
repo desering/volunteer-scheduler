@@ -9,19 +9,12 @@ const eventsByDay = await Astro.callAction(actions.getEventsByDay, {});
 ---
 
 <Layout title="Volunteering Schedule">
-  <Container
-    marginTop={{ base: 4, xl: 20 }}
-    display="flex"
-    minHeight="screen"
-    flexDir="column"
-    gap="10"
-  >
-    <NavBar />
-    <EventOverview
-      user={Astro.locals.user}
-      events={eventsByDay.data}
-      client:load
-      flex="1"
-    />
-  </Container>
+  <NavBar />
+  <EventOverview
+    user={Astro.locals.user}
+    events={eventsByDay.data}
+    client:load
+    flex="1"
+    marginTop="4"
+  />
 </Layout>
