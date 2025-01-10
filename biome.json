@@ -16,7 +16,8 @@
       "packages/payload/styled-system/*",
       "packages/payload/src/app/(payload)/importMap.js",
 
-      "packages/shared/payload-types.ts"
+      "packages/shared/payload-types.ts",
+      "packages/shared/migrations/*"
     ]
   },
   "formatter": {
