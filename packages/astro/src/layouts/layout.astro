@@ -44,6 +44,10 @@ const color = {
       import { applyTheme } from "~/utils/theme";
 
       applyTheme();
+
+      window
+        .matchMedia("(prefers-color-scheme: dark)")
+        .addEventListener("change", applyTheme);
     </script>
   </head>
   <panda.body backgroundColor={{ base: "gray.4", _dark: "gray.2" }}>

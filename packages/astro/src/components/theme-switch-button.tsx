@@ -2,18 +2,16 @@ import MoonIcon from "lucide-solid/icons/moon";
 import SunIcon from "lucide-solid/icons/sun";
 import SunMoonIcon from "lucide-solid/icons/sun-moon";
 
-import { createEffect, createSignal, Match, onMount, Switch } from "solid-js";
-import { getTheme, setTheme, type Theme } from "~/utils/theme";
+import { Match, Switch, createEffect, createSignal } from "solid-js";
+import { HStack } from "styled-system/jsx";
+import { getTheme, setTheme } from "~/utils/theme";
 import { IconButton } from "./ui/icon-button";
 import { Menu } from "./ui/menu";
-import { HStack } from "styled-system/jsx";
 
 export const ThemeSwitchButton = () => {
   const [themeSelection, setThemeSelection] = createSignal(getTheme());
 
-  createEffect(() => {
-    setTheme(themeSelection());
-  });
+  createEffect(() => setTheme(themeSelection()));
 
   return (
     <Menu.Root>
