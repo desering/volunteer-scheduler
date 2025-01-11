@@ -7,7 +7,7 @@ import { Bleed, Divider, Flex, HStack, panda } from "styled-system/jsx";
 import { button } from "styled-system/recipes/button";
 import type { RenderedEvent } from "~/utils/map-events";
 import { Button } from "./ui/button";
-import { Drawer } from "./ui/drawer";
+import { Sheet } from "./ui/sheet";
 import { IconButton } from "./ui/icon-button";
 
 type Props = {
@@ -30,23 +30,31 @@ export const EventDetailsDrawer = (props: Props) => {
   );
 
   return (
-    <Drawer.Root
+    <Sheet.Root
       open={props.open}
       onOpenChange={({ open }) => {
         !open && props.onClose();
       }}
       onExitComplete={props.onExitComplete}
+      variant={{
+        base: "bottom",
+        md: "right",
+      }}
     >
       <Portal>
-        <Drawer.Backdrop />
-        <Drawer.Positioner width={{ base: "100vw", sm: "xl", md: "2xl" }}>
-          <Drawer.Content>
-            <Drawer.Header>
-              <Drawer.Title>{props.event?.doc.title}</Drawer.Title>
+        <Sheet.Backdrop />
+        <Sheet.Positioner>
+          <Sheet.Content>
+            <Sheet.Header>
+              <Sheet.Title>{props.event?.doc.title}</Sheet.Title>
               <Show when={props.event?.descriptionHtml}>
-                <Drawer.Description innerHTML={props.event?.descriptionHtml} />
+                <Sheet.Description innerHTML={props.event?.descriptionHtml} />
               </Show>
-              <Drawer.CloseTrigger
+              {/* <Sheet.CloseTrigger
+                display={{
+                  base: "none",
+                  md: "block",
+                }}
                 position="absolute"
                 top="3"
                 right="4"
@@ -55,19 +63,19 @@ export const EventDetailsDrawer = (props: Props) => {
                     <XIcon />
                   </IconButton>
                 )}
-              />
-            </Drawer.Header>
-            {/* With suspence the load doesn't propagate to root, removing the flash on first open */}
-            <Suspense>
-              <Drawer.Body justifyContent="end">
-                <panda.h2 fontSize="2xl" fontWeight="semibold" marginBottom="2">
-                  Select a role
-                </panda.h2>
+              /> */}
+            </Sheet.Header>
+            <Sheet.Body justifyContent="end">
+              <panda.h2 fontSize="2xl" fontWeight="semibold" marginBottom="2">
+                Select a role
+              </panda.h2>
 
-                <Bleed inline="6">
-                  <Divider />
-                </Bleed>
+              <Bleed inline="6">
+                <Divider />
+              </Bleed>
 
+              {/* With suspence the load doesn't propagate to root, removing the flash on first open */}
+              <Suspense>
                 {/* Unsectioned roles */}
                 <RoleRows
                   details={details.latest?.data}
@@ -104,9 +112,9 @@ export const EventDetailsDrawer = (props: Props) => {
                     </panda.div>
                   )}
                 </For>
-              </Drawer.Body>
-            </Suspense>
-            <Drawer.Footer>
+              </Suspense>
+            </Sheet.Body>
+            <Sheet.Footer>
               <Show when={!props.user}>
                 <HStack>
                   Want to help out?
@@ -119,11 +127,11 @@ export const EventDetailsDrawer = (props: Props) => {
                   </a>
                 </HStack>
               </Show>
-            </Drawer.Footer>
-          </Drawer.Content>
-        </Drawer.Positioner>
+            </Sheet.Footer>
+          </Sheet.Content>
+        </Sheet.Positioner>
       </Portal>
-    </Drawer.Root>
+    </Sheet.Root>
   );
 };
 

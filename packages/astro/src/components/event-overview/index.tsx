@@ -1,5 +1,13 @@
 import { actions } from "astro:actions";
-import { eachDayOfInterval, isSameDay, startOfDay, subDays } from "date-fns";
+import {
+  addDays,
+  addMonths,
+  eachDayOfInterval,
+  isSameDay,
+  startOfDay,
+  subDays,
+  subMonths,
+} from "date-fns";
 import { format } from "date-fns/format";
 import {
   For,
@@ -49,21 +57,32 @@ export const EventOverview = (props: Props & BoxProps) => {
       {(events) => {
         const allDates = () => {
           const entries = Object.entries(events());
-          const start = subDays(startOfDay(new Date()), 7); // add some disabled buttons
+          const start = startOfDay(new Date()); // add some disabled buttons
           const end = entries.reduce((max, [date]) => {
             const d = new Date(date);
             return d > max ? d : max;
           }, startOfDay(new Date()));
 
-          const allDayes = eachDayOfInterval({ start, end });
+          return [
+            // fake days
+            ...eachDayOfInterval({
+              start: subMonths(start, 1),
+              end: subDays(start, 1),
+            }).map((date) => ({ date, hasEvents: false, isPublished: false })),
+            // real days
+            ...eachDayOfInterval({ start, end }).map((date) => {
+              const [, events] =
+                entries.find(([d]) => isSameDay(new Date(d), date)) ?? [];
+              const hasEvents = (events ?? []).length > 0;
 
-          return allDayes.map((date) => {
-            const [, events] =
-              entries.find(([d]) => isSameDay(new Date(d), date)) ?? [];
-            const hasEvents = (events ?? []).length > 0;
-
-            return { date, hasEvents };
-          });
+              return { date, hasEvents, isPublished: true };
+            }),
+            // fake days
+            ...eachDayOfInterval({
+              start: addDays(end, 1),
+              end: addMonths(end, 1),
+            }).map((date) => ({ date, hasEvents: false, isPublished: false })),
+          ];
         };
 
         return (
@@ -101,23 +120,11 @@ export const EventOverview = (props: Props & BoxProps) => {
                                   base: "colorPalette.1",
                                   _dark: "colorPalette.4",
                                 }}
-                                // color="colorPalette.1"
                                 paddingX="4"
                                 paddingY="6"
                                 cursor="pointer"
                                 textAlign="left"
                                 borderRadius="l3"
-                                // _hover={{
-                                //   backgroundColor: "colorPalette.1",
-                                //   color: "colorPalette.12",
-                                //   boxShadow: "inset 0 0 0 2px",
-                                //   boxShadowColor: "colorPalette.12",
-                                // }}
-                                // _focusVisible={{
-                                //   outline: "2px solid",
-                                //   outlineColor: "colorPalette.12",
-                                //   outlineOffset: "2px",
-                                // }}
                                 class="group"
                               >
                                 <panda.p>
@@ -125,14 +132,7 @@ export const EventOverview = (props: Props & BoxProps) => {
                                   {format(event.end_date, "HH:mm")}
                                 </panda.p>
 
-                                <panda.h5
-                                  // color="colorPalette.1"
-                                  fontSize="xl"
-                                  fontWeight="semibold"
-                                  // _groupHover={{
-                                  //   color: "colorPalette.12",
-                                  // }}
-                                >
+                                <panda.h5 fontSize="xl" fontWeight="semibold">
                                   {event.doc.title}
                                 </panda.h5>
 

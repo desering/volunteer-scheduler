@@ -2,6 +2,7 @@ import { defineConfig } from "@pandacss/dev";
 import { createPreset } from "@park-ui/panda-preset";
 import olive from "@park-ui/panda-preset/colors/olive";
 import sand from "@park-ui/panda-preset/colors/sand";
+import { sheet } from "~/components/ui/recipes/sheet";
 
 export default defineConfig({
   preflight: true,
@@ -22,28 +23,28 @@ export default defineConfig({
   jsxFactory: "panda",
   theme: {
     extend: {
-      recipes: {
-        button: {
-          variants: {
-            variant: {
-              // outline: {
-              //   borderWidth: "2px",
-              //   borderColor: "colorPalette.12",
-              //   _focusVisible: {
-              //     outline: "2px solid",
-              //     outlineColor: "colorPalette.12",
-              //     outlineOffset: "2px",
-              //   },
-              // },
-            },
+      keyframes: {
+        "slide-in-bottom": {
+          "0%": { transform: "translateY(100%)" },
+          "100%": { transform: "translateY(0%)" },
+        },
+        "slide-out-bottom": {
+          "0%": { transform: "translateY(0%)" },
+          "100%": { transform: "translateY(100%)" },
+        },
+      },
+      tokens: {
+        animations: {
+          "drawer-in-bottom": {
+            value: "slide-in-bottom 400ms {easings.emphasized-in}",
+          },
+          "drawer-out-bottom": {
+            value: "slide-out-bottom 300ms {easings.emphasized-out}",
           },
         },
-        input: {
-          base: {
-            // borderWidth: "2px",
-            // borderColor: "colorPalette.12",
-          },
-        },
+      },
+      slotRecipes: {
+        sheet,
       },
     },
   },

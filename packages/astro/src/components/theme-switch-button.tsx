@@ -1,22 +1,72 @@
 import MoonIcon from "lucide-solid/icons/moon";
 import SunIcon from "lucide-solid/icons/sun";
-import { createSignal, onMount } from "solid-js";
+import SunMoonIcon from "lucide-solid/icons/sun-moon";
+
+import { createEffect, createSignal, Match, onMount, Switch } from "solid-js";
+import { getTheme, setTheme, type Theme } from "~/utils/theme";
 import { IconButton } from "./ui/icon-button";
+import { Menu } from "./ui/menu";
+import { HStack } from "styled-system/jsx";
 
 export const ThemeSwitchButton = () => {
-  const [isDark, setIsDark] = createSignal(false);
+  const [themeSelection, setThemeSelection] = createSignal(getTheme());
 
-  onMount(() => setIsDark(document.documentElement.classList.contains("dark")));
-
-  const toggleTheme = () => {
-    document.documentElement.classList.toggle("dark");
-    setIsDark(document.documentElement.classList.contains("dark"));
-    localStorage.setItem("theme", isDark() ? "dark" : "light");
-  };
+  createEffect(() => {
+    setTheme(themeSelection());
+  });
 
   return (
-    <IconButton variant="outline" size="lg" onClick={toggleTheme}>
-      {isDark() ? <MoonIcon /> : <SunIcon />}
-    </IconButton>
+    <Menu.Root>
+      <Menu.Trigger
+        asChild={(triggerProps) => (
+          <IconButton {...triggerProps()} variant="outline">
+            <Switch>
+              <Match when={themeSelection() === "light"}>
+                <SunIcon />
+              </Match>
+              <Match when={themeSelection() === "dark"}>
+                <MoonIcon />
+              </Match>
+              <Match when={true}>
+                <SunMoonIcon />
+              </Match>
+            </Switch>
+          </IconButton>
+        )}
+      />
+      <Menu.Positioner>
+        <Menu.Content>
+          <Menu.ItemGroup>
+            {/* <Menu.ItemGroupLabel>Theme</Menu.ItemGroupLabel>
+            <Menu.Separator /> */}
+            <Menu.Item
+              value="profile"
+              onClick={() => setThemeSelection("system")}
+            >
+              <HStack gap="2">
+                <SunMoonIcon />
+                System Theme
+              </HStack>
+            </Menu.Item>
+            <Menu.Item
+              value="billing"
+              onClick={() => setThemeSelection("light")}
+            >
+              <HStack gap="2">
+                <SunIcon /> Light Theme
+              </HStack>
+            </Menu.Item>
+            <Menu.Item
+              value="settings"
+              onClick={() => setThemeSelection("dark")}
+            >
+              <HStack gap="2">
+                <MoonIcon /> Dark Theme
+              </HStack>
+            </Menu.Item>
+          </Menu.ItemGroup>
+        </Menu.Content>
+      </Menu.Positioner>
+    </Menu.Root>
   );
 };

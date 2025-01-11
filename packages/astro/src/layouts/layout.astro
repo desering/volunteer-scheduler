@@ -1,51 +1,49 @@
 ---
 import { panda } from "styled-system/jsx";
 import "../index.css";
+import { type Theme, themeColors } from "~/utils/theme";
 
 interface Props {
   title: string;
 }
 
 const { title } = Astro.props;
+
+const theme = (Astro.cookies.get("theme")?.value || "system") as Theme;
+const color = {
+  light: themeColors.light,
+  dark: themeColors.dark,
+  system: "",
+}[theme];
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" class:list={[{ dark: theme === "dark" }]}>
   <head>
     <meta charset="UTF-8" />
     <meta name="description" content="Astro description" />
     <meta name="viewport" content="width=device-width" />
     <link rel="icon" type="image/svg+xml" href="/admin/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content={color} />
     <title>{title}</title>
 
-    <script is:inline>
-      const setTheme = () => {
-        const theme = (() => {
-          if (
-            typeof localStorage !== "undefined" &&
-            localStorage.getItem("theme")
-          ) {
-            return localStorage.getItem("theme");
-          }
-          if (matchMedia("(prefers-color-scheme: dark)").matches) {
-            return "dark";
-          }
-          return "light";
-        })();
-
-        if (theme === "light") {
-          document.documentElement.classList.remove("dark");
-        } else {
+    {
+      // only add this script if the theme is set to system
+      // this avoids a flash of light theme on page load
+      theme === "system" && (
+        <script is:inline>
+          const darkMediaQuery =
+          window.matchMedia("(prefers-color-scheme:dark)");
+          darkMediaQuery.matches &&
           document.documentElement.classList.add("dark");
-        }
+        </script>
+      )
+    }
+    <script>
+      import { applyTheme } from "~/utils/theme";
 
-        localStorage.setItem("theme", theme || "light");
-      };
-
-      setTheme();
-
-      document.addEventListener("astro:after-swap", setTheme);
+      applyTheme();
     </script>
   </head>
   <panda.body backgroundColor={{ base: "gray.4", _dark: "gray.2" }}>

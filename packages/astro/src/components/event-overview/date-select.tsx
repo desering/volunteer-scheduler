@@ -7,6 +7,7 @@ import { Text } from "../ui/text";
 type Props = {
   dates: {
     date: Date;
+    isPublished: boolean;
     hasEvents: boolean;
   }[];
 
@@ -48,18 +49,15 @@ export const DateSelect = (props: Props) => {
               variant={
                 isSelected(item.date)
                   ? "solid"
-                  : isBefore(item.date, startOfDay(new Date()))
-                    ? "ghost"
-                    : item.hasEvents
-                      ? "outline"
-                      : "ghost"
+                  : item.hasEvents
+                    ? "outline"
+                    : "ghost"
               }
-              disabled={isBefore(item.date, startOfDay(new Date()))}
+              disabled={!item.isPublished}
               onClick={() => props.onDateSelect(item.date)}
               display="block"
               height="auto"
               paddingY="4"
-              // fontWeight="unset"
             >
               <Text size="xl">{format(item.date, "dd")}</Text>
               <Text size="sm" fontWeight="medium">
