@@ -18,6 +18,9 @@ export const Events: CollectionConfig = {
       },
     },
   },
+  access: {
+    read: () => true,
+  },
   fields: [
     {
       type: "tabs",
