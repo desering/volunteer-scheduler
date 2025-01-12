@@ -94,7 +94,6 @@ export const getEventDetails = defineAction({
       }
     }
 
-    // console.log(transformedEvent);
     return transformedEvent;
   },
 });
