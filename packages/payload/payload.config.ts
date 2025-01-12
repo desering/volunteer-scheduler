@@ -19,8 +19,7 @@ export default buildConfig({
     admin: "/ui",
     api: "/api",
   },
-  serverURL:
-    process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:3001/admin",
+  serverURL: `${process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:3001"}/admin`,
   cors: [process.env.NEXT_PUBLIC_SERVER_URL || ""].filter(Boolean),
   csrf: [process.env.NEXT_PUBLIC_SERVER_URL || ""].filter(Boolean),
   plugins: [],
