@@ -10,6 +10,7 @@ const dirname = path.dirname(filename);
 
 const baseConfig = sharedConfig({
   baseDir: path.resolve(dirname, "src"),
+  enableMigrations: true,
 });
 
 export default buildConfig({
