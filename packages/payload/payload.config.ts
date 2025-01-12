@@ -14,10 +14,15 @@ const baseConfig = sharedConfig({
 });
 
 export default buildConfig({
-  routes: {
-    admin: "/",
-  },
   ...baseConfig,
+  routes: {
+    admin: "/ui",
+    api: "/api",
+  },
+  serverURL:
+    process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:3001/admin",
+  cors: [process.env.NEXT_PUBLIC_SERVER_URL || ""].filter(Boolean),
+  csrf: [process.env.NEXT_PUBLIC_SERVER_URL || ""].filter(Boolean),
   plugins: [],
   sharp,
   admin: {
