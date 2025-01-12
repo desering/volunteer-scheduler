@@ -80,7 +80,7 @@ export const EventDetailsDrawer = (props: Props) => {
 
     if (!start || !end) return;
 
-    return `${format(start, "iiii ii MMMM")}, ${format(start, "HH:mm")} - ${format(end, "HH:mm")}`;
+    return `${format(start, "iiii dd MMMM")}, ${format(start, "HH:mm")} - ${format(end, "HH:mm")}`;
   };
 
   const removeEvent = async (id: number) => {
