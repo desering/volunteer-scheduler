@@ -2,12 +2,9 @@
 
 import { getEventsInPeriod } from "@/actions";
 import { daysOfWeek } from "@/components/publish-event-template/constants";
+import { UTCDate } from "@date-fns/utc";
 import { Gutter } from "@payloadcms/ui";
-import {
-  QueryClient,
-  QueryClientProvider,
-  useQuery,
-} from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import {
   eachDayOfInterval,
   endOfMonth,
@@ -19,7 +16,7 @@ import {
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { css } from "styled-system/css";
-import { Box, Center, Grid, panda, VStack } from "styled-system/jsx";
+import { Box, Center, Grid, VStack, panda } from "styled-system/jsx";
 
 const useEventsByMonth = (start: Date, end: Date) => {
   const allDays = useMemo(
@@ -55,8 +52,8 @@ const useEventsByMonth = (start: Date, end: Date) => {
 };
 
 export const CalenderViewClient = () => {
-  const [start, setStart] = useState(startOfMonth(new Date()));
-  const [end, setEnd] = useState(endOfMonth(new Date()));
+  const [start, setStart] = useState(startOfMonth(new UTCDate()));
+  const [end, setEnd] = useState(endOfMonth(new UTCDate()));
 
   const { groupedByMonth } = useEventsByMonth(start, end);
 

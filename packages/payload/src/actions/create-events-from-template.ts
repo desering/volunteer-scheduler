@@ -5,6 +5,7 @@ import type { EventTemplate } from "@payload-types";
 import { getDate, getHours, getMinutes, getMonth, getYear } from "date-fns";
 import { type RequiredDataFromCollectionSlug, getPayload } from "payload";
 import { createRoles } from "./create-roles";
+import { UTCDate } from "@date-fns/utc";
 
 const payload = await getPayload({
   config,
@@ -12,7 +13,7 @@ const payload = await getPayload({
 
 export const createEventsFromTemplate = async (
   templateId: number,
-  selectedDays: Date[],
+  selectedDays: UTCDate[],
 ) => {
   const template = await payload.findByID({
     collection: "event-templates",
@@ -74,8 +75,8 @@ export const createEventsFromTemplate = async (
   }
 };
 
-const eventTemplateToEvent = (template: EventTemplate, day: Date) => {
-  const startTime = new Date(
+const eventTemplateToEvent = (template: EventTemplate, day: UTCDate) => {
+  const startTime = new UTCDate(
     getYear(day),
     getMonth(day),
     getDate(day),
@@ -83,7 +84,7 @@ const eventTemplateToEvent = (template: EventTemplate, day: Date) => {
     getMinutes(template.start_time),
   );
 
-  const endTime = new Date(
+  const endTime = new UTCDate(
     getYear(day),
     getMonth(day),
     getDate(day),
