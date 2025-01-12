@@ -71,7 +71,7 @@ export const Signups: CollectionConfig = {
               });
 
               if (
-                signups.totalDocs !== 0 &&
+                role.maxSignups !== 0 &&
                 signups.totalDocs >= role.maxSignups
               ) {
                 throw new APIError("This role is full", 400, undefined, true);
