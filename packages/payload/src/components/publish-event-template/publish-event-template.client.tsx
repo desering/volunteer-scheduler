@@ -9,6 +9,7 @@ import {
   isSameDay,
   startOfMonth,
 } from "date-fns";
+import { UTCDate } from "@date-fns/utc";
 import { useEffect, useMemo, useState } from "react";
 import { css, cx } from "styled-system/css";
 import { Box, Center, Grid, HStack, VStack, panda } from "styled-system/jsx";
@@ -35,8 +36,8 @@ const divider = css({
 });
 
 export const PublishEventTemplateForm = (props: { doc: EventTemplate }) => {
-  const [start, setStart] = useState(startOfMonth(new Date()));
-  const [end, setEnd] = useState(endOfMonth(new Date()));
+  const [start, setStart] = useState(startOfMonth(new UTCDate()));
+  const [end, setEnd] = useState(endOfMonth(new UTCDate()));
   const [selectedDays, setSelectedDays] = useState<Date[]>([]);
   const [shouldRefresh, setShouldRefresh] = useState(true);
 
