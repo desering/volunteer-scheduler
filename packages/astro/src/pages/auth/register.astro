@@ -89,6 +89,20 @@ if (Astro.request.method === "POST") {
           ))
         }
 
+        <panda.div width="full">
+          <label for="preferredName">Preferred Name:</label>
+          <input
+              type="text"
+              id="preferredName"
+              name="preferredName"
+              required
+              class={input({
+                size: "lg",
+              })}
+          />
+          <p>This will be visible to everyone</p>
+        </panda.div>
+
         <div>
           <label for="email">Email:</label>
           <input
@@ -100,10 +114,6 @@ if (Astro.request.method === "POST") {
               size: "lg",
             })}
           />
-          <p>
-            This will be your login! We only use this email to recover your
-            account
-          </p>
         </div>
         <HStack>
           <panda.div flexBasis="1/2">
@@ -133,20 +143,6 @@ if (Astro.request.method === "POST") {
           </panda.div>
         </HStack>
 
-        <panda.div width="full">
-          <label for="preferredName">Preferred Name:</label>
-          <input
-            type="text"
-            id="preferredName"
-            name="preferredName"
-            required
-            class={input({
-              size: "lg",
-            })}
-          />
-          <p>This preffered name will be visible for everyone</p>
-        </panda.div>
-
         <button
           type="submit"
           class:list={[
@@ -165,7 +161,7 @@ if (Astro.request.method === "POST") {
             css({ flexGrow: 1 }),
           ]}
         >
-          Return
+          Cancel
         </a>
       </form>
     </Container></panda.div
