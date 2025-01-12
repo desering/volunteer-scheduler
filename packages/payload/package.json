@@ -9,7 +9,7 @@
     "devsafe": "rm -rf .next && next dev",
     "build": "panda codegen && next build",
     "lint": "next lint",
-    "payload": "payload",
+    "payload": "PAYLOAD_CONFIG_PATH=payload.config.ts payload",
     "start": "next start",
     "generate:importmap": "PAYLOAD_CONFIG_PATH=payload.config.ts payload generate:importmap"
   },

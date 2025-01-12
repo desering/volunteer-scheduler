@@ -13,8 +13,6 @@ export const applyTheme = () => {
   const prefersDark = colorSchemeMediaQuery.matches;
   const userSetting = fromStorage("theme", "system") as Theme;
 
-  console.log(prefersDark, userSetting);
-
   const theme =
     userSetting === "system" ? (prefersDark ? "dark" : "light") : userSetting;
 
@@ -31,7 +29,9 @@ export const applyTheme = () => {
 };
 
 export const setTheme = (theme: Theme) => {
-  Cookies.set("theme", theme);
+  Cookies.set("theme", theme, {
+    sameSite: "strict",
+  });
   applyTheme();
 };
 

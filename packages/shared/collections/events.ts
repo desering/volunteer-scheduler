@@ -86,7 +86,7 @@ export const Events: CollectionConfig = {
               type: "join",
               collection: "sections",
               on: "event",
-              maxDepth: 0,
+              maxDepth: 1,
               admin: {
                 disableListColumn: true,
               },
@@ -102,7 +102,7 @@ export const Events: CollectionConfig = {
               type: "join",
               collection: "roles",
               on: "event",
-              maxDepth: 0,
+              maxDepth: 1,
               admin: {
                 // allowCreate: false,
                 disableListColumn: true,
@@ -119,7 +119,7 @@ export const Events: CollectionConfig = {
               type: "join",
               collection: "signups",
               on: "event",
-              maxDepth: 0,
+              maxDepth: 1,
               admin: {
                 // allowCreate: false,
                 disableListColumn: true,
