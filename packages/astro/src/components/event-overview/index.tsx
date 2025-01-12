@@ -101,67 +101,59 @@ export const EventOverview = (props: Props & BoxProps) => {
                   )}
                 >
                   {([, events]) => (
-                    <panda.div>
-                      <Flex
-                        flexDir="column"
-                        gap="4"
-                        width={{ base: "100%", md: "300px" }}
-                      >
-                        <For each={events}>
-                          {(event) => {
-                            const length = event.doc.signups?.docs?.length ?? 0;
-                            return (
-                              <panda.button
-                                onClick={() => {
-                                  setIsDrawerOpen(true);
-                                  setSelectedEvent(event);
-                                }}
-                                backgroundColor={{
-                                  base: "colorPalette.1",
-                                  _dark: "colorPalette.4",
-                                }}
-                                paddingX="4"
-                                paddingY="6"
-                                cursor="pointer"
-                                textAlign="left"
-                                borderRadius="l3"
-                                class="group"
-                              >
-                                <panda.p>
-                                  {format(event.start_date, "HH:mm")} -{" "}
-                                  {format(event.end_date, "HH:mm")}
-                                </panda.p>
+                    <For each={events}>
+                      {(event) => {
+                        const length = event.doc.signups?.docs?.length ?? 0;
+                        return (
+                          <panda.button
+                            onClick={() => {
+                              setIsDrawerOpen(true);
+                              setSelectedEvent(event);
+                            }}
+                            backgroundColor={{
+                              base: "colorPalette.1",
+                              _dark: "colorPalette.4",
+                            }}
+                            paddingX="4"
+                            paddingY="6"
+                            cursor="pointer"
+                            textAlign="left"
+                            borderRadius="l3"
+                            class="group"
+                          >
+                            <panda.p>
+                              {format(event.start_date, "HH:mm")} -{" "}
+                              {format(event.end_date, "HH:mm")}
+                            </panda.p>
 
-                                <panda.h5 fontSize="xl" fontWeight="semibold">
-                                  {event.doc.title}
-                                </panda.h5>
+                            <panda.h5 fontSize="xl" fontWeight="semibold">
+                              {event.doc.title}
+                            </panda.h5>
 
-                                <Show when={event.descriptionHtml}>
-                                  {(html) => (
-                                    <panda.div
-                                      color="colorPalette.3"
-                                      _groupHover={{ color: "colorPalette.11" }}
-                                      innerHTML={html()}
-                                    />
-                                  )}
-                                </Show>
+                            <Show when={event.descriptionHtml}>
+                              {(html) => (
+                                <panda.div
+                                  color="colorPalette.3"
+                                  _groupHover={{ color: "colorPalette.11" }}
+                                  innerHTML={html()}
+                                />
+                              )}
+                            </Show>
 
-                                <panda.div marginTop="4">
-                                  <Switch>
-                                    <Match when={length === 0}>
-                                      Nobody signed up yet :( be the first!
-                                    </Match>
-                                    <Match when={length !== 0}>
-                                      {`${length} ${length === 1 ? "person" : "people"} signed up!`}
-                                    </Match>
-                                  </Switch>
-                                </panda.div>
-                              </panda.button>
-                            );
-                          }}
-                        </For>
-                      </Flex>
-                    </panda.div>
+                            <panda.div marginTop="4">
+                              <Switch>
+                                <Match when={length === 0}>
+                                  Nobody signed up yet :( be the first!
+                                </Match>
+                                <Match when={length !== 0}>
+                                  {`${length} ${length === 1 ? "person" : "people"} signed up!`}
+                                </Match>
+                              </Switch>
+                            </panda.div>
+                          </panda.button>
+                        );
+                      }}
+                    </For>
                   )}
                 </Show>
               </Grid>

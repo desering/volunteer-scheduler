@@ -31,7 +31,7 @@ export const sheet = defineSlotRecipe({
       display: "flex",
       justifyContent: "center",
       position: "fixed",
-      width: { base: "100vw", md: "xl" },
+      width: { base: "100vw", md: "lg" },
       zIndex: "modal",
     },
     content: {
@@ -131,7 +131,7 @@ export const sheet = defineSlotRecipe({
         },
         content: {
           // borderRadius: "unset",
-          borderTopRadius: "1.5rem",
+          borderTopRadius: "1.25rem",
 
           _open: {
             animation: "drawer-in-bottom",

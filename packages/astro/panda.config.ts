@@ -45,6 +45,19 @@ export default defineConfig({
       },
       slotRecipes: {
         sheet,
+        radioButtonGroup: {
+          variants: {
+            direction: {
+              horizontal: {},
+              vertical: {
+                root: {
+                  display: "flex",
+                  flexDirection: "column",
+                },
+              },
+            },
+          },
+        },
       },
     },
   },

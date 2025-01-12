@@ -1,5 +1,6 @@
 import { defineAction } from "astro:actions";
 import { z } from "astro:schema";
+import { convertLexicalToHTML } from "~/utils/convert-lexical-to-html";
 
 export const getEventDetails = defineAction({
   input: z.object({
@@ -19,21 +20,24 @@ export const getEventDetails = defineAction({
     });
 
     // Narrow down to keep frontend simple
-    // Roles are assigned to sections and remaining added to the event
+    // Roles are assigned to their sections, any remaining added to the event itself
     // Signups are added to the relevant roles
-    const s = {
+    const transformedEvent = {
       ...event,
       id: forceNumber(event.id),
+      descriptionHtml: "" as string | null | undefined,
       sections: {
         ...event.sections,
         docs: mapObjects(event.sections?.docs, (section) => ({
           ...section,
           roles: {
             ...section.roles,
+
             docs: mapObjects(
               event.roles?.docs,
               (role) => ({
                 ...role,
+                descriptionHtml: "" as string | null | undefined,
                 signups: {
                   ...role.signups,
                   docs: mapObjects(
@@ -55,6 +59,7 @@ export const getEventDetails = defineAction({
           (role) => ({
             ...role,
             section: forceNumber(role.section),
+            descriptionHtml: "" as string | null | undefined,
             signups: {
               ...role.signups,
               docs: mapObjects(
@@ -77,7 +82,19 @@ export const getEventDetails = defineAction({
       },
     };
 
-    return s;
+    // add descriptionHtml
+    for (const role of transformedEvent.roles.docs) {
+      role.descriptionHtml =
+        role.description && (await convertLexicalToHTML(role.description));
+    }
+    for (const section of transformedEvent.sections.docs) {
+      for (const role of section.roles.docs) {
+        role.descriptionHtml =
+          role.description && (await convertLexicalToHTML(role.description));
+      }
+    }
+
+    return transformedEvent;
   },
 });
 
@@ -89,6 +106,16 @@ const mapObject = <T, S>(
   map: (value: (T & object) | (T & null)) => S,
 ) => (typeof value === "object" ? map(value) : null);
 
+/**
+ * Maps an array of objects to a new array of transformed objects, with optional filtering
+ *
+ * @template T - The type of the input array elements
+ * @template S - The type of the output array elements
+ * @param values - The input array to map over
+ * @param map - A function that transforms each element from type T to type S
+ * @param filter - Optional predicate function to filter the mapped results
+ * @returns A new array containing the mapped and filtered elements, or an empty array if input is null/undefined
+ */
 const mapObjects = <T, S>(
   values: T[] | null | undefined,
   map: (value: (T & object) | (T & null)) => S,
@@ -97,3 +124,5 @@ const mapObjects = <T, S>(
   (values
     ?.map((value) => mapObject(value, map))
     .filter((value) => !!value && (!filter || filter?.(value))) as S[]) ?? [];
+
+export type EventDetails = Awaited<ReturnType<typeof getEventDetails>>["data"];
