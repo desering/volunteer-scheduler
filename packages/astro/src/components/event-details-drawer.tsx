@@ -244,6 +244,7 @@ export const EventDetailsDrawer = (props: Props) => {
                   <Button
                     width="full"
                     variant="solid"
+                    colorPalette={hasUserSignedUp() ? "tomato" : "olive"}
                     disabled={!hasUserSignedUp() && !selectedRoleId()}
                     onClick={() => {
                       if (!details.latest?.data?.id)

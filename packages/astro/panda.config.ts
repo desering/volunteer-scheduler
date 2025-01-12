@@ -2,6 +2,7 @@ import { defineConfig } from "@pandacss/dev";
 import { createPreset } from "@park-ui/panda-preset";
 import olive from "@park-ui/panda-preset/colors/olive";
 import sand from "@park-ui/panda-preset/colors/sand";
+import tomato from "@park-ui/panda-preset/colors/tomato";
 import { sheet } from "~/components/ui/recipes/sheet";
 
 export default defineConfig({
@@ -41,6 +42,14 @@ export default defineConfig({
           "drawer-out-bottom": {
             value: "slide-out-bottom 300ms {easings.emphasized-out}",
           },
+        },
+        colors: {
+          tomato: tomato.tokens,
+        },
+      },
+      semanticTokens: {
+        colors: {
+          tomato: tomato.semanticTokens,
         },
       },
       slotRecipes: {
