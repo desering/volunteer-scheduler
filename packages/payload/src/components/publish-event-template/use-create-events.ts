@@ -1,10 +1,11 @@
 import { createEventsFromTemplate } from "@/actions";
+import type { UTCDate } from "@date-fns/utc";
 import { toast } from "@payloadcms/ui";
 import { useState } from "react";
 
 export const useCreateEvents = (
   templateId: number,
-  selectedDays: Date[],
+  selectedDays: UTCDate[],
   onCreated: () => void,
 ) => {
   const [isCreating, setIsCreating] = useState(false);
