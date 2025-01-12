@@ -2,20 +2,20 @@ import type { Assign, PolymorphicProps } from "@ark-ui/solid";
 import { Dialog } from "@ark-ui/solid/dialog";
 import { ark } from "@ark-ui/solid/factory";
 import type { ComponentProps } from "solid-js";
-import { type DrawerVariantProps, drawer } from "styled-system/recipes/drawer";
 import type { HTMLPandaProps } from "styled-system/types";
 import { createStyleContext } from "./utils/create-style-context";
+import { sheet, type SheetVariantProps } from "styled-system/recipes";
 
-const { withRootProvider, withContext } = createStyleContext(drawer);
+const { withRootProvider, withContext } = createStyleContext(sheet);
 
 export type RootProviderProps = ComponentProps<typeof RootProvider>;
 export const RootProvider = withRootProvider<
-  Assign<Dialog.RootProps, DrawerVariantProps>
+  Assign<Dialog.RootProps, SheetVariantProps>
 >(Dialog.RootProvider);
 
 export type RootProps = ComponentProps<typeof Root>;
 export const Root = withRootProvider<
-  Assign<Dialog.RootProps, DrawerVariantProps>
+  Assign<Dialog.RootProps, SheetVariantProps>
 >(Dialog.Root);
 
 export type BackdropProps = ComponentProps<typeof Backdrop>;

@@ -1,40 +1,18 @@
 import type { Event } from "../../../shared/payload-types";
-import {
-  consolidateHTMLConverters,
-  convertLexicalToHTML,
-  defaultEditorConfig,
-  defaultEditorFeatures,
-  HTMLConverterFeature,
-  sanitizeServerEditorConfig,
-} from "@payloadcms/richtext-lexical";
-import { getPayloadInstance } from "./global-payload";
+import { convertLexicalToHTML } from "./convert-lexical-to-html";
 
 export const groupAndSortEventsByDate = async (
   events: Event[],
 ): Promise<EventsByDay> => {
   // https://payloadcms.com/docs/lexical/converters#generating-html-anywhere-on-the-server
-  const editorConfig = defaultEditorConfig;
-  editorConfig.features = [...defaultEditorFeatures, HTMLConverterFeature({})];
-  const sanitizedEditorConfig = await sanitizeServerEditorConfig(
-    editorConfig,
-    (await getPayloadInstance()).config,
-  );
 
   const mappedEvents = await Promise.all(
     events.map(async (doc) => {
-      let descriptionHtml: string | undefined = undefined;
-      if (doc.description) {
-        descriptionHtml = await convertLexicalToHTML({
-          converters: consolidateHTMLConverters({
-            editorConfig: sanitizedEditorConfig,
-          }),
-          data: doc.description,
-        });
-      }
-
       return {
         doc,
-        descriptionHtml,
+        descriptionHtml: doc.description
+          ? await convertLexicalToHTML(doc.description)
+          : undefined,
         start_date: new Date(doc.start_date),
         end_date: new Date(doc.end_date),
       } satisfies RenderedEvent;

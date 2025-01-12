@@ -4,7 +4,7 @@
 
 import { generatePayloadCookie } from "payload";
 import { css } from "styled-system/css/css";
-import { Flex, HStack, panda } from "styled-system/jsx";
+import { Container, Flex, HStack, panda } from "styled-system/jsx";
 import { vstack } from "styled-system/patterns";
 import { button } from "styled-system/recipes/button";
 import { input } from "styled-system/recipes/input";
@@ -72,100 +72,102 @@ if (Astro.request.method === "POST") {
     justifyContent="center"
     alignItems="center"
   >
-    <form method="POST" class={vstack({ alignItems: "stretch" })}>
-      {
-        errors.map((error) => (
-          <panda.div
-            class={css({
-              color: "gray.1",
-              backgroundColor: "tomato",
-              paddingX: "4",
-              paddingY: "2",
+    <Container>
+      <form method="POST" class={vstack({ alignItems: "stretch" })}>
+        {
+          errors.map((error) => (
+            <panda.div
+              class={css({
+                color: "gray.1",
+                backgroundColor: "tomato",
+                paddingX: "4",
+                paddingY: "2",
+              })}
+            >
+              <panda.div>{error}</panda.div>
+            </panda.div>
+          ))
+        }
+
+        <div>
+          <label for="email">Email:</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            required
+            class={input({
+              size: "lg",
             })}
-          >
-            <panda.div>{error}</panda.div>
+          />
+          <p>
+            This will be your login! We only use this email to recover your
+            account
+          </p>
+        </div>
+        <HStack>
+          <panda.div flexBasis="1/2">
+            <label for="password">Password:</label>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              required
+              class={input({
+                size: "lg",
+              })}
+            />
           </panda.div>
-        ))
-      }
 
-      <div>
-        <label for="email">Email:</label>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          required
-          class={input({
-            size: "lg",
-          })}
-        />
-        <p>
-          This will be your login! We only use this email to recover your
-          account
-        </p>
-      </div>
-      <HStack>
-        <panda.div flexBasis="1/2">
-          <label for="password">Password:</label>
+          <panda.div flexBasis="1/2">
+            <label for="password">Confirm Password:</label>
+            <input
+              type="password"
+              id="password-again"
+              name="password-again"
+              required
+              class={input({
+                size: "lg",
+              })}
+            />
+          </panda.div>
+        </HStack>
+
+        <panda.div width="full">
+          <label for="preferredName">Preferred Name:</label>
           <input
-            type="password"
-            id="password"
-            name="password"
+            type="text"
+            id="preferredName"
+            name="preferredName"
             required
             class={input({
               size: "lg",
             })}
           />
+          <p>This preffered name will be visible for everyone</p>
         </panda.div>
 
-        <panda.div flexBasis="1/2">
-          <label for="password">Confirm Password:</label>
-          <input
-            type="password"
-            id="password-again"
-            name="password-again"
-            required
-            class={input({
-              size: "lg",
-            })}
-          />
-        </panda.div>
-      </HStack>
+        <button
+          type="submit"
+          class:list={[
+            button({ size: "lg", variant: "solid" }),
+            css({ flexGrow: 1 }),
+          ]}
+        >
+          Register
+        </button>
 
-      <panda.div width="full">
-        <label for="preferredName">Preferred Name:</label>
-        <input
-          type="text"
-          id="preferredName"
-          name="preferredName"
-          required
-          class={input({
-            size: "lg",
-          })}
-        />
-        <p>This preffered name will be visible for everyone</p>
-      </panda.div>
-
-      <button
-        type="submit"
-        class:list={[
-          button({ size: "lg", variant: "solid" }),
-          css({ flexGrow: 1 }),
-        ]}
-      >
-        Register
-      </button>
-
-      <a
-        type="button"
-        onclick="window.location.href='/'"
-        class:list={[
-          button({ size: "lg", variant: "outline" }),
-          css({ flexGrow: 1 }),
-        ]}
-      >
-        Return
-      </a>
-    </form>
-  </panda.div>
+        <a
+          type="button"
+          onclick="window.location.href='/'"
+          class:list={[
+            button({ size: "lg", variant: "outline" }),
+            css({ flexGrow: 1 }),
+          ]}
+        >
+          Return
+        </a>
+      </form>
+    </Container></panda.div
+  >
 </Layout>

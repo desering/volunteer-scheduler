@@ -1,15 +1,17 @@
 import { defineConfig } from "@pandacss/dev";
 import { createPreset } from "@park-ui/panda-preset";
-import neutral from "@park-ui/panda-preset/colors/neutral";
+import olive from "@park-ui/panda-preset/colors/olive";
 import sand from "@park-ui/panda-preset/colors/sand";
+import tomato from "@park-ui/panda-preset/colors/tomato";
+import { sheet } from "~/components/ui/recipes/sheet";
 
 export default defineConfig({
   preflight: true,
   presets: [
     createPreset({
-      accentColor: neutral,
+      accentColor: olive,
       grayColor: sand,
-      radius: "none",
+      radius: "2xl",
     }),
   ],
   include: [
@@ -22,27 +24,47 @@ export default defineConfig({
   jsxFactory: "panda",
   theme: {
     extend: {
-      recipes: {
-        button: {
+      keyframes: {
+        "slide-in-bottom": {
+          "0%": { transform: "translateY(100%)" },
+          "100%": { transform: "translateY(0%)" },
+        },
+        "slide-out-bottom": {
+          "0%": { transform: "translateY(0%)" },
+          "100%": { transform: "translateY(100%)" },
+        },
+      },
+      tokens: {
+        animations: {
+          "drawer-in-bottom": {
+            value: "slide-in-bottom 400ms {easings.emphasized-in}",
+          },
+          "drawer-out-bottom": {
+            value: "slide-out-bottom 300ms {easings.emphasized-out}",
+          },
+        },
+        colors: {
+          tomato: tomato.tokens,
+        },
+      },
+      semanticTokens: {
+        colors: {
+          tomato: tomato.semanticTokens,
+        },
+      },
+      slotRecipes: {
+        sheet,
+        radioButtonGroup: {
           variants: {
-            variant: {
-              outline: {
-                borderWidth: "2px",
-                borderColor: "colorPalette.12",
-
-                _focusVisible: {
-                  outline: "2px solid",
-                  outlineColor: "colorPalette.12",
-                  outlineOffset: "2px",
+            direction: {
+              horizontal: {},
+              vertical: {
+                root: {
+                  display: "flex",
+                  flexDirection: "column",
                 },
               },
             },
-          },
-        },
-        input: {
-          base: {
-            borderWidth: "2px",
-            borderColor: "colorPalette.12",
           },
         },
       },
