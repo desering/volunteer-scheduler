@@ -1,5 +1,5 @@
 import { format, isBefore, startOfDay } from "date-fns";
-import { For, createEffect, createSelector } from "solid-js";
+import { For, createEffect, createSelector, onMount } from "solid-js";
 import { Flex, panda } from "styled-system/jsx";
 import { Button } from "../ui/button";
 import { Text } from "../ui/text";
@@ -33,15 +33,15 @@ export const DateSelect = (props: Props) => {
         {(item) => {
           let ref!: HTMLButtonElement;
 
-          createEffect(() => {
-            if (!isSelected(item.date)) return;
-
+          const scrollTo = (behavior: ScrollBehavior) =>
             ref.scrollIntoView({
-              behavior: "smooth",
+              behavior,
               inline: "center",
               block: "nearest",
             });
-          });
+
+          onMount(() => isSelected(item.date) && scrollTo("instant"));
+          createEffect(() => isSelected(item.date) && scrollTo("smooth"));
 
           return (
             <Button

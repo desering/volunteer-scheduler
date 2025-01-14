@@ -10,27 +10,27 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@ark-ui/solid": "^4.6.0",
+    "@ark-ui/solid": "^4.9.0",
     "@astrojs/check": "^0.9.4",
-    "@astrojs/node": "^9.0.0",
-    "@astrojs/solid-js": "^5.0.1",
+    "@astrojs/node": "^9.0.1",
+    "@astrojs/solid-js": "^5.0.2",
     "@pandacss/studio": "^0.51.1",
     "@types/canvas-confetti": "^1.9.0",
     "@types/js-cookie": "^3.0.6",
-    "astro": "^5.1.1",
+    "astro": "^5.1.6",
     "canvas-confetti": "^1.9.3",
     "date-fns": "^4.1.0",
     "js-cookie": "^3.0.5",
-    "lucide-solid": "^0.469.0",
+    "lucide-solid": "^0.471.0",
     "mutative": "^1.1.0",
-    "payload": "3.15.1",
-    "solid-js": "^1.9.3",
-    "typescript": "^5.7.2",
-    "vite": "^6.0.5"
+    "payload": "^3.17.1",
+    "solid-js": "^1.9.4",
+    "typescript": "^5.7.3",
+    "vite": "^6.0.7"
   },
   "devDependencies": {
-    "@pandacss/dev": "^0.49.0",
-    "@pandacss/preset-base": "^0.49.0",
+    "@pandacss/dev": "^0.51.1",
+    "@pandacss/preset-base": "^0.51.1",
     "@park-ui/panda-preset": "^0.43.1",
     "prettier": "^3.4.2",
     "prettier-plugin-astro": "^0.14.1"

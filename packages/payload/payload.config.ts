@@ -18,7 +18,6 @@ export default buildConfig({
   routes: {
     admin: "/",
   },
-  // serverURL: `${process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:3001"}`,
   cors: [process.env.NEXT_PUBLIC_SERVER_URL || ""].filter(Boolean),
   csrf: [process.env.NEXT_PUBLIC_SERVER_URL || ""].filter(Boolean),
   plugins: [],
@@ -30,8 +29,8 @@ export default buildConfig({
 
       views: {
         calender: {
-          Component: "/components/views/calender-view#CalenderView",
-          path: "/calender/:collectionSlug",
+          Component: "/views/calender-view#CalenderView",
+          path: "calender/:collectionSlug",
         },
       },
     },
