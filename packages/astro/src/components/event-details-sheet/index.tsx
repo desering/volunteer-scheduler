@@ -42,11 +42,7 @@ type Props = {
 export const EventDetailsDrawer = (props: Props) => {
   const [details, { refetch }] = createResource(
     () => props.event?.doc.id,
-    async (id) => {
-      // TODO REMOVE THIS
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      return await actions.getEventDetails({ id });
-    },
+    async (id) => await actions.getEventDetails({ id }),
   );
 
   const [selectedRoleId, setSelectedRoleId] = createSignal<string | null>(null);
