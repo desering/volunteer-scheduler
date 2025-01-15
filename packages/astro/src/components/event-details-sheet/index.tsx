@@ -54,28 +54,19 @@ export const EventDetailsDrawer = (props: Props) => {
       : details.latest?.data,
   );
 
-  const selectedRole = () =>
-    latest()?.roles?.docs.find(({ id }) => id === Number(selectedRoleId()));
+  const selectedRole = () => {
+    const roleId = Number(selectedRoleId());
+    return (
+      latest()?.roles?.docs.find(({ id }) => id === roleId) ??
+      latest()
+        ?.sections.docs.flatMap((s) => s.roles?.docs ?? [])
+        .find(({ id }) => id === roleId)
+    );
+  };
   const userSignups = () =>
     latest()?.signups?.docs.filter(({ user }) => user === props.user?.id);
   const hasUserSignedUp = () => (userSignups()?.length ?? 0) > 0;
   const newEventLoading = () => latest()?.id !== props.event?.doc.id;
-
-  createEffect<boolean | undefined>((selected) => {
-    // Reset selected role on exit
-    if (!props.event?.doc.id) {
-      setSelectedRoleId(null);
-      return false;
-    }
-
-    // On initial eventload, select the role the user has signed up for
-    const shouldSelectRole = !selected && !newEventLoading();
-    if (shouldSelectRole) {
-      selectCurrentRole();
-      return true;
-    }
-  });
-
   const timeRange = () => {
     const start = props.event?.start_date;
     const end = props.event?.end_date;
@@ -85,43 +76,34 @@ export const EventDetailsDrawer = (props: Props) => {
     return `${format(start, "iiii dd MMMM")}, ${format(start, "HH:mm")} - ${format(end, "HH:mm")}`;
   };
 
-  const removeSignup = async (id: number) => {
+  createEffect<boolean | undefined>((selected) => {
+    // Reset selected role on exit
+    if (!props.event?.doc.id) {
+      setSelectedRoleId(null);
+      return false;
+    }
+
+    // On new event, select the role the user has signed up for
+    const shouldSelectRole = !selected && !newEventLoading();
+    if (shouldSelectRole) {
+      selectCurrentRole();
+      return true;
+    }
+  });
+
+  const deleteSignup = async (id: number) => {
     await actions.deleteSignup({ id });
     await refetch();
+
     setSelectedRoleId(null);
   };
 
   const createSignup = async (event: number, role: number) => {
     await actions.createSignup({ event, role });
     await refetch();
+
     selectCurrentRole();
-
-    const end = Date.now() + 2500;
-    const colors = ["#bb0000", "#ffffff"];
-    const animate = () => {
-      confetti({
-        particleCount: 4,
-        angle: 60,
-        spread: 55,
-        origin: { x: 0 },
-        colors: colors,
-        zIndex: 5000,
-      });
-      confetti({
-        particleCount: 4,
-        angle: 120,
-        spread: 55,
-        origin: { x: 1 },
-        colors: colors,
-        zIndex: 5000,
-      });
-
-      if (Date.now() < end) {
-        setTimeout(() => animate(), 100);
-      }
-    };
-
-    animate();
+    animateFireworks();
   };
 
   const selectCurrentRole = () =>
@@ -131,6 +113,27 @@ export const EventDetailsDrawer = (props: Props) => {
         .map((signup) => signup.role?.toString())
         .shift() ?? null,
     );
+
+  const onSigningButtonClicked = () => {
+    const id = latest()?.id;
+    if (!id) throw new Error("Unexpected, missing event id");
+
+    const _selectedRoleId = selectedRoleId();
+    const _selectedRole = _selectedRoleId
+      ? Number.parseInt(_selectedRoleId)
+      : undefined;
+    if (!_selectedRole) throw new Error("Unexpected, missing role id");
+
+    if (hasUserSignedUp()) {
+      const signup = userSignups()?.find((su) => su.role === _selectedRole);
+      if (!signup) return;
+
+      deleteSignup(signup.id);
+      return;
+    }
+
+    createSignup(id, _selectedRole);
+  };
 
   return (
     <Sheet.Root
@@ -151,7 +154,7 @@ export const EventDetailsDrawer = (props: Props) => {
           <Sheet.Content
             maxHeight={{ base: "80vh", md: "100vh" }}
             overflowY="auto"
-            // avoid flash of old content on open
+            // avoid flash of old content on open, delay open animation
             display={newEventLoading() ? "none" : undefined}
           >
             <Suspense>
@@ -254,29 +257,7 @@ export const EventDetailsDrawer = (props: Props) => {
                       colorPalette={hasUserSignedUp() ? "tomato" : "olive"}
                       disabled={!hasUserSignedUp() && !selectedRoleId()}
                       loading={details.loading}
-                      onClick={() => {
-                        const id = latest()?.id;
-                        if (!id)
-                          throw new Error("Unexpected, missing event id");
-
-                        const _selectedRole = Number.parseInt(
-                          selectedRoleId() ?? "",
-                        );
-                        if (!_selectedRole)
-                          throw new Error("Unexpected, missing role id");
-
-                        if (hasUserSignedUp()) {
-                          const signup = userSignups()?.find(
-                            (su) => su.role === _selectedRole,
-                          );
-                          if (!signup) return;
-
-                          removeSignup(signup.id);
-                          return;
-                        }
-
-                        createSignup(id, _selectedRole);
-                      }}
+                      onClick={() => onSigningButtonClicked()}
                     >
                       <Switch>
                         <Match when={!selectedRoleId()}>Select a role</Match>
@@ -298,4 +279,29 @@ export const EventDetailsDrawer = (props: Props) => {
       </Portal>
     </Sheet.Root>
   );
+};
+
+const end = Date.now() + 2500;
+const colors = ["#bb0000", "#ffffff"];
+const animateFireworks = () => {
+  confetti({
+    particleCount: 4,
+    angle: 60,
+    spread: 55,
+    origin: { x: 0 },
+    colors: colors,
+    zIndex: 5000,
+  });
+  confetti({
+    particleCount: 4,
+    angle: 120,
+    spread: 55,
+    origin: { x: 1 },
+    colors: colors,
+    zIndex: 5000,
+  });
+
+  if (Date.now() < end) {
+    setTimeout(() => animateFireworks(), 100);
+  }
 };
