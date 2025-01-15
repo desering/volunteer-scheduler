@@ -1,6 +1,5 @@
 import type { User } from "@payload-types";
 import { actions } from "astro:actions";
-import { format } from "date-fns";
 import {
   For,
   Match,
@@ -13,7 +12,7 @@ import {
   createSignal,
 } from "solid-js";
 import { Portal } from "solid-js/web";
-import { Bleed, Divider, HStack, panda } from "styled-system/jsx";
+import { HStack, panda } from "styled-system/jsx";
 import { button } from "styled-system/recipes/button";
 import type { RenderedEvent } from "~/utils/map-events";
 import { Alert } from "../ui/alert";
@@ -27,6 +26,7 @@ import confetti from "canvas-confetti";
 
 import InfoIcon from "lucide-solid/icons/info";
 import XIcon from "lucide-solid/icons/x";
+import { format } from "~/utils/tz-format";
 import { RoleRadioItems } from "./role-radio-items";
 
 type Props = {
