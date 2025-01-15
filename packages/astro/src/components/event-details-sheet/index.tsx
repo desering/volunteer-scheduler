@@ -1,4 +1,4 @@
-import type { Role, User } from "@payload-types";
+import type { User } from "@payload-types";
 import { actions } from "astro:actions";
 import { format } from "date-fns";
 import {
@@ -15,7 +15,6 @@ import {
 import { Portal } from "solid-js/web";
 import { Bleed, Divider, HStack, panda } from "styled-system/jsx";
 import { button } from "styled-system/recipes/button";
-import type { EventDetails } from "~/actions/get-event-detail";
 import type { RenderedEvent } from "~/utils/map-events";
 import { Alert } from "../ui/alert";
 import { Badge } from "../ui/badge";
@@ -28,6 +27,7 @@ import confetti from "canvas-confetti";
 
 import InfoIcon from "lucide-solid/icons/info";
 import XIcon from "lucide-solid/icons/x";
+import { RoleRadioItems } from "./role-radio-items";
 
 type Props = {
   user?: User;
@@ -182,7 +182,7 @@ export const EventDetailsDrawer = (props: Props) => {
                 />
               </Sheet.Header>
               <Sheet.Body justifyContent="end">
-                <panda.h2 fontSize="lg" fontWeight="semibold" marginBottom="2">
+                <panda.h2 fontSize="xl" fontWeight="semibold" marginBottom="2">
                   Select a role
                 </panda.h2>
 
@@ -192,7 +192,7 @@ export const EventDetailsDrawer = (props: Props) => {
                   onValueChange={(event) => setSelectedRoleId(event.value)}
                   disabled={details.loading}
                 >
-                  <RoleRows
+                  <RoleRadioItems
                     details={latest()}
                     roles={
                       latest()?.roles?.docs.filter((role) => !role.section) ??
@@ -203,25 +203,21 @@ export const EventDetailsDrawer = (props: Props) => {
 
                   <For each={latest()?.sections?.docs}>
                     {(section) => (
-                      <panda.div marginTop="8">
+                      <>
                         <panda.h3
-                          fontSize="xl"
-                          fontWeight="semibold"
-                          marginBottom="2"
+                          fontSize="lg"
+                          fontWeight="medium"
+                          marginTop="4"
                         >
                           {section.title}
                         </panda.h3>
 
-                        <Bleed inline="6">
-                          <Divider />
-                        </Bleed>
-
-                        <RoleRows
+                        <RoleRadioItems
                           details={latest()}
                           roles={section.roles?.docs ?? []}
                           user={props.user}
                         />
-                      </panda.div>
+                      </>
                     )}
                   </For>
                 </RadioButtonGroup.Root>
@@ -305,73 +301,5 @@ export const EventDetailsDrawer = (props: Props) => {
         </Sheet.Positioner>
       </Portal>
     </Sheet.Root>
-  );
-};
-
-const RolesNotFoundRow = () => (
-  <>
-    <panda.p py="4">No roles found :(</panda.p>
-
-    <Bleed inline="6">
-      <Divider />
-    </Bleed>
-  </>
-);
-
-type RoleRowsProps = {
-  details?: EventDetails;
-  roles: Role[];
-  user?: User;
-};
-
-const RoleRows = (props: RoleRowsProps) => {
-  const userSignups = () =>
-    props.details?.signups?.docs.filter(
-      (signup) => signup.user === props.user?.id,
-    );
-
-  const hasUserSignedUp = () => (userSignups()?.length ?? 0) > 0;
-
-  return (
-    <For each={props.roles}>
-      {(role) => {
-        const userSignedToThisRole = !!userSignups()?.find(
-          (su) => su.role === role.id,
-        );
-        const isRoleFull =
-          role.maxSignups === role.signups?.docs?.length && role.maxSignups > 0;
-
-        const shouldDisable = () => {
-          if (userSignedToThisRole) return false;
-          if (isRoleFull) return true;
-          if (hasUserSignedUp()) return true;
-        };
-
-        return (
-          <RadioButtonGroup.Item
-            value={role.id.toString()}
-            px="0"
-            justifyContent="start"
-            disabled={shouldDisable()}
-          >
-            <RadioButtonGroup.ItemControl />
-            <RadioButtonGroup.ItemText
-              justifyContent="space-between"
-              width="full"
-              px="4"
-            >
-              <div>{role.title}</div>
-              <div>
-                {props.details?.signups?.docs
-                  ?.filter((su) => su.role === role.id)
-                  ?.map((su) => su.title)
-                  .join(", ") || "Open"}
-              </div>
-            </RadioButtonGroup.ItemText>
-            <RadioButtonGroup.ItemHiddenInput />
-          </RadioButtonGroup.Item>
-        );
-      }}
-    </For>
   );
 };
