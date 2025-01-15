@@ -40,10 +40,7 @@ export const DateSelect = (props: Props) => {
               block: "nearest",
             });
 
-          onMount(() => {
-            console.log("mounting");
-            isSelected(item().date) && scrollTo("instant");
-          });
+          onMount(() => isSelected(item().date) && scrollTo("instant"));
           createEffect(() => isSelected(item().date) && scrollTo("smooth"));
 
           return (
