@@ -28,7 +28,7 @@ import {
 } from "styled-system/jsx";
 import type { EventsByDay, RenderedEvent } from "~/utils/map-events";
 import type { User } from "../../../../shared/payload-types";
-import { EventDetailsDrawer } from "../event-details-drawer";
+import { EventDetailsDrawer } from "../event-details-sheet";
 import { DateSelect } from "./date-select";
 
 type Props = {
