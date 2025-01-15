@@ -43,24 +43,27 @@ export const EventDetailsDrawer = (props: Props) => {
   const [details, { refetch }] = createResource(
     () => props.event?.doc.id,
     async (id) => {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // TODO REMOVE THIS
+      await new Promise((resolve) => setTimeout(resolve, 1500));
       return await actions.getEventDetails({ id });
     },
   );
 
   const [selectedRoleId, setSelectedRoleId] = createSignal<string | null>(null);
-  const data = createMemo(() =>
+
+  const latest = createMemo(() =>
     // avoid triggering suspense on initial load
-    details.loading || details.latest?.data?.id !== props.event?.doc.id
+    details.loading && details.state === "pending"
       ? undefined
       : details.latest?.data,
   );
 
   const selectedRole = () =>
-    data()?.roles?.docs.find(({ id }) => id === Number(selectedRoleId()));
+    latest()?.roles?.docs.find(({ id }) => id === Number(selectedRoleId()));
   const userSignups = () =>
-    data()?.signups?.docs.filter(({ user }) => user === props.user?.id);
+    latest()?.signups?.docs.filter(({ user }) => user === props.user?.id);
   const hasUserSignedUp = () => (userSignups()?.length ?? 0) > 0;
+  const newEventLoading = () => latest()?.id !== props.event?.doc.id;
 
   createEffect<boolean | undefined>((selected) => {
     // Reset selected role on exit
@@ -70,15 +73,9 @@ export const EventDetailsDrawer = (props: Props) => {
     }
 
     // On initial eventload, select the role the user has signed up for
-    const shouldSelectRole = !selected && !!data();
+    const shouldSelectRole = !selected && !newEventLoading();
     if (shouldSelectRole) {
-      setSelectedRoleId(
-        data()
-          ?.signups?.docs.filter((signup) => signup.user === props.user?.id)
-          .map((signup) => signup.role?.toString())
-          .shift() ?? null,
-      );
-
+      selectCurrentRole();
       return true;
     }
   });
@@ -94,13 +91,14 @@ export const EventDetailsDrawer = (props: Props) => {
 
   const removeSignup = async (id: number) => {
     await actions.deleteSignup({ id });
+    await refetch();
     setSelectedRoleId(null);
-    refetch();
   };
 
   const createSignup = async (event: number, role: number) => {
     await actions.createSignup({ event, role });
-    refetch();
+    await refetch();
+    selectCurrentRole();
 
     const end = Date.now() + 2500;
     const colors = ["#bb0000", "#ffffff"];
@@ -130,6 +128,14 @@ export const EventDetailsDrawer = (props: Props) => {
     animate();
   };
 
+  const selectCurrentRole = () =>
+    setSelectedRoleId(
+      latest()
+        ?.signups?.docs.filter((signup) => signup.user === props.user?.id)
+        .map((signup) => signup.role?.toString())
+        .shift() ?? null,
+    );
+
   return (
     <Sheet.Root
       open={props.open}
@@ -141,7 +147,7 @@ export const EventDetailsDrawer = (props: Props) => {
         base: "bottom",
         md: "right",
       }}
-      // unmountOnExit
+      unmountOnExit
     >
       <Portal>
         <Sheet.Backdrop />
@@ -149,12 +155,12 @@ export const EventDetailsDrawer = (props: Props) => {
           <Sheet.Content
             maxHeight={{ base: "80vh", md: "100vh" }}
             overflowY="auto"
-            // avoid flash of old content on first open
-            display={!data() ? "none" : undefined}
+            // avoid flash of old content on open
+            display={newEventLoading() ? "none" : undefined}
           >
             <Suspense>
               <Sheet.Header>
-                <Sheet.Title fontSize="2xl">{data()?.title}</Sheet.Title>
+                <Sheet.Title fontSize="2xl">{latest()?.title}</Sheet.Title>
                 <Show when={props.event?.descriptionHtml}>
                   <Sheet.Description innerHTML={props.event?.descriptionHtml} />
                 </Show>
@@ -184,16 +190,18 @@ export const EventDetailsDrawer = (props: Props) => {
                   direction="vertical"
                   value={selectedRoleId()}
                   onValueChange={(event) => setSelectedRoleId(event.value)}
+                  disabled={details.loading}
                 >
                   <RoleRows
-                    details={data()}
+                    details={latest()}
                     roles={
-                      data()?.roles?.docs.filter((role) => !role.section) ?? []
+                      latest()?.roles?.docs.filter((role) => !role.section) ??
+                      []
                     }
                     user={props.user}
                   />
 
-                  <For each={data()?.sections?.docs}>
+                  <For each={latest()?.sections?.docs}>
                     {(section) => (
                       <panda.div marginTop="8">
                         <panda.h3
@@ -209,7 +217,7 @@ export const EventDetailsDrawer = (props: Props) => {
                         </Bleed>
 
                         <RoleRows
-                          details={data()}
+                          details={latest()}
                           roles={section.roles?.docs ?? []}
                           user={props.user}
                         />
@@ -253,8 +261,9 @@ export const EventDetailsDrawer = (props: Props) => {
                       variant="solid"
                       colorPalette={hasUserSignedUp() ? "tomato" : "olive"}
                       disabled={!hasUserSignedUp() && !selectedRoleId()}
+                      loading={details.loading}
                       onClick={() => {
-                        const id = data()?.id;
+                        const id = latest()?.id;
                         if (!id)
                           throw new Error("Unexpected, missing event id");
 
