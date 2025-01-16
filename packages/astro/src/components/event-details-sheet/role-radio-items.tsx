@@ -58,10 +58,12 @@ export const RoleRadioItems = (props: RoleItemsProps) => {
                 </div>
               </Flex>
               <Show when={(role.signups?.docs?.length ?? 0) > 0}>
-                {props.details?.signups?.docs
-                  ?.filter((su) => su.role === role.id)
-                  ?.map((su) => su.title)
-                  .join(", ")}
+                <panda.p whiteSpace="normal">
+                  {props.details?.signups?.docs
+                    ?.filter((su) => su.role === role.id)
+                    ?.map((su) => su.title)
+                    .join(", ")}
+                </panda.p>
               </Show>
             </RadioButtonGroup.ItemText>
             <RadioButtonGroup.ItemHiddenInput />
