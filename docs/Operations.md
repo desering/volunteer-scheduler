@@ -5,10 +5,17 @@ This is intended to be a comprehensive guide on how to maintain and operate the
 
 ## Daily operations
 
-There are "normal" users and admin users. Normal users can only access the
-schedule and sign up for shifts. Admin users have additional permissions to
-access the backend at `/admin`, where they can create, edit and delete shifts,
-and also make other people admins.
+There are normal users and admin users:
+
+**Normal users**
+
+* Can only access the schedule and sign up for shifts
+
+**Admin users**
+
+* have additional permissions to access the backend at `/admin`
+* Can create, edit and delete shifts
+* Can make other people admins
 
 ## Features & Functionality
 
