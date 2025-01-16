@@ -8,7 +8,6 @@ import {
   subDays,
   subMonths,
 } from "date-fns";
-import { format } from "date-fns/format";
 import {
   For,
   Match,
@@ -21,12 +20,12 @@ import {
   Box,
   type BoxProps,
   Container,
-  Flex,
   Grid,
   panda,
   splitCssProps,
 } from "styled-system/jsx";
 import type { EventsByDay, RenderedEvent } from "~/utils/map-events";
+import { format } from "~/utils/tz-format";
 import type { User } from "../../../../shared/payload-types";
 import { EventDetailsDrawer } from "../event-details-sheet";
 import { DateSelect } from "./date-select";
