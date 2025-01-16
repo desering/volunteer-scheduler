@@ -17,7 +17,7 @@ engineers familiar with typical web technologies:
 
 * Node.js/Javascript, Typescript, CSS, HTML, etc.
 * [Park UI](https://park-ui.com/) ([Panda CSS](https://panda-css.com/) & [Ark UI](https://ark-ui.com/))
-* [Next.js](https://nextjs.org/)/[React](https://react.dev/)
+* [React](https://react.dev/) & [Next.js](https://nextjs.org/)
 * [Astro](https://astro.build/), [Payload CMS](https://payloadcms.com/)
 
 ## Deployment & Hosting
@@ -35,6 +35,15 @@ containers and stops the old ones.
 The server that Coolify is running on is manually logged in to the GitHub
 Container Registry `ghcr.io` using a GitHub classic personal access token owned
 by Bernhard (scope: `read:packages`).
+
+The server itself is a virtual server, running in
+[Hetzner Cloud](https://www.hetzner.com/cloud/) and managed in code here:
+
+* https://github.com/desering/terraform (creating the server, resources, cpu, memory, etc.)
+* https://github.com/desering/ansible (configuring the server, installing coolify, etc.)
+
+The current server costs ~8eur/month and runs many other projects as well (wiki,
+crm, etc.).
 
 ## Backups
 
