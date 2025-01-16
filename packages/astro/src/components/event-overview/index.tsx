@@ -134,7 +134,6 @@ export const EventOverview = (props: Props & BoxProps) => {
                               {(html) => (
                                 <panda.div
                                   color="colorPalette.3"
-                                  _groupHover={{ color: "colorPalette.11" }}
                                   innerHTML={html()}
                                 />
                               )}
