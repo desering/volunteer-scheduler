@@ -28,7 +28,7 @@ import {
 } from "styled-system/jsx";
 import type { EventsByDay, RenderedEvent } from "~/utils/map-events";
 import type { User } from "../../../../shared/payload-types";
-import { EventDetailsDrawer } from "../event-details-drawer";
+import { EventDetailsDrawer } from "../event-details-sheet";
 import { DateSelect } from "./date-select";
 
 type Props = {
@@ -134,7 +134,6 @@ export const EventOverview = (props: Props & BoxProps) => {
                               {(html) => (
                                 <panda.div
                                   color="colorPalette.3"
-                                  _groupHover={{ color: "colorPalette.11" }}
                                   innerHTML={html()}
                                 />
                               )}

@@ -1,5 +1,5 @@
 import { format, isBefore, startOfDay } from "date-fns";
-import { For, createEffect, createSelector, onMount } from "solid-js";
+import { For, Index, createEffect, createSelector, onMount } from "solid-js";
 import { Flex, panda } from "styled-system/jsx";
 import { Button } from "../ui/button";
 import { Text } from "../ui/text";
@@ -29,7 +29,7 @@ export const DateSelect = (props: Props) => {
       scrollSnapType="x mandatory"
       paddingBottom="4"
     >
-      <For each={props.dates}>
+      <Index each={props.dates}>
         {(item) => {
           let ref!: HTMLButtonElement;
 
@@ -40,33 +40,33 @@ export const DateSelect = (props: Props) => {
               block: "nearest",
             });
 
-          onMount(() => isSelected(item.date) && scrollTo("instant"));
-          createEffect(() => isSelected(item.date) && scrollTo("smooth"));
+          onMount(() => isSelected(item().date) && scrollTo("instant"));
+          createEffect(() => isSelected(item().date) && scrollTo("smooth"));
 
           return (
             <Button
               ref={ref}
               variant={
-                isSelected(item.date)
+                isSelected(item().date)
                   ? "solid"
-                  : item.hasEvents
+                  : item().hasEvents
                     ? "outline"
                     : "ghost"
               }
-              disabled={!item.isPublished}
-              onClick={() => props.onDateSelect(item.date)}
+              disabled={!item().isPublished}
+              onClick={() => props.onDateSelect(item().date)}
               display="block"
               height="auto"
               paddingY="4"
             >
-              <Text size="xl">{format(item.date, "dd")}</Text>
+              <Text size="xl">{format(item().date, "dd")}</Text>
               <Text size="sm" fontWeight="medium">
-                {format(item.date, "iii")}
+                {format(item().date, "iii")}
               </Text>
             </Button>
           );
         }}
-      </For>
+      </Index>
     </Flex>
   );
 };
