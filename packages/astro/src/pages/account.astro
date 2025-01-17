@@ -10,10 +10,9 @@ if (!Astro.locals.user) {
 ---
 
 <Layout title="Volunteering Schedule">
+  <NavBar />
   <Container marginTop={{ base: 4, xl: 20 }}>
     <Flex flexDir="column" gap="10">
-      <NavBar />
-
       <a href="/auth/logout" class={button({ size: "lg", variant: "outline" })}>
         Logout
       </a>
