@@ -3,17 +3,36 @@ import { Container, Flex } from "styled-system/jsx";
 import { button } from "styled-system/recipes/button";
 import NavBar from "~/components/navbar.astro";
 import Layout from "../layouts/layout.astro";
+import {EventOverview} from "../components/event-overview";
+import {actions} from "astro:actions";
 
 if (!Astro.locals.user) {
   return Astro.redirect("/auth/login");
 }
+
+const eventsByUser = await Astro.callAction(actions.getEventsByUser, {id: Astro.locals.user.id});
+
+console.log(eventsByUser)
+
 ---
 
 <Layout title="Volunteering Schedule">
+  <NavBar />
+
+  <Container marginTop={{ base: 4, xl: 20 }}>
+    <h1>My upcoming shifts</h1>
+  </Container>
+
+  <!--<EventOverview-->
+  <!--    user={Astro.locals.user}-->
+  <!--    events={eventsByUser.data}-->
+  <!--    client:load-->
+  <!--    flex="1"-->
+  <!--    marginTop="4"-->
+  <!--/>-->
+
   <Container marginTop={{ base: 4, xl: 20 }}>
     <Flex flexDir="column" gap="10">
-      <NavBar />
-
       <a href="/auth/logout" class={button({ size: "lg", variant: "outline" })}>
         Logout
       </a>

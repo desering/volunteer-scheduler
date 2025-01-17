@@ -40,7 +40,7 @@ export const EventOverview = (props: Props & BoxProps) => {
   const [selectedDate, setSelectedDate] = createSignal(startOfDay(new Date()));
   const [selectedEvent, setSelectedEvent] = createSignal<RenderedEvent>();
 
-  // seperation of selectedEvent and isDrawerOpen, otherwise breaks exitAnim
+  // separation of selectedEvent and isDrawerOpen, otherwise breaks exitAnim
   const [isDrawerOpen, setIsDrawerOpen] = createSignal(false);
 
   const [events, { refetch }] = createResource(

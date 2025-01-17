@@ -15,7 +15,7 @@ export const Signups: CollectionConfig = {
       label: "Event",
       hasMany: false,
       required: true,
-      maxDepth: 0,
+      maxDepth: 10,
       admin: {
         condition: (siblingData) => {
           return !(
