@@ -1,5 +1,5 @@
-import type { User } from "@payload-types";
 import { actions } from "astro:actions";
+import type { User } from "@payload-types";
 import {
   For,
   Match,
@@ -15,19 +15,19 @@ import { Portal } from "solid-js/web";
 import { HStack, panda } from "styled-system/jsx";
 import { button } from "styled-system/recipes/button";
 import type { RenderedEvent } from "~/utils/map-events";
+import { format } from "~/utils/tz-format";
 import { Alert } from "../ui/alert";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
 import { IconButton } from "../ui/icon-button";
 import { RadioButtonGroup } from "../ui/radio-button-group";
 import { Sheet } from "../ui/sheet";
+import { RoleRadioItems } from "./role-radio-items";
 
 import confetti from "canvas-confetti";
 
 import InfoIcon from "lucide-solid/icons/info";
 import XIcon from "lucide-solid/icons/x";
-import { format } from "~/utils/tz-format";
-import { RoleRadioItems } from "./role-radio-items";
 
 type Props = {
   user?: User;
@@ -46,6 +46,20 @@ export const EventDetailsDrawer = (props: Props) => {
   );
 
   const [selectedRoleId, setSelectedRoleId] = createSignal<string | null>(null);
+
+  const [isDeleting, deleteSignup] = createAsyncFunc(async (id: number) => {
+    await actions.deleteSignup({ id });
+    await refetch();
+    setSelectedRoleId(null);
+  });
+  const [isCreating, createSignup] = createAsyncFunc(
+    async (event: number, role: number) => {
+      await actions.createSignup({ event, role });
+      await refetch();
+      selectCurrentRole();
+      animateFireworks(Date.now() + 2500);
+    },
+  );
 
   const latest = createMemo(() =>
     // avoid triggering suspense on initial load
@@ -90,21 +104,6 @@ export const EventDetailsDrawer = (props: Props) => {
       return true;
     }
   });
-
-  const deleteSignup = async (id: number) => {
-    await actions.deleteSignup({ id });
-    await refetch();
-
-    setSelectedRoleId(null);
-  };
-
-  const createSignup = async (event: number, role: number) => {
-    await actions.createSignup({ event, role });
-    await refetch();
-
-    selectCurrentRole();
-    animateFireworks();
-  };
 
   const selectCurrentRole = () =>
     setSelectedRoleId(
@@ -256,7 +255,7 @@ export const EventDetailsDrawer = (props: Props) => {
                       variant="solid"
                       colorPalette={hasUserSignedUp() ? "tomato" : "olive"}
                       disabled={!hasUserSignedUp() && !selectedRoleId()}
-                      loading={details.loading}
+                      loading={details.loading || isCreating() || isDeleting()}
                       onClick={() => onSigningButtonClicked()}
                     >
                       <Switch>
@@ -281,9 +280,8 @@ export const EventDetailsDrawer = (props: Props) => {
   );
 };
 
-const end = Date.now() + 2500;
 const colors = ["#bb0000", "#ffffff"];
-const animateFireworks = () => {
+const animateFireworks = (end: number) => {
   confetti({
     particleCount: 4,
     angle: 60,
@@ -302,6 +300,20 @@ const animateFireworks = () => {
   });
 
   if (Date.now() < end) {
-    setTimeout(() => animateFireworks(), 100);
+    setTimeout(() => animateFireworks(end), 100);
   }
+};
+
+const createAsyncFunc = <T, P extends unknown[]>(
+  fn: (...args: P) => Promise<T>,
+) => {
+  const [isRunning, setIsRunning] = createSignal(false);
+
+  const run = async (...args: P) => {
+    setIsRunning(true);
+    await fn(...args);
+    setIsRunning(false);
+  };
+
+  return [isRunning, run] as const;
 };

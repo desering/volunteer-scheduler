@@ -7,6 +7,8 @@ services:
       - postgres
     env_file:
       - packages/shared/.env
+    environment:
+      TZ: UTC
 
   payload:
     image: ghcr.io/desering/volunteer-scheduler-payload:latest
@@ -16,6 +18,8 @@ services:
       - postgres
     env_file:
       - packages/shared/.env
+    environment:
+      TZ: UTC
 
   postgres:
     image: postgres:latest
@@ -25,6 +29,7 @@ services:
     ports:
       - "5432:5432"
     environment:
+      TZ: UTC
       POSTGRES_DB: schedule
       POSTGRES_USER: schedule
       POSTGRES_PASSWORD: schedule

@@ -20,7 +20,7 @@ export const RoleRadioItems = (props: RoleItemsProps) => {
   const hasUserSignedUp = () => (userSignups()?.length ?? 0) > 0;
 
   return (
-    <For each={props.roles}>
+    <For each={props.roles} fallback={<RolesNotFoundRow />}>
       {(role) => {
         const isUserSignedToThisRole = () =>
           !!userSignups()?.find((su) => su.role === role.id);
@@ -45,7 +45,8 @@ export const RoleRadioItems = (props: RoleItemsProps) => {
               flexDirection="column"
               alignItems="stretch"
               width="full"
-              p="4"
+              px="4"
+              py="3"
               fontWeight="normal"
             >
               <Flex justifyContent="space-between">
@@ -57,11 +58,12 @@ export const RoleRadioItems = (props: RoleItemsProps) => {
                 </div>
               </Flex>
               <Show when={(role.signups?.docs?.length ?? 0) > 0}>
-                {props.details?.signups?.docs
-                  ?.filter((su) => su.role === role.id)
-                  ?.map((su) => su.title)
-                  .slice(0, 2)
-                  .join(", ") || "No person has signed up (yet)"}
+                <panda.p whiteSpace="normal">
+                  {props.details?.signups?.docs
+                    ?.filter((su) => su.role === role.id)
+                    ?.map((su) => su.title)
+                    .join(", ")}
+                </panda.p>
               </Show>
             </RadioButtonGroup.ItemText>
             <RadioButtonGroup.ItemHiddenInput />

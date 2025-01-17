@@ -32,6 +32,7 @@ COPY --from=build /home/bun/app/packages/astro/dist/ ./dist/
 
 ENV HOST=0.0.0.0
 ENV PORT=3000
+ENV TZ=UTC
 EXPOSE 3000
 
 CMD ["bun", "run", "./dist/server/entry.mjs"]
