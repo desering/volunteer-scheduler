@@ -4,17 +4,14 @@ import { z } from "astro:schema";
 
 import type { Where } from "payload";
 
-export const getEventsByUser = defineAction({
-  input: z.object({
-    id: z.number(),
-  }),
-  handler: async (input, context) => {
+export const getUpcomingEventsForCurrentUser = defineAction({
+  handler: async (_, context) => {
     const events = await context.locals.payload.find({
       collection: "signups",
       depth: 1,
 
       where: {
-        user_id: { equals: input.id },
+        user_id: { equals: context.locals.user.id },
       },
 
       joins: {

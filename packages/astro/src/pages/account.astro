@@ -10,9 +10,7 @@ if (!Astro.locals.user) {
   return Astro.redirect("/auth/login");
 }
 
-const eventsByUser = await Astro.callAction(actions.getEventsByUser, {
-  id: Astro.locals.user.id,
-});
+const eventsByUser = await Astro.callAction(actions.getUpcomingEventsForCurrentUser, {});
 
 console.log(eventsByUser);
 ---
