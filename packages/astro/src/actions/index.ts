@@ -4,7 +4,7 @@ import { deleteSignup } from "./delete-signup";
 import { getEventDetails } from "./get-event-detail";
 import { getEventsByDay } from "./get-events-by-day";
 import { loginUser } from "./login-user";
-import {getEventsByUser} from "./get-events-by-user";
+import { getEventsByUser } from "./get-events-by-user";
 
 export const server = {
   createUser,

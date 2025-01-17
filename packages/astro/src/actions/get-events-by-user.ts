@@ -1,11 +1,11 @@
 import { defineAction } from "astro:actions";
 import { groupAndSortEventsByDate } from "~/utils/map-events";
-import {z} from "astro:schema";
+import { z } from "astro:schema";
 
-import type {Where} from "payload";
+import type { Where } from "payload";
 
 export const getEventsByUser = defineAction({
-  input:z.object({
+  input: z.object({
     id: z.number(),
   }),
   handler: async (input, context) => {
@@ -14,7 +14,7 @@ export const getEventsByUser = defineAction({
       depth: 1,
 
       where: {
-        user_id: { equals: input.id }
+        user_id: { equals: input.id },
       },
 
       joins: {
@@ -24,7 +24,7 @@ export const getEventsByUser = defineAction({
       pagination: false,
     });
 
-    return events
+    return events;
 
     // return await groupAndSortEventsByDate(events.docs);
   },

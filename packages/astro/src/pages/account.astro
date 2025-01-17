@@ -3,17 +3,18 @@ import { Container, Flex } from "styled-system/jsx";
 import { button } from "styled-system/recipes/button";
 import NavBar from "~/components/navbar.astro";
 import Layout from "../layouts/layout.astro";
-import {EventOverview} from "../components/event-overview";
-import {actions} from "astro:actions";
+import { EventOverview } from "../components/event-overview";
+import { actions } from "astro:actions";
 
 if (!Astro.locals.user) {
   return Astro.redirect("/auth/login");
 }
 
-const eventsByUser = await Astro.callAction(actions.getEventsByUser, {id: Astro.locals.user.id});
+const eventsByUser = await Astro.callAction(actions.getEventsByUser, {
+  id: Astro.locals.user.id,
+});
 
-console.log(eventsByUser)
-
+console.log(eventsByUser);
 ---
 
 <Layout title="Volunteering Schedule">
