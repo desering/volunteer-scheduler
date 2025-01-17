@@ -10,12 +10,12 @@ if (!Astro.locals.user) {
   return Astro.redirect("/auth/login");
 }
 
-const eventsByUser = await Astro.callAction(
+const events = await Astro.callAction(
   actions.getUpcomingEventsForCurrentUser,
   {},
 );
 
-console.log(eventsByUser);
+console.log(events);
 ---
 
 <Layout title="Volunteering Schedule">

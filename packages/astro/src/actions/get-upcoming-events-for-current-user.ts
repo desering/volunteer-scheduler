@@ -1,8 +1,4 @@
 import { defineAction } from "astro:actions";
-import { groupAndSortEventsByDate } from "~/utils/map-events";
-import { z } from "astro:schema";
-
-import type { Where } from "payload";
 
 export const getUpcomingEventsForCurrentUser = defineAction({
   handler: async (_, context) => {
@@ -12,6 +8,7 @@ export const getUpcomingEventsForCurrentUser = defineAction({
 
       where: {
         user_id: { equals: context.locals.user.id },
+        start_date: { greater_than_equal: Date.now() },
       },
 
       joins: {
@@ -22,7 +19,5 @@ export const getUpcomingEventsForCurrentUser = defineAction({
     });
 
     return events;
-
-    // return await groupAndSortEventsByDate(events.docs);
   },
 });
