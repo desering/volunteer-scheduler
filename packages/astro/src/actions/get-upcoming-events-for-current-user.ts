@@ -1,4 +1,5 @@
 import { defineAction } from "astro:actions";
+import {startOfDay} from "date-fns";
 
 export const getUpcomingEventsForCurrentUser = defineAction({
   handler: async (_, context) => {
@@ -8,7 +9,7 @@ export const getUpcomingEventsForCurrentUser = defineAction({
 
       where: {
         user: { equals: context.locals.user.id },
-        "event.start_date": { greater_than_equal: Date.now() },
+        "event.start_date": { greater_than_equal: startOfDay(Date.now()) },
       },
 
       pagination: false,

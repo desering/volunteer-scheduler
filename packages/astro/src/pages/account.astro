@@ -3,7 +3,7 @@ import { Container, Flex } from "styled-system/jsx";
 import { button } from "styled-system/recipes/button";
 import NavBar from "~/components/navbar.astro";
 import Layout from "../layouts/layout.astro";
-import { EventOverview } from "../components/event-overview";
+import { UpcomingEventsList } from "../components/upcoming-events-list";
 import { actions } from "astro:actions";
 
 if (!Astro.locals.user) {
@@ -25,13 +25,7 @@ console.log(events);
     <h1>My upcoming shifts</h1>
   </Container>
 
-  <EventOverview
-      user={Astro.locals.user}
-      events={events.data}
-      client:load
-      flex="1"
-      marginTop="4"
-  />
+  <UpcomingEventsList events={events.data} />
 
   <Container marginTop={{ base: 4, xl: 20 }}>
     <Flex flexDir="column" gap="10">
