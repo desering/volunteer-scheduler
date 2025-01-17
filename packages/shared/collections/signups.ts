@@ -49,7 +49,7 @@ export const Signups: CollectionConfig = {
       label: "Role",
       required: true,
       hasMany: false,
-      maxDepth: 0,
+      maxDepth: 1,
       filterOptions: ({ siblingData }) => {
         // biome-ignore lint/suspicious/noExplicitAny: <explanation>
         return { event: { equals: (siblingData as any).event } };
@@ -88,7 +88,7 @@ export const Signups: CollectionConfig = {
       label: "User",
       required: true,
       hasMany: false,
-      maxDepth: 0,
+      maxDepth: 1,
     },
 
     // Lets show the user's preferred name instead of boring ID's

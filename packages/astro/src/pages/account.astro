@@ -15,7 +15,7 @@ const events = await Astro.callAction(
   {},
 );
 
-console.log(events.data);
+console.log(events);
 ---
 
 <Layout title="Volunteering Schedule">
@@ -25,13 +25,13 @@ console.log(events.data);
     <h1>My upcoming shifts</h1>
   </Container>
 
-  <!--<EventOverview-->
-  <!--    user={Astro.locals.user}-->
-  <!--    events={eventsByUser.data}-->
-  <!--    client:load-->
-  <!--    flex="1"-->
-  <!--    marginTop="4"-->
-  <!--/>-->
+  <EventOverview
+      user={Astro.locals.user}
+      events={events.data}
+      client:load
+      flex="1"
+      marginTop="4"
+  />
 
   <Container marginTop={{ base: 4, xl: 20 }}>
     <Flex flexDir="column" gap="10">
