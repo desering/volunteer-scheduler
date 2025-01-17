@@ -45,10 +45,10 @@ if (Astro.request.method === "POST") {
         email,
         password,
       });
-      Astro.redirect("/");
-    } else {
-      errors.push(registrationSuccess.error.message);
+      return Astro.redirect("/");
     }
+
+    errors.push(registrationSuccess.error.message);
   } else {
     if (!email) errors.push("Email is required.");
     if (!password) errors.push("Password is required.");
@@ -92,13 +92,13 @@ if (Astro.request.method === "POST") {
         <panda.div width="full">
           <label for="preferredName">Preferred Name:</label>
           <input
-              type="text"
-              id="preferredName"
-              name="preferredName"
-              required
-              class={input({
-                size: "lg",
-              })}
+            type="text"
+            id="preferredName"
+            name="preferredName"
+            required
+            class={input({
+              size: "lg",
+            })}
           />
           <p>This will be visible to everyone</p>
         </panda.div>
