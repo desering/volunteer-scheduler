@@ -8,25 +8,17 @@ import {
   subDays,
   subMonths,
 } from "date-fns";
-import {
-  For,
-  Match,
-  Show,
-  Switch,
-  createResource,
-  createSignal,
-} from "solid-js";
+import { For, Show, createResource, createSignal } from "solid-js";
 import {
   Box,
   type BoxProps,
   Container,
   Grid,
-  panda,
   splitCssProps,
 } from "styled-system/jsx";
 import type { EventsByDay, RenderedEvent } from "~/utils/map-events";
-import { format } from "~/utils/tz-format";
 import type { User } from "../../../../shared/payload-types";
+import { EventButton } from "../event-button";
 import { EventDetailsDrawer } from "../event-details-sheet";
 import { DateSelect } from "./date-select";
 
@@ -101,56 +93,19 @@ export const EventOverview = (props: Props & BoxProps) => {
                 >
                   {([, events]) => (
                     <For each={events}>
-                      {(event) => {
-                        const length = event.doc.signups?.docs?.length ?? 0;
-                        return (
-                          <panda.button
-                            onClick={() => {
-                              setIsDrawerOpen(true);
-                              setSelectedEvent(event);
-                            }}
-                            backgroundColor={{
-                              base: "colorPalette.1",
-                              _dark: "colorPalette.4",
-                            }}
-                            paddingX="4"
-                            paddingY="6"
-                            cursor="pointer"
-                            textAlign="left"
-                            borderRadius="l3"
-                            class="group"
-                          >
-                            <panda.p>
-                              {format(event.start_date, "HH:mm")} -{" "}
-                              {format(event.end_date, "HH:mm")}
-                            </panda.p>
-
-                            <panda.h5 fontSize="xl" fontWeight="semibold">
-                              {event.doc.title}
-                            </panda.h5>
-
-                            <Show when={event.descriptionHtml}>
-                              {(html) => (
-                                <panda.div
-                                  color="colorPalette.3"
-                                  innerHTML={html()}
-                                />
-                              )}
-                            </Show>
-
-                            <panda.div marginTop="4">
-                              <Switch>
-                                <Match when={length === 0}>
-                                  Nobody signed up yet :( be the first!
-                                </Match>
-                                <Match when={length !== 0}>
-                                  {`${length} ${length === 1 ? "person" : "people"} signed up!`}
-                                </Match>
-                              </Switch>
-                            </panda.div>
-                          </panda.button>
-                        );
-                      }}
+                      {(event) => (
+                        <EventButton
+                          startDate={event.start_date}
+                          endDate={event.end_date}
+                          title={event.doc.title}
+                          description={event.descriptionHtml}
+                          onClick={() => {
+                            setIsDrawerOpen(true);
+                            setSelectedEvent(event);
+                          }}
+                          signupsAmount={event.doc.signups?.docs?.length ?? 0}
+                        />
+                      )}
                     </For>
                   )}
                 </Show>

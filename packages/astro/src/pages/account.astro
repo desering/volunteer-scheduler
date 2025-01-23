@@ -5,6 +5,7 @@ import NavBar from "~/components/navbar.astro";
 import Layout from "../layouts/layout.astro";
 import { UpcomingEventsList } from "../components/upcoming-events-list";
 import { actions } from "astro:actions";
+import { prepareEvent } from "~/utils/map-events";
 
 if (!Astro.locals.user) {
   return Astro.redirect("/auth/login");
@@ -15,7 +16,9 @@ const events = await Astro.callAction(
   {},
 );
 
-console.log(events);
+const renderedEvents = await Promise.all(
+  (events.data ?? []).map(async (event) => await prepareEvent(event)),
+);
 ---
 
 <Layout title="Volunteering Schedule">
@@ -25,7 +28,7 @@ console.log(events);
     <h1>My upcoming shifts</h1>
   </Container>
 
-  <UpcomingEventsList events={events.data} />
+  <UpcomingEventsList events={renderedEvents} client:load />
 
   <Container marginTop={{ base: 4, xl: 20 }}>
     <Flex flexDir="column" gap="10">
