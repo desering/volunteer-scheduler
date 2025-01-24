@@ -4,7 +4,7 @@ Mono-repo for the Volunteer Scheduler project.
 
 ## Project structure
 
-[packages/astro](../packages/astro) - Frontend (Astro)
+[packages/astro](../packages/astro) - Frontend (Astro) | [README](../packages/astro/README.md)
 
 [packages/payload](../packages/payload) - Backend (Payload) | [README](../packages/payload/README.md)
 
