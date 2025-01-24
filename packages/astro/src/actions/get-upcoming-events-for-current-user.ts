@@ -1,12 +1,13 @@
 import type { Event } from "@payload-types";
 import { defineAction } from "astro:actions";
 import { startOfDay } from "date-fns";
+import { error } from "node:console";
 import { prepareEvent } from "~/utils/map-events";
 
 export const getUpcomingEventsForCurrentUser = defineAction({
   handler: async (_, context) => {
     if (!context.locals.user) {
-      return [];
+      throw error("Not authenticated");
     }
 
     const signups = await context.locals.payload.find({
