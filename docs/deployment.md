@@ -1,5 +1,16 @@
 # Deployment
 
+## Production Deployment
+
+Coolify is connected to this GitHub repo and continuously monitors it for
+changes. Merging a PR to the `main` branch triggers a Docker build and a
+redeployment in Coolify. Within ~5-10 minutes, the new versions should be
+available online at:
+
+```
+https://schedule.desering.org/
+```
+
 ## Preview Deployments
 
 Coolify [Preview Deployments](https://coolify.io/docs/applications/#preview-deployments)
@@ -18,17 +29,6 @@ Coolify also automatically posts this information to the PR.
 Details about Cloudflare SSL Certificates can be found here:
 
 https://developers.cloudflare.com/ssl/edge-certificates/universal-ssl/enable-universal-ssl/
-
-## Production Deployment
-
-Coolify is connected to this GitHub repo and continuously monitors it for
-changes. Merging a PR to the `main` branch triggers a Docker build and a
-redeployment in Coolify. Within ~5-10 minutes, the new versions should be
-available online at:
-
-```
-https://schedule.desering.org/
-```
 
 ## Manual Deployment
 
