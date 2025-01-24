@@ -1,6 +1,7 @@
 import type { Event } from "@payload-types";
 import { defineAction } from "astro:actions";
 import { startOfDay } from "date-fns";
+import { prepareEvent } from "~/utils/map-events";
 
 export const getUpcomingEventsForCurrentUser = defineAction({
   handler: async (_, context) => {
@@ -20,6 +21,10 @@ export const getUpcomingEventsForCurrentUser = defineAction({
       pagination: false,
     });
 
-    return signups.docs.map((s) => s.event as Event);
+    return Promise.all(
+      signups.docs
+        .map((s) => s.event as Event)
+        .map((event) => prepareEvent(event)),
+    );
   },
 });

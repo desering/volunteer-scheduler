@@ -1,13 +1,13 @@
 import type { Event } from "../../../shared/payload-types";
 import { convertLexicalToHTML } from "./convert-lexical-to-html";
 
-export type RenderedEvent = {
+export type DisplayableEvent = {
   doc: Event;
   descriptionHtml?: string;
   start_date: Date;
   end_date: Date;
 };
-export type EventsByDay = Record<string, RenderedEvent[]>;
+export type EventsByDay = Record<string, DisplayableEvent[]>;
 
 export const groupAndSortEventsByDate = async (
   events: Event[],
@@ -39,12 +39,13 @@ export const groupAndSortEventsByDate = async (
   return groupedByDay;
 };
 
-export const prepareEvent = async (event: Event) =>
-  ({
-    doc: event,
-    descriptionHtml: event.description
-      ? await convertLexicalToHTML(event.description)
-      : undefined,
-    start_date: new Date(event.start_date),
-    end_date: new Date(event.end_date),
-  }) satisfies RenderedEvent;
+export const prepareEvent = async (
+  event: Event,
+): Promise<DisplayableEvent> => ({
+  doc: event,
+  descriptionHtml: event.description
+    ? await convertLexicalToHTML(event.description)
+    : undefined,
+  start_date: new Date(event.start_date),
+  end_date: new Date(event.end_date),
+});

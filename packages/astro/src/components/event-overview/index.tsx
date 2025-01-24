@@ -8,7 +8,14 @@ import {
   subDays,
   subMonths,
 } from "date-fns";
-import { For, Show, createResource, createSignal } from "solid-js";
+import {
+  For,
+  Match,
+  Show,
+  Switch,
+  createResource,
+  createSignal,
+} from "solid-js";
 import {
   Box,
   type BoxProps,
@@ -16,7 +23,7 @@ import {
   Grid,
   splitCssProps,
 } from "styled-system/jsx";
-import type { EventsByDay, RenderedEvent } from "~/utils/map-events";
+import type { EventsByDay, DisplayableEvent } from "~/utils/map-events";
 import type { User } from "../../../../shared/payload-types";
 import { EventButton } from "../event-button";
 import { EventDetailsDrawer } from "../event-details-sheet";
@@ -30,7 +37,7 @@ type Props = {
 export const EventOverview = (props: Props & BoxProps) => {
   const [cssProps, localProps] = splitCssProps(props);
   const [selectedDate, setSelectedDate] = createSignal(startOfDay(new Date()));
-  const [selectedEvent, setSelectedEvent] = createSignal<RenderedEvent>();
+  const [selectedEvent, setSelectedEvent] = createSignal<DisplayableEvent>();
 
   // separation of selectedEvent and isDrawerOpen, otherwise breaks exitAnim
   const [isDrawerOpen, setIsDrawerOpen] = createSignal(false);
@@ -38,7 +45,7 @@ export const EventOverview = (props: Props & BoxProps) => {
   const [events, { refetch }] = createResource(
     async () => (await actions.getEventsByDay()).data,
     {
-      initialValue: props.events,
+      initialValue: localProps.events,
       ssrLoadFrom: "initial",
     },
   );
@@ -93,26 +100,46 @@ export const EventOverview = (props: Props & BoxProps) => {
                 >
                   {([, events]) => (
                     <For each={events}>
-                      {(event) => (
-                        <EventButton
-                          startDate={event.start_date}
-                          endDate={event.end_date}
-                          title={event.doc.title}
-                          description={event.descriptionHtml}
-                          onClick={() => {
-                            setIsDrawerOpen(true);
-                            setSelectedEvent(event);
-                          }}
-                          signupsAmount={event.doc.signups?.docs?.length ?? 0}
-                        />
-                      )}
+                      {(event) => {
+                        const signups = event.doc.signups?.docs?.length;
+                        return (
+                          <EventButton.Root
+                            onClick={() => {
+                              setIsDrawerOpen(true);
+                              setSelectedEvent(event);
+                            }}
+                          >
+                            <EventButton.Time
+                              startDate={event.start_date}
+                              endDate={event.end_date}
+                            />
+                            <EventButton.Title>
+                              {event.doc.title}
+                            </EventButton.Title>
+                            <EventButton.Description
+                              innerHTML={event.descriptionHtml}
+                            />
+
+                            <Box marginTop="4">
+                              <Switch>
+                                <Match when={signups === 0}>
+                                  Nobody signed up yet :( be the first!
+                                </Match>
+                                <Match when={signups !== 0}>
+                                  {`${signups} ${signups === 1 ? "person" : "people"} signed up!`}
+                                </Match>
+                              </Switch>
+                            </Box>
+                          </EventButton.Root>
+                        );
+                      }}
                     </For>
                   )}
                 </Show>
               </Grid>
             </Container>
             <EventDetailsDrawer
-              user={props.user}
+              user={localProps.user}
               open={isDrawerOpen()}
               event={selectedEvent()}
               onClose={() => {

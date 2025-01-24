@@ -1,11 +1,10 @@
 ---
-import { Container, Flex } from "styled-system/jsx";
+import { actions } from "astro:actions";
+import { Container, Flex, panda } from "styled-system/jsx";
 import { button } from "styled-system/recipes/button";
 import NavBar from "~/components/navbar.astro";
-import Layout from "../layouts/layout.astro";
 import { UpcomingEventsList } from "../components/upcoming-events-list";
-import { actions } from "astro:actions";
-import { prepareEvent } from "~/utils/map-events";
+import Layout from "../layouts/layout.astro";
 
 if (!Astro.locals.user) {
   return Astro.redirect("/auth/login");
@@ -15,20 +14,20 @@ const events = await Astro.callAction(
   actions.getUpcomingEventsForCurrentUser,
   {},
 );
-
-const renderedEvents = await Promise.all(
-  (events.data ?? []).map(async (event) => await prepareEvent(event)),
-);
 ---
 
 <Layout title="Volunteering Schedule">
   <NavBar />
 
-  <Container marginTop={{ base: 4, xl: 20 }}>
-    <h1>My upcoming shifts</h1>
+  <Container marginTop={{ base: 4, xl: 20 }} marginBottom="4">
+    <panda.h1 fontSize="xl" fontWeight="medium">My upcoming shifts</panda.h1>
   </Container>
 
-  <UpcomingEventsList events={renderedEvents} client:load />
+  <UpcomingEventsList
+    user={Astro.locals.user}
+    events={events.data}
+    client:load
+  />
 
   <Container marginTop={{ base: 4, xl: 20 }}>
     <Flex flexDir="column" gap="10">
