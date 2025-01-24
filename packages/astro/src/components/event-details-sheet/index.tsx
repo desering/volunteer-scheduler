@@ -14,7 +14,7 @@ import {
 import { Portal } from "solid-js/web";
 import { HStack, panda } from "styled-system/jsx";
 import { button } from "styled-system/recipes/button";
-import type { RenderedEvent } from "~/utils/map-events";
+import type { DisplayableEvent } from "~/utils/map-events";
 import { format } from "~/utils/tz-format";
 import { Alert } from "../ui/alert";
 import { Badge } from "../ui/badge";
@@ -32,7 +32,7 @@ import XIcon from "lucide-solid/icons/x";
 type Props = {
   user?: User;
 
-  event?: RenderedEvent;
+  event?: DisplayableEvent;
 
   open: boolean;
   onClose: () => void;

@@ -1,23 +1,24 @@
 import type { Event } from "../../../shared/payload-types";
 import { convertLexicalToHTML } from "./convert-lexical-to-html";
 
+export type DisplayableEvent = {
+  doc: Event;
+  descriptionHtml?: string;
+  start_date: Date;
+  end_date: Date;
+};
+export type EventsByDay = Record<string, DisplayableEvent[]>;
+
 export const groupAndSortEventsByDate = async (
   events: Event[],
 ): Promise<EventsByDay> => {
   // https://payloadcms.com/docs/lexical/converters#generating-html-anywhere-on-the-server
 
   const mappedEvents = await Promise.all(
-    events.map(async (doc) => {
-      return {
-        doc,
-        descriptionHtml: doc.description
-          ? await convertLexicalToHTML(doc.description)
-          : undefined,
-        start_date: new Date(doc.start_date),
-        end_date: new Date(doc.end_date),
-      } satisfies RenderedEvent;
-    }),
+    events.map(async (doc) => await prepareEvent(doc)),
   );
+
+  console.log(mappedEvents);
 
   const sorted = mappedEvents.sort(
     (a, b) => a.start_date.getTime() - b.start_date.getTime(),
@@ -38,10 +39,13 @@ export const groupAndSortEventsByDate = async (
   return groupedByDay;
 };
 
-export type RenderedEvent = {
-  doc: Event;
-  descriptionHtml?: string;
-  start_date: Date;
-  end_date: Date;
-};
-export type EventsByDay = Record<string, RenderedEvent[]>;
+export const prepareEvent = async (
+  event: Event,
+): Promise<DisplayableEvent> => ({
+  doc: event,
+  descriptionHtml: event.description
+    ? await convertLexicalToHTML(event.description)
+    : undefined,
+  start_date: new Date(event.start_date),
+  end_date: new Date(event.end_date),
+});
