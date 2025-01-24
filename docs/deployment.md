@@ -17,8 +17,9 @@ Coolify [Preview Deployments](https://coolify.io/docs/applications/#preview-depl
 are configured to automatically create a new deployment of both Astro and
 Payload for each PR opened in this repo. Cloudflare does not offer Wildcard SSL
 certificates for second-level subdomains (e.g. `*.schedule.desering.org`), so we
-configured `*.desering.org` to point to Coolify instead. The preview deployment
-urls for Schedule look as follows:
+configured `*.desering.org` to point to Coolify instead (see
+[here](https://github.com/desering/terraform/blob/main/dns_desering.org.tf)).
+The preview deployment urls for Schedule look as follows:
 
 ```
 https://schedule-pr-{PR-Number}.desering.org/
