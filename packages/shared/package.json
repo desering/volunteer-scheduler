@@ -8,12 +8,12 @@
     "generate:db-schema": "PAYLOAD_CONFIG_PATH=payload.config.ts payload generate:db-schema"
   },
   "dependencies": {
-    "@payloadcms/db-postgres": "^3.17.1",
-    "@payloadcms/email-nodemailer": "^3.17.1",
-    "@payloadcms/richtext-lexical": "^3.17.1",
+    "@payloadcms/db-postgres": "3.19.0",
+    "@payloadcms/email-nodemailer": "3.19.0",
+    "@payloadcms/richtext-lexical": "3.19.0",
     "dotenv": "^16.4.7",
     "nodemailer": "^6.9.16",
-    "payload": "^3.17.1",
+    "payload": "^3.19.0",
     "sharp": "0.33.5"
   },
   "devDependencies": {
