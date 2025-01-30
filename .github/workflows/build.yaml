@@ -47,8 +47,6 @@ jobs:
           file: Dockerfile.${{ matrix.package }}
           push: false
           tags: ${{ env.IMAGE_TAGS }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
 
 #      - uses: actions/github-script@v7
 #        if: github.event_name == 'pull_request'
