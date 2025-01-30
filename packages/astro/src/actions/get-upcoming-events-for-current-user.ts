@@ -2,7 +2,7 @@ import type { Event } from "@payload-types";
 import { defineAction } from "astro:actions";
 import { startOfDay } from "date-fns";
 import { error } from "node:console";
-import { prepareEvent } from "~/utils/map-events";
+import { type DisplayableEvent, prepareEvent } from "~/utils/map-events";
 
 export const getUpcomingEventsForCurrentUser = defineAction({
   handler: async (_, context) => {
@@ -22,14 +22,15 @@ export const getUpcomingEventsForCurrentUser = defineAction({
       pagination: false,
     });
 
-    return Promise.all(
-      signups.docs
-        .map((s) => s.event as Event)
-        .sort(
-          (a, b) =>
-            new Date(a.start_date).getTime() - new Date(b.start_date).getTime(),
-        )
-        .map((event) => prepareEvent(event)),
+    return (
+      await Promise.all(
+        signups.docs
+          .map((s) => s.event as Event)
+          .map((event) => prepareEvent(event)),
+      )
+    ).sort(
+      (a: DisplayableEvent, b: DisplayableEvent) =>
+        a.start_date.getTime() - b.start_date.getTime(),
     );
   },
 });
