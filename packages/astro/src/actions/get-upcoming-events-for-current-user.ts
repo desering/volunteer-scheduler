@@ -27,7 +27,7 @@ export const getUpcomingEventsForCurrentUser = defineAction({
         .map((s) => s.event as Event)
         .sort(
           (a, b) =>
-            new Date(b.start_date).getTime() - new Date(a.start_date).getTime(),
+            new Date(a.start_date).getTime() - new Date(b.start_date).getTime(),
         )
         .map((event) => prepareEvent(event)),
     );
