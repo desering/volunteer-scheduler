@@ -57,7 +57,7 @@ export const EventDetailsDrawer = (props: Props) => {
       await actions.createSignup({ event, role });
       await refetch();
       selectCurrentRole();
-      animateFireworks(Date.now() + 2500);
+      animateFireworks(Date.now() + 1500);
     },
   );
 
