@@ -25,6 +25,14 @@ if (Astro.request.method === "POST") {
   const password = data.get("password") as string | null;
   const passwordAgain = data.get("password-again") as string | null;
 
+  console.log("BernhardDebug", {
+    preferredName,
+    email,
+    phoneNumber,
+    password,
+    passwordAgain,
+  })
+
   if (
     preferredName &&
     preferredName.length >= 3 &&
