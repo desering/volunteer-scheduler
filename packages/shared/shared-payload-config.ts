@@ -54,6 +54,7 @@ function getConnectionString() {
     return process.env.DATABASE_URI;
   }
 
+  // @ts-ignore: Object is possibly 'null'.
   const prNumber = process.env.COOLIFY_BRANCH.match(/\/(\d+)\//)[1];
   return `${process.env.DATABASE_URI}-pr-${prNumber}`;
 }
