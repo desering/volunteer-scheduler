@@ -19,6 +19,8 @@ const errors: string[] = [];
 if (Astro.request.method === "POST") {
   const data = await Astro.request.formData();
 
+  console.log(data);
+
   const preferredName = data.get("preferredName") as string | null;
   const email = data.get("email") as string | null;
   const phoneNumber = data.get("phoneNumber") as string | null;
