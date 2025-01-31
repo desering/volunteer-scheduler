@@ -84,7 +84,7 @@ export interface UserAuthOperations {
 export interface User {
   id: number;
   preferredName: string;
-  phoneNumber: string;
+  phoneNumber?: string | null;
   roles?: ('admin' | 'editor' | 'volunteer') | null;
   updatedAt: string;
   createdAt: string;

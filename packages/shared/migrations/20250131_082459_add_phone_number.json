@@ -24,7 +24,7 @@
           "name": "phone_number",
           "type": "varchar",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "roles": {
           "name": "roles",
