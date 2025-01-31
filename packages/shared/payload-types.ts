@@ -12,47 +12,53 @@ export interface Config {
   };
   collections: {
     users: User;
-    'event-templates': EventTemplate;
+    "event-templates": EventTemplate;
     events: Event;
     sections: Section;
     roles: Role;
     signups: Signup;
-    'payload-locked-documents': PayloadLockedDocument;
-    'payload-preferences': PayloadPreference;
-    'payload-migrations': PayloadMigration;
+    "payload-locked-documents": PayloadLockedDocument;
+    "payload-preferences": PayloadPreference;
+    "payload-migrations": PayloadMigration;
   };
   collectionsJoins: {
     events: {
-      sections: 'sections';
-      roles: 'roles';
-      signups: 'signups';
+      sections: "sections";
+      roles: "roles";
+      signups: "signups";
     };
     sections: {
-      roles: 'roles';
+      roles: "roles";
     };
     roles: {
-      signups: 'signups';
+      signups: "signups";
     };
   };
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
-    'event-templates': EventTemplatesSelect<false> | EventTemplatesSelect<true>;
+    "event-templates": EventTemplatesSelect<false> | EventTemplatesSelect<true>;
     events: EventsSelect<false> | EventsSelect<true>;
     sections: SectionsSelect<false> | SectionsSelect<true>;
     roles: RolesSelect<false> | RolesSelect<true>;
     signups: SignupsSelect<false> | SignupsSelect<true>;
-    'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
-    'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
-    'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
+    "payload-locked-documents":
+      | PayloadLockedDocumentsSelect<false>
+      | PayloadLockedDocumentsSelect<true>;
+    "payload-preferences":
+      | PayloadPreferencesSelect<false>
+      | PayloadPreferencesSelect<true>;
+    "payload-migrations":
+      | PayloadMigrationsSelect<false>
+      | PayloadMigrationsSelect<true>;
   };
   db: {
     defaultIDType: number;
   };
   globals: {};
   globalsSelect: {};
-  locale: 'en' | 'nl';
+  locale: "en" | "nl";
   user: User & {
-    collection: 'users';
+    collection: "users";
   };
   jobs: {
     tasks: unknown;
@@ -83,8 +89,9 @@ export interface UserAuthOperations {
  */
 export interface User {
   id: number;
-  roles?: ('admin' | 'editor' | 'volunteer') | null;
   preferredName: string;
+  phoneNumber: string;
+  roles?: ("admin" | "editor" | "volunteer") | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -112,8 +119,8 @@ export interface EventTemplate {
         version: number;
         [k: string]: unknown;
       }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      direction: ("ltr" | "rtl") | null;
+      format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
       indent: number;
       version: number;
     };
@@ -130,8 +137,15 @@ export interface EventTemplate {
               version: number;
               [k: string]: unknown;
             }[];
-            direction: ('ltr' | 'rtl') | null;
-            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            direction: ("ltr" | "rtl") | null;
+            format:
+              | "left"
+              | "start"
+              | "center"
+              | "right"
+              | "end"
+              | "justify"
+              | "";
             indent: number;
             version: number;
           };
@@ -147,8 +161,15 @@ export interface EventTemplate {
                 version: number;
                 [k: string]: unknown;
               }[];
-              direction: ('ltr' | 'rtl') | null;
-              format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+              direction: ("ltr" | "rtl") | null;
+              format:
+                | "left"
+                | "start"
+                | "center"
+                | "right"
+                | "end"
+                | "justify"
+                | "";
               indent: number;
               version: number;
             };
@@ -183,8 +204,15 @@ export interface EventTemplate {
               version: number;
               [k: string]: unknown;
             }[];
-            direction: ('ltr' | 'rtl') | null;
-            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            direction: ("ltr" | "rtl") | null;
+            format:
+              | "left"
+              | "start"
+              | "center"
+              | "right"
+              | "end"
+              | "justify"
+              | "";
             indent: number;
             version: number;
           };
@@ -223,8 +251,8 @@ export interface Event {
         version: number;
         [k: string]: unknown;
       }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      direction: ("ltr" | "rtl") | null;
+      format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
       indent: number;
       version: number;
     };
@@ -261,8 +289,8 @@ export interface Section {
         version: number;
         [k: string]: unknown;
       }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      direction: ("ltr" | "rtl") | null;
+      format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
       indent: number;
       version: number;
     };
@@ -292,8 +320,8 @@ export interface Role {
         version: number;
         [k: string]: unknown;
       }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      direction: ("ltr" | "rtl") | null;
+      format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
       indent: number;
       version: number;
     };
@@ -331,32 +359,32 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
-        relationTo: 'users';
+        relationTo: "users";
         value: number | User;
       } | null)
     | ({
-        relationTo: 'event-templates';
+        relationTo: "event-templates";
         value: number | EventTemplate;
       } | null)
     | ({
-        relationTo: 'events';
+        relationTo: "events";
         value: number | Event;
       } | null)
     | ({
-        relationTo: 'sections';
+        relationTo: "sections";
         value: number | Section;
       } | null)
     | ({
-        relationTo: 'roles';
+        relationTo: "roles";
         value: number | Role;
       } | null)
     | ({
-        relationTo: 'signups';
+        relationTo: "signups";
         value: number | Signup;
       } | null);
   globalSlug?: string | null;
   user: {
-    relationTo: 'users';
+    relationTo: "users";
     value: number | User;
   };
   updatedAt: string;
@@ -369,7 +397,7 @@ export interface PayloadLockedDocument {
 export interface PayloadPreference {
   id: number;
   user: {
-    relationTo: 'users';
+    relationTo: "users";
     value: number | User;
   };
   key?: string | null;
@@ -401,8 +429,9 @@ export interface PayloadMigration {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
-  roles?: T;
   preferredName?: T;
+  phoneNumber?: T;
+  roles?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -552,7 +581,6 @@ export interface Auth {
   [k: string]: unknown;
 }
 
-
-declare module 'payload' {
+declare module "payload" {
   export interface GeneratedTypes extends Config {}
 }

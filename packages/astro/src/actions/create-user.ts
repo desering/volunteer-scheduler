@@ -3,9 +3,10 @@ import { z } from "astro:schema";
 
 export const createUser = defineAction({
   input: z.object({
-    email: z.string(),
-    password: z.string(),
     preferredName: z.string(),
+    email: z.string(),
+    phoneNumber: z.string(),
+    password: z.string(),
   }),
   handler: async (input, { locals: { payload } }) => {
     // Check if user already exists
@@ -25,11 +26,9 @@ export const createUser = defineAction({
       });
     }
 
-    const user = await payload.create({
+    return await payload.create({
       collection: "users",
       data: input,
     });
-
-    return user;
   },
 });
