@@ -24,6 +24,41 @@ import { migrations } from "./migrations";
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
 
+/**
+ * This function is a workaround for Coolify Preview Deployments.
+ *
+ * This repo contains two applications which have independent Preview
+ * Deployments that should connect to the same preview deployment database.
+ *
+ * Coolify predefined environment variables do not include a PR identifier, only
+ * `COOLIFY_BRANCH` which looks like this: `COOLIFY_BRANCH=pull/56/head` and
+ * cannot be directly used with PostgreSQL because database names must not
+ * contain `/`.
+ *
+ * This function extracts the PR number from `COOLIFY_BRANCH` and appends it to
+ * the connection string IF the deployment is not on the `main` branch.
+ *
+ * https://coolify.io/docs/applications/#preview-deployments
+ * https://coolify.io/docs/knowledge-base/environment-variables/
+ */
+function getConnectionString() {
+  if (!process.env.DATABASE_URI) {
+    return "";
+  }
+
+  if (!process.env.COOLIFY_BRANCH) {
+    return process.env.DATABASE_URI;
+  }
+
+  if (process.env.COOLIFY_BRANCH == "main") {
+    return process.env.DATABASE_URI;
+  }
+
+  // @ts-ignore: Object is possibly 'null'.
+  const prNumber = process.env.COOLIFY_BRANCH.match(/\/(\d+)\//)[1];
+  return `${process.env.DATABASE_URI}-pr-${prNumber}`;
+}
+
 export const sharedConfig = ({
   baseDir,
   enableMigrations,
@@ -43,7 +78,7 @@ export const sharedConfig = ({
   secret: process.env.PAYLOAD_SECRET || "",
   db: postgresAdapter({
     pool: {
-      connectionString: process.env.DATABASE_URI || "",
+      connectionString: getConnectionString(),
     },
     migrationDir: enableMigrations ? "./migrations" : undefined,
     prodMigrations: enableMigrations ? migrations : undefined,
