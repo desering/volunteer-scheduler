@@ -46,6 +46,10 @@ function getConnectionString() {
     return "";
   }
 
+  if (!process.env.COOLIFY_BRANCH) {
+    return process.env.DATABASE_URI;
+  }
+
   if (process.env.COOLIFY_BRANCH == "main") {
     return process.env.DATABASE_URI;
   }
