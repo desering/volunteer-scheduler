@@ -133,33 +133,31 @@ if (Astro.request.method === "POST") {
           />
         </panda.div>
 
-        <HStack>
-          <panda.div flexBasis="1/2">
-            <label for="password">Password:</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              required
-              class={input({
-                size: "lg",
-              })}
-            />
-          </panda.div>
+        <panda.div width="full">
+          <label for="password">Password:</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            required
+            class={input({
+              size: "lg",
+            })}
+          />
+        </panda.div>
 
-          <panda.div flexBasis="1/2">
-            <label for="password">Confirm Password:</label>
-            <input
-              type="password"
-              id="password-again"
-              name="password-again"
-              required
-              class={input({
-                size: "lg",
-              })}
-            />
-          </panda.div>
-        </HStack>
+        <panda.div width="full">
+          <label for="password">Confirm Password:</label>
+          <input
+            type="password"
+            id="password-again"
+            name="password-again"
+            required
+            class={input({
+              size: "lg",
+            })}
+          />
+        </panda.div>
 
         <HStack>
           <a
