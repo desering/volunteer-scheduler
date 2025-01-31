@@ -23,7 +23,7 @@ if (Astro.request.method === "POST") {
   const email = data.get("email") as string | null;
   const phoneNumber = data.get("phoneNumber") as string | null;
   const password = data.get("password") as string | null;
-  const passwordAgain = data.get("passwordAgain") as string | null;
+  const passwordAgain = data.get("password-again") as string | null;
 
   if (
     preferredName &&
@@ -151,8 +151,8 @@ if (Astro.request.method === "POST") {
             <label for="password">Confirm Password:</label>
             <input
               type="password"
-              id="passwordAgain"
-              name="passwordAgain"
+              id="password-again"
+              name="password-again"
               required
               class={input({
                 size: "lg",
