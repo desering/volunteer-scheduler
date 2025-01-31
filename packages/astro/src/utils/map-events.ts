@@ -18,8 +18,6 @@ export const groupAndSortEventsByDate = async (
     events.map(async (doc) => await prepareEvent(doc)),
   );
 
-  console.log(mappedEvents);
-
   const sorted = mappedEvents.sort(
     (a, b) => a.start_date.getTime() - b.start_date.getTime(),
   );

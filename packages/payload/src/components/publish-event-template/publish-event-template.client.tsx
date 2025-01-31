@@ -82,7 +82,6 @@ export const PublishEventTemplateForm = (props: { doc: EventTemplate }) => {
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     const fetch = async () => {
-      console.log("fetching");
       const data = await getEventsInPeriod(start, end);
 
       setIsLoadingCreatedEvents(false);

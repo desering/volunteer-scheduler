@@ -23,15 +23,19 @@ export const Users: CollectionConfig = {
   },
   fields: [
     {
+      name: "preferredName",
+      type: "text",
+      required: true,
+    },
+    {
+      name: "phoneNumber",
+      type: "text",
+      required: true,
+    },
+    {
       name: "roles",
       type: "select",
       options: ["admin", "editor", "volunteer"],
-    },
-    {
-      name: "preferredName",
-
-      type: "text",
-      required: true,
     },
   ],
 };

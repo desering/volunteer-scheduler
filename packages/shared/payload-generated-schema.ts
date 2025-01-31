@@ -31,8 +31,9 @@ export const users = pgTable(
   "users",
   {
     id: serial("id").primaryKey(),
-    roles: enum_users_roles("roles"),
     preferredName: varchar("preferred_name").notNull(),
+    phoneNumber: varchar("phone_number").notNull(),
+    roles: enum_users_roles("roles"),
     updatedAt: timestamp("updated_at", {
       mode: "string",
       withTimezone: true,
