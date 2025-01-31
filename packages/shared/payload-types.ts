@@ -12,53 +12,47 @@ export interface Config {
   };
   collections: {
     users: User;
-    "event-templates": EventTemplate;
+    'event-templates': EventTemplate;
     events: Event;
     sections: Section;
     roles: Role;
     signups: Signup;
-    "payload-locked-documents": PayloadLockedDocument;
-    "payload-preferences": PayloadPreference;
-    "payload-migrations": PayloadMigration;
+    'payload-locked-documents': PayloadLockedDocument;
+    'payload-preferences': PayloadPreference;
+    'payload-migrations': PayloadMigration;
   };
   collectionsJoins: {
     events: {
-      sections: "sections";
-      roles: "roles";
-      signups: "signups";
+      sections: 'sections';
+      roles: 'roles';
+      signups: 'signups';
     };
     sections: {
-      roles: "roles";
+      roles: 'roles';
     };
     roles: {
-      signups: "signups";
+      signups: 'signups';
     };
   };
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
-    "event-templates": EventTemplatesSelect<false> | EventTemplatesSelect<true>;
+    'event-templates': EventTemplatesSelect<false> | EventTemplatesSelect<true>;
     events: EventsSelect<false> | EventsSelect<true>;
     sections: SectionsSelect<false> | SectionsSelect<true>;
     roles: RolesSelect<false> | RolesSelect<true>;
     signups: SignupsSelect<false> | SignupsSelect<true>;
-    "payload-locked-documents":
-        | PayloadLockedDocumentsSelect<false>
-        | PayloadLockedDocumentsSelect<true>;
-    "payload-preferences":
-        | PayloadPreferencesSelect<false>
-        | PayloadPreferencesSelect<true>;
-    "payload-migrations":
-        | PayloadMigrationsSelect<false>
-        | PayloadMigrationsSelect<true>;
+    'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
+    'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
+    'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
   };
   db: {
     defaultIDType: number;
   };
   globals: {};
   globalsSelect: {};
-  locale: "en" | "nl";
+  locale: 'en' | 'nl';
   user: User & {
-    collection: "users";
+    collection: 'users';
   };
   jobs: {
     tasks: unknown;
@@ -91,7 +85,7 @@ export interface User {
   id: number;
   preferredName: string;
   phoneNumber: string;
-  roles?: ("admin" | "editor" | "volunteer") | null;
+  roles?: ('admin' | 'editor' | 'volunteer') | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -119,118 +113,97 @@ export interface EventTemplate {
         version: number;
         [k: string]: unknown;
       }[];
-      direction: ("ltr" | "rtl") | null;
-      format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
       indent: number;
       version: number;
     };
     [k: string]: unknown;
   } | null;
   sections?:
-      | {
-    title: string;
-    description?: {
-      root: {
-        type: string;
-        children: {
-          type: string;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ("ltr" | "rtl") | null;
-        format:
-            | "left"
-            | "start"
-            | "center"
-            | "right"
-            | "end"
-            | "justify"
-            | "";
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    } | null;
-    roles: {
-      title: string;
-      description?: {
-        root: {
-          type: string;
-          children: {
+    | {
+        title: string;
+        description?: {
+          root: {
             type: string;
+            children: {
+              type: string;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
             version: number;
+          };
+          [k: string]: unknown;
+        } | null;
+        roles: {
+          title: string;
+          description?: {
+            root: {
+              type: string;
+              children: {
+                type: string;
+                version: number;
+                [k: string]: unknown;
+              }[];
+              direction: ('ltr' | 'rtl') | null;
+              format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+              indent: number;
+              version: number;
+            };
             [k: string]: unknown;
-          }[];
-          direction: ("ltr" | "rtl") | null;
-          format:
-              | "left"
-              | "start"
-              | "center"
-              | "right"
-              | "end"
-              | "justify"
-              | "";
-          indent: number;
-          version: number;
-        };
-        [k: string]: unknown;
-      } | null;
-      /**
-       * The maximum number of signups allowed for this role, 0 for unlimited
-       */
-      maxSignups: number;
-      signups?:
-          | {
-        user: number | User;
+          } | null;
+          /**
+           * The maximum number of signups allowed for this role, 0 for unlimited
+           */
+          maxSignups: number;
+          signups?:
+            | {
+                user: number | User;
+                id?: string | null;
+              }[]
+            | null;
+          id?: string | null;
+        }[];
         id?: string | null;
       }[]
-          | null;
-      id?: string | null;
-    }[];
-    id?: string | null;
-  }[]
-      | null;
+    | null;
   /**
    * Add roles that are not specific to a section
    */
   roles?:
-      | {
-    title: string;
-    description?: {
-      root: {
-        type: string;
-        children: {
-          type: string;
-          version: number;
+    | {
+        title: string;
+        description?: {
+          root: {
+            type: string;
+            children: {
+              type: string;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
           [k: string]: unknown;
-        }[];
-        direction: ("ltr" | "rtl") | null;
-        format:
-            | "left"
-            | "start"
-            | "center"
-            | "right"
-            | "end"
-            | "justify"
-            | "";
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    } | null;
-    /**
-     * The maximum number of signups allowed for this role, 0 for unlimited
-     */
-    maxSignups: number;
-    signups?:
-        | {
-      user: number | User;
-      id?: string | null;
-    }[]
-        | null;
-    id?: string | null;
-  }[]
-      | null;
+        } | null;
+        /**
+         * The maximum number of signups allowed for this role, 0 for unlimited
+         */
+        maxSignups: number;
+        signups?:
+          | {
+              user: number | User;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -251,8 +224,8 @@ export interface Event {
         version: number;
         [k: string]: unknown;
       }[];
-      direction: ("ltr" | "rtl") | null;
-      format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
       indent: number;
       version: number;
     };
@@ -289,8 +262,8 @@ export interface Section {
         version: number;
         [k: string]: unknown;
       }[];
-      direction: ("ltr" | "rtl") | null;
-      format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
       indent: number;
       version: number;
     };
@@ -320,8 +293,8 @@ export interface Role {
         version: number;
         [k: string]: unknown;
       }[];
-      direction: ("ltr" | "rtl") | null;
-      format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
       indent: number;
       version: number;
     };
@@ -358,33 +331,33 @@ export interface Signup {
 export interface PayloadLockedDocument {
   id: number;
   document?:
-      | ({
-    relationTo: "users";
-    value: number | User;
-  } | null)
-      | ({
-    relationTo: "event-templates";
-    value: number | EventTemplate;
-  } | null)
-      | ({
-    relationTo: "events";
-    value: number | Event;
-  } | null)
-      | ({
-    relationTo: "sections";
-    value: number | Section;
-  } | null)
-      | ({
-    relationTo: "roles";
-    value: number | Role;
-  } | null)
-      | ({
-    relationTo: "signups";
-    value: number | Signup;
-  } | null);
+    | ({
+        relationTo: 'users';
+        value: number | User;
+      } | null)
+    | ({
+        relationTo: 'event-templates';
+        value: number | EventTemplate;
+      } | null)
+    | ({
+        relationTo: 'events';
+        value: number | Event;
+      } | null)
+    | ({
+        relationTo: 'sections';
+        value: number | Section;
+      } | null)
+    | ({
+        relationTo: 'roles';
+        value: number | Role;
+      } | null)
+    | ({
+        relationTo: 'signups';
+        value: number | Signup;
+      } | null);
   globalSlug?: string | null;
   user: {
-    relationTo: "users";
+    relationTo: 'users';
     value: number | User;
   };
   updatedAt: string;
@@ -397,19 +370,19 @@ export interface PayloadLockedDocument {
 export interface PayloadPreference {
   id: number;
   user: {
-    relationTo: "users";
+    relationTo: 'users';
     value: number | User;
   };
   key?: string | null;
   value?:
-      | {
-    [k: string]: unknown;
-  }
-      | unknown[]
-      | string
-      | number
-      | boolean
-      | null;
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -451,40 +424,40 @@ export interface EventTemplatesSelect<T extends boolean = true> {
   end_time?: T;
   description?: T;
   sections?:
-      | T
-      | {
-    title?: T;
-    description?: T;
-    roles?:
-        | T
-        | {
-      title?: T;
-      description?: T;
-      maxSignups?: T;
-      signups?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        roles?:
           | T
           | {
-        user?: T;
+              title?: T;
+              description?: T;
+              maxSignups?: T;
+              signups?:
+                | T
+                | {
+                    user?: T;
+                    id?: T;
+                  };
+              id?: T;
+            };
         id?: T;
       };
-      id?: T;
-    };
-    id?: T;
-  };
   roles?:
-      | T
-      | {
-    title?: T;
-    description?: T;
-    maxSignups?: T;
-    signups?:
-        | T
-        | {
-      user?: T;
-      id?: T;
-    };
-    id?: T;
-  };
+    | T
+    | {
+        title?: T;
+        description?: T;
+        maxSignups?: T;
+        signups?:
+          | T
+          | {
+              user?: T;
+              id?: T;
+            };
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -581,6 +554,7 @@ export interface Auth {
   [k: string]: unknown;
 }
 
-declare module "payload" {
+
+declare module 'payload' {
   export interface GeneratedTypes extends Config {}
 }
