@@ -30,7 +30,7 @@ export const Users: CollectionConfig = {
     {
       name: "phoneNumber",
       type: "text",
-      required: true,
+      required: false,
     },
     {
       name: "roles",
