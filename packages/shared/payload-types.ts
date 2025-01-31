@@ -42,14 +42,14 @@ export interface Config {
     roles: RolesSelect<false> | RolesSelect<true>;
     signups: SignupsSelect<false> | SignupsSelect<true>;
     "payload-locked-documents":
-      | PayloadLockedDocumentsSelect<false>
-      | PayloadLockedDocumentsSelect<true>;
+        | PayloadLockedDocumentsSelect<false>
+        | PayloadLockedDocumentsSelect<true>;
     "payload-preferences":
-      | PayloadPreferencesSelect<false>
-      | PayloadPreferencesSelect<true>;
+        | PayloadPreferencesSelect<false>
+        | PayloadPreferencesSelect<true>;
     "payload-migrations":
-      | PayloadMigrationsSelect<false>
-      | PayloadMigrationsSelect<true>;
+        | PayloadMigrationsSelect<false>
+        | PayloadMigrationsSelect<true>;
   };
   db: {
     defaultIDType: number;
@@ -127,18 +127,42 @@ export interface EventTemplate {
     [k: string]: unknown;
   } | null;
   sections?:
-    | {
-        title: string;
-        description?: {
-          root: {
+      | {
+    title: string;
+    description?: {
+      root: {
+        type: string;
+        children: {
+          type: string;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ("ltr" | "rtl") | null;
+        format:
+            | "left"
+            | "start"
+            | "center"
+            | "right"
+            | "end"
+            | "justify"
+            | "";
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    roles: {
+      title: string;
+      description?: {
+        root: {
+          type: string;
+          children: {
             type: string;
-            children: {
-              type: string;
-              version: number;
-              [k: string]: unknown;
-            }[];
-            direction: ("ltr" | "rtl") | null;
-            format:
+            version: number;
+            [k: string]: unknown;
+          }[];
+          direction: ("ltr" | "rtl") | null;
+          format:
               | "left"
               | "start"
               | "center"
@@ -146,91 +170,67 @@ export interface EventTemplate {
               | "end"
               | "justify"
               | "";
-            indent: number;
-            version: number;
-          };
-          [k: string]: unknown;
-        } | null;
-        roles: {
-          title: string;
-          description?: {
-            root: {
-              type: string;
-              children: {
-                type: string;
-                version: number;
-                [k: string]: unknown;
-              }[];
-              direction: ("ltr" | "rtl") | null;
-              format:
-                | "left"
-                | "start"
-                | "center"
-                | "right"
-                | "end"
-                | "justify"
-                | "";
-              indent: number;
-              version: number;
-            };
-            [k: string]: unknown;
-          } | null;
-          /**
-           * The maximum number of signups allowed for this role, 0 for unlimited
-           */
-          maxSignups: number;
-          signups?:
-            | {
-                user: number | User;
-                id?: string | null;
-              }[]
-            | null;
-          id?: string | null;
-        }[];
+          indent: number;
+          version: number;
+        };
+        [k: string]: unknown;
+      } | null;
+      /**
+       * The maximum number of signups allowed for this role, 0 for unlimited
+       */
+      maxSignups: number;
+      signups?:
+          | {
+        user: number | User;
         id?: string | null;
       }[]
-    | null;
+          | null;
+      id?: string | null;
+    }[];
+    id?: string | null;
+  }[]
+      | null;
   /**
    * Add roles that are not specific to a section
    */
   roles?:
-    | {
-        title: string;
-        description?: {
-          root: {
-            type: string;
-            children: {
-              type: string;
-              version: number;
-              [k: string]: unknown;
-            }[];
-            direction: ("ltr" | "rtl") | null;
-            format:
-              | "left"
-              | "start"
-              | "center"
-              | "right"
-              | "end"
-              | "justify"
-              | "";
-            indent: number;
-            version: number;
-          };
+      | {
+    title: string;
+    description?: {
+      root: {
+        type: string;
+        children: {
+          type: string;
+          version: number;
           [k: string]: unknown;
-        } | null;
-        /**
-         * The maximum number of signups allowed for this role, 0 for unlimited
-         */
-        maxSignups: number;
-        signups?:
-          | {
-              user: number | User;
-              id?: string | null;
-            }[]
-          | null;
-        id?: string | null;
-      }[]
-    | null;
+        }[];
+        direction: ("ltr" | "rtl") | null;
+        format:
+            | "left"
+            | "start"
+            | "center"
+            | "right"
+            | "end"
+            | "justify"
+            | "";
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    /**
+     * The maximum number of signups allowed for this role, 0 for unlimited
+     */
+    maxSignups: number;
+    signups?:
+        | {
+      user: number | User;
+      id?: string | null;
+    }[]
+        | null;
+    id?: string | null;
+  }[]
+      | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -358,30 +358,30 @@ export interface Signup {
 export interface PayloadLockedDocument {
   id: number;
   document?:
-    | ({
-        relationTo: "users";
-        value: number | User;
-      } | null)
-    | ({
-        relationTo: "event-templates";
-        value: number | EventTemplate;
-      } | null)
-    | ({
-        relationTo: "events";
-        value: number | Event;
-      } | null)
-    | ({
-        relationTo: "sections";
-        value: number | Section;
-      } | null)
-    | ({
-        relationTo: "roles";
-        value: number | Role;
-      } | null)
-    | ({
-        relationTo: "signups";
-        value: number | Signup;
-      } | null);
+      | ({
+    relationTo: "users";
+    value: number | User;
+  } | null)
+      | ({
+    relationTo: "event-templates";
+    value: number | EventTemplate;
+  } | null)
+      | ({
+    relationTo: "events";
+    value: number | Event;
+  } | null)
+      | ({
+    relationTo: "sections";
+    value: number | Section;
+  } | null)
+      | ({
+    relationTo: "roles";
+    value: number | Role;
+  } | null)
+      | ({
+    relationTo: "signups";
+    value: number | Signup;
+  } | null);
   globalSlug?: string | null;
   user: {
     relationTo: "users";
@@ -402,14 +402,14 @@ export interface PayloadPreference {
   };
   key?: string | null;
   value?:
-    | {
-        [k: string]: unknown;
-      }
-    | unknown[]
-    | string
-    | number
-    | boolean
-    | null;
+      | {
+    [k: string]: unknown;
+  }
+      | unknown[]
+      | string
+      | number
+      | boolean
+      | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -451,40 +451,40 @@ export interface EventTemplatesSelect<T extends boolean = true> {
   end_time?: T;
   description?: T;
   sections?:
-    | T
-    | {
-        title?: T;
-        description?: T;
-        roles?:
+      | T
+      | {
+    title?: T;
+    description?: T;
+    roles?:
+        | T
+        | {
+      title?: T;
+      description?: T;
+      maxSignups?: T;
+      signups?:
           | T
           | {
-              title?: T;
-              description?: T;
-              maxSignups?: T;
-              signups?:
-                | T
-                | {
-                    user?: T;
-                    id?: T;
-                  };
-              id?: T;
-            };
+        user?: T;
         id?: T;
       };
+      id?: T;
+    };
+    id?: T;
+  };
   roles?:
-    | T
-    | {
-        title?: T;
-        description?: T;
-        maxSignups?: T;
-        signups?:
-          | T
-          | {
-              user?: T;
-              id?: T;
-            };
-        id?: T;
-      };
+      | T
+      | {
+    title?: T;
+    description?: T;
+    maxSignups?: T;
+    signups?:
+        | T
+        | {
+      user?: T;
+      id?: T;
+    };
+    id?: T;
+  };
   updatedAt?: T;
   createdAt?: T;
 }
