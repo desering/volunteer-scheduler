@@ -2,21 +2,24 @@
 
 import { getEventsInPeriod } from "@/actions";
 import { daysOfWeek } from "@/components/publish-event-template/constants";
+import { bleedX, divider, gutterX, gutterY } from "@/components/ui/utils";
+import { lastDayOfMonth, startOfMonth } from "@/utils/utc";
 import { UTCDate } from "@date-fns/utc";
-import { Gutter } from "@payloadcms/ui";
+import { DatePicker } from "@payloadcms/ui";
 import { useQuery } from "@tanstack/react-query";
-import {
-  eachDayOfInterval,
-  endOfMonth,
-  format,
-  getDay,
-  isSameDay,
-  startOfMonth,
-} from "date-fns";
+import { eachDayOfInterval, format, getDay, isSameDay } from "date-fns";
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { css } from "styled-system/css";
-import { Box, Center, Grid, VStack, panda } from "styled-system/jsx";
+import { css, cx } from "styled-system/css";
+import {
+  Box,
+  Center,
+  Flex,
+  Grid,
+  HStack,
+  VStack,
+  panda,
+} from "styled-system/jsx";
 
 const useEventsByMonth = (start: Date, end: Date) => {
   const allDays = useMemo(
@@ -29,7 +32,7 @@ const useEventsByMonth = (start: Date, end: Date) => {
   );
 
   const { data: groupedByMonth } = useQuery({
-    queryKey: ["calender"],
+    queryKey: ["calender", start, end],
     queryFn: async () => {
       const data = await getEventsInPeriod(start, end);
 
@@ -53,14 +56,66 @@ const useEventsByMonth = (start: Date, end: Date) => {
 
 export const CalenderViewClient = () => {
   const [start, setStart] = useState(startOfMonth(new UTCDate()));
-  const [end, setEnd] = useState(endOfMonth(new UTCDate()));
+  const [end, setEnd] = useState(lastDayOfMonth(new UTCDate()));
 
   const { groupedByMonth } = useEventsByMonth(start, end);
 
   return (
-    <Gutter>
+    <VStack className={cx(gutterX, gutterY)} alignItems="start" gap="8">
+      <panda.div alignSelf="stretch" className={cx(bleedX, divider)} />
+
+      <VStack alignItems="start" gap="8">
+        <h3>Filters</h3>
+        <HStack>
+          <div>
+            <h4>Visible Dates</h4>
+
+            <HStack className="disable-date-picker-clear">
+              <VStack alignItems="start">
+                <p>Start Date</p>
+                <DatePicker
+                  value={new Date(start)}
+                  onChange={(value) => {
+                    setStart(new UTCDate(value));
+                  }}
+                  displayFormat="dd/MM/yyyy"
+                  overrides={{
+                    calendarStartDay: 1,
+                    todayButton: "Today",
+                    startDate: new Date(start),
+                    endDate: new Date(end),
+                    selectsStart: true,
+                  }}
+                  maxDate={end}
+                />
+              </VStack>
+              <VStack alignItems="start">
+                <p>End Date</p>
+                <DatePicker
+                  value={new Date(end)}
+                  onChange={(value) => {
+                    setEnd(new UTCDate(value));
+                  }}
+                  displayFormat="dd/MM/yyyy"
+                  overrides={{
+                    calendarStartDay: 1,
+                    todayButton: "Today",
+                    startDate: new Date(start),
+                    endDate: new Date(end),
+                    selectsEnd: true,
+                  }}
+                  minDate={start}
+                />
+              </VStack>
+            </HStack>
+          </div>
+        </HStack>
+      </VStack>
+
+      <panda.div alignSelf="stretch" className={cx(bleedX, divider)} />
+
       <h1>Calender</h1>
-      <br />
+
       {groupedByMonth &&
         Object.keys(groupedByMonth).map((month) => {
           const monthOffset = groupedByMonth[month]?.[0]
@@ -76,6 +131,7 @@ export const CalenderViewClient = () => {
             <VStack
               key={month}
               alignItems="start"
+              alignSelf="stretch"
               border="1px solid"
               borderColor="border.muted"
               padding="4"
@@ -94,18 +150,15 @@ export const CalenderViewClient = () => {
                 ))}
 
                 {groupedByMonth[month]?.map(({ day, relatedEvents }) => (
-                  <VStack
+                  <Flex
                     key={day.getTime()}
-                    alignItems="start"
-                    justifyContent="start"
-                    textAlign="start"
                     minHeight="150px"
-                    flexDir="column"
-                    lineHeight="0.8"
                     padding="4"
+                    flexDirection="column"
+                    gap="2"
+                    lineHeight="0.8"
                     border="1px solid"
                     borderColor="border.muted"
-                    gap="2"
                   >
                     <panda.p marginBottom="2">{format(day, "dd")}</panda.p>
 
@@ -121,12 +174,12 @@ export const CalenderViewClient = () => {
                         })}
                       >{`${format(event.start_date, "HH:mm")} ${event.title}`}</Link>
                     ))}
-                  </VStack>
+                  </Flex>
                 ))}
               </Grid>
             </VStack>
           );
         })}
-    </Gutter>
+    </VStack>
   );
 };

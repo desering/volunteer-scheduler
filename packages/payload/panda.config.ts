@@ -18,10 +18,7 @@ export default defineConfig({
       radius: "none",
     }),
   ],
-  include: [
-    "./src/components/**/*.{ts,tsx,js,jsx}",
-    "./src/app/**/*.{ts,tsx,js,jsx}",
-  ],
+  include: ["./src/**/*.{ts,tsx,js,jsx}"],
   outdir: "styled-system",
   jsxFactory: "panda",
   jsxFramework: "react",

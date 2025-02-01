@@ -1,11 +1,11 @@
 "use server";
 
+import { UTCDate, utc } from "@date-fns/utc";
 import config from "@payload-config";
 import type { EventTemplate } from "@payload-types";
 import { getDate, getHours, getMinutes, getMonth, getYear } from "date-fns";
 import { type RequiredDataFromCollectionSlug, getPayload } from "payload";
 import { createRoles } from "./create-roles";
-import { UTCDate } from "@date-fns/utc";
 
 const payload = await getPayload({
   config,
@@ -80,16 +80,16 @@ const eventTemplateToEvent = (template: EventTemplate, day: UTCDate) => {
     getYear(day),
     getMonth(day),
     getDate(day),
-    getHours(template.start_time),
-    getMinutes(template.start_time),
+    getHours(template.start_time, { in: utc }),
+    getMinutes(template.start_time, { in: utc }),
   );
 
   const endTime = new UTCDate(
     getYear(day),
     getMonth(day),
     getDate(day),
-    getHours(template.end_time),
-    getMinutes(template.end_time),
+    getHours(template.end_time, { in: utc }),
+    getMinutes(template.end_time, { in: utc }),
   );
 
   return {

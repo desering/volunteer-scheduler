@@ -2,7 +2,13 @@
   "name": "@desering/volunteer-scheduler",
   "version": "0.0.1",
   "private": true,
-  "scripts": {},
+  "scripts": {
+    "dev:db": "docker compose -f ./docker-compose.db.yml up",
+    "dev:astro": "bun run --cwd ./packages/astro dev",
+    "dev:payload": "bun run --cwd ./packages/payload dev",
+    "build:astro": "bun run --cwd ./packages/astro build",
+    "build:payload": "bun run --cwd ./packages/payload build"
+  },
   "workspaces": ["packages/*"],
   "devDependencies": {
     "@biomejs/biome": "^1.9.4"

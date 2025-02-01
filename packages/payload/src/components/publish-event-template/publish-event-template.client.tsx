@@ -1,61 +1,41 @@
 "use client";
 
-import { DatePicker } from "@payloadcms/ui";
-import {
-  eachDayOfInterval,
-  endOfMonth,
-  format,
-  getDay,
-  isSameDay,
-  startOfMonth,
-} from "date-fns";
-import { utc, UTCDate } from "@date-fns/utc";
-import { useEffect, useMemo, useState } from "react";
-import { css, cx } from "styled-system/css";
+import { lastDayOfMonth, startOfMonth } from "@/utils/utc";
+import { UTCDate, utc } from "@date-fns/utc";
+import type { EventTemplate } from "@payload-types";
+import { DatePicker, toast } from "@payloadcms/ui";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { eachDayOfInterval, format, getDay, isSameDay } from "date-fns";
+import { useMemo, useState } from "react";
+import { cx } from "styled-system/css";
 import { Box, Center, Grid, HStack, VStack, panda } from "styled-system/jsx";
-import { getEventsInPeriod } from "../../actions";
+import { createEventsFromTemplate, getEventsInPeriod } from "../../actions";
 import { Button } from "../ui/button";
-import type { Event, EventTemplate } from "@payload-types";
-import type { PaginatedDocs } from "payload";
+import { bleedX, divider, gutterX, gutterY } from "../ui/utils";
 import { daysOfWeek } from "./constants";
-import { useCreateEvents } from "./use-create-events";
-
-const gutterX = css({
-  paddingX: "60px",
-});
-
-const bleedX = css({
-  marginX: "-60px",
-});
-
-const gutterY = css({ paddingTop: "30px", paddingBottom: "60px" });
-
-const divider = css({
-  borderBottom: "1px solid",
-  borderBottomColor: "border.muted",
-});
 
 export const PublishEventTemplateForm = (props: { doc: EventTemplate }) => {
   const [start, setStart] = useState(startOfMonth(new UTCDate()));
-  const [end, setEnd] = useState(endOfMonth(new UTCDate()));
+  const [end, setEnd] = useState(lastDayOfMonth(new UTCDate()));
   const [selectedDays, setSelectedDays] = useState<UTCDate[]>([]);
-  const [shouldRefresh, setShouldRefresh] = useState(true);
 
-  const { createEvents, isCreating, error } = useCreateEvents(
-    props.doc.id,
-    selectedDays,
-    () => {
+  const createEvents = useMutation({
+    mutationFn: () =>
+      createEventsFromTemplate(props.doc.id, selectedDays.map(utc)),
+    onSuccess: () => {
       setSelectedDays([]);
-      setExistingEvents(undefined);
-      setShouldRefresh(true);
+      existingEvents.refetch();
+      toast.success("Events created successfully");
     },
-  );
+    onError: () => toast.error("Failed to create events"),
+  });
 
-  const canPublish = selectedDays.length > 0;
+  const existingEvents = useQuery({
+    queryKey: ["calender", start, end],
+    queryFn: async () => await getEventsInPeriod(start, end),
+  });
 
-  const [isLoadingCreatedEvents, setIsLoadingCreatedEvents] = useState(false);
-  const [existingEvents, setExistingEvents] = useState<PaginatedDocs<Event>>();
-
+  // biome-ignore lint/correctness/useExhaustiveDependencies: only rerun after refresh data
   const groupedDays = useMemo(() => {
     const allDays = eachDayOfInterval({
       start,
@@ -63,9 +43,9 @@ export const PublishEventTemplateForm = (props: { doc: EventTemplate }) => {
     });
 
     const withEvents = allDays.map((day) => ({
-      day: utc(day),
-      relatedEvents: existingEvents?.docs.filter((event) =>
-        isSameDay(event.start_date, day),
+      day: day,
+      relatedEvents: existingEvents.data?.docs.filter((event) =>
+        isSameDay(event.start_date, day, { in: utc }),
       ),
     }));
 
@@ -74,26 +54,9 @@ export const PublishEventTemplateForm = (props: { doc: EventTemplate }) => {
     );
 
     return groupedByMonth;
-  }, [start, end, existingEvents]);
+  }, [existingEvents.data]);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useEffect(() => setShouldRefresh(true), [start, end]);
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useEffect(() => {
-    const fetch = async () => {
-      const data = await getEventsInPeriod(start, end);
-
-      setIsLoadingCreatedEvents(false);
-      setExistingEvents(data);
-    };
-
-    if (shouldRefresh) {
-      setIsLoadingCreatedEvents(true);
-      setShouldRefresh(false);
-      fetch();
-    }
-  }, [shouldRefresh]);
+  const canPublish = selectedDays.length > 0;
 
   return (
     <>
@@ -102,11 +65,11 @@ export const PublishEventTemplateForm = (props: { doc: EventTemplate }) => {
         justifyContent="end"
         height="56px"
       >
-        {error && <p>{error}</p>}
+        {createEvents.error && <p>{createEvents.error.message}</p>}
         <Button
           variant="solid"
-          disabled={!canPublish || isCreating}
-          onClick={() => createEvents()}
+          disabled={!canPublish || createEvents.isPending}
+          onClick={() => createEvents.mutate()}
         >
           Create Events
         </Button>
@@ -120,32 +83,40 @@ export const PublishEventTemplateForm = (props: { doc: EventTemplate }) => {
             <div>
               <h4>Visible Dates</h4>
 
-              <HStack>
+              <HStack className="disable-date-picker-clear">
                 <VStack alignItems="start">
                   <p>Start Date</p>
                   <DatePicker
-                    value={start}
+                    value={new Date(start)}
                     onChange={(value) => {
-                      setStart(value);
-                      setShouldRefresh(true);
+                      setStart(new UTCDate(value));
+                      existingEvents.refetch();
                     }}
                     displayFormat="dd/MM/yyyy"
                     overrides={{
                       calendarStartDay: 1,
+                      todayButton: "Today",
+                      startDate: new Date(start),
+                      endDate: new Date(end),
+                      selectsStart: true,
                     }}
                   />
                 </VStack>
                 <VStack alignItems="start">
                   <p>End Date</p>
                   <DatePicker
-                    value={end}
+                    value={new Date(end)}
                     onChange={(value) => {
-                      setEnd(value);
-                      setShouldRefresh(true);
+                      setEnd(new UTCDate(value));
+                      existingEvents.refetch();
                     }}
                     displayFormat="dd/MM/yyyy"
                     overrides={{
                       calendarStartDay: 1,
+                      todayButton: "Today",
+                      startDate: new Date(start),
+                      endDate: new Date(end),
+                      selectsEnd: true,
                     }}
                   />
                 </VStack>
@@ -159,7 +130,7 @@ export const PublishEventTemplateForm = (props: { doc: EventTemplate }) => {
         <VStack alignSelf="stretch" alignItems="stretch">
           <div>
             <panda.h3>
-              Calender {isLoadingCreatedEvents && "(loading events...)"}
+              Calender {existingEvents.isFetching && "(fetching events...)"}
             </panda.h3>
             <p>Select the days you want to create events for.</p>
           </div>
@@ -198,13 +169,14 @@ export const PublishEventTemplateForm = (props: { doc: EventTemplate }) => {
                   {groupedDays[month]?.map(({ day, relatedEvents }) => (
                     <Button
                       key={day.getTime()}
-                      alignItems="start"
-                      justifyContent="start"
-                      textAlign="start"
+                      height="auto"
                       minHeight="150px"
-                      flexDir="column"
-                      lineHeight="0.8"
                       padding="4"
+                      flexDir="column"
+                      justifyContent="start"
+                      alignItems="start"
+                      textAlign="start"
+                      lineHeight="0.8"
                       variant={selectedDays.includes(day) ? "solid" : "outline"}
                       onClick={() => {
                         setSelectedDays((prev) =>
