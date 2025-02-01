@@ -118,6 +118,7 @@ export const PublishEventTemplateForm = (props: { doc: EventTemplate }) => {
                     displayFormat="dd/MM/yyyy"
                     overrides={{
                       calendarStartDay: 1,
+                      isClearable: false,
                     }}
                   />
                 </VStack>
@@ -132,6 +133,7 @@ export const PublishEventTemplateForm = (props: { doc: EventTemplate }) => {
                     displayFormat="dd/MM/yyyy"
                     overrides={{
                       calendarStartDay: 1,
+                      isClearable: false,
                     }}
                   />
                 </VStack>

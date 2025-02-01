@@ -87,6 +87,7 @@ export const CalenderViewClient = () => {
                   displayFormat="dd/MM/yyyy"
                   overrides={{
                     calendarStartDay: 1,
+                    isClearable: false,
                   }}
                   maxDate={end}
                 />
@@ -101,6 +102,7 @@ export const CalenderViewClient = () => {
                   displayFormat="dd/MM/yyyy"
                   overrides={{
                     calendarStartDay: 1,
+                    isClearable: false,
                   }}
                   minDate={start}
                 />
