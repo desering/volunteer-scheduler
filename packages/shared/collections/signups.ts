@@ -61,12 +61,21 @@ export const Signups: CollectionConfig = {
               const role = await req.payload.findByID({
                 collection: "roles",
                 id: data?.role,
+
+                req: {
+                  transactionID: req.transactionID,
+                },
               });
 
               const signups = await req.payload.count({
                 collection: "signups",
+
                 where: {
                   role: { equals: role.id },
+                },
+
+                req: {
+                  transactionID: req.transactionID,
                 },
               });
 

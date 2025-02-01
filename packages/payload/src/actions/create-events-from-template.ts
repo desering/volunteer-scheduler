@@ -7,14 +7,14 @@ import { getDate, getHours, getMinutes, getMonth, getYear } from "date-fns";
 import { type RequiredDataFromCollectionSlug, getPayload } from "payload";
 import { createRoles } from "./create-roles";
 
-const payload = await getPayload({
-  config,
-});
-
 export const createEventsFromTemplate = async (
   templateId: number,
   selectedDays: UTCDate[],
 ) => {
+  const payload = await getPayload({
+    config,
+  });
+
   const template = await payload.findByID({
     collection: "event-templates",
     id: templateId,
