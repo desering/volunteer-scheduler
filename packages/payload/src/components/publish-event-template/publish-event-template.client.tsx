@@ -1,5 +1,7 @@
 "use client";
 
+import { UTCDate, utc } from "@date-fns/utc";
+import type { Event, EventTemplate } from "@payload-types";
 import { DatePicker } from "@payloadcms/ui";
 import {
   eachDayOfInterval,
@@ -9,31 +11,15 @@ import {
   isSameDay,
   startOfMonth,
 } from "date-fns";
-import { utc, UTCDate } from "@date-fns/utc";
+import type { PaginatedDocs } from "payload";
 import { useEffect, useMemo, useState } from "react";
-import { css, cx } from "styled-system/css";
+import { cx } from "styled-system/css";
 import { Box, Center, Grid, HStack, VStack, panda } from "styled-system/jsx";
 import { getEventsInPeriod } from "../../actions";
 import { Button } from "../ui/button";
-import type { Event, EventTemplate } from "@payload-types";
-import type { PaginatedDocs } from "payload";
 import { daysOfWeek } from "./constants";
 import { useCreateEvents } from "./use-create-events";
-
-const gutterX = css({
-  paddingX: "60px",
-});
-
-const bleedX = css({
-  marginX: "-60px",
-});
-
-const gutterY = css({ paddingTop: "30px", paddingBottom: "60px" });
-
-const divider = css({
-  borderBottom: "1px solid",
-  borderBottomColor: "border.muted",
-});
+import { bleedX, divider, gutterX, gutterY } from "../ui/utils";
 
 export const PublishEventTemplateForm = (props: { doc: EventTemplate }) => {
   const [start, setStart] = useState(startOfMonth(new UTCDate()));
