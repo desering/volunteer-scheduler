@@ -16,6 +16,7 @@
   "dependencies": {
     "@ark-ui/react": "^4.8.1",
     "@date-fns/utc": "^2.1.0",
+    "@date-fns/tz": "^1.2.0",
     "@desering/volunteer-scheduler-shared": "workspace:*",
     "@payloadcms/next": "3.19.0",
     "@payloadcms/ui": "3.19.0",

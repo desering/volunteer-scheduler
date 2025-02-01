@@ -3,17 +3,11 @@
 import { getEventsInPeriod } from "@/actions";
 import { daysOfWeek } from "@/components/publish-event-template/constants";
 import { bleedX, divider, gutterX, gutterY } from "@/components/ui/utils";
+import { lastDayOfMonth, startOfMonth } from "@/utils/utc";
 import { UTCDate } from "@date-fns/utc";
 import { DatePicker } from "@payloadcms/ui";
 import { useQuery } from "@tanstack/react-query";
-import {
-  eachDayOfInterval,
-  endOfMonth,
-  format,
-  getDay,
-  isSameDay,
-  startOfMonth,
-} from "date-fns";
+import { eachDayOfInterval, format, getDay, isSameDay } from "date-fns";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { css, cx } from "styled-system/css";
@@ -62,7 +56,7 @@ const useEventsByMonth = (start: Date, end: Date) => {
 
 export const CalenderViewClient = () => {
   const [start, setStart] = useState(startOfMonth(new UTCDate()));
-  const [end, setEnd] = useState(endOfMonth(new UTCDate()));
+  const [end, setEnd] = useState(lastDayOfMonth(new UTCDate()));
 
   const { groupedByMonth } = useEventsByMonth(start, end);
 
@@ -76,18 +70,21 @@ export const CalenderViewClient = () => {
           <div>
             <h4>Visible Dates</h4>
 
-            <HStack>
+            <HStack className="disable-date-picker-clear">
               <VStack alignItems="start">
                 <p>Start Date</p>
                 <DatePicker
-                  value={start}
+                  value={new Date(start)}
                   onChange={(value) => {
                     setStart(new UTCDate(value));
                   }}
                   displayFormat="dd/MM/yyyy"
                   overrides={{
                     calendarStartDay: 1,
-                    isClearable: false,
+                    todayButton: "Today",
+                    startDate: new Date(start),
+                    endDate: new Date(end),
+                    selectsStart: true,
                   }}
                   maxDate={end}
                 />
@@ -95,14 +92,17 @@ export const CalenderViewClient = () => {
               <VStack alignItems="start">
                 <p>End Date</p>
                 <DatePicker
-                  value={end}
+                  value={new Date(end)}
                   onChange={(value) => {
                     setEnd(new UTCDate(value));
                   }}
                   displayFormat="dd/MM/yyyy"
                   overrides={{
                     calendarStartDay: 1,
-                    isClearable: false,
+                    todayButton: "Today",
+                    startDate: new Date(start),
+                    endDate: new Date(end),
+                    selectsEnd: true,
                   }}
                   minDate={start}
                 />
