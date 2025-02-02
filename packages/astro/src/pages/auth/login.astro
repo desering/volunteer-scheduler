@@ -101,7 +101,7 @@ if (Astro.request.method === "POST") {
         <HStack>
           <a
               type="button"
-              onclick="window.location.href='/'"
+              href='/'
               class:list={[
                 button({ size: "lg", variant: "outline" }),
                 css({ flexGrow: 1 }),
@@ -120,8 +120,8 @@ if (Astro.request.method === "POST") {
           </button>
         </HStack>
 
-        <div class:list={[css({textAlign: "center", margin: '10px'})]}>
-          Don't have an account yet? <a onclick="window.location.href='/auth/register'" class:list={[link()]}>Register</a>
+        <div class:list={[css({textAlign: "center", marginY: '10px'})]}>
+          Don't have an account yet? <a href='/auth/register' class:list={[link()]}>Register</a>
         </div>
       </form>
     </Container>
