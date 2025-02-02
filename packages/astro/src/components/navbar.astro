@@ -7,9 +7,17 @@ import { Container } from "styled-system/jsx";
 
 <Container marginTop="4">
   <panda.nav display="flex" justifyContent="space-between">
-    <a href="/" class={button({ variant: "outline" })}>Shifts</a>
+    <panda.div display="flex" gap="4">
+      <a href="/" class={button({ variant: "outline" })}>Shifts</a>
 
-    {Astro.locals.user?.roles?.includes("admin") && <a href="/admin" class={button({ variant: "outline" })}>Manage Shifts</a>}
+      {
+        Astro.locals.user?.roles?.includes("admin") && (
+          <a href="/admin" class={button({ variant: "outline" })}>
+            Manage Shifts
+          </a>
+        )
+      }
+    </panda.div>
 
     <panda.div display="flex" gap="4">
       <ThemeSwitchButton client:idle />

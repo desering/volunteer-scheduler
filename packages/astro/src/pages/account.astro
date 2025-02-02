@@ -23,13 +23,9 @@ const events = await Astro.callAction(
     <panda.h1 fontSize="xl" fontWeight="medium">My upcoming shifts</panda.h1>
   </Container>
 
-  <UpcomingEventsList
-    user={Astro.locals.user}
-    events={events.data}
-    client:load
-  />
+  <UpcomingEventsList user={Astro.locals.user} data={events.data} client:load />
 
-  <Container marginTop={{ base: 4, xl: 20 }}>
+  <Container marginBlock={{ base: 4, xl: 20 }}>
     <Flex flexDir="column" gap="10">
       <a href="/auth/logout" class={button({ size: "lg", variant: "outline" })}>
         Logout
