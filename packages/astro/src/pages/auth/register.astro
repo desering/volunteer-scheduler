@@ -9,6 +9,7 @@ import { button } from "styled-system/recipes/button";
 import { input } from "styled-system/recipes/input";
 import Layout from "~/layouts/layout.astro";
 import { actions } from "astro:actions";
+import { link } from "../../../styled-system/recipes";
 
 if (Astro.locals.user) {
   return Astro.redirect("/");
@@ -68,7 +69,7 @@ if (Astro.request.method === "POST") {
 }
 ---
 
-<Layout title="Login | De Sering Volunteer Schedule">
+<Layout title="Register | De Sering Volunteer Schedule">
   <panda.div
     display="flex"
     minHeight="screen"
@@ -162,7 +163,7 @@ if (Astro.request.method === "POST") {
         <HStack>
           <a
               type="button"
-              onclick="window.location.href='/'"
+              href="/"
               class:list={[
                 button({ size: "lg", variant: "outline" }),
                 css({ flexGrow: 1 }),
@@ -180,6 +181,10 @@ if (Astro.request.method === "POST") {
             Register
           </button>
         </HStack>
+
+      <div class:list={[css({textAlign: "center", marginY: '10px'})]}>
+          Already have an account? <a href='/auth/login' class:list={[link()]}>Login</a>
+      </div>
       </form>
     </Container>
   </panda.div>

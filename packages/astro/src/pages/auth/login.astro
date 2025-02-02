@@ -9,6 +9,8 @@ import { vstack } from "styled-system/patterns";
 import { button } from "styled-system/recipes/button";
 import { input } from "styled-system/recipes/input";
 import Layout from "~/layouts/layout.astro";
+import { link } from "../../../styled-system/recipes";
+import { Container, HStack } from "../../../styled-system/jsx";
 
 if (Astro.locals.user) {
   return Astro.redirect("/");
@@ -45,7 +47,7 @@ if (Astro.request.method === "POST") {
 }
 ---
 
-<Layout title="Sering Volunteer Scheduling | Login">
+<Layout title="Login | De Sering Volunteer Schedule">
   <panda.div
     display="flex"
     minHeight="screen"
@@ -53,67 +55,75 @@ if (Astro.request.method === "POST") {
     justifyContent="center"
     alignItems="center"
   >
-    <form method="POST" class={vstack({ alignItems: "stretch" })}>
-      {
-        errors.map((error) => (
-          <panda.div
-            class={css({
-              color: "gray.1",
-              backgroundColor: "tomato",
-              paddingX: "4",
-              paddingY: "2",
+    <Container>
+      <form method="POST" class={vstack({ alignItems: "stretch" })}>
+        {
+          errors.map((error) => (
+            <panda.div
+              class={css({
+                color: "gray.1",
+                backgroundColor: "tomato",
+                paddingX: "4",
+                paddingY: "2",
+              })}
+            >
+              <panda.div>{error}</panda.div>
+            </panda.div>
+          ))
+        }
+
+        <panda.div width="full">
+          <label for="email">Email:</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            required
+            class={input({
+              size: "lg",
             })}
+          />
+        </panda.div>
+
+        <panda.div width="full">
+          <label for="password">Password:</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            required
+            class={input({
+              size: "lg",
+            })}
+          />
+        </panda.div>
+
+        <HStack>
+          <a
+              type="button"
+              href="/"
+              class:list={[
+                button({ size: "lg", variant: "outline" }),
+                css({ flexGrow: 1 }),
+              ]}
           >
-            <panda.div>{error}</panda.div>
-          </panda.div>
-        ))
-      }
+            Cancel
+          </a>
+          <button
+              type="submit"
+              class:list={[
+                button({ size: "lg", variant: "solid" }),
+                css({ flexGrow: 1 }),
+              ]}
+          >
+            Login
+          </button>
+        </HStack>
 
-      <div>
-        <label for="email">Email:</label>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          required
-          class={input({
-            size: "lg",
-          })}
-        />
-      </div>
-      <panda.div width="full">
-        <label for="password">Password:</label>
-        <input
-          type="password"
-          id="password"
-          name="password"
-          required
-          class={input({
-            size: "lg",
-          })}
-        />
-      </panda.div>
-
-      <button
-        type="submit"
-        class:list={[
-          button({ size: "lg", variant: "solid" }),
-          css({ flexGrow: 1 }),
-        ]}
-      >
-        Login
-      </button>
-
-      <a
-        type="button"
-        onclick="window.location.href='/'"
-        class:list={[
-          button({ size: "lg", variant: "outline" }),
-          css({ flexGrow: 1 }),
-        ]}
-      >
-        Cancel
-      </a>
-    </form>
+        <div class:list={[css({textAlign: "center", marginY: '10px'})]}>
+          Don't have an account yet? <a href='/auth/register' class:list={[link()]}>Register</a>
+        </div>
+      </form>
+    </Container>
   </panda.div>
 </Layout>
