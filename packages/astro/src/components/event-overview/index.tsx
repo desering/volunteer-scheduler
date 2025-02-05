@@ -30,7 +30,6 @@ import { EventButton } from "../event-button";
 import { EventDetailsDrawer } from "../event-details-sheet";
 import { DateSelect } from "./date-select";
 import { link } from "styled-system/recipes";
-import { css } from "styled-system/css";
 
 type Props = {
   user?: User;
@@ -94,7 +93,7 @@ export const EventOverview = (props: Props & BoxProps) => {
               onDateSelect={setSelectedDate}
             />
             <Container>
-              <Show when={events.latest.length === 0}>
+              <Show when={Object.entries(events()).length === 0}>
                 <panda.div
                   backgroundColor={{
                     base: "colorPalette.1",
