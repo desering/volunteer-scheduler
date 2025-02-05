@@ -95,7 +95,7 @@ export const EventOverview = (props: Props & BoxProps) => {
               <Show when={events.length == 0}>
                 <p>There are no shifts yet, have a look at other days.</p>
                 <p>
-                  For shifts up to February 25th, click here:
+                  For shifts up to February 25th, click here:<br/>
                   <a
                     href="https://docs.google.com/spreadsheets/d/1HDv8_Du7ssRMQfF4WtDyzar9YhL4nZfKg_lQ7PjYlYA/edit"
                     target="_blank"
