@@ -93,7 +93,13 @@ export const EventOverview = (props: Props & BoxProps) => {
               onDateSelect={setSelectedDate}
             />
             <Container>
-              <Show when={Object.entries(events()).find(([date]) => isSameDay(date, selectedDate())) === undefined}>
+              <Show
+                when={
+                  Object.entries(events()).find(([date]) =>
+                    isSameDay(date, selectedDate()),
+                  ) === undefined
+                }
+              >
                 <panda.div
                   backgroundColor={{
                     base: "colorPalette.1",
