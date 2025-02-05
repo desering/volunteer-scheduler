@@ -1,0 +1,31 @@
+---
+import { actions } from "astro:actions";
+import { groupAndSortEventsByDate } from "~/utils/map-events";
+import Layout from "../../layouts/layout.astro";
+import NavBar from "~/components/navbar.astro";
+import { EventOverview } from "~/components/event-overview";
+
+// /events/something -> redirect to /events/
+if (
+  Astro.params.date !== undefined &&
+  Astro.params.date.split("/").length < 3
+) {
+  return Astro.redirect(`/events/`);
+}
+
+const date = Astro.params.date ? new Date(Astro.params.date) : new Date();
+
+const allEvents = await Astro.callAction(actions.getAllEvents, {});
+const eventsByDay = await groupAndSortEventsByDate(allEvents.data.docs);
+---
+<Layout title="Volunteering Schedule">
+    <NavBar />
+
+    <EventOverview
+        user={Astro.locals.user}
+        events={eventsByDay}
+        client:load
+        flex="1"
+        marginTop="4"
+    />
+</Layout>

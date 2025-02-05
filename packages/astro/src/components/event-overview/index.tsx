@@ -30,6 +30,7 @@ import { EventButton } from "../event-button";
 import { EventDetailsDrawer } from "../event-details-sheet";
 import { DateSelect } from "./date-select";
 import { link } from "styled-system/recipes";
+import { groupAndSortEventsByDate } from "~/utils/map-events";
 
 type Props = {
   user?: User;
@@ -45,7 +46,8 @@ export const EventOverview = (props: Props & BoxProps) => {
   const [isDrawerOpen, setIsDrawerOpen] = createSignal(false);
 
   const [events, { refetch }] = createResource(
-    async () => (await actions.getEventsByDay()).data,
+    async () =>
+      await groupAndSortEventsByDate((await actions.getAllEvents()).data.docs),
     {
       initialValue: localProps.events,
       ssrLoadFrom: "initial",
