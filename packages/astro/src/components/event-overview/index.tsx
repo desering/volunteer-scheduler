@@ -28,6 +28,7 @@ import type { User } from "../../../../shared/payload-types";
 import { EventButton } from "../event-button";
 import { EventDetailsDrawer } from "../event-details-sheet";
 import { DateSelect } from "./date-select";
+import { link } from "../../../styled-system/recipes";
 
 type Props = {
   user?: User;
@@ -91,7 +92,19 @@ export const EventOverview = (props: Props & BoxProps) => {
               onDateSelect={setSelectedDate}
             />
             <Container>
-              {events.length == 0 && <p>There are no shifts yet, have a look at other days.</p>}
+              {events.length == 0 && (
+                <>
+                  <p>There are no shifts yet, have a look at other days.</p>
+                  <p>For shifts up to February 25th, click here: </p>
+                  <a
+                    href="https://docs.google.com/spreadsheets/d/1HDv8_Du7ssRMQfF4WtDyzar9YhL4nZfKg_lQ7PjYlYA/edit"
+                    target="_blank"
+                    className={[link()]}
+                  >
+                    Volunteer Schedule Spreadsheet
+                  </a>
+                </>
+              )}
 
               <Grid gap="4">
                 <Show
