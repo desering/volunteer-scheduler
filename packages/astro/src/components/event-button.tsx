@@ -16,8 +16,7 @@ const EventButtonRoot = (props: Props & BoxProps) => {
         base: "colorPalette.1",
         _dark: "colorPalette.4",
       }}
-      paddingX="4"
-      paddingY="3"
+      paddingX="6"
       cursor="pointer"
       textAlign="left"
       borderRadius="l3"

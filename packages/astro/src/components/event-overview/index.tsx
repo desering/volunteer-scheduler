@@ -22,6 +22,7 @@ import {
   Container,
   Grid,
   splitCssProps,
+  panda,
 } from "styled-system/jsx";
 import type { EventsByDay, DisplayableEvent } from "~/utils/map-events";
 import type { User } from "../../../../shared/payload-types";
@@ -94,20 +95,34 @@ export const EventOverview = (props: Props & BoxProps) => {
             />
             <Container>
               <Show when={events.length === 0}>
-                <p class={css({ marginBottom: 3 })}>
-                  There are no shifts yet, have a look at other days.
-                </p>
-                <p class={css({ marginBottom: 3 })}>
-                  For shifts up to February 25th, click here:
-                  <br />
-                  <a
-                    href="https://docs.google.com/spreadsheets/d/1HDv8_Du7ssRMQfF4WtDyzar9YhL4nZfKg_lQ7PjYlYA/edit"
-                    target="_blank"
-                    class={link()}
+                <panda.div
+                  backgroundColor={{
+                    base: "colorPalette.1",
+                    _dark: "colorPalette.4",
+                  }}
+                  borderRadius="l3"
+                  padding="6"
+                >
+                  <panda.h5
+                    color="colorPalette.12"
+                    fontSize="xl"
+                    fontWeight="semibold"
+                    marginBottom={3}
                   >
-                    Volunteer Schedule Spreadsheet
-                  </a>
-                </p>
+                    There are no shifts yet, have a look at other days.
+                  </panda.h5>
+                  <panda.p marginBottom={3}>
+                    For shifts <b>up to February 25th</b>, click here:
+                    <br />
+                    <a
+                      href="https://docs.google.com/spreadsheets/d/1HDv8_Du7ssRMQfF4WtDyzar9YhL4nZfKg_lQ7PjYlYA/edit"
+                      target="_blank"
+                      class={link()}
+                    >
+                      Volunteer Schedule Spreadsheet
+                    </a>
+                  </panda.p>
+                </panda.div>
               </Show>
 
               <Grid gap="4">
