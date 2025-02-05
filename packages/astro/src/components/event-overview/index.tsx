@@ -98,7 +98,7 @@ export const EventOverview = (props: Props & BoxProps) => {
                 <a
                   href="https://docs.google.com/spreadsheets/d/1HDv8_Du7ssRMQfF4WtDyzar9YhL4nZfKg_lQ7PjYlYA/edit"
                   target="_blank"
-                  className={[link()]}
+                  class={link()}
                 >
                   Volunteer Schedule Spreadsheet
                 </a>
