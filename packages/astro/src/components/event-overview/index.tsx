@@ -94,7 +94,7 @@ export const EventOverview = (props: Props & BoxProps) => {
               onDateSelect={setSelectedDate}
             />
             <Container>
-              <Show when={events.length === 0}>
+              <Show when={events.latest.length === 0}>
                 <panda.div
                   backgroundColor={{
                     base: "colorPalette.1",
