@@ -29,7 +29,7 @@ import { EventButton } from "../event-button";
 import { EventDetailsDrawer } from "../event-details-sheet";
 import { DateSelect } from "./date-select";
 import { link } from "../../../styled-system/recipes";
-import {css} from "../../../styled-system/css";
+import { css } from "../../../styled-system/css";
 
 type Props = {
   user?: User;
@@ -94,8 +94,10 @@ export const EventOverview = (props: Props & BoxProps) => {
             />
             <Container>
               <Show when={events.length == 0}>
-                <p class={css({marginBottom: 3})}>There are no shifts yet, have a look at other days.</p>
-                <p class={css({marginBottom: 3})}>
+                <p class={css({ marginBottom: 3 })}>
+                  There are no shifts yet, have a look at other days.
+                </p>
+                <p class={css({ marginBottom: 3 })}>
                   For shifts up to February 25th, click here:
                   <br />
                   <a
