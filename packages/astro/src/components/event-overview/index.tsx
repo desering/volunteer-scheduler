@@ -93,7 +93,7 @@ export const EventOverview = (props: Props & BoxProps) => {
               onDateSelect={setSelectedDate}
             />
             <Container>
-              <Show when={events.length == 0}>
+              <Show when={events.length === 0}>
                 <p class={css({ marginBottom: 3 })}>
                   There are no shifts yet, have a look at other days.
                 </p>
