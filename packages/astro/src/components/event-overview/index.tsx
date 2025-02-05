@@ -28,8 +28,8 @@ import type { User } from "../../../../shared/payload-types";
 import { EventButton } from "../event-button";
 import { EventDetailsDrawer } from "../event-details-sheet";
 import { DateSelect } from "./date-select";
-import { link } from "../../../styled-system/recipes";
-import { css } from "../../../styled-system/css";
+import { link } from "styled-system/recipes";
+import { css } from "styled-system/css";
 
 type Props = {
   user?: User;
