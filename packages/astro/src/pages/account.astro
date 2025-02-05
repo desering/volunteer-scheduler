@@ -1,10 +1,9 @@
 ---
 import { actions } from "astro:actions";
+import Layout from "../layouts/layout.astro";
+import NavBar from "~/components/navbar.astro";
 import { Container, Flex, panda } from "styled-system/jsx";
 import { button } from "styled-system/recipes/button";
-import NavBar from "~/components/navbar.astro";
-import { UpcomingEventsList } from "../components/upcoming-events-list";
-import Layout from "../layouts/layout.astro";
 
 if (!Astro.locals.user) {
   return Astro.redirect("/auth/login");
@@ -20,7 +19,7 @@ const events = await Astro.callAction(
   <NavBar />
 
   <Container marginTop={{ base: 4, xl: 20 }} marginBottom="4">
-    <panda.h1 fontSize="xl" fontWeight="medium" marginBottom={3}>My details</panda.h1>
+    <panda.h1 fontSize="xl" fontWeight="medium" marginBottom={3}>My account details</panda.h1>
 
     <panda.p marginBottom={3}>Name: {Astro.locals.user.preferredName}</>
     <panda.p marginBottom={3}>Email: {Astro.locals.user.email}</>
