@@ -91,6 +91,8 @@ export const EventOverview = (props: Props & BoxProps) => {
               onDateSelect={setSelectedDate}
             />
             <Container>
+              {events.length == 0 && <p>There are no shifts yet, have a look at other days.</p>}
+
               <Grid gap="4">
                 <Show
                   keyed
