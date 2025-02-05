@@ -20,20 +20,8 @@ const events = await Astro.callAction(
   <NavBar />
 
   <Container marginTop={{ base: 4, xl: 20 }} marginBottom="4">
-    <panda.h1 fontSize="xl" fontWeight="medium" marginBottom={3}>My details</panda.h1>
-
-    <panda.p marginBottom={3}>Name: {Astro.locals.user.preferredName}</>
-    <panda.p marginBottom={3}>Email: {Astro.locals.user.email}</>
-    <panda.p marginBottom={3}>Phone Number: {Astro.locals.user.phoneNumber}</>
-
-    <panda.p marginBottom={3}>
-      To change your data, please talk to a shift coordinator or someone from the admin team of De Sering.
-    </panda.p>
-
-    <Flex flexDir="column" gap="10">
-      <a href="/auth/logout" class={button({ size: "lg", variant: "outline" })}>
-        Logout
-      </a>
-    </Flex>
+    <panda.h1 fontSize="xl" fontWeight="medium">My upcoming shifts</panda.h1>
   </Container>
+
+  <UpcomingEventsList user={Astro.locals.user} data={events.data} client:load />
 </Layout>
