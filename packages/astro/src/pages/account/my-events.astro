@@ -1,0 +1,27 @@
+---
+import { actions } from "astro:actions";
+import { Container, Flex, panda } from "styled-system/jsx";
+import { button } from "styled-system/recipes/button";
+import NavBar from "../../components/navbar.astro";
+import { UpcomingEventsList } from "../../components/upcoming-events-list";
+import Layout from "../../layouts/layout.astro";
+
+if (!Astro.locals.user) {
+  return Astro.redirect("/auth/login");
+}
+
+const events = await Astro.callAction(
+  actions.getUpcomingEventsForCurrentUser,
+  {},
+);
+---
+
+<Layout title="Volunteering Schedule">
+  <NavBar />
+
+  <Container marginTop={{ base: 4, xl: 20 }} marginBottom="4">
+    <panda.h1 fontSize="xl" fontWeight="medium">My upcoming shifts</panda.h1>
+  </Container>
+
+  <UpcomingEventsList user={Astro.locals.user} data={events.data} client:load />
+</Layout>

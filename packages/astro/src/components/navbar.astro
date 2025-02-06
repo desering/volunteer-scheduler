@@ -25,6 +25,9 @@ import { Container } from "styled-system/jsx";
       {
         Astro.locals.user ? (
           <>
+            <a href="/account/my-events" class={button({ variant: "outline" })}>
+              My Shifts
+            </a>
             <a href="/account" class={button({ variant: "solid" })}>
               {Astro.locals.user.preferredName}
             </a>
