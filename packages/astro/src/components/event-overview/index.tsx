@@ -30,7 +30,6 @@ import { EventButton } from "../event-button";
 import { EventDetailsDrawer } from "../event-details-sheet";
 import { DateSelect } from "./date-select";
 import { link } from "styled-system/recipes";
-import { groupAndSortEventsByDate } from "~/utils/map-events";
 
 type Props = {
   user?: User;

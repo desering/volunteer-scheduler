@@ -9,7 +9,7 @@ if (
   Astro.params.date !== undefined &&
   Astro.params.date.split("/").length < 3
 ) {
-  return Astro.redirect(`/events/`);
+  return Astro.redirect(`/events`);
 }
 
 const date = Astro.params.date ? new Date(Astro.params.date) : new Date();
