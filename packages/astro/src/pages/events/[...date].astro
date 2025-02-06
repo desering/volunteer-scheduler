@@ -24,7 +24,7 @@ const allEventsGroupedByDate = await Astro.callAction(
 
     <EventOverview
         user={Astro.locals.user}
-        events={allEventsGroupedByDate.docs}
+        events={allEventsGroupedByDate.data}
         client:load
         flex="1"
         marginTop="4"
