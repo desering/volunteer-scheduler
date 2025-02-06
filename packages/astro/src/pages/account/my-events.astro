@@ -2,9 +2,9 @@
 import { actions } from "astro:actions";
 import { Container, Flex, panda } from "styled-system/jsx";
 import { button } from "styled-system/recipes/button";
-import NavBar from "~/components/navbar.astro";
-import { UpcomingEventsList } from "../components/upcoming-events-list";
-import Layout from "../layouts/layout.astro";
+import NavBar from "../../components/navbar.astro";
+import { UpcomingEventsList } from "../../components/upcoming-events-list";
+import Layout from "../../layouts/layout.astro";
 
 if (!Astro.locals.user) {
   return Astro.redirect("/auth/login");
@@ -24,12 +24,4 @@ const events = await Astro.callAction(
   </Container>
 
   <UpcomingEventsList user={Astro.locals.user} data={events.data} client:load />
-
-  <Container marginBlock={{ base: 4, xl: 20 }}>
-    <Flex flexDir="column" gap="10">
-      <a href="/auth/logout" class={button({ size: "lg", variant: "outline" })}>
-        Logout
-      </a>
-    </Flex>
-  </Container>
 </Layout>
