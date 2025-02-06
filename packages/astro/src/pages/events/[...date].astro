@@ -19,9 +19,8 @@ const allEventsGroupedByDate = await Astro.callAction(
   {},
 );
 ---
-<Layout title="Volunteering Schedule">
+<Layout title="Volunteering Schedule | De Sering">
     <NavBar />
-
     <EventOverview
         user={Astro.locals.user}
         events={allEventsGroupedByDate.data}
