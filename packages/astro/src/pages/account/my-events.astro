@@ -1,10 +1,10 @@
 ---
 import { actions } from "astro:actions";
-import { Container, Flex, panda } from "styled-system/jsx";
-import { button } from "styled-system/recipes/button";
-import NavBar from "~/components/navbar.astro";
-import { UpcomingEventsList } from "../components/upcoming-events-list";
-import Layout from "../layouts/layout.astro";
+import { Container, Flex, panda } from "../../../styled-system/jsx";
+import { button } from "../../../styled-system/recipes/button";
+import NavBar from "../../components/navbar.astro";
+import { UpcomingEventsList } from "../../components/upcoming-events-list";
+import Layout from "../../layouts/layout.astro";
 
 if (!Astro.locals.user) {
   return Astro.redirect("/auth/login");
