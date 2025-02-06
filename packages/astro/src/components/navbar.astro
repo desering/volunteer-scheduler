@@ -8,7 +8,7 @@ import { Container } from "styled-system/jsx";
 <Container marginTop="4">
   <panda.nav display="flex" justifyContent="space-between">
     <panda.div display="flex" gap="4">
-      <a href="/" class={button({ variant: "outline" })}>Shifts</a>
+      <a href="/events" class={button({ variant: "outline" })}>Shifts</a>
 
       {
         Astro.locals.user?.roles?.includes("admin") && (
