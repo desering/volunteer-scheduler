@@ -1,6 +1,5 @@
 ---
 import { actions } from "astro:actions";
-import { groupAndSortEventsByDate } from "~/utils/map-events";
 import Layout from "../../layouts/layout.astro";
 import NavBar from "~/components/navbar.astro";
 import { EventOverview } from "~/components/event-overview";
@@ -15,15 +14,17 @@ if (
 
 const date = Astro.params.date ? new Date(Astro.params.date) : new Date();
 
-const allEvents = await Astro.callAction(actions.getAllEvents, {});
-const eventsByDay = await groupAndSortEventsByDate(allEvents.data.docs);
+const allEventsGroupedByDate = await Astro.callAction(
+  actions.getAllEventsGroupedByDate,
+  {},
+);
 ---
 <Layout title="Volunteering Schedule">
     <NavBar />
 
     <EventOverview
         user={Astro.locals.user}
-        events={eventsByDay}
+        events={allEventsGroupedByDate.docs}
         client:load
         flex="1"
         marginTop="4"

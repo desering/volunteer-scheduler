@@ -46,8 +46,7 @@ export const EventOverview = (props: Props & BoxProps) => {
   const [isDrawerOpen, setIsDrawerOpen] = createSignal(false);
 
   const [events, { refetch }] = createResource(
-    async () =>
-      await groupAndSortEventsByDate((await actions.getAllEvents()).data.docs),
+    async () => (await actions.getAllEventsGroupedByDate()).data,
     {
       initialValue: localProps.events,
       ssrLoadFrom: "initial",
