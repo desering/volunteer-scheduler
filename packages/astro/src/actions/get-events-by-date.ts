@@ -1,17 +1,21 @@
 import { defineAction } from "astro:actions";
 import { groupAndSortEventsByDate } from "~/utils/map-events.ts";
+import { z } from "astro:schema";
 
 export const getEventsByDate = defineAction({
-  handler: async (_, context) => {
+  input: z.object({
+    date: z.date(),
+  }),
+  handler: async (input, context) => {
     const events = await context.locals.payload.find({
       collection: "events",
 
       where: {
         start_date: {
-          greater_than_equal: new Date(),
+          greater_than_equal: input.date,
         },
         end_date: {
-          less_than_equal: new Date(),
+          less_than_equal: input.date,
         },
       },
 
