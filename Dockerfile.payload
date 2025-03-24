@@ -3,13 +3,10 @@ FROM oven/bun:1.1.38-alpine AS build
 WORKDIR /home/bun/app
 
 COPY package.json bun.lockb ./
-COPY packages/astro ./packages/astro
-COPY packages/payload ./packages/payload
-COPY packages/shared ./packages/shared
 
 RUN bun install
 
-WORKDIR /home/bun/app/packages/payload
+WORKDIR /home/bun/app/
 
 ENV NEXT_TELEMETRY_DISABLED=1
 
@@ -19,8 +16,8 @@ FROM oven/bun:1.1.38-alpine
 
 WORKDIR /home/bun/app
 
-COPY --from=build /home/bun/app/packages/payload/.next/standalone ./
-COPY --from=build /home/bun/app/packages/payload/.next/static ./packages/payload/.next/static
+COPY --from=build /home/bun/app/.next/standalone ./
+COPY --from=build /home/bun/app/.next/static ./.next/static
 
 ENV TZ=UTC
 EXPOSE 3000

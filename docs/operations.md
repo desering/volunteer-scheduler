@@ -25,7 +25,7 @@ engineers familiar with typical web technologies:
 * Node.js/Javascript, Typescript, CSS, HTML, etc.
 * [Park UI](https://park-ui.com/) ([Panda CSS](https://panda-css.com/) & [Ark UI](https://ark-ui.com/))
 * [React](https://react.dev/) & [Next.js](https://nextjs.org/)
-* [Astro](https://astro.build/), [Payload CMS](https://payloadcms.com/)
+* [Payload CMS](https://payloadcms.com/)
 
 ## Deployment & Hosting
 

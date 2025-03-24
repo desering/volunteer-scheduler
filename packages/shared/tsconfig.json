@@ -6,6 +6,6 @@
     "strict": true,
     "noEmit": true
   },
-  "include": ["."],
+  "include": [".", "../../src/migrations"],
   "exclude": ["node_modules", "**/*.spec.ts"]
 }

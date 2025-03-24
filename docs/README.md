@@ -1,22 +1,8 @@
 # volunteer-scheduler
 
-Mono-repo for the Volunteer Scheduler project.
+Repo for the Volunteer Scheduler project.
 
-## Project structure
-
-[packages/astro](../packages/astro) - Frontend (Astro) | [README](../packages/astro/README.md)
-
-[packages/payload](../packages/payload) - Backend (Payload) | [README](../packages/payload/README.md)
-
-[packages/shared](../packages/shared) - Shared configuration, etc.
-
-## Frontend Stack
-
-* [Park UI](https://park-ui.com/) ([Panda CSS](https://panda-css.com/) & [Ark UI](https://ark-ui.com/)) - Style, UI components, etc.
-* [SolidJS](https://www.solidjs.com/) - Rendering, Reactivity (like React, Vue, ...)
-* [Astro](https://astro.build/) - Server, SSR or SSG, etc. (similar to Next.js, Nuxt.js)
-
-## Backend Stack
+## Tech Stack
 
 * [Payload CMS](https://payloadcms.com/) - Database abstraction, API, etc.
 * [Next.js](https://nextjs.org/) & [React](https://react.dev/) - The Payload backend UI
@@ -30,8 +16,8 @@ Mono-repo for the Volunteer Scheduler project.
 
 2. Create a `.env` file and generate a secret key for Payload:
    ```shell
-   cp packages/shared/.env.example packages/shared/.env
-   sed -i -e "s/YOUR_SECRET_HERE/$(openssl rand -hex 32)/g" packages/shared/.env
+   cp .env.example .env
+   sed -i -e "s/YOUR_SECRET_HERE/$(openssl rand -hex 32)/g" .env
    ```
 
 3. Start a database container:
