@@ -1,9 +1,17 @@
 "use server";
 
-import { UTCDate, utc } from "@date-fns/utc";
+import { UTCDate } from "@date-fns/utc";
 import config from "@payload-config";
 import type { EventTemplate } from "@payload-types";
-import { getDate, getHours, getMinutes, getMonth, getYear } from "date-fns";
+import {
+  addMilliseconds,
+  getDate,
+  getHours,
+  getMinutes,
+  getMonth,
+  getYear,
+} from "date-fns";
+import { getTimezoneOffset } from "date-fns-tz";
 import { type RequiredDataFromCollectionSlug, getPayload } from "payload";
 import { createRoles } from "./create-roles";
 
@@ -76,21 +84,42 @@ export const createEventsFromTemplate = async (
 };
 
 const eventTemplateToEvent = (template: EventTemplate, day: UTCDate) => {
-  const startTime = new UTCDate(
-    getYear(day),
-    getMonth(day),
-    getDate(day),
-    getHours(template.start_time, { in: utc }),
-    getMinutes(template.start_time, { in: utc }),
+  const templateStartTime = new UTCDate(template.start_time);
+  const templateEndTime = new UTCDate(template.end_time);
+  const templateOffset = getTimezoneOffset(
+    template.start_time_tz,
+    templateStartTime,
   );
 
-  const endTime = new UTCDate(
+  const eventStartTime = new UTCDate(
     getYear(day),
     getMonth(day),
     getDate(day),
-    getHours(template.end_time, { in: utc }),
-    getMinutes(template.end_time, { in: utc }),
+    getHours(templateStartTime),
+    getMinutes(templateStartTime),
   );
+
+  const eventEndTime = new UTCDate(
+    getYear(day),
+    getMonth(day),
+    getDate(day),
+    getHours(templateEndTime),
+    getMinutes(templateEndTime),
+  );
+
+  const targetOffset = getTimezoneOffset(
+    template.start_time_tz,
+    eventStartTime,
+  );
+
+  const offsetDifference = targetOffset - templateOffset;
+
+  console.log("Timezone", template.start_time_tz);
+  console.log("Template offset", templateOffset);
+  console.log("Target offset", targetOffset);
+
+  const startTime = addMilliseconds(eventStartTime, -offsetDifference);
+  const endTime = addMilliseconds(eventEndTime, -offsetDifference);
 
   return {
     title: template.event_title,
