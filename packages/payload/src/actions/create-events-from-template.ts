@@ -86,10 +86,6 @@ export const createEventsFromTemplate = async (
 const eventTemplateToEvent = (template: EventTemplate, day: UTCDate) => {
   const templateStartTime = new UTCDate(template.start_time);
   const templateEndTime = new UTCDate(template.end_time);
-  const templateOffset = getTimezoneOffset(
-    template.start_time_tz,
-    templateStartTime,
-  );
 
   const eventStartTime = new UTCDate(
     getYear(day),
@@ -107,16 +103,10 @@ const eventTemplateToEvent = (template: EventTemplate, day: UTCDate) => {
     getMinutes(templateEndTime),
   );
 
-  const targetOffset = getTimezoneOffset(
-    template.start_time_tz,
-    eventStartTime,
-  );
+  const templateOffset = getTimezoneOffset(template.start_time_tz, templateStartTime);
+  const targetOffset = getTimezoneOffset(template.start_time_tz, eventStartTime);
 
   const offsetDifference = targetOffset - templateOffset;
-
-  console.log("Timezone", template.start_time_tz);
-  console.log("Template offset", templateOffset);
-  console.log("Target offset", targetOffset);
 
   const startTime = addMilliseconds(eventStartTime, -offsetDifference);
   const endTime = addMilliseconds(eventEndTime, -offsetDifference);
