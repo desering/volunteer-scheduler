@@ -22,4 +22,6 @@ COPY --from=build /home/bun/app/.next/static ./.next/static
 ENV TZ=UTC
 EXPOSE 3000
 
-CMD ["node", "packages/payload/server.js"]
+RUN ls -la
+
+# CMD ["node", "packages/payload/server.js"]
