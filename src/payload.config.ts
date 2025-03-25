@@ -12,7 +12,6 @@ import {
 } from "@payloadcms/richtext-lexical";
 import sharp from "sharp";
 import { nodemailerAdapter } from "@payloadcms/email-nodemailer";
-import nodemailer from "nodemailer";
 
 import { EventTemplates } from "./collections/event-templates";
 import { Events } from "./collections/events";
@@ -26,9 +25,6 @@ const dirname = path.dirname(filename);
 
 /**
  * This function is a workaround for Coolify Preview Deployments.
- *
- * This repo contains two applications which have independent Preview
- * Deployments that should connect to the same preview deployment database.
  *
  * Coolify predefined environment variables do not include a PR identifier, only
  * `COOLIFY_BRANCH` which looks like this: `COOLIFY_BRANCH=pull/56/head` and
