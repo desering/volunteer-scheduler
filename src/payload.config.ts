@@ -104,7 +104,7 @@ export default buildConfig({
     prodMigrations: migrations,
     push: process.env.NODE_ENV !== "production",
   }),
-  email: mailAdapter(),
+  email: nodemailerAdapter(),
   sharp,
   plugins: [],
 });
