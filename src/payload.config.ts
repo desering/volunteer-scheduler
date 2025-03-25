@@ -59,6 +59,7 @@ const getConnectionString = () => {
   console.info(
     `Database connection string: using COOLIFY_BRANCH (${process.env.COOLIFY_BRANCH})`,
   );
+  // @ts-ignore
   const prNumber = process.env.COOLIFY_BRANCH.match(/\/(\d+)\//)[1];
   return `${process.env.DATABASE_URI}-pr-${prNumber}`;
 };
