@@ -1,14 +1,14 @@
 FROM oven/bun:1.1.38-alpine AS build
 
+ENV NEXT_TELEMETRY_DISABLED=1
+
 WORKDIR /home/bun/app
 
 COPY package.json bun.lockb ./
 
 RUN bun install
 
-WORKDIR /home/bun/app/
-
-ENV NEXT_TELEMETRY_DISABLED=1
+COPY . .
 
 RUN bun run build
 

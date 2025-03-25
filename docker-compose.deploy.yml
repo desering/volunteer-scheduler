@@ -1,12 +1,12 @@
 services:
-  scheduler:
+  volunteer-scheduler:
     image: ghcr.io/desering/volunteer-scheduler:latest
     ports:
       - "3000:3000"
     depends_on:
       - postgres
     env_file:
-      - packages/shared/.env
+      - .env
     environment:
       TZ: UTC
 

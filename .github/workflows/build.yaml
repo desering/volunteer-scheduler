@@ -23,18 +23,14 @@ permissions:
 jobs:
   docker:
     runs-on: [ ubuntu-22.04 ]
-    strategy:
-      matrix:
-        package: [astro, payload]
-      fail-fast: false
     steps:
       - uses: actions/checkout@v4
 
       - if: github.event_name == 'pull_request'
-        run: echo "IMAGE_TAGS=${{ env.DOCKER_REPO }}/${{ github.event.repository.name }}-${{ matrix.package }}:${{ github.sha }}" >> "$GITHUB_ENV"
+        run: echo "IMAGE_TAGS=${{ env.DOCKER_REPO }}/${{ github.event.repository.name }}:${{ github.sha }}" >> "$GITHUB_ENV"
 
       - if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: echo "IMAGE_TAGS=${{ env.DOCKER_REPO }}/${{ github.event.repository.name }}-${{ matrix.package }}:${{ github.sha }},${{ env.DOCKER_REPO }}/${{ github.event.repository.name }}-${{ matrix.package }}:latest" >> "$GITHUB_ENV"
+        run: echo "IMAGE_TAGS=${{ env.DOCKER_REPO }}/${{ github.event.repository.name }}:${{ github.sha }},${{ env.DOCKER_REPO }}/${{ github.event.repository.name }}:latest" >> "$GITHUB_ENV"
 
       - uses: docker/login-action@v3
         with:
@@ -44,7 +40,7 @@ jobs:
 
       - uses: docker/build-push-action@v6
         with:
-          file: Dockerfile.${{ matrix.package }}
+          file: Dockerfile
           push: false
           tags: ${{ env.IMAGE_TAGS }}
 
@@ -57,7 +53,7 @@ jobs:
 #              issue_number: context.issue.number,
 #              owner: context.repo.owner,
 #              repo: context.repo.repo,
-#              body: '`docker pull ${{ env.DOCKER_REPO }}/volunteer-scheduler-${{ matrix.package }}:${{ github.sha }}`'
+#              body: '`docker pull ${{ env.DOCKER_REPO }}/volunteer-scheduler:${{ github.sha }}`'
 #            })
 
 #  deploy-to-coolify:

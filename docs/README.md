@@ -4,8 +4,9 @@ Repo for the Volunteer Scheduler project.
 
 ## Tech Stack
 
+* [Park UI](https://park-ui.com/) ([Panda CSS](https://panda-css.com/) & [Ark UI](https://ark-ui.com/)) - Style, UI components, etc.
 * [Payload CMS](https://payloadcms.com/) - Database abstraction, API, etc.
-* [Next.js](https://nextjs.org/) & [React](https://react.dev/) - The Payload backend UI
+* [Next.js](https://nextjs.org/) & [React](https://react.dev/)
 
 ## How to get started with development
 

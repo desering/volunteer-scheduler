@@ -8,16 +8,11 @@
   "files": {
     "ignoreUnknown": false,
     "ignore": [
-      "packages/astro/.astro/*",
-      "packages/astro/styled-system/*",
-      "packages/astro/dist/*",
-
-      "packages/payload/.next/*",
-      "packages/payload/styled-system/*",
-      "packages/payload/src/app/(payload)/importMap.js",
-
-      "packages/shared/payload-types.ts",
-      "packages/shared/migrations/*"
+      ".next/*",
+      "styled-system/*",
+      "src/app/(payload)/importMap.js",
+      "src/migrations/*",
+      "packages/shared/payload-types.ts"
     ]
   },
   "formatter": {
