@@ -1,17 +1,17 @@
 "use server";
 
+import { tzOffset } from "@date-fns/tz";
 import { UTCDate } from "@date-fns/utc";
 import config from "@payload-config";
 import type { EventTemplate } from "@payload-types";
 import {
-  addMilliseconds,
+  addMinutes,
   getDate,
   getHours,
   getMinutes,
   getMonth,
   getYear,
 } from "date-fns";
-import { getTimezoneOffset } from "date-fns-tz";
 import { type RequiredDataFromCollectionSlug, getPayload } from "payload";
 import { createRoles } from "./create-roles";
 
@@ -87,6 +87,8 @@ const eventTemplateToEvent = (template: EventTemplate, day: UTCDate) => {
   const templateStartTime = new UTCDate(template.start_time);
   const templateEndTime = new UTCDate(template.end_time);
 
+  const templateOffset = tzOffset(template.start_time_tz, templateStartTime);
+
   const eventStartTime = new UTCDate(
     getYear(day),
     getMonth(day),
@@ -103,13 +105,12 @@ const eventTemplateToEvent = (template: EventTemplate, day: UTCDate) => {
     getMinutes(templateEndTime),
   );
 
-  const templateOffset = getTimezoneOffset(template.start_time_tz, templateStartTime);
-  const targetOffset = getTimezoneOffset(template.start_time_tz, eventStartTime);
+  const targetOffset = tzOffset(template.start_time_tz, eventStartTime);
 
   const offsetDifference = targetOffset - templateOffset;
 
-  const startTime = addMilliseconds(eventStartTime, -offsetDifference);
-  const endTime = addMilliseconds(eventEndTime, -offsetDifference);
+  const startTime = addMinutes(eventStartTime, -offsetDifference);
+  const endTime = addMinutes(eventEndTime, -offsetDifference);
 
   return {
     title: template.event_title,
