@@ -6,10 +6,19 @@
  * and re-run `payload generate:types` to regenerate this file.
  */
 
+/**
+ * Supported timezones in IANA format.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "supportedTimezones".
+ */
+export type SupportedTimezones = 'Europe/Amsterdam';
+
 export interface Config {
   auth: {
     users: UserAuthOperations;
   };
+  blocks: {};
   collections: {
     users: User;
     'event-templates': EventTemplate;
@@ -104,6 +113,7 @@ export interface EventTemplate {
   template_title: string;
   event_title: string;
   start_time: string;
+  start_time_tz: SupportedTimezones;
   end_time: string;
   description?: {
     root: {
@@ -232,17 +242,20 @@ export interface Event {
     [k: string]: unknown;
   } | null;
   sections?: {
-    docs?: (number | Section)[] | null;
-    hasNextPage?: boolean | null;
-  } | null;
+    docs?: (number | Section)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   roles?: {
-    docs?: (number | Role)[] | null;
-    hasNextPage?: boolean | null;
-  } | null;
+    docs?: (number | Role)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   signups?: {
-    docs?: (number | Signup)[] | null;
-    hasNextPage?: boolean | null;
-  } | null;
+    docs?: (number | Signup)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -270,9 +283,10 @@ export interface Section {
     [k: string]: unknown;
   } | null;
   roles?: {
-    docs?: (number | Role)[] | null;
-    hasNextPage?: boolean | null;
-  } | null;
+    docs?: (number | Role)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -305,9 +319,10 @@ export interface Role {
    */
   maxSignups: number;
   signups?: {
-    docs?: (number | Signup)[] | null;
-    hasNextPage?: boolean | null;
-  } | null;
+    docs?: (number | Signup)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -421,6 +436,7 @@ export interface EventTemplatesSelect<T extends boolean = true> {
   template_title?: T;
   event_title?: T;
   start_time?: T;
+  start_time_tz?: T;
   end_time?: T;
   description?: T;
   sections?:

@@ -47,12 +47,12 @@ function getConnectionString() {
   }
 
   if (!process.env.COOLIFY_BRANCH) {
-    console.log(`Database connection string: no modifications`);
+    console.log("Database connection string: no modifications");
     return process.env.DATABASE_URI;
   }
 
-  if (process.env.COOLIFY_BRANCH == "main") {
-    console.log(`Database connection string: no modifications`);
+  if (process.env.COOLIFY_BRANCH === "main") {
+    console.log("Database connection string: no modifications");
     return process.env.DATABASE_URI;
   }
 
@@ -74,6 +74,15 @@ export const sharedConfig = ({
       baseDir,
     },
     dateFormat: "dd/MM/yyyy HH:mm",
+    timezones: {
+      defaultTimezone: "Europe/Amsterdam",
+      supportedTimezones: [
+        {
+          label: "Europe/Amsterdam",
+          value: "Europe/Amsterdam",
+        },
+      ],
+    },
   },
   collections: [Users, EventTemplates, Events, Sections, Roles, Signups],
   localization: {
