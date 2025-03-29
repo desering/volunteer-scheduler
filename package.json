@@ -31,7 +31,7 @@
     "graphql": "^16.10.0",
     "next": "^15.1.4",
     "nodemailer": "^6.10.0",
-    "payload": "3.24.0",
+    "payload": "3.31.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "sharp": "0.33.5"
