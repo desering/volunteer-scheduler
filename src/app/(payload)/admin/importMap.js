@@ -20,10 +20,10 @@ import { StrikethroughFeatureClient as StrikethroughFeatureClient_e70f5e05f09f93
 import { UnderlineFeatureClient as UnderlineFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { BoldFeatureClient as BoldFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { ItalicFeatureClient as ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
-import { PublishEventTemplate as PublishEventTemplate_1e3fcc053ab5e0eb55a23f0b1fa2bd4e } from '../../components/publish-event-template'
-import { SwitchToCalenderView as SwitchToCalenderView_e5f36b9c46b66f6eca00310c58741220 } from '../../components/switch-to-calender-view'
+import { PublishEventTemplate as PublishEventTemplate_1e3fcc053ab5e0eb55a23f0b1fa2bd4e } from 'src/components/publish-event-template'
+import { SwitchToCalenderView as SwitchToCalenderView_e5f36b9c46b66f6eca00310c58741220 } from 'src/components/switch-to-calender-view'
 import { DashboardHeader as DashboardHeader_0c59d0d196f0404bf841cd4d190d7596 } from '@/components/dashboard-header'
-import { CalenderView as CalenderView_747d4527aba6db24ae7b179ba05a3f0f } from '../../views/calender-view'
+import { CalenderView as CalenderView_747d4527aba6db24ae7b179ba05a3f0f } from 'src/views/calender-view'
 
 export const importMap = {
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalCell": RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e,
