@@ -100,6 +100,7 @@ export const EventTemplates: CollectionConfig = {
           label: "Start Time",
           type: "date",
           required: true,
+          timezone: true,
           admin: {
             date: {
               pickerAppearance: "timeOnly",

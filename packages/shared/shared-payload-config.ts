@@ -34,6 +34,15 @@ export const sharedConfig = ({
       baseDir,
     },
     dateFormat: "dd/MM/yyyy HH:mm",
+    timezones: {
+      defaultTimezone: "Europe/Amsterdam",
+      supportedTimezones: [
+        {
+          label: "Europe/Amsterdam",
+          value: "Europe/Amsterdam",
+        },
+      ],
+    },
   },
   collections: [Users, EventTemplates, Events, Sections, Roles, Signups],
   localization: {

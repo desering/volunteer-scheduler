@@ -3,11 +3,18 @@
 import { getEventsInPeriod } from "@/actions";
 import { bleedX, divider, gutterX, gutterY } from "@/components/ui/utils";
 import { daysOfWeek } from "@/constants/days-of-week";
-import { lastDayOfMonth, startOfMonth } from "@/utils/utc";
-import { UTCDate } from "@date-fns/utc";
+import { lastDayOfMonth, endOfMonth, startOfMonth } from "@/utils/utc";
+import { UTCDate, utc } from "@date-fns/utc";
 import { DatePicker } from "@payloadcms/ui";
 import { useQuery } from "@tanstack/react-query";
-import { eachDayOfInterval, format, getDay, isSameDay } from "date-fns";
+import {
+  addMonths,
+  eachDayOfInterval,
+  endOfDay,
+  format,
+  getDay,
+  isSameDay,
+} from "date-fns";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { css, cx } from "styled-system/css";
@@ -49,6 +56,7 @@ const useEventsByMonth = (start: Date, end: Date) => {
 
       return groupedByMonth;
     },
+    refetchOnMount: "always",
   });
 
   return { groupedByMonth };
@@ -56,7 +64,7 @@ const useEventsByMonth = (start: Date, end: Date) => {
 
 export const CalenderViewClient = () => {
   const [start, setStart] = useState(startOfMonth(new UTCDate()));
-  const [end, setEnd] = useState(lastDayOfMonth(new UTCDate()));
+  const [end, setEnd] = useState(endOfMonth(addMonths(new UTCDate(), 2)));
 
   const { groupedByMonth } = useEventsByMonth(start, end);
 
@@ -94,7 +102,7 @@ export const CalenderViewClient = () => {
                 <DatePicker
                   value={new Date(end)}
                   onChange={(value) => {
-                    setEnd(new UTCDate(value));
+                    setEnd(endOfDay(new UTCDate(value), { in: utc }));
                   }}
                   displayFormat="dd/MM/yyyy"
                   overrides={{

@@ -1,11 +1,18 @@
 "use client";
 
-import { lastDayOfMonth, startOfMonth } from "@/utils/utc";
+import { startOfMonth } from "@/utils/utc";
 import { UTCDate, utc } from "@date-fns/utc";
 import type { EventTemplate } from "@payload-types";
 import { DatePicker, toast } from "@payloadcms/ui";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { eachDayOfInterval, format, getDay, isSameDay } from "date-fns";
+import {
+  eachDayOfInterval,
+  endOfDay,
+  endOfMonth,
+  format,
+  getDay,
+  isSameDay,
+} from "date-fns";
 import { useMemo, useState } from "react";
 import { cx } from "styled-system/css";
 import { Box, Center, Grid, HStack, VStack, panda } from "styled-system/jsx";
@@ -16,7 +23,7 @@ import { daysOfWeek } from "@/constants/days-of-week";
 
 export const PublishEventTemplateForm = (props: { doc: EventTemplate }) => {
   const [start, setStart] = useState(startOfMonth(new UTCDate()));
-  const [end, setEnd] = useState(lastDayOfMonth(new UTCDate()));
+  const [end, setEnd] = useState(endOfMonth(new UTCDate()));
   const [selectedDays, setSelectedDays] = useState<UTCDate[]>([]);
 
   const createEvents = useMutation({
@@ -33,6 +40,7 @@ export const PublishEventTemplateForm = (props: { doc: EventTemplate }) => {
   const existingEvents = useQuery({
     queryKey: ["calender", start, end],
     queryFn: async () => await getEventsInPeriod(start, end),
+    refetchOnMount: "always",
   });
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: only rerun after refresh data
@@ -107,7 +115,7 @@ export const PublishEventTemplateForm = (props: { doc: EventTemplate }) => {
                   <DatePicker
                     value={new Date(end)}
                     onChange={(value) => {
-                      setEnd(new UTCDate(value));
+                      setEnd(endOfDay(new UTCDate(value)));
                       existingEvents.refetch();
                     }}
                     displayFormat="dd/MM/yyyy"
