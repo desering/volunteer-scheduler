@@ -55,8 +55,8 @@ const getConnectionString = () => {
   console.info(
     `Database connection string: using COOLIFY_BRANCH (${process.env.COOLIFY_BRANCH})`,
   );
-  // @ts-ignore
-  const prNumber = process.env.COOLIFY_BRANCH.match(/\/(\d+)\//)[1];
+
+  const prNumber = process.env.COOLIFY_BRANCH.match(/\/(\d+)\//)?.[1];
   return `${process.env.DATABASE_URI}-pr-${prNumber}`;
 };
 
@@ -67,6 +67,15 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
     dateFormat: "dd/MM/yyyy HH:mm",
+    timezones: {
+      defaultTimezone: "Europe/Amsterdam",
+      supportedTimezones: [
+        {
+          label: "Europe/Amsterdam",
+          value: "Europe/Amsterdam",
+        },
+      ],
+    },
     components: {
       beforeDashboard: ["@/components/dashboard-header#DashboardHeader"],
 
@@ -77,6 +86,10 @@ export default buildConfig({
         },
       },
     },
+  },
+
+  routes: {
+    api: "/payload-api",
   },
 
   cors: [process.env.NEXT_PUBLIC_SERVER_URL || ""].filter(Boolean),
