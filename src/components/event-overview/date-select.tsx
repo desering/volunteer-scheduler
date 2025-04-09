@@ -1,8 +1,8 @@
 import { format, isBefore, startOfDay } from "date-fns";
-import { For, Index, createEffect, createSelector, onMount } from "solid-js";
+// import { For, Index, createEffect, createSelector, onMount } from "solid-js";
 import { Flex, panda } from "styled-system/jsx";
-import { Button } from "../ui/button";
-import { Text } from "../ui/text";
+import { Button } from "../../../packages/astro/src/components/ui/button";
+import { Text } from "../../../packages/astro/src/components/ui/text";
 
 type Props = {
   dates: {
@@ -15,7 +15,7 @@ type Props = {
   onDateSelect: (date: Date) => void;
 };
 
-export const DateSelect = (props: Props) => {
+export default function DateSelect(props: Props) {
   const isSelected = createSelector(
     () => props.date,
     (a, b) => a.getTime() === b.getTime(),

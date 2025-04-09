@@ -10,12 +10,12 @@ import {
 import { Box, Divider, HStack, panda } from "styled-system/jsx";
 import { Container } from "styled-system/jsx/container";
 import { Flex } from "styled-system/jsx/flex";
-import type { DisplayableEvent } from "~/utils/map-events";
+import type { DisplayableEvent } from "../../../../../src/lib/mappers/map-events";
 import { EventButton } from "../event-button";
 import { EventDetailsDrawer } from "../event-details-sheet";
 
-import PersonStanding from "lucide-solid/icons/person-standing";
-import Clock from "lucide-solid/icons/clock";
+import PersonStanding from "lucide-react/icons/person-standing";
+import Clock from "lucide-react/icons/clock";
 
 type Props = {
   user: User;

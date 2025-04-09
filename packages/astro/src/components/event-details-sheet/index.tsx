@@ -14,7 +14,7 @@ import {
 import { Portal } from "solid-js/web";
 import { HStack, panda } from "styled-system/jsx";
 import { button } from "styled-system/recipes/button";
-import type { DisplayableEvent } from "~/utils/map-events";
+import type { DisplayableEvent } from "../../../../../src/lib/mappers/map-events";
 import { format } from "~/utils/tz-format";
 import { Alert } from "../ui/alert";
 import { Badge } from "../ui/badge";
@@ -26,8 +26,8 @@ import { RoleRadioItems } from "./role-radio-items";
 
 import confetti from "canvas-confetti";
 
-import InfoIcon from "lucide-solid/icons/info";
-import XIcon from "lucide-solid/icons/x";
+import InfoIcon from "lucide-react/icons/info";
+import XIcon from "lucide-react/icons/x";
 
 type Props = {
   user?: User;

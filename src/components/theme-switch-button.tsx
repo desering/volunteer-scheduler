@@ -1,14 +1,14 @@
-import MoonIcon from "lucide-solid/icons/moon";
-import SunIcon from "lucide-solid/icons/sun";
-import SunMoonIcon from "lucide-solid/icons/sun-moon";
+import MoonIcon from "lucide-react";
+import SunIcon from "lucide-react";
+import SunMoonIcon from "lucide-react";
 
-import { Match, Switch, createEffect, createSignal } from "solid-js";
+// import { Match, Switch, createEffect, createSignal } from "solid-js";
 import { HStack } from "styled-system/jsx";
-import { getTheme, setTheme } from "~/utils/theme";
+import { getTheme, setTheme } from "@/utils/theme";
 import { IconButton } from "./ui/icon-button";
 import { Menu } from "./ui/menu";
 
-export const ThemeSwitchButton = () => {
+export function ThemeSwitchButton() {
   const [themeSelection, setThemeSelection] = createSignal(getTheme());
 
   createEffect(() => setTheme(themeSelection()));

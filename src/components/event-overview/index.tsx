@@ -1,4 +1,4 @@
-import { actions } from "astro:actions";
+// import { actions } from "astro:actions";
 import {
   addDays,
   addMonths,
@@ -8,14 +8,14 @@ import {
   subDays,
   subMonths,
 } from "date-fns";
-import {
-  For,
-  Match,
-  Show,
-  Switch,
-  createResource,
-  createSignal,
-} from "solid-js";
+// import {
+//   For,
+//   Match,
+//   Show,
+//   Switch,
+//   createResource,
+//   createSignal,
+// } from "solid-js";
 import {
   Box,
   type BoxProps,
@@ -24,10 +24,10 @@ import {
   splitCssProps,
   panda,
 } from "styled-system/jsx";
-import type { EventsByDay, DisplayableEvent } from "~/utils/map-events";
-import type { User } from "../../../../shared/payload-types";
-import { EventButton } from "../event-button";
-import { EventDetailsDrawer } from "../event-details-sheet";
+import type { EventsByDay, DisplayableEvent } from "../../lib/mappers/map-events";
+import type { User } from "../../../packages/shared/payload-types";
+import { EventButton } from "../../../packages/astro/src/components/event-button";
+import { EventDetailsDrawer } from "../../../packages/astro/src/components/event-details-sheet";
 import { DateSelect } from "./date-select";
 import { link } from "styled-system/recipes";
 

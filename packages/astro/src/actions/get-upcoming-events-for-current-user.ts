@@ -1,7 +1,7 @@
 import type { Event } from "@payload-types";
 import { ActionError, defineAction } from "astro:actions";
 import { startOfDay } from "date-fns";
-import { prepareEvent } from "~/utils/map-events";
+import { prepareEvent } from "../../../../src/lib/mappers/map-events";
 
 export const getUpcomingEventsForCurrentUser = defineAction({
   handler: async (_, context) => {
