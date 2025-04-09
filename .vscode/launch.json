@@ -5,10 +5,10 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Astro: debug",
+      "name": "Next.js: debug",
       "type": "bun",
       "request": "launch",
-      "cwd": "${workspaceFolder}/packages/astro",
+      "cwd": "${workspaceFolder}",
       "program": "dev"
     }
   ]

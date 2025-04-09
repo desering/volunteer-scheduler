@@ -1,5 +1,5 @@
 import { defineMiddleware } from "astro:middleware";
-import { getPayloadInstance } from "./utils/global-payload";
+import { getPayloadInstance } from "@/utils/global-payload";
 
 export const onRequest = defineMiddleware(async (context, next) => {
   // Skip requests for prerendered pages

@@ -6,7 +6,8 @@
 .pnp.js
 .yarn/install-state.gz
 
-.idea
+# jetbrains setting folder
+.idea/
 
 # testing
 /coverage
@@ -15,17 +16,21 @@
 /.next/
 /out/
 
-# production
-/build
+# production build
+build
+dist
+
+# macOS-specific files
+.DS_Store
 
 # misc
-.DS_Store
 *.pem
 
-# debug
+# debug logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
 
 # local env files
 .env*.local
@@ -37,7 +42,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# environment variables
 .env
+.env.production
 
 /media
 

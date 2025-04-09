@@ -24,4 +24,4 @@ EXPOSE 3000
 
 RUN ls -la
 
-# CMD ["node", "packages/payload/server.js"]
+# CMD ["node", "server.js"]

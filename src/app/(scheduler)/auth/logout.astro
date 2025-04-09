@@ -1,0 +1,14 @@
+---
+if (!Astro.locals.user) {
+  return Astro.redirect("/auth/login");
+}
+
+Astro.cookies.delete("payload-token", {
+  httpOnly: true,
+  path: "/",
+  sameSite: "lax",
+});
+return Astro.redirect("/");
+---
+
+You are logged out, return to the <a href="/public">home</a>.

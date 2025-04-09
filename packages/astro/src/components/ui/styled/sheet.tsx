@@ -3,7 +3,7 @@ import { Dialog } from "@ark-ui/solid/dialog";
 import { ark } from "@ark-ui/solid/factory";
 import type { ComponentProps } from "solid-js";
 import type { HTMLPandaProps } from "styled-system/types";
-import { createStyleContext } from "./utils/create-style-context";
+import { createStyleContext } from "@/components/ui/styled/utils/create-style-context";
 import { sheet, type SheetVariantProps } from "styled-system/recipes";
 
 const { withRootProvider, withContext } = createStyleContext(sheet);

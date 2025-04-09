@@ -1,17 +1,16 @@
-import { type Assign, Menu } from "@ark-ui/solid";
-import type { ComponentProps } from "solid-js";
+import { type Assign, Menu } from "@ark-ui/react";
 import { type MenuVariantProps, menu } from "styled-system/recipes";
 import type { HTMLPandaProps } from "styled-system/types";
-import { createStyleContext } from "./utils/create-style-context";
+import { createStyleContext } from "@/components/ui/styled/utils/create-style-context";
 
 const { withRootProvider, withContext } = createStyleContext(menu);
 
-export type RootProviderProps = ComponentProps<typeof RootProvider>;
+// export type RootProviderProps = ComponentProps<typeof RootProvider>;
 export const RootProvider = withRootProvider<
   Assign<Menu.RootProviderProps, MenuVariantProps>
 >(Menu.RootProvider);
 
-export type RootProps = ComponentProps<typeof Root>;
+// export type RootProps = ComponentProps<typeof Root>;
 export const Root = withRootProvider<Assign<Menu.RootProps, MenuVariantProps>>(
   Menu.Root,
 );
@@ -84,4 +83,4 @@ export const Trigger = withContext<
   Assign<HTMLPandaProps<"button">, Menu.TriggerBaseProps>
 >(Menu.Trigger, "trigger");
 
-export { MenuContext as Context } from "@ark-ui/solid";
+export { MenuContext as Context } from "@ark-ui/react";

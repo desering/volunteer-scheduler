@@ -26,14 +26,7 @@ Repo for the Volunteer Scheduler project.
    docker-compose -f docker-compose.db.yml up
    ```
 
-4. Start Payload:
+4. Start the app:
    ```shell
-   cd packages/payload
-   bun run dev
-   ```
-
-5. Start Astro:
-   ```shell
-   cd packages/astro
    bun run dev
    ```

@@ -1,0 +1,129 @@
+---
+// https://github.com/payloadcms/payload/blob/main/packages/next/src/routes/rest/auth/login.ts
+// Astro alternative on above file
+
+// import { actions } from "astro:actions";
+import { css } from "styled-system/css/css";
+import { panda } from "styled-system/jsx";
+import { vstack } from "styled-system/patterns";
+import { button } from "styled-system/recipes/button";
+import { input } from "styled-system/recipes/input";
+import Layout from "~/layouts/layout.astro";
+import { link } from "styled-system/recipes";
+import { Container, HStack } from "styled-system/jsx";
+
+if (Astro.locals.user) {
+  return Astro.redirect("/");
+}
+
+const errors: string[] = [];
+
+if (Astro.request.method === "POST") {
+  const data = await Astro.request.formData();
+
+  const email = data.get("email") as string;
+  const password = data.get("password") as string;
+
+  if (!email) errors.push("Email is required.");
+  if (!password) errors.push("Password is required.");
+
+  if (email && password) {
+    try {
+      const loginResult = await Astro.callAction(actions.loginUser, {
+        email,
+        password,
+      });
+
+      if (loginResult.data) return Astro.redirect("/");
+      if (loginResult.error?.message) errors.push(loginResult.error?.message);
+    } catch (error) {
+      if (error instanceof Error) {
+        errors.push(error.message);
+      } else {
+        errors.push("Login failed. An unknown error occurred.");
+      }
+    }
+  }
+}
+---
+
+<Layout title="Login | De Sering Volunteer Schedule">
+  <panda.div
+    display="flex"
+    minHeight="screen"
+    width="screen"
+    justifyContent="center"
+    alignItems="center"
+  >
+    <Container>
+      <form method="POST" class={vstack({ alignItems: "stretch" })}>
+        {
+          errors.map((error) => (
+            <panda.div
+              class={css({
+                color: "gray.1",
+                backgroundColor: "tomato",
+                paddingX: "4",
+                paddingY: "2",
+              })}
+            >
+              <panda.div>{error}</panda.div>
+            </panda.div>
+          ))
+        }
+
+        <panda.div width="full">
+          <label for="email">Email:</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            required
+            class={input({
+              size: "lg",
+            })}
+          />
+        </panda.div>
+
+        <panda.div width="full">
+          <label for="password">Password:</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            required
+            class={input({
+              size: "lg",
+            })}
+          />
+        </panda.div>
+
+        <HStack>
+          <a
+              type="button"
+              href="/public"
+              class:list={[
+                button({ size: "lg", variant: "outline" }),
+                css({ flexGrow: 1 }),
+              ]}
+          >
+            Cancel
+          </a>
+          <button
+              type="submit"
+              class:list={[
+                button({ size: "lg", variant: "solid" }),
+                css({ flexGrow: 1 }),
+              ]}
+          >
+            Login
+          </button>
+        </HStack>
+
+        <div class:list={[css({textAlign: "center", marginY: '10px'})]}>
+          Don't have an account yet? <a href='/src/app/(scheduler)/auth/register' class:list={[link()]}>Register</a>
+        </div>
+      </form>
+    </Container>
+  </panda.div>
+</Layout>

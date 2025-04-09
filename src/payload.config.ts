@@ -19,6 +19,7 @@ import { Roles } from "./collections/roles";
 import { Sections } from "./collections/sections";
 import { Signups } from "./collections/signups";
 import { Users } from "./collections/users";
+import nodemailer from "nodemailer";
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -60,6 +61,28 @@ const getConnectionString = () => {
   return `${process.env.DATABASE_URI}-pr-${prNumber}`;
 };
 
+const mailAdapter = () =>
+    process.env.EMAIL_FROM_ADDRESS &&
+    process.env.EMAIL_FROM_NAME &&
+    process.env.SMTP_HOST &&
+    process.env.SMTP_PORT &&
+    process.env.SMTP_USER &&
+    process.env.SMTP_PASS
+        ? nodemailerAdapter({
+          skipVerify: true,
+          defaultFromAddress: process.env.EMAIL_FROM_ADDRESS,
+          defaultFromName: process.env.EMAIL_FROM_NAME,
+          transport: nodemailer.createTransport({
+            host: process.env.SMTP_HOST,
+            port: Number(process.env.SMTP_PORT),
+            auth: {
+              user: process.env.SMTP_USER,
+              pass: process.env.SMTP_PASS,
+            },
+          }),
+        })
+        : undefined;
+
 export default buildConfig({
   admin: {
     user: Users.slug,
@@ -67,6 +90,15 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
     dateFormat: "dd/MM/yyyy HH:mm",
+    timezones: {
+      defaultTimezone: "Europe/Amsterdam",
+      supportedTimezones: [
+        {
+          label: "Europe/Amsterdam",
+          value: "Europe/Amsterdam",
+        },
+      ],
+    },
     components: {
       beforeDashboard: ["@/components/dashboard-header#DashboardHeader"],
 
@@ -89,6 +121,10 @@ export default buildConfig({
       HTMLConverterFeature({}),
     ],
   }),
+  localization: {
+    defaultLocale: "en",
+    locales: ["en", "nl"],
+  },
   secret: process.env.PAYLOAD_SECRET || "",
   typescript: {
     outputFile: path.resolve(dirname, "payload-types.ts"),
@@ -101,7 +137,7 @@ export default buildConfig({
     prodMigrations: migrations,
     push: process.env.NODE_ENV !== "production",
   }),
-  email: nodemailerAdapter(),
+  email: mailAdapter(),
   sharp,
   plugins: [],
 });

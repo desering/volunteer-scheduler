@@ -2,7 +2,7 @@ import { type Assign, type PolymorphicProps, ark } from "@ark-ui/solid";
 import type { ComponentProps } from "solid-js";
 import { alert } from "styled-system/recipes";
 import type { HTMLPandaProps } from "styled-system/types";
-import { createStyleContext } from "./utils/create-style-context";
+import { createStyleContext } from "@/components/ui/styled/utils/create-style-context";
 
 const { withProvider, withContext } = createStyleContext(alert);
 

@@ -1,5 +1,5 @@
-import { ark } from "@ark-ui/solid/factory";
-import type { ComponentProps } from "solid-js";
+import { ark } from "@ark-ui/react/factory";
+// import type { ComponentProps } from "solid-js";
 import { panda } from "styled-system/jsx";
 import { type ButtonVariantProps, button } from "styled-system/recipes/button";
 
