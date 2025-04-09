@@ -1,37 +1,35 @@
-import MoonIcon from "lucide-react";
-import SunIcon from "lucide-react";
-import SunMoonIcon from "lucide-react";
+"use client";
 
+import { MoonIcon, SunIcon, SunMoonIcon } from "lucide-react";
+
+import { getTheme, setTheme } from "@/utils/theme";
+import { useEffect, useState } from "react";
 // import { Match, Switch, createEffect, createSignal } from "solid-js";
 import { HStack } from "styled-system/jsx";
-import { getTheme, setTheme } from "@/utils/theme";
 import { IconButton } from "./ui/icon-button";
 import { Menu } from "./ui/menu";
 
 export function ThemeSwitchButton() {
-  const [themeSelection, setThemeSelection] = createSignal(getTheme());
+  const [themeSelection, setThemeSelection] = useState(getTheme());
 
-  createEffect(() => setTheme(themeSelection()));
+  useEffect(() => setTheme(themeSelection));
 
   return (
     <Menu.Root>
-      <Menu.Trigger
-        asChild={(triggerProps) => (
-          <IconButton {...triggerProps()} variant="outline">
-            <Switch>
-              <Match when={themeSelection() === "light"}>
-                <SunIcon />
-              </Match>
-              <Match when={themeSelection() === "dark"}>
-                <MoonIcon />
-              </Match>
-              <Match when={true}>
-                <SunMoonIcon />
-              </Match>
-            </Switch>
-          </IconButton>
-        )}
-      />
+      <Menu.Trigger asChild>
+        <IconButton variant="outline">
+          {(() => {
+            switch (themeSelection) {
+              case "light":
+                return <SunIcon />;
+              case "dark":
+                return <MoonIcon />;
+              default:
+                return <SunMoonIcon />;
+            }
+          })()}
+        </IconButton>
+      </Menu.Trigger>
       <Menu.Positioner>
         <Menu.Content>
           <Menu.ItemGroup>
@@ -67,4 +65,4 @@ export function ThemeSwitchButton() {
       </Menu.Positioner>
     </Menu.Root>
   );
-};
+}
