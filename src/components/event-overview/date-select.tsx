@@ -1,8 +1,10 @@
+"use client";
+
+import { useEffect, useRef } from "react";
 import { format, isBefore, startOfDay } from "date-fns";
-// import { For, Index, createEffect, createSelector, onMount } from "solid-js";
 import { Flex, panda } from "styled-system/jsx";
-import { Button } from "../../../packages/astro/src/components/ui/button";
-import { Text } from "../../../packages/astro/src/components/ui/text";
+import { Button } from "@/components/ui/button";
+import { Text } from "@/components/ui/text";
 
 type Props = {
   dates: {
@@ -15,11 +17,9 @@ type Props = {
   onDateSelect: (date: Date) => void;
 };
 
-export default function DateSelect(props: Props) {
-  const isSelected = createSelector(
-    () => props.date,
-    (a, b) => a.getTime() === b.getTime(),
-  );
+export const DateSelect = (props: Props) => {
+  const isSelected = (date: Date) =>
+    startOfDay(date).getTime() === startOfDay(props.date).getTime();
 
   return (
     <Flex
@@ -29,44 +29,55 @@ export default function DateSelect(props: Props) {
       scrollSnapType="x mandatory"
       paddingBottom="4"
     >
-      <Index each={props.dates}>
-        {(item) => {
-          let ref!: HTMLButtonElement;
+      {props.dates.map((item, index) => {
+        const ref = useRef<HTMLButtonElement>(null);
 
-          const scrollTo = (behavior: ScrollBehavior) =>
-            ref.scrollIntoView({
-              behavior,
+        // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+        useEffect(() => {
+          if (isSelected(item.date) && ref.current) {
+            ref.current.scrollIntoView({
+              behavior: "instant",
               inline: "center",
               block: "nearest",
             });
+          }
+        }, [item.date, props.date]);
 
-          onMount(() => isSelected(item().date) && scrollTo("instant"));
-          createEffect(() => isSelected(item().date) && scrollTo("smooth"));
+        // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
+        useEffect(() => {
+          if (isSelected(item.date) && ref.current) {
+            ref.current.scrollIntoView({
+              behavior: "smooth",
+              inline: "center",
+              block: "nearest",
+            });
+          }
+        }, [props.date]);
 
-          return (
-            <Button
-              ref={ref}
-              variant={
-                isSelected(item().date)
-                  ? "solid"
-                  : item().hasEvents
-                    ? "outline"
-                    : "ghost"
-              }
-              disabled={!item().isPublished}
-              onClick={() => props.onDateSelect(item().date)}
-              display="block"
-              height="auto"
-              paddingY="4"
-            >
-              <Text size="xl">{format(item().date, "dd")}</Text>
-              <Text size="sm" fontWeight="medium">
-                {format(item().date, "iii")}
-              </Text>
-            </Button>
-          );
-        }}
-      </Index>
+        return (
+          <Button
+            key={item.date.getTime()}
+            ref={ref}
+            variant={
+              isSelected(item.date)
+                ? "solid"
+                : item.hasEvents
+                  ? "outline"
+                  : "ghost"
+            }
+            disabled={!item.isPublished}
+            onClick={() => props.onDateSelect(item.date)}
+            display="block"
+            height="auto"
+            paddingY="4"
+          >
+            <Text size="xl">{format(item.date, "dd")}</Text>
+            <Text size="sm" fontWeight="medium">
+              {format(item.date, "iii")}
+            </Text>
+          </Button>
+        );
+      })}
     </Flex>
   );
 };

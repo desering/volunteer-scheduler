@@ -1,3 +1,5 @@
+"use client";
+
 import type { User } from "@/payload-types";
 import { useAuth } from "@/providers/auth";
 import { useEffect } from "react";
