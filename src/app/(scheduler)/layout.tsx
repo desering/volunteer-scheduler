@@ -1,3 +1,5 @@
+import "./globals.css";
+
 import { panda } from "styled-system/jsx";
 import NavBar from "@/components/navbar";
 import { AuthProvider } from "@/providers/auth";
