@@ -1,101 +1,95 @@
-import { z } from "zod";
-import { convertLexicalToHTML } from "~/utils/convert-lexical-to-html";
+import { convertLexicalToHTML } from "@/utils/convert-lexical-to-html";
 
-export const getEventDetails = defineAction({
-  input: z.object({
-    id: z.number(),
-  }),
-  handler: async (input, context) => {
-    const event = await context.locals.payload.findByID({
-      collection: "events",
-      id: input.id,
-      depth: 1,
+export const getEventDetails = async (id: number)=> {
+  const event = await payload.findByID({
+    collection: "events",
+    id: id,
+    depth: 1,
 
-      populate: {
-        roles: {
-          signups: false,
-        },
+    populate: {
+      roles: {
+        signups: false,
       },
-    });
+    },
+  });
 
-    // Narrow down to keep frontend simple
-    // Roles are assigned to their sections, any remaining added to the event itself
-    // Signups are added to the relevant roles
-    const transformedEvent = {
-      ...event,
-      id: forceNumber(event.id),
-      descriptionHtml: "" as string | null | undefined,
-      sections: {
-        ...event.sections,
-        docs: mapObjects(event.sections?.docs, (section) => ({
-          ...section,
-          roles: {
-            ...section.roles,
+  // Narrow down to keep frontend simple
+  // Roles are assigned to their sections, any remaining added to the event itself
+  // Signups are added to the relevant roles
+  const transformedEvent = {
+    ...event,
+    id: forceNumber(event.id),
+    descriptionHtml: "" as string | null | undefined,
+    sections: {
+      ...event.sections,
+      docs: mapObjects(event.sections?.docs, (section) => ({
+        ...section,
+        roles: {
+          ...section.roles,
 
+          docs: mapObjects(
+            event.roles?.docs,
+            (role) => ({
+              ...role,
+              descriptionHtml: "" as string | null | undefined,
+              signups: {
+                ...role.signups,
+                docs: mapObjects(
+                  event.signups?.docs,
+                  (signup) => signup,
+                  (signup) => signup.role === role.id,
+                ),
+              },
+            }),
+            (role) => role.section === section.id,
+          ),
+        },
+      })),
+    },
+    roles: {
+      ...event.roles,
+      docs: mapObjects(
+        event.roles?.docs,
+        (role) => ({
+          ...role,
+          section: forceNumber(role.section),
+          descriptionHtml: "" as string | null | undefined,
+          signups: {
+            ...role.signups,
             docs: mapObjects(
-              event.roles?.docs,
-              (role) => ({
-                ...role,
-                descriptionHtml: "" as string | null | undefined,
-                signups: {
-                  ...role.signups,
-                  docs: mapObjects(
-                    event.signups?.docs,
-                    (signup) => signup,
-                    (signup) => signup.role === role.id,
-                  ),
-                },
-              }),
-              (role) => role.section === section.id,
+              event.signups?.docs,
+              (signup) => signup,
+              (signup) => signup.role === role.id,
             ),
           },
-        })),
-      },
-      roles: {
-        ...event.roles,
-        docs: mapObjects(
-          event.roles?.docs,
-          (role) => ({
-            ...role,
-            section: forceNumber(role.section),
-            descriptionHtml: "" as string | null | undefined,
-            signups: {
-              ...role.signups,
-              docs: mapObjects(
-                event.signups?.docs,
-                (signup) => signup,
-                (signup) => signup.role === role.id,
-              ),
-            },
-          }),
-          (role) => !role.section,
-        ),
-      },
-      signups: {
-        ...event.signups,
-        docs: mapObjects(event.signups?.docs, (signup) => ({
-          ...signup,
-          user: forceNumber(signup.user),
-          role: forceNumber(signup.role),
-        })),
-      },
-    };
+        }),
+        (role) => !role.section,
+      ),
+    },
+    signups: {
+      ...event.signups,
+      docs: mapObjects(event.signups?.docs, (signup) => ({
+        ...signup,
+        user: forceNumber(signup.user),
+        role: forceNumber(signup.role),
+      })),
+    },
+  };
 
-    // add descriptionHtml
-    for (const role of transformedEvent.roles.docs) {
+  // add descriptionHtml
+  for (const role of transformedEvent.roles.docs) {
+    role.descriptionHtml =
+      role.description && (await convertLexicalToHTML(role.description));
+  }
+  for (const section of transformedEvent.sections.docs) {
+    for (const role of section.roles.docs) {
       role.descriptionHtml =
         role.description && (await convertLexicalToHTML(role.description));
     }
-    for (const section of transformedEvent.sections.docs) {
-      for (const role of section.roles.docs) {
-        role.descriptionHtml =
-          role.description && (await convertLexicalToHTML(role.description));
-      }
-    }
+  }
 
-    return transformedEvent;
-  },
-});
+  return transformedEvent;
+}
 
 const forceNumber = (value: unknown) =>
   typeof value === "number" ? value : null;
