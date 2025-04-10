@@ -1,9 +1,9 @@
-import {groupAndSortEventsByDate} from "@/lib/mappers/map-events";
-import {getPayload} from "payload";
+import { groupAndSortEventsByDate } from "@/lib/mappers/map-events";
+import { getPayload } from "payload";
 import config from "@payload-config";
 
 export const getEventsByDay = async () => {
-  const payload = await getPayload({config});
+  const payload = await getPayload({ config });
 
   const events = await payload.find({
     collection: "events",
@@ -17,4 +17,4 @@ export const getEventsByDay = async () => {
   });
 
   return await groupAndSortEventsByDate(events.docs);
-}
+};

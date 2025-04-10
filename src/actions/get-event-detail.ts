@@ -1,6 +1,6 @@
 import { convertLexicalToHTML } from "@/utils/convert-lexical-to-html";
 
-export const getEventDetails = async (id: number)=> {
+export const getEventDetails = async (id: number) => {
   const event = await payload.findByID({
     collection: "events",
     id: id,
@@ -89,7 +89,7 @@ export const getEventDetails = async (id: number)=> {
   }
 
   return transformedEvent;
-}
+};
 
 const forceNumber = (value: unknown) =>
   typeof value === "number" ? value : null;

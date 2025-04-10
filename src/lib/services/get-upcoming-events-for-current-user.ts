@@ -1,14 +1,14 @@
 import { startOfDay } from "date-fns";
-import {headers} from "next/headers";
-import {unauthorized} from "next/navigation";
-import {getPayload} from "payload";
+import { headers } from "next/headers";
+import { unauthorized } from "next/navigation";
+import { getPayload } from "payload";
 import config from "@payload-config";
 import type { Event } from "@payload-types";
 import { prepareEvent } from "@/lib/mappers/map-events";
 
 export async function getUpcomingEventsForCurrentUser() {
-  const payload = await getPayload({config});
-  const { user } = await payload.auth({headers: await headers()});
+  const payload = await getPayload({ config });
+  const { user } = await payload.auth({ headers: await headers() });
 
   if (!user) {
     unauthorized();

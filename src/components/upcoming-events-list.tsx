@@ -5,22 +5,20 @@ import { Flex } from "styled-system/jsx/flex";
 import type { DisplayableEvent } from "@/lib/mappers/map-events";
 import { EventButton } from "@/components/event-button";
 import { EventDetailsDrawer } from "@/components/event-details-sheet";
-import {Clock, PersonStanding} from "lucide-react";
-import {SetStateAction, useState} from "react";
-import {getUpcomingEventsForCurrentUser} from "@/lib/services/get-upcoming-events-for-current-user";
+import { Clock, PersonStanding } from "lucide-react";
+import { SetStateAction, useState } from "react";
+import { getUpcomingEventsForCurrentUser } from "@/lib/services/get-upcoming-events-for-current-user";
 
 type Props = {
   user: User;
-  data?: Awaited<
-    ReturnType<typeof getUpcomingEventsForCurrentUser>
-  >["data"];
+  data?: Awaited<ReturnType<typeof getUpcomingEventsForCurrentUser>>["data"];
 };
 
 export const UpcomingEventsList = (props: Props) => {
   const [selectedEvent, setSelectedEvent] = useState<DisplayableEvent>();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  const [events, {refetch}] = createResource(
+  const [events, { refetch }] = createResource(
     async () => (await getUpcomingEventsForCurrentUser()).data,
     {
       initialValue: props.data,
@@ -28,58 +26,60 @@ export const UpcomingEventsList = (props: Props) => {
     },
   );
 
-  const eventsList = events.latest?.events.map((event: SetStateAction<DisplayableEvent | undefined>) => {
-    const signup = props.data?.signups.docs.find(
-      (signup: Signup) => (signup.event as Event).id === event.doc.id,
-    );
-    const roleTitle = (signup?.role as Role)?.title;
+  const eventsList = events.latest?.events.map(
+    (event: SetStateAction<DisplayableEvent | undefined>) => {
+      const signup = props.data?.signups.docs.find(
+        (signup: Signup) => (signup.event as Event).id === event.doc.id,
+      );
+      const roleTitle = (signup?.role as Role)?.title;
 
-    return (
-      <EventButton.Root
-        onClick={() => {
-          setIsDrawerOpen(true);
-          setSelectedEvent(event);
-        }}
-        display="flex"
-        flexDirection="column"
-        gap="3"
-      >
-        <EventButton.Title>{event.doc.title}</EventButton.Title>
+      return (
+        <EventButton.Root
+          onClick={() => {
+            setIsDrawerOpen(true);
+            setSelectedEvent(event);
+          }}
+          display="flex"
+          flexDirection="column"
+          gap="3"
+        >
+          <EventButton.Title>{event.doc.title}</EventButton.Title>
 
-        <Box
-          marginInline="-4"
-          borderBottom="1px solid"
-          borderColor="colorPalette.10"
-        />
+          <Box
+            marginInline="-4"
+            borderBottom="1px solid"
+            borderColor="colorPalette.10"
+          />
 
-        <HStack>
-          <PersonStanding />
-          <Box>
-            <panda.p fontWeight="semibold">Role</panda.p>
-            <panda.p>{roleTitle}</panda.p>
-          </Box>
-        </HStack>
+          <HStack>
+            <PersonStanding />
+            <Box>
+              <panda.p fontWeight="semibold">Role</panda.p>
+              <panda.p>{roleTitle}</panda.p>
+            </Box>
+          </HStack>
 
-        <Box
-          marginInline="-4"
-          borderBottom="1px solid"
-          borderColor="colorPalette.8"
-        />
+          <Box
+            marginInline="-4"
+            borderBottom="1px solid"
+            borderColor="colorPalette.8"
+          />
 
-        <HStack>
-          <Clock />
-          <Box>
-            <panda.p fontWeight="semibold">Time</panda.p>
-            <EventButton.DateTime
-              startDate={new Date(event.start_date)}
-              endDate={new Date(event.end_date)}
-            />
-          </Box>
-        </HStack>
-        <EventButton.Description innerHTML={event.descriptionHtml} />
-      </EventButton.Root>
-    );
-  });
+          <HStack>
+            <Clock />
+            <Box>
+              <panda.p fontWeight="semibold">Time</panda.p>
+              <EventButton.DateTime
+                startDate={new Date(event.start_date)}
+                endDate={new Date(event.end_date)}
+              />
+            </Box>
+          </HStack>
+          <EventButton.Description innerHTML={event.descriptionHtml} />
+        </EventButton.Root>
+      );
+    },
+  );
 
   return (
     <>

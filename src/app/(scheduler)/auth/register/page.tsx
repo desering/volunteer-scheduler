@@ -4,10 +4,10 @@ import { vstack } from "styled-system/patterns";
 import { button } from "styled-system/recipes/button";
 import { input } from "styled-system/recipes/input";
 import { link } from "styled-system/recipes";
-import {headers as getHeaders} from "next/dist/server/request/headers";
-import {getPayload} from "payload";
+import { headers as getHeaders } from "next/dist/server/request/headers";
+import { getPayload } from "payload";
 import config from "@payload-config";
-import {redirect} from "next/navigation";
+import { redirect } from "next/navigation";
 
 export default async function Page() {
   const headers = await getHeaders();
@@ -29,21 +29,19 @@ export default async function Page() {
       alignItems="center"
     >
       <Container>
-        <form method="POST" className={vstack({alignItems: "stretch"})}>
-          {
-            errors.map((error) => (
-              <panda.div
-                className={css({
-                  color: "gray.1",
-                  backgroundColor: "tomato",
-                  paddingX: "4",
-                  paddingY: "2",
-                })}
-              >
-                <panda.div>{error}</panda.div>
-              </panda.div>
-            ))
-          }
+        <form method="POST" className={vstack({ alignItems: "stretch" })}>
+          {errors.map((error) => (
+            <panda.div
+              className={css({
+                color: "gray.1",
+                backgroundColor: "tomato",
+                paddingX: "4",
+                paddingY: "2",
+              })}
+            >
+              <panda.div>{error}</panda.div>
+            </panda.div>
+          ))}
 
           <panda.div width="full">
             <label htmlFor="preferredName">Preferred Name:</label>
@@ -116,8 +114,8 @@ export default async function Page() {
               type="button"
               href="/"
               className={[
-                button({size: "lg", variant: "outline"}),
-                css({flexGrow: 1}),
+                button({ size: "lg", variant: "outline" }),
+                css({ flexGrow: 1 }),
               ]}
             >
               Cancel
@@ -125,16 +123,19 @@ export default async function Page() {
             <button
               type="submit"
               className={[
-                button({size: "lg", variant: "solid"}),
-                css({flexGrow: 1}),
+                button({ size: "lg", variant: "solid" }),
+                css({ flexGrow: 1 }),
               ]}
             >
               Register
             </button>
           </HStack>
 
-          <div className={[css({textAlign: "center", marginY: '10px'})]}>
-            Already have an account? <a href='/auth/login' className={[link()]}>Login</a>
+          <div className={[css({ textAlign: "center", marginY: "10px" })]}>
+            Already have an account?{" "}
+            <a href="/auth/login" className={[link()]}>
+              Login
+            </a>
           </div>
         </form>
       </Container>

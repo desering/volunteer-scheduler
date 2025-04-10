@@ -1,6 +1,6 @@
-import {redirect} from "next/navigation";
-import {cookies, headers as getHeaders} from "next/headers";
-import {getPayload} from "payload";
+import { redirect } from "next/navigation";
+import { cookies, headers as getHeaders } from "next/headers";
+import { getPayload } from "payload";
 import config from "@payload-config";
 
 export default async function Page() {
