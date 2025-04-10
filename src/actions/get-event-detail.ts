@@ -1,5 +1,4 @@
-import { defineAction } from "astro:actions";
-import { z } from "astro:schema";
+import { z } from "zod";
 import { convertLexicalToHTML } from "~/utils/convert-lexical-to-html";
 
 export const getEventDetails = defineAction({

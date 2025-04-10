@@ -148,17 +148,5 @@ const NoEventsMessage = () => (
     >
       There are no shifts yet, have a look at other days.
     </panda.h5>
-    <panda.p marginBottom={3}>
-      For shifts <b>up to February 25th</b>, click here:
-      <br />
-      <a
-        href="https://docs.google.com/spreadsheets/d/1HDv8_Du7ssRMQfF4WtDyzar9YhL4nZfKg_lQ7PjYlYA/edit"
-        target="_blank"
-        rel="noopener noreferrer"
-        className={link()}
-      >
-        Volunteer Schedule Spreadsheet
-      </a>
-    </panda.p>
   </panda.div>
 );

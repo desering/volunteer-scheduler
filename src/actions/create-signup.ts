@@ -1,5 +1,4 @@
-import { ActionError, defineAction } from "astro:actions";
-import { z } from "astro:schema";
+import { z } from "zod";
 
 export const createSignup = defineAction({
   input: z.object({

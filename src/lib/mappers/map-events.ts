@@ -1,5 +1,5 @@
-import type { Event } from "../../../packages/shared/payload-types";
-import { convertLexicalToHTML } from "../../../packages/astro/src/utils/convert-lexical-to-html";
+import type { Event } from "@payload-types";
+import { convertLexicalToHTML } from "@/utils/convert-lexical-to-html";
 
 export type DisplayableEvent = {
   doc: Event;
