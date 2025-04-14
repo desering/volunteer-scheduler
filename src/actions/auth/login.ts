@@ -1,11 +1,14 @@
 "use server";
 
 import config from "@payload-config";
-import {cookies} from "next/headers";
-import {generatePayloadCookie, getPayload} from "payload";
+import { cookies } from "next/headers";
+import { generatePayloadCookie, getPayload } from "payload";
 import { z } from "zod";
 
-export async function login(prevState: {message: string}, formData: FormData) {
+export async function login(
+  prevState: { message: string },
+  formData: FormData,
+) {
   const schema = z.object({
     email: z.string().min(5),
     password: z.string().min(8),
@@ -16,7 +19,11 @@ export async function login(prevState: {message: string}, formData: FormData) {
   });
 
   if (!parse.success) {
-    return {success: false, message: "Failed to log in", errors: parse.error.errors};
+    return {
+      success: false,
+      message: "Failed to log in",
+      errors: parse.error.errors,
+    };
   }
 
   const data = parse.data;
@@ -30,7 +37,11 @@ export async function login(prevState: {message: string}, formData: FormData) {
     });
 
     if (!result.token) {
-      return {success: false, message: "Login failed, Token expected.", errors: []};
+      return {
+        success: false,
+        message: "Login failed, Token expected.",
+        errors: [],
+      };
     }
 
     const collection = payload.collections.users;
@@ -55,8 +66,11 @@ export async function login(prevState: {message: string}, formData: FormData) {
       path: cookie.path,
     });
   } catch (e) {
-    return {success: false, message: "Username and/or password wrong, please try again."}
+    return {
+      success: false,
+      message: "Username and/or password wrong, please try again.",
+    };
   }
 
-  return {success: true, message: "Login successful, redirecting..."};
+  return { success: true, message: "Login successful, redirecting..." };
 }

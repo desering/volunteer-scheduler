@@ -1,11 +1,14 @@
 "use server";
 
-import {z} from "zod";
-import {generatePayloadCookie, getPayload} from "payload";
+import { z } from "zod";
+import { generatePayloadCookie, getPayload } from "payload";
 import config from "@payload-config";
-import {cookies} from "next/headers";
+import { cookies } from "next/headers";
 
-export async function register(prevState: {message: string}, formData: FormData) {
+export async function register(
+  prevState: { message: string },
+  formData: FormData,
+) {
   const schema = z.object({
     preferredName: z.string(),
     email: z.string(),
@@ -22,7 +25,11 @@ export async function register(prevState: {message: string}, formData: FormData)
   });
 
   if (!parse.success) {
-    return {success: false, message: "Failed to register", errors: parse.error.errors};
+    return {
+      success: false,
+      message: "Failed to register",
+      errors: parse.error.errors,
+    };
   }
 
   const data = parse.data;
@@ -41,24 +48,29 @@ export async function register(prevState: {message: string}, formData: FormData)
     });
 
     if (findUserResult.totalDocs > 0) {
-      return {success: false, message: "Email is already in use"}
+      return { success: false, message: "Email is already in use" };
     }
 
     // Create the new user
-    await payload.create({ // todo: check if successful
+    await payload.create({
+      // todo: check if successful
       collection: "users",
       data,
     });
 
     // Log the new user in
     // todo: can we call the login action instead here?
-    const loginResult = await payload.login({ // todo: check if successful
+    const loginResult = await payload.login({
+      // todo: check if successful
       collection: "users",
       data,
     });
 
     if (!loginResult.token) {
-      return {success: false, message: "Register succeeded, but could not log in. Strange case."}
+      return {
+        success: false,
+        message: "Register succeeded, but could not log in. Strange case.",
+      };
     }
 
     const collection = payload.collections.users;
@@ -83,8 +95,11 @@ export async function register(prevState: {message: string}, formData: FormData)
       path: cookie.path,
     });
   } catch (e) {
-    return {success: false, message: "Username and/or password wrong, please try again."}
+    return {
+      success: false,
+      message: "Username and/or password wrong, please try again.",
+    };
   }
 
-  return {success: true, message: "Login successful, redirecting..."};
+  return { success: true, message: "Login successful, redirecting..." };
 }

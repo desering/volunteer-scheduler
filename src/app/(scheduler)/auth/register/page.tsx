@@ -1,4 +1,4 @@
-import {RegisterForm} from "@/components/auth/register-form";
+import { RegisterForm } from "@/components/auth/register-form";
 import config from "@payload-config";
 import { headers as getHeaders } from "next/dist/server/request/headers";
 import { redirect } from "next/navigation";

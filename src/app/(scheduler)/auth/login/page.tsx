@@ -3,7 +3,7 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { getPayload } from "payload";
 
-import {LoginForm} from "@/components/auth/login-form";
+import { LoginForm } from "@/components/auth/login-form";
 
 import { panda } from "styled-system/jsx";
 import { Container } from "styled-system/jsx";
@@ -19,18 +19,20 @@ export default async function Page() {
     redirect("/");
   }
 
-  return (<>
-    <panda.div
-      display="flex"
-      minHeight="screen"
-      width="screen"
-      justifyContent="center"
-      alignItems="center"
-    >
-      <Container>
-        <h1>Login</h1>
-        <LoginForm />
-      </Container>
-    </panda.div>
-  </>);
+  return (
+    <>
+      <panda.div
+        display="flex"
+        minHeight="screen"
+        width="screen"
+        justifyContent="center"
+        alignItems="center"
+      >
+        <Container>
+          <h1>Login</h1>
+          <LoginForm />
+        </Container>
+      </panda.div>
+    </>
+  );
 }

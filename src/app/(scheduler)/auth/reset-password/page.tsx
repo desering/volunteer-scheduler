@@ -1,4 +1,4 @@
-import {Container} from "styled-system/jsx";
+import { Container } from "styled-system/jsx";
 
 export default function Page() {
   // https://payloadcms.com/docs/local-api/overview#reset-password

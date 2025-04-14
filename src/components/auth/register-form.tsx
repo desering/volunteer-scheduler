@@ -1,13 +1,13 @@
 "use client";
 
-import {register} from "@/actions/auth/register";
-import {redirect} from "next/navigation";
-import {useActionState} from "react";
-import {useFormStatus} from "react-dom";
-import {css, cx} from "styled-system/css";
-import {HStack, panda} from "styled-system/jsx";
-import {vstack} from "styled-system/patterns";
-import {button, input, link} from "styled-system/recipes";
+import { register } from "@/actions/auth/register";
+import { redirect } from "next/navigation";
+import { useActionState } from "react";
+import { useFormStatus } from "react-dom";
+import { css, cx } from "styled-system/css";
+import { HStack, panda } from "styled-system/jsx";
+import { vstack } from "styled-system/patterns";
+import { button, input, link } from "styled-system/recipes";
 
 const initialState = {
   message: "",
@@ -17,13 +17,18 @@ const initialState = {
 function SubmitButton() {
   const { pending } = useFormStatus();
 
-  return <button
-    type="submit"
-    aria-disabled={pending}
-    className={cx(button({size: "lg", variant: "solid"}), css({flexGrow: 1}))}
-  >
-    Register
-  </button>;
+  return (
+    <button
+      type="submit"
+      aria-disabled={pending}
+      className={cx(
+        button({ size: "lg", variant: "solid" }),
+        css({ flexGrow: 1 }),
+      )}
+    >
+      Register
+    </button>
+  );
 }
 
 export function RegisterForm() {
@@ -35,16 +40,20 @@ export function RegisterForm() {
 
   return (
     <form action={formAction} className={vstack({ alignItems: "stretch" })}>
-      {state?.message ? <panda.div
-        className={css({
-          color: "gray.1",
-          backgroundColor: "tomato",
-          paddingX: "4",
-          paddingY: "2",
-        })}
-      >
-        <p>{state?.message}</p>
-      </panda.div> : ''}
+      {state?.message ? (
+        <panda.div
+          className={css({
+            color: "gray.1",
+            backgroundColor: "tomato",
+            paddingX: "4",
+            paddingY: "2",
+          })}
+        >
+          <p>{state?.message}</p>
+        </panda.div>
+      ) : (
+        ""
+      )}
 
       <panda.div width="full">
         <label htmlFor="preferredName">Preferred Name:</label>
@@ -116,11 +125,14 @@ export function RegisterForm() {
         <a
           type="button"
           href="/"
-          className={cx(button({size: "lg", variant: "outline"}), css({flexGrow: 1}))}
+          className={cx(
+            button({ size: "lg", variant: "outline" }),
+            css({ flexGrow: 1 }),
+          )}
         >
           Cancel
         </a>
-        <SubmitButton/>
+        <SubmitButton />
       </HStack>
 
       <div className={css({ textAlign: "center", marginY: "10px" })}>
