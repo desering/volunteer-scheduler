@@ -4,7 +4,6 @@ import { MoonIcon, SunIcon, SunMoonIcon } from "lucide-react";
 
 import { getTheme, setTheme } from "@/utils/theme";
 import { useEffect, useState } from "react";
-// import { Match, Switch, createEffect, createSignal } from "solid-js";
 import { HStack } from "styled-system/jsx";
 import { IconButton } from "./ui/icon-button";
 import { Menu } from "./ui/menu";

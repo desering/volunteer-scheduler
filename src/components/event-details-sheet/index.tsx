@@ -17,7 +17,7 @@ import confetti from "canvas-confetti";
 
 import { InfoIcon } from "lucide-react";
 import { XIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type Props = {
   user?: User;
@@ -80,7 +80,7 @@ export const EventDetailsDrawer = (props: Props) => {
     return `${format(start, "iiii dd MMMM")}, ${format(start, "HH:mm")} - ${format(end, "HH:mm")}`;
   };
 
-  createEffect<boolean | undefined>((selected) => {
+  useEffect((selected) => {
     // Reset selected role on exit
     if (!props.event?.doc.id) {
       setSelectedRoleId(null);
