@@ -1,26 +1,49 @@
+"use server";
+
 import { z } from "zod";
+import { getPayload } from "payload";
+import config from "@payload-config";
+import { headers as getHeaders } from "next/dist/server/request/headers";
 
-export const createSignup = defineAction({
-  input: z.object({
-    event: z.number(),
-    role: z.number(),
-  }),
-  handler: async (input, context) => {
-    if (!context.locals.user)
-      throw new ActionError({
-        code: "UNAUTHORIZED",
-        message: "User must be logged in",
-      });
+export async function createSignup(eventId: number, roleId: number) {
+  const headers = await getHeaders();
+  const payload = await getPayload({ config });
+  const { user } = await payload.auth({ headers });
 
-    const signup = await context.locals.payload.create({
-      collection: "signups",
-      data: {
-        event: input.event,
-        role: input.role,
-        user: context.locals.user.id,
-      },
-    });
+  if (!user) {
+    return {
+      success: false,
+      message: "User must be logged in",
+    };
+  }
 
-    return signup;
-  },
-});
+  const schema = z.object({
+    eventId: z.number(),
+    roleId: z.number(),
+  });
+  const parse = schema.safeParse({
+    eventId: eventId,
+    roleId: roleId,
+  });
+
+  if (!parse.success) {
+    return {
+      success: false,
+      message: "Submitted data incorrect",
+      errors: parse.error.errors,
+    };
+  }
+
+  const data = parse.data;
+
+  const signup = await payload.create({
+    collection: "signups",
+    data: {
+      event: data.eventId,
+      role: data.roleId,
+      user: user.id,
+    },
+  });
+
+  return signup;
+}

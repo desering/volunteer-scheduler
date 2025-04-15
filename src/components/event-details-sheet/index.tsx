@@ -4,12 +4,14 @@ import { Button } from "@/components/ui/button";
 import { IconButton } from "@/components/ui/icon-button";
 import { RadioButtonGroup } from "@/components/ui/radio-button-group";
 import { Sheet } from "@/components/ui/sheet";
+import type { DisplayableEvent } from "@/lib/mappers/map-events";
+import { format } from "@/utils/tz-format";
 import type { User } from "@payload-types";
 import { HStack, panda } from "styled-system/jsx";
 import { button } from "styled-system/recipes/button";
-import { format } from "@/utils/tz-format";
-import type { DisplayableEvent } from "@/lib/mappers/map-events";
 import { RoleRadioItems } from "./role-radio-items";
+
+import * as actions from "@/actions";
 
 import confetti from "canvas-confetti";
 
@@ -30,19 +32,19 @@ type Props = {
 export const EventDetailsDrawer = (props: Props) => {
   const [details, { refetch }] = createResource(
     () => props.event?.doc.id,
-    async (id) => await actions.getEventDetails({ id }),
+    async (id) => await actions.getEventDetails(id),
   );
 
   const [selectedRoleId, setSelectedRoleId] = useState<string | null>(null);
 
   const [isDeleting, deleteSignup] = createAsyncFunc(async (id: number) => {
-    await actions.deleteSignup({ id });
+    await actions.deleteSignup(id);
     await refetch();
     setSelectedRoleId(null);
   });
   const [isCreating, createSignup] = createAsyncFunc(
     async (event: number, role: number) => {
-      await actions.createSignup({ event, role });
+      await actions.createSignup(event, role);
       await refetch();
       selectCurrentRole();
       animateFireworks(Date.now() + 1500);

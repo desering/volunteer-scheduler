@@ -1,6 +1,12 @@
+"use server";
+
 import { convertLexicalToHTML } from "@/utils/convert-lexical-to-html";
+import { getPayload } from "payload";
+import config from "@payload-config";
 
 export const getEventDetails = async (id: number) => {
+  const payload = await getPayload({ config });
+
   const event = await payload.findByID({
     collection: "events",
     id: id,
@@ -118,4 +124,4 @@ const mapObjects = <T, S>(
     ?.map((value) => mapObject(value, map))
     .filter((value) => !!value && (!filter || filter?.(value))) as S[]) ?? [];
 
-export type EventDetails = Awaited<ReturnType<typeof getEventDetails>>["data"];
+export type EventDetails = Awaited<ReturnType<typeof getEventDetails>>;

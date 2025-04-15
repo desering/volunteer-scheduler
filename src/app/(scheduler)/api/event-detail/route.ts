@@ -1,6 +1,6 @@
-import { getEventDetails } from "@/actions/get-event-detail";
+import { getEventDetails } from "@/actions/get-event-details";
 
 export async function GET(request: Request) {
-  const id = 1; // todo how to get this from request?
-  return Response.json(await getEventDetails(id));
+  const id = (await request.formData()).get("id") as string; // todo: is this correct? Do I need zod parsing here?
+  return Response.json(await getEventDetails(1));
 }
