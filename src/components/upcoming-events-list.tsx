@@ -1,33 +1,33 @@
+"use client";
+
+import { EventButton } from "@/components/event-button";
+import { EventDetailsDrawer } from "@/components/event-details-sheet";
+import type { DisplayableEvent } from "@/lib/mappers/map-events";
+import { getUpcomingEventsForUserId } from "@/lib/services/get-upcoming-events-for-user-id";
 import type { Event, Role, Signup, User } from "@payload-types";
+import { Clock, PersonStanding } from "lucide-react";
+import { type SetStateAction, useState } from "react";
 import { Box, HStack, panda } from "styled-system/jsx";
 import { Container } from "styled-system/jsx/container";
 import { Flex } from "styled-system/jsx/flex";
-import type { DisplayableEvent } from "@/lib/mappers/map-events";
-import { EventButton } from "@/components/event-button";
-import { EventDetailsDrawer } from "@/components/event-details-sheet";
-import { Clock, PersonStanding } from "lucide-react";
-import { SetStateAction, useState } from "react";
-import { getUpcomingEventsForCurrentUser } from "@/lib/services/get-upcoming-events-for-current-user";
 
 type Props = {
   user: User;
-  data?: Awaited<ReturnType<typeof getUpcomingEventsForCurrentUser>>["data"];
+  data?: Awaited<ReturnType<typeof getUpcomingEventsForUserId>>;
 };
 
 export const UpcomingEventsList = (props: Props) => {
   const [selectedEvent, setSelectedEvent] = useState<DisplayableEvent>();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  const [events, { refetch }] = createResource(
-    async () => (await getUpcomingEventsForCurrentUser()).data,
-    {
-      initialValue: props.data,
-      ssrLoadFrom: "initial",
-    },
-  );
+  const [events, setEvents] = useState(props.data?.events);
 
-  const eventsList = events.latest?.events.map(
-    (event: SetStateAction<DisplayableEvent | undefined>) => {
+  // const refetch = async () => {
+  //   setEvents((await getUpcomingEventsForUserId(props.user.id)).events);
+  // }
+
+  const eventsList = events?.map(
+    (event: DisplayableEvent) => {
       const signup = props.data?.signups.docs.find(
         (signup: Signup) => (signup.event as Event).id === event.doc.id,
       );
@@ -35,6 +35,7 @@ export const UpcomingEventsList = (props: Props) => {
 
       return (
         <EventButton.Root
+          key={event.doc.id}
           onClick={() => {
             setIsDrawerOpen(true);
             setSelectedEvent(event);
@@ -94,7 +95,7 @@ export const UpcomingEventsList = (props: Props) => {
         event={selectedEvent}
         onClose={() => {
           setIsDrawerOpen(false);
-          refetch();
+          //await refetch(); // todo: replace astro createResource with useState plus ??? above
         }}
         onExitComplete={() => setSelectedEvent(undefined)}
       />

@@ -35,3 +35,42 @@ export default function RootLayout({ children }: Props) {
     </html>
   );
 }
+
+// todo: theme switching
+
+// const theme = (Astro.cookies.get("theme")?.value || "system") as Theme;
+// const color = {
+//   light: themeColors.light,
+//   dark: themeColors.dark,
+//   system: "",
+// }[theme];
+
+// <html lang="en" class:list={[{ dark: theme === "dark" }]}>
+// <head>
+//   <meta name="theme-color" content={color} />
+//   <meta name="darkreader-lock" />
+//   <title>{title}</title>
+//
+//   {
+//     // only add this script if the theme is set to system
+//     // this avoids a flash of light theme on page load
+//     theme === "system" && (
+//       <script is:inline>
+//         const darkMediaQuery =
+//         window.matchMedia("(prefers-color-scheme:dark)");
+//         darkMediaQuery.matches &&
+//         document.documentElement.classList.add("dark");
+//       </script>
+//     )
+//   }
+//   <script>
+//     import { applyTheme } from "~/utils/theme";
+//
+//     applyTheme();
+//
+//     window
+//     .matchMedia("(prefers-color-scheme: dark)")
+//     .addEventListener("change", applyTheme);
+//   </script>
+// </head>
+// </html>

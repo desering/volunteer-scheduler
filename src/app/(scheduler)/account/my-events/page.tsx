@@ -4,7 +4,7 @@ import { headers as getHeaders } from "next/headers";
 import { getPayload } from "payload";
 import config from "@payload-config";
 import { redirect } from "next/navigation";
-import { getUpcomingEventsForCurrentUser } from "@/lib/services/get-upcoming-events-for-current-user";
+import { getUpcomingEventsForUserId } from "@/lib/services/get-upcoming-events-for-user-id";
 
 export default async function Page() {
   const headers = await getHeaders();
@@ -15,7 +15,7 @@ export default async function Page() {
     redirect("/auth/login");
   }
 
-  const events = await getUpcomingEventsForCurrentUser();
+  const events = await getUpcomingEventsForUserId(user.id);
 
   return (
     <>

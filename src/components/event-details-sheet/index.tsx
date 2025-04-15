@@ -1,33 +1,21 @@
-import { actions } from "astro:actions";
+import { Alert } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { IconButton } from "@/components/ui/icon-button";
+import { RadioButtonGroup } from "@/components/ui/radio-button-group";
+import { Sheet } from "@/components/ui/sheet";
 import type { User } from "@payload-types";
-import {
-  For,
-  Match,
-  Show,
-  Suspense,
-  Switch,
-  createEffect,
-  createMemo,
-  createResource,
-  createSignal,
-} from "solid-js";
-import { Portal } from "solid-js/web";
 import { HStack, panda } from "styled-system/jsx";
 import { button } from "styled-system/recipes/button";
-import type { DisplayableEvent } from "../../../../../src/lib/mappers/map-events";
-import { format } from "~/utils/tz-format";
-import { Alert } from "../ui/alert";
-import { Badge } from "../ui/badge";
-import { Button } from "../ui/button";
-import { IconButton } from "../ui/icon-button";
-import { RadioButtonGroup } from "../ui/radio-button-group";
-import { Sheet } from "../ui/sheet";
+import { format } from "@/utils/tz-format";
+import type { DisplayableEvent } from "@/lib/mappers/map-events";
 import { RoleRadioItems } from "./role-radio-items";
 
 import confetti from "canvas-confetti";
 
-import InfoIcon from "lucide-react/icons/info";
-import XIcon from "lucide-react/icons/x";
+import {InfoIcon} from "lucide-react";
+import {XIcon} from "lucide-react";
+import {useState} from "react";
 
 type Props = {
   user?: User;
@@ -45,7 +33,7 @@ export const EventDetailsDrawer = (props: Props) => {
     async (id) => await actions.getEventDetails({ id }),
   );
 
-  const [selectedRoleId, setSelectedRoleId] = createSignal<string | null>(null);
+  const [selectedRoleId, setSelectedRoleId] = useState<string | null>(null);
 
   const [isDeleting, deleteSignup] = createAsyncFunc(async (id: number) => {
     await actions.deleteSignup({ id });
@@ -307,7 +295,7 @@ const animateFireworks = (end: number) => {
 const createAsyncFunc = <T, P extends unknown[]>(
   fn: (...args: P) => Promise<T>,
 ) => {
-  const [isRunning, setIsRunning] = createSignal(false);
+  const [isRunning, setIsRunning] = useState(false);
 
   const run = async (...args: P) => {
     setIsRunning(true);

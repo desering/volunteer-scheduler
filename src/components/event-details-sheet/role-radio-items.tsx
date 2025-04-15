@@ -1,9 +1,9 @@
 import type { Role, User } from "@payload-types";
-import { For, Show } from "solid-js";
-import type { EventDetails } from "~/actions/get-event-detail";
+// import { For, Show } from "solid-js";
+import type { EventDetails } from "@/actions/get-event-detail";
 import { RadioButtonGroup } from "../ui/radio-button-group";
 import { Bleed, Divider, Flex, panda } from "styled-system/jsx";
-import { Text } from "../ui/text";
+import { Text } from "@/components/ui/text";
 
 type RoleItemsProps = {
   details?: EventDetails;

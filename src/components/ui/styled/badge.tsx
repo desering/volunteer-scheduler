@@ -1,5 +1,5 @@
-import { ark } from "@ark-ui/solid";
-import type { ComponentProps } from "solid-js";
+import { ark } from "@ark-ui/react";
+import type { ComponentProps } from "styled-system/types";
 import { panda } from "styled-system/jsx";
 import { badge } from "styled-system/recipes";
 

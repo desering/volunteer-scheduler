@@ -1,10 +1,9 @@
-import { type Assign, RadioGroup } from "@ark-ui/solid";
-import type { ComponentProps } from "solid-js";
+import { type Assign, RadioGroup } from "@ark-ui/react";
 import {
   type RadioButtonGroupVariantProps,
   radioButtonGroup,
 } from "styled-system/recipes";
-import type { HTMLPandaProps } from "styled-system/types";
+import type {ComponentProps, HTMLPandaProps} from "styled-system/types";
 import { createStyleContext } from "./utils/create-style-context";
 
 const { withProvider, withContext } = createStyleContext(radioButtonGroup);
@@ -40,4 +39,4 @@ export const Label = withContext<
 export {
   RadioGroupContext as Context,
   RadioGroupItemHiddenInput as ItemHiddenInput,
-} from "@ark-ui/solid";
+} from "@ark-ui/react";

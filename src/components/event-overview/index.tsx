@@ -15,7 +15,6 @@ import {
   Container,
   Grid,
   splitCssProps,
-  panda,
 } from "styled-system/jsx";
 import type { EventsByDay, DisplayableEvent } from "@/lib/mappers/map-events";
 import type { User } from "@payload-types";
@@ -25,6 +24,7 @@ import { DateSelect } from "./date-select";
 import { link } from "styled-system/recipes";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import {NoEventsMessage} from "@/components/event-overview/no-events-message";
 
 type Props = {
   user?: User;
@@ -130,23 +130,3 @@ export const EventOverview = (props: Props & BoxProps) => {
     </Box>
   );
 };
-
-const NoEventsMessage = () => (
-  <panda.div
-    backgroundColor={{
-      base: "colorPalette.1",
-      _dark: "colorPalette.4",
-    }}
-    borderRadius="l3"
-    padding="6"
-  >
-    <panda.h5
-      color="colorPalette.12"
-      fontSize="xl"
-      fontWeight="semibold"
-      marginBottom={3}
-    >
-      There are no shifts yet, have a look at other days.
-    </panda.h5>
-  </panda.div>
-);
