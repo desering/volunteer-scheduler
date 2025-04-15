@@ -32,6 +32,7 @@ export const RoleRadioItems = (props: RoleItemsProps) => {
 
     return (
       <RadioButtonGroup.Item
+        key={role.id.toString()}
         value={role.id.toString()}
         px="0"
         disabled={shouldDisable()}

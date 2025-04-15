@@ -72,7 +72,7 @@ export const EventDetailsDrawer = (props: Props) => {
   );
 
   const selectedRole = () => {
-    const roleId = Number(selectedRoleId());
+    const roleId = Number(selectedRoleId);
     return (
       latest()?.roles?.docs.find(({ id }) => id === roleId) ??
       latest()
@@ -120,7 +120,7 @@ export const EventDetailsDrawer = (props: Props) => {
     const id = latest()?.id;
     if (!id) throw new Error("Unexpected, missing event id");
 
-    const _selectedRoleId = selectedRoleId();
+    const _selectedRoleId = selectedRoleId;
     const _selectedRole = _selectedRoleId
       ? Number.parseInt(_selectedRoleId)
       : undefined;
@@ -162,9 +162,9 @@ export const EventDetailsDrawer = (props: Props) => {
             <Suspense>
               <Sheet.Header>
                 <Sheet.Title fontSize="2xl">{latest()?.title}</Sheet.Title>
-                <Show when={props.event?.descriptionHtml}>
+                {props.event?.descriptionHtml ?? (
                   <Sheet.Description innerHTML={props.event?.descriptionHtml} />
-                </Show>
+                )}
                 <Sheet.Description>
                   <Badge>{timeRange()}</Badge>
                 </Sheet.Description>
@@ -189,7 +189,7 @@ export const EventDetailsDrawer = (props: Props) => {
 
                 <RadioButtonGroup.Root
                   direction="vertical"
-                  value={selectedRoleId()}
+                  value={selectedRoleId}
                   onValueChange={(event) => setSelectedRoleId(event.value)}
                   disabled={details.loading}
                 >
@@ -201,29 +201,27 @@ export const EventDetailsDrawer = (props: Props) => {
                     }
                     user={props.user}
                   />
+                  {latest()?.sections?.docs.map((section) => (
+                    <>
+                      <panda.h3
+                        key={section}
+                        fontSize="lg"
+                        fontWeight="medium"
+                        marginTop="4"
+                      >
+                        {section.title}
+                      </panda.h3>
 
-                  <For each={latest()?.sections?.docs}>
-                    {(section) => (
-                      <>
-                        <panda.h3
-                          fontSize="lg"
-                          fontWeight="medium"
-                          marginTop="4"
-                        >
-                          {section.title}
-                        </panda.h3>
-
-                        <RoleRadioItems
-                          details={latest()}
-                          roles={section.roles?.docs ?? []}
-                          user={props.user}
-                        />
-                      </>
-                    )}
-                  </For>
+                      <RoleRadioItems
+                        key={section}
+                        details={latest()}
+                        roles={section.roles?.docs ?? []}
+                        user={props.user}
+                      />
+                    </>
+                  ))}
                 </RadioButtonGroup.Root>
-
-                <Show when={!!props.user}>
+                {props.user && (
                   <Alert.Root marginBottom="-4" marginTop="8">
                     <Alert.Icon
                       asChild={(iconProps) => <InfoIcon {...iconProps()} />}
@@ -236,44 +234,43 @@ export const EventDetailsDrawer = (props: Props) => {
                       </Alert.Description>
                     </Alert.Content>
                   </Alert.Root>
-                </Show>
+                )}
               </Sheet.Body>
               <Sheet.Footer justifyContent="center">
-                <Switch>
-                  <Match when={!props.user}>
-                    <HStack>
-                      Want to help out?
-                      <a class={button({})} href="/auth/login">
-                        Sign in
-                      </a>
-                      or
-                      <a class={button({})} href="/auth/register">
-                        Register
-                      </a>
-                    </HStack>
-                  </Match>
-                  <Match when={!!props.user}>
-                    <Button
-                      width="full"
-                      variant="solid"
-                      colorPalette={hasUserSignedUp() ? "tomato" : "olive"}
-                      disabled={!hasUserSignedUp() && !selectedRoleId()}
-                      loading={details.loading || isCreating() || isDeleting()}
-                      onClick={() => onSigningButtonClicked()}
-                    >
-                      <Switch>
-                        <Match when={!selectedRoleId()}>Select a role</Match>
-                        <Match when={!!selectedRoleId()}>
-                          {hasUserSignedUp() ? "Sign out of" : "Sign up for"}
-                          <panda.span fontWeight="black">
-                            {selectedRole()?.title}
-                          </panda.span>
-                          role
-                        </Match>
-                      </Switch>
-                    </Button>
-                  </Match>
-                </Switch>
+                {!props.user && (
+                  <HStack>
+                    Want to help out?
+                    <a className={button({})} href="/auth/login">
+                      Sign in
+                    </a>
+                    or
+                    <a className={button({})} href="/auth/register">
+                      Register
+                    </a>
+                  </HStack>
+                )}
+                {props.user && (
+                  <Button
+                    width="full"
+                    variant="solid"
+                    colorPalette={hasUserSignedUp() ? "tomato" : "olive"}
+                    disabled={!hasUserSignedUp() && !selectedRoleId}
+                    loading={details.loading || isCreating || isDeleting}
+                    onClick={() => onSigningButtonClicked()}
+                  >
+                    {selectedRoleId ? (
+                      <>
+                        {hasUserSignedUp() ? "Sign out of" : "Sign up for"}
+                        <panda.span fontWeight="black">
+                          {selectedRole()?.title}
+                        </panda.span>
+                        role
+                      </>
+                    ) : (
+                      "Select a role"
+                    )}
+                  </Button>
+                )}
               </Sheet.Footer>
             </Suspense>
           </Sheet.Content>
