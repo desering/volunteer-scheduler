@@ -1,10 +1,10 @@
 "use server";
 
-import { startOfDay } from "date-fns";
-import { getPayload } from "payload";
+import { prepareEvent } from "@/lib/mappers/map-events";
 import config from "@payload-config";
 import type { Event } from "@payload-types";
-import { prepareEvent } from "@/lib/mappers/map-events";
+import { startOfDay } from "date-fns";
+import { getPayload } from "payload";
 
 export async function getUpcomingEventsForUserId(id: number) {
   const payload = await getPayload({ config });

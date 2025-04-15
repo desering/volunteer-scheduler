@@ -3,12 +3,10 @@
 import config from "@payload-config";
 import { getPayload } from "payload";
 
-const payload = await getPayload({
-  config,
-});
-
 export const getEventsInPeriod = async (start: Date, end: Date) => {
-  const events = await payload.find({
+  const payload = await getPayload({ config });
+
+  return await payload.find({
     collection: "events",
     where: {
       start_date: {
@@ -21,5 +19,4 @@ export const getEventsInPeriod = async (start: Date, end: Date) => {
     sort: "start_date",
     pagination: false,
   });
-  return events;
 };

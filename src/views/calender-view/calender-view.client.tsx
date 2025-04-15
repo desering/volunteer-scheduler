@@ -3,7 +3,7 @@
 import { bleedX, divider, gutterX, gutterY } from "@/components/ui/utils";
 import { daysOfWeek } from "@/constants/days-of-week";
 import { getEventsInPeriod } from "@/lib/services/get-events-in-period";
-import { endOfMonth, lastDayOfMonth, startOfMonth } from "@/utils/utc";
+import { endOfMonth, startOfMonth } from "@/utils/utc";
 import { UTCDate, utc } from "@date-fns/utc";
 import { DatePicker } from "@payloadcms/ui";
 import { useQuery } from "@tanstack/react-query";
@@ -50,11 +50,7 @@ const useEventsByMonth = (start: Date, end: Date) => {
         ),
       }));
 
-      const groupedByMonth = Object.groupBy(withEvents, ({ day }) =>
-        format(day, "MMMM"),
-      );
-
-      return groupedByMonth;
+      return Object.groupBy(withEvents, ({ day }) => format(day, "MMMM"));
     },
     refetchOnMount: "always",
   });
