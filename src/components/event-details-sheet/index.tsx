@@ -31,6 +31,7 @@ type Props = {
 
 export const EventDetailsDrawer = (props: Props) => {
   const [details, { refetch }] = createResource(
+    // todo: replace with react code
     () => props.event?.doc.id,
     async (id) => await actions.getEventDetails(id),
   );
@@ -52,6 +53,7 @@ export const EventDetailsDrawer = (props: Props) => {
   );
 
   const latest = createMemo(() =>
+    // todo: replace with react code
     // avoid triggering suspense on initial load
     details.loading && details.state === "pending"
       ? undefined
