@@ -1,3 +1,5 @@
+"use server";
+
 import { groupAndSortEventsByDate } from "@/lib/mappers/map-events";
 import { getPayload } from "payload";
 import config from "@payload-config";

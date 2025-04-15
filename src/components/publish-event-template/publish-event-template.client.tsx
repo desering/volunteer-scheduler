@@ -1,5 +1,8 @@
 "use client";
 
+import { createEventsFromTemplate } from "@/actions/create-events-from-template";
+import { daysOfWeek } from "@/constants/days-of-week";
+import { getEventsInPeriod } from "@/lib/services/get-events-in-period";
 import { startOfMonth } from "@/utils/utc";
 import { UTCDate, utc } from "@date-fns/utc";
 import type { EventTemplate } from "@payload-types";
@@ -16,10 +19,8 @@ import {
 import { useMemo, useState } from "react";
 import { cx } from "styled-system/css";
 import { Box, Center, Grid, HStack, VStack, panda } from "styled-system/jsx";
-import { createEventsFromTemplate, getEventsInPeriod } from "../../actions";
 import { Button } from "../ui/button";
 import { bleedX, divider, gutterX, gutterY } from "../ui/utils";
-import { daysOfWeek } from "@/constants/days-of-week";
 
 export const PublishEventTemplateForm = (props: { doc: EventTemplate }) => {
   const [start, setStart] = useState(startOfMonth(new UTCDate()));
@@ -57,11 +58,7 @@ export const PublishEventTemplateForm = (props: { doc: EventTemplate }) => {
       ),
     }));
 
-    const groupedByMonth = Object.groupBy(withEvents, ({ day }) =>
-      format(day, "MMMM"),
-    );
-
-    return groupedByMonth;
+    return Object.groupBy(withEvents, ({ day }) => format(day, "MMMM"));
   }, [existingEvents.data]);
 
   const canPublish = selectedDays.length > 0;

@@ -1,3 +1,5 @@
+"use server";
+
 import { startOfDay } from "date-fns";
 import { getPayload } from "payload";
 import config from "@payload-config";

@@ -1,9 +1,9 @@
 "use client";
 
-import { getEventsInPeriod } from "@/actions";
 import { bleedX, divider, gutterX, gutterY } from "@/components/ui/utils";
 import { daysOfWeek } from "@/constants/days-of-week";
-import { lastDayOfMonth, endOfMonth, startOfMonth } from "@/utils/utc";
+import { getEventsInPeriod } from "@/lib/services/get-events-in-period";
+import { endOfMonth, lastDayOfMonth, startOfMonth } from "@/utils/utc";
 import { UTCDate, utc } from "@date-fns/utc";
 import { DatePicker } from "@payloadcms/ui";
 import { useQuery } from "@tanstack/react-query";

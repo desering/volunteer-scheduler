@@ -1,5 +1,5 @@
 import type { Role, User } from "@payload-types";
-import type { EventDetails } from "@/actions/get-event-details";
+import type { EventDetails } from "@/lib/services/get-event-details";
 import { RadioButtonGroup } from "../ui/radio-button-group";
 import { Bleed, Divider, Flex, panda } from "styled-system/jsx";
 import { Text } from "@/components/ui/text";

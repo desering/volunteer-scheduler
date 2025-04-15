@@ -4,20 +4,22 @@ import { Button } from "@/components/ui/button";
 import { IconButton } from "@/components/ui/icon-button";
 import { RadioButtonGroup } from "@/components/ui/radio-button-group";
 import { Sheet } from "@/components/ui/sheet";
-import type { DisplayableEvent } from "@/lib/mappers/map-events";
+import type { DisplayableEvent, EventsByDay } from "@/lib/mappers/map-events";
 import { format } from "@/utils/tz-format";
 import type { User } from "@payload-types";
+import { useQuery } from "@tanstack/react-query";
 import { HStack, panda } from "styled-system/jsx";
 import { button } from "styled-system/recipes/button";
 import { RoleRadioItems } from "./role-radio-items";
 
-import * as actions from "@/actions";
+import { createSignup as createSignupAction } from "@/actions/create-signup";
+import { deleteSignup as deleteSignupAction } from "@/actions/delete-signup";
 
 import confetti from "canvas-confetti";
 
 import { InfoIcon } from "lucide-react";
 import { XIcon } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 type Props = {
   user?: User;
@@ -30,34 +32,43 @@ type Props = {
 };
 
 export const EventDetailsDrawer = (props: Props) => {
-  const [details, { refetch }] = createResource(
-    // todo: replace with react code
-    () => props.event?.doc.id,
-    async (id) => await actions.getEventDetails(id),
-  );
+  // const [details, { refetch }] = createResource(
+  //   // todo: replace with react code
+  //   // createResource with a fetch in it will have to use react query
+  //   () => props.event?.doc.id,
+  //   async (id) => await actions.getEventDetails(id),
+  // );
+
+  const { data: details, refetch } = useQuery<DisplayableEvent>({
+    queryKey: ["getEventDetails"],
+    queryFn: async () => fetch("/api/event-details").then((res) => res.json()),
+    initialData: props.event,
+  });
 
   const [selectedRoleId, setSelectedRoleId] = useState<string | null>(null);
 
   const [isDeleting, deleteSignup] = createAsyncFunc(async (id: number) => {
-    await actions.deleteSignup(id);
+    await deleteSignupAction(id);
     await refetch();
     setSelectedRoleId(null);
   });
   const [isCreating, createSignup] = createAsyncFunc(
     async (event: number, role: number) => {
-      await actions.createSignup(event, role);
+      await createSignupAction(event, role);
       await refetch();
       selectCurrentRole();
       animateFireworks(Date.now() + 1500);
     },
   );
 
-  const latest = createMemo(() =>
-    // todo: replace with react code
+  // todo: replace with react code
+  const latest = useMemo(
     // avoid triggering suspense on initial load
-    details.loading && details.state === "pending"
-      ? undefined
-      : details.latest?.data,
+    () =>
+      details?.loading && details?.state === "pending"
+        ? undefined
+        : details?.latest?.data,
+    [details],
   );
 
   const selectedRole = () => {
