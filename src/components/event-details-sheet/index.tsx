@@ -13,9 +13,9 @@ import { RoleRadioItems } from "./role-radio-items";
 
 import confetti from "canvas-confetti";
 
-import {InfoIcon} from "lucide-react";
-import {XIcon} from "lucide-react";
-import {useState} from "react";
+import { InfoIcon } from "lucide-react";
+import { XIcon } from "lucide-react";
+import { useState } from "react";
 
 type Props = {
   user?: User;

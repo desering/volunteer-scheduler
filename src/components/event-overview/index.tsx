@@ -24,7 +24,7 @@ import { DateSelect } from "./date-select";
 import { link } from "styled-system/recipes";
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import {NoEventsMessage} from "@/components/event-overview/no-events-message";
+import { NoEventsMessage } from "@/components/event-overview/no-events-message";
 
 type Props = {
   user?: User;

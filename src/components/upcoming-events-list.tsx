@@ -26,61 +26,59 @@ export const UpcomingEventsList = (props: Props) => {
   //   setEvents((await getUpcomingEventsForUserId(props.user.id)).events);
   // }
 
-  const eventsList = events?.map(
-    (event: DisplayableEvent) => {
-      const signup = props.data?.signups.docs.find(
-        (signup: Signup) => (signup.event as Event).id === event.doc.id,
-      );
-      const roleTitle = (signup?.role as Role)?.title;
+  const eventsList = events?.map((event: DisplayableEvent) => {
+    const signup = props.data?.signups.docs.find(
+      (signup: Signup) => (signup.event as Event).id === event.doc.id,
+    );
+    const roleTitle = (signup?.role as Role)?.title;
 
-      return (
-        <EventButton.Root
-          key={event.doc.id}
-          onClick={() => {
-            setIsDrawerOpen(true);
-            setSelectedEvent(event);
-          }}
-          display="flex"
-          flexDirection="column"
-          gap="3"
-        >
-          <EventButton.Title>{event.doc.title}</EventButton.Title>
+    return (
+      <EventButton.Root
+        key={event.doc.id}
+        onClick={() => {
+          setIsDrawerOpen(true);
+          setSelectedEvent(event);
+        }}
+        display="flex"
+        flexDirection="column"
+        gap="3"
+      >
+        <EventButton.Title>{event.doc.title}</EventButton.Title>
 
-          <Box
-            marginInline="-4"
-            borderBottom="1px solid"
-            borderColor="colorPalette.10"
-          />
+        <Box
+          marginInline="-4"
+          borderBottom="1px solid"
+          borderColor="colorPalette.10"
+        />
 
-          <HStack>
-            <PersonStanding />
-            <Box>
-              <panda.p fontWeight="semibold">Role</panda.p>
-              <panda.p>{roleTitle}</panda.p>
-            </Box>
-          </HStack>
+        <HStack>
+          <PersonStanding />
+          <Box>
+            <panda.p fontWeight="semibold">Role</panda.p>
+            <panda.p>{roleTitle}</panda.p>
+          </Box>
+        </HStack>
 
-          <Box
-            marginInline="-4"
-            borderBottom="1px solid"
-            borderColor="colorPalette.8"
-          />
+        <Box
+          marginInline="-4"
+          borderBottom="1px solid"
+          borderColor="colorPalette.8"
+        />
 
-          <HStack>
-            <Clock />
-            <Box>
-              <panda.p fontWeight="semibold">Time</panda.p>
-              <EventButton.DateTime
-                startDate={new Date(event.start_date)}
-                endDate={new Date(event.end_date)}
-              />
-            </Box>
-          </HStack>
-          <EventButton.Description innerHTML={event.descriptionHtml} />
-        </EventButton.Root>
-      );
-    },
-  );
+        <HStack>
+          <Clock />
+          <Box>
+            <panda.p fontWeight="semibold">Time</panda.p>
+            <EventButton.DateTime
+              startDate={new Date(event.start_date)}
+              endDate={new Date(event.end_date)}
+            />
+          </Box>
+        </HStack>
+        <EventButton.Description innerHTML={event.descriptionHtml} />
+      </EventButton.Root>
+    );
+  });
 
   return (
     <>

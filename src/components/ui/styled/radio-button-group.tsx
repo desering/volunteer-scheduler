@@ -3,7 +3,7 @@ import {
   type RadioButtonGroupVariantProps,
   radioButtonGroup,
 } from "styled-system/recipes";
-import type {ComponentProps, HTMLPandaProps} from "styled-system/types";
+import type { ComponentProps, HTMLPandaProps } from "styled-system/types";
 import { createStyleContext } from "./utils/create-style-context";
 
 const { withProvider, withContext } = createStyleContext(radioButtonGroup);

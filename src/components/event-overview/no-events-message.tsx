@@ -1,4 +1,4 @@
-import {panda} from "styled-system/jsx";
+import { panda } from "styled-system/jsx";
 
 export function NoEventsMessage() {
   return (
