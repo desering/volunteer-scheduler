@@ -1,10 +1,7 @@
 import { defineConfig, defineGlobalStyles } from "@pandacss/dev";
 import { createPreset } from "@park-ui/panda-preset";
-// @ts-ignore
 import olive from "@park-ui/panda-preset/colors/olive";
-// @ts-ignore
 import sand from "@park-ui/panda-preset/colors/sand";
-// @ts-ignore
 import tomato from "@park-ui/panda-preset/colors/tomato";
 
 import { sheet } from "@/components/ui/recipes/sheet";
@@ -15,7 +12,7 @@ import { sheet } from "@/components/ui/recipes/sheet";
 // });
 
 export default defineConfig({
-  // Don't reset payload css
+  // Avoid overriding payload styles, only reset within scope
   preflight: { scope: ".panda" },
   presets: [
     createPreset({

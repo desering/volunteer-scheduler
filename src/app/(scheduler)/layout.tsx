@@ -9,8 +9,6 @@ import { cookies } from "next/headers";
 import { themeColors, type Theme } from "@/utils/theme";
 import Script from "next/script";
 import { ListenToThemeChanges } from "@/components/listen-to-theme-changes";
-import Head from "next/head";
-import type { Metadata, ResolvingMetadata } from "next";
 
 const sourceSans = Source_Sans_3({
   subsets: ["latin"],
@@ -53,13 +51,15 @@ export default async function RootLayout({ children }: Props) {
   const theme = await getCookieTheme();
 
   return (
-    <html lang="en" className={sourceSans.className}>
+    <html lang="en" className={`panda ${sourceSans.className}`}>
       {theme === "system" && (
         // only add this script if the theme is set to system
         // this avoids a flash of light theme when user has preferred dark on page load
+        // TODO: DOESN'T WORK WITH NEXT APP ROUTER
         <Script id="apply-theme" strategy="beforeInteractive">
           {`const darkMediaQuery = window.matchMedia("(prefers-color-scheme:dark)");
-         darkMediaQuery.matches && document.documentElement.classList.add("dark");`}
+         darkMediaQuery.matches && document.documentElement.classList.add("dark");
+         console.log("system theme applied");`}
         </Script>
       )}
 

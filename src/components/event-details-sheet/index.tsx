@@ -19,7 +19,8 @@ import confetti from "canvas-confetti";
 
 import { InfoIcon } from "lucide-react";
 import { XIcon } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
+import { Portal } from "@ark-ui/react";
 
 type Props = {
   user?: User;
@@ -162,8 +163,13 @@ export const EventDetailsDrawer = (props: Props) => {
             <Suspense>
               <Sheet.Header>
                 <Sheet.Title fontSize="2xl">{latest()?.title}</Sheet.Title>
-                {props.event?.descriptionHtml ?? (
-                  <Sheet.Description innerHTML={props.event?.descriptionHtml} />
+                {props.event?.descriptionHtml && (
+                  <Sheet.Description
+                    // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+                    dangerouslySetInnerHTML={{
+                      __html: props.event?.descriptionHtml,
+                    }}
+                  />
                 )}
                 <Sheet.Description>
                   <Badge>{timeRange()}</Badge>
@@ -175,12 +181,12 @@ export const EventDetailsDrawer = (props: Props) => {
                     md: "4",
                   }}
                   right={{ base: "2", md: "4" }}
-                  asChild={(closeProps) => (
-                    <IconButton {...closeProps()} variant="ghost" size="lg">
-                      <XIcon />
-                    </IconButton>
-                  )}
-                />
+                  asChild
+                >
+                  <IconButton variant="ghost" size="lg">
+                    <XIcon />
+                  </IconButton>
+                </Sheet.CloseTrigger>
               </Sheet.Header>
               <Sheet.Body justifyContent="end">
                 <panda.h2 fontSize="xl" fontWeight="semibold" marginBottom="2">
