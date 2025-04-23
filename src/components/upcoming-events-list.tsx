@@ -3,10 +3,10 @@
 import { EventButton } from "@/components/event-button";
 import { EventDetailsDrawer } from "@/components/event-details-sheet";
 import type { DisplayableEvent } from "@/lib/mappers/map-events";
-import { getUpcomingEventsForUserId } from "@/lib/services/get-upcoming-events-for-user-id";
+import type { getUpcomingEventsForUserId } from "@/lib/services/get-upcoming-events-for-user-id";
 import type { Event, Role, Signup, User } from "@payload-types";
 import { Clock, PersonStanding } from "lucide-react";
-import { type SetStateAction, useState } from "react";
+import { useState } from "react";
 import { Box, HStack, panda } from "styled-system/jsx";
 import { Container } from "styled-system/jsx/container";
 import { Flex } from "styled-system/jsx/flex";
@@ -22,6 +22,7 @@ export const UpcomingEventsList = (props: Props) => {
 
   const [events, setEvents] = useState(props.data?.events);
 
+  // todo: implement refetching of upcoming events
   // const refetch = async () => {
   //   setEvents((await getUpcomingEventsForUserId(props.user.id)).events);
   // }
