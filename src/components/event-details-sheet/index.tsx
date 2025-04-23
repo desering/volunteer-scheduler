@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { IconButton } from "@/components/ui/icon-button";
 import { RadioButtonGroup } from "@/components/ui/radio-button-group";
 import { Sheet } from "@/components/ui/sheet";
-import type { DisplayableEvent, EventsByDay } from "@/lib/mappers/map-events";
 import { format } from "@/utils/tz-format";
 import type { User } from "@payload-types";
 import { useQuery } from "@tanstack/react-query";
@@ -17,15 +16,16 @@ import { deleteSignup as deleteSignupAction } from "@/actions/delete-signup";
 
 import confetti from "canvas-confetti";
 
+import type { getEventDetails } from "@/lib/services/get-event-details";
+import { Portal } from "@ark-ui/react";
 import { InfoIcon } from "lucide-react";
 import { XIcon } from "lucide-react";
-import { Suspense, useEffect, useMemo, useState } from "react";
-import { Portal } from "@ark-ui/react";
+import { Suspense, useState } from "react";
 
 type Props = {
   user?: User;
 
-  event?: DisplayableEvent;
+  event?: Awaited<ReturnType<typeof getEventDetails>>;
 
   open: boolean;
   onClose: () => void;
@@ -33,16 +33,15 @@ type Props = {
 };
 
 export const EventDetailsDrawer = (props: Props) => {
-  // const [details, { refetch }] = createResource(
-  //   // todo: replace with react code
-  //   // createResource with a fetch in it will have to use react query
-  //   () => props.event?.doc.id,
-  //   async (id) => await actions.getEventDetails(id),
-  // );
-
-  const { data: details, refetch } = useQuery<DisplayableEvent>({
-    queryKey: ["getEventDetails"],
-    queryFn: async () => fetch("/api/event-details").then((res) => res.json()),
+  const { data: details, refetch } = useQuery<
+    Awaited<ReturnType<typeof getEventDetails>>
+  >({
+    queryKey: ["eventDetails", props.event?.id],
+    queryFn: async () => {
+      const params = new URLSearchParams();
+      params.append("id", props.event?.id?.toString() || "");
+      return fetch(`/api/event-details?${params}`).then((res) => res.json());
+    },
     initialData: props.event,
   });
 
@@ -62,29 +61,19 @@ export const EventDetailsDrawer = (props: Props) => {
     },
   );
 
-  // todo: replace with react code
-  const latest = useMemo(
-    // avoid triggering suspense on initial load
-    () =>
-      details?.loading && details?.state === "pending"
-        ? undefined
-        : details?.latest?.data,
-    [details],
-  );
-
   const selectedRole = () => {
     const roleId = Number(selectedRoleId);
     return (
-      latest()?.roles?.docs.find(({ id }) => id === roleId) ??
-      latest()
-        ?.sections.docs.flatMap((s) => s.roles?.docs ?? [])
+      details?.roles?.docs.find(({ id }) => id === roleId) ??
+      details?.sections.docs
+        .flatMap((s) => s.roles?.docs ?? [])
         .find(({ id }) => id === roleId)
     );
   };
   const userSignups = () =>
-    latest()?.signups?.docs.filter(({ user }) => user === props.user?.id);
+    details?.signups?.docs.filter(({ user }) => user === props.user?.id);
   const hasUserSignedUp = () => (userSignups()?.length ?? 0) > 0;
-  const newEventLoading = () => latest()?.id !== props.event?.doc.id;
+  const newEventLoading = () => details?.id !== props.event?.id;
   const timeRange = () => {
     const start = props.event?.start_date;
     const end = props.event?.end_date;
@@ -94,31 +83,38 @@ export const EventDetailsDrawer = (props: Props) => {
     return `${format(start, "iiii dd MMMM")}, ${format(start, "HH:mm")} - ${format(end, "HH:mm")}`;
   };
 
-  useEffect((selected) => {
-    // Reset selected role on exit
-    if (!props.event?.doc.id) {
-      setSelectedRoleId(null);
-      return false;
-    }
+  // todo: this was a solid createEffect before. Properly implement it with useEffect in react.
 
-    // On new event, select the role the user has signed up for
-    const shouldSelectRole = !selected && !newEventLoading();
-    if (shouldSelectRole) {
-      selectCurrentRole();
-      return true;
-    }
-  });
+  // in solid, the input parameter of the useEffect callback function was the result of the previous invocation.
+  // in react, there is no input parameter.
+
+  // "selected" only exists in the context of this function, not outside.
+
+  // useEffect((selected: boolean) => {
+  //   // Reset selected role on exit
+  //   if (!props.event?.id) {
+  //     setSelectedRoleId(null);
+  //     return false;
+  //   }
+  //
+  //   // On new event, select the role the user has signed up for
+  //   const shouldSelectRole = !selected && !newEventLoading();
+  //   if (shouldSelectRole) {
+  //     selectCurrentRole();
+  //     return true;
+  //   }
+  // });
 
   const selectCurrentRole = () =>
     setSelectedRoleId(
-      latest()
-        ?.signups?.docs.filter((signup) => signup.user === props.user?.id)
+      details?.signups?.docs
+        .filter((signup) => signup.user === props.user?.id)
         .map((signup) => signup.role?.toString())
         .shift() ?? null,
     );
 
   const onSigningButtonClicked = () => {
-    const id = latest()?.id;
+    const id = details?.id;
     if (!id) throw new Error("Unexpected, missing event id");
 
     const _selectedRoleId = selectedRoleId;
@@ -162,7 +158,7 @@ export const EventDetailsDrawer = (props: Props) => {
           >
             <Suspense>
               <Sheet.Header>
-                <Sheet.Title fontSize="2xl">{latest()?.title}</Sheet.Title>
+                <Sheet.Title fontSize="2xl">{details?.title}</Sheet.Title>
                 {props.event?.descriptionHtml && (
                   <Sheet.Description
                     // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
@@ -197,20 +193,19 @@ export const EventDetailsDrawer = (props: Props) => {
                   direction="vertical"
                   value={selectedRoleId}
                   onValueChange={(event) => setSelectedRoleId(event.value)}
-                  disabled={details.loading}
+                  disabled={details === undefined}
                 >
                   <RoleRadioItems
-                    details={latest()}
+                    details={details}
                     roles={
-                      latest()?.roles?.docs.filter((role) => !role.section) ??
-                      []
+                      details?.roles?.docs.filter((role) => !role.section) ?? []
                     }
                     user={props.user}
                   />
-                  {latest()?.sections?.docs.map((section) => (
+                  {details?.sections?.docs.map((section) => (
                     <>
                       <panda.h3
-                        key={section}
+                        key={section.id}
                         fontSize="lg"
                         fontWeight="medium"
                         marginTop="4"
@@ -219,8 +214,8 @@ export const EventDetailsDrawer = (props: Props) => {
                       </panda.h3>
 
                       <RoleRadioItems
-                        key={section}
-                        details={latest()}
+                        key={section.id}
+                        details={details}
                         roles={section.roles?.docs ?? []}
                         user={props.user}
                       />
@@ -229,9 +224,9 @@ export const EventDetailsDrawer = (props: Props) => {
                 </RadioButtonGroup.Root>
                 {props.user && (
                   <Alert.Root marginBottom="-4" marginTop="8">
-                    <Alert.Icon
-                      asChild={(iconProps) => <InfoIcon {...iconProps()} />}
-                    />
+                    <Alert.Icon asChild>
+                      <InfoIcon />
+                    </Alert.Icon>
                     <Alert.Content>
                       <Alert.Title>We are counting on your help</Alert.Title>
                       <Alert.Description>
@@ -261,7 +256,7 @@ export const EventDetailsDrawer = (props: Props) => {
                     variant="solid"
                     colorPalette={hasUserSignedUp() ? "tomato" : "olive"}
                     disabled={!hasUserSignedUp() && !selectedRoleId}
-                    loading={details.loading || isCreating || isDeleting}
+                    loading={details === undefined || isCreating || isDeleting}
                     onClick={() => onSigningButtonClicked()}
                   >
                     {selectedRoleId ? (
