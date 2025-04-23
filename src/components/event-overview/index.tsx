@@ -1,5 +1,11 @@
 "use client";
 
+import { EventButton } from "@/components/event-button";
+import { EventDetailsDrawer } from "@/components/event-details-sheet";
+import { NoEventsMessage } from "@/components/event-overview/no-events-message";
+import type { DisplayableEvent, EventsByDay } from "@/lib/mappers/map-events";
+import type { User } from "@payload-types";
+import { useQuery } from "@tanstack/react-query";
 import {
   addDays,
   addMonths,
@@ -9,6 +15,7 @@ import {
   subDays,
   subMonths,
 } from "date-fns";
+import { useState } from "react";
 import {
   Box,
   type BoxProps,
@@ -16,15 +23,7 @@ import {
   Grid,
   splitCssProps,
 } from "styled-system/jsx";
-import type { EventsByDay, DisplayableEvent } from "@/lib/mappers/map-events";
-import type { User } from "@payload-types";
-import { EventButton } from "@/components/event-button";
-// import { EventDetailsDrawer } from "@/components/event-details-sheet";
 import { DateSelect } from "./date-select";
-import { link } from "styled-system/recipes";
-import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { NoEventsMessage } from "@/components/event-overview/no-events-message";
 
 type Props = {
   user?: User;
@@ -105,7 +104,12 @@ export const EventOverview = (props: Props & BoxProps) => {
                   endDate={event.end_date}
                 />
                 <EventButton.Title>{event.doc.title}</EventButton.Title>
-                <EventButton.Description innerHTML={event.descriptionHtml} />
+                <EventButton.Description
+                  // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+                  dangerouslySetInnerHTML={{
+                    __html: event.descriptionHtml || "",
+                  }}
+                />
 
                 <Box marginTop="4">
                   {signups === 0

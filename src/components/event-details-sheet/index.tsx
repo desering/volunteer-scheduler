@@ -25,7 +25,7 @@ import { Suspense, useState } from "react";
 type Props = {
   user?: User;
 
-  event?: Awaited<ReturnType<typeof getEventDetails>>;
+  event?: Awaited<ReturnType<typeof getEventDetails>>; // todo: should this be a DisplayableEvent?
 
   open: boolean;
   onClose: () => void;
@@ -34,7 +34,7 @@ type Props = {
 
 export const EventDetailsDrawer = (props: Props) => {
   const { data: details, refetch } = useQuery<
-    Awaited<ReturnType<typeof getEventDetails>>
+    Awaited<ReturnType<typeof getEventDetails>> // todo: should this be a DisplayableEvent?
   >({
     queryKey: ["eventDetails", props.event?.id],
     queryFn: async () => {

@@ -76,7 +76,12 @@ export const UpcomingEventsList = (props: Props) => {
             />
           </Box>
         </HStack>
-        <EventButton.Description innerHTML={event.descriptionHtml} />
+        <EventButton.Description
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+          dangerouslySetInnerHTML={{
+            __html: event.descriptionHtml || "",
+          }}
+        />
       </EventButton.Root>
     );
   });
