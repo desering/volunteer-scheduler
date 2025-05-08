@@ -1,4 +1,4 @@
-@layer reset, base, tokens, recipes, utilities;
+@layer reset, payload-default, payload, base, tokens, recipes, utilities;
 
 /* payloads date picker export doesn't allow for direct disabling of the clear button */
 .disable-date-picker-clear {

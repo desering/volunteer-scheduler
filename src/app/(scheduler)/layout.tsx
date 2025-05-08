@@ -7,8 +7,8 @@ import { Source_Sans_3 } from "next/font/google";
 import Providers from "../providers";
 import { cookies } from "next/headers";
 import { themeColors, type Theme } from "@/utils/theme";
-import Script from "next/script";
 import { ListenToThemeChanges } from "@/components/listen-to-theme-changes";
+import { cx } from "styled-system/css";
 
 const sourceSans = Source_Sans_3({
   subsets: ["latin"],
@@ -51,20 +51,23 @@ export default async function RootLayout({ children }: Props) {
   const theme = await getCookieTheme();
 
   return (
-    <html lang="en" className={`panda ${sourceSans.className}`}>
-      {theme === "system" && (
-        // only add this script if the theme is set to system
-        // this avoids a flash of light theme when user has preferred dark on page load
-        // TODO: DOESN'T WORK WITH NEXT APP ROUTER
-        <Script id="apply-theme" strategy="beforeInteractive">
-          {`const darkMediaQuery = window.matchMedia("(prefers-color-scheme:dark)");
-         darkMediaQuery.matches && document.documentElement.classList.add("dark");
-         console.log("system theme applied");`}
-        </Script>
-      )}
+    <html lang="en" className={sourceSans.className}>
+      <head>
+        {theme === "system" && (
+          // only add this script if the theme is set to system
+          // this avoids a flash of light theme when user has preferred dark on page load
+          <script>
+            {`
+              const darkMediaQuery = window.matchMedia("(prefers-color-scheme:dark)");
+              darkMediaQuery.matches && document.documentElement.classList.add("dark"); 
+              console.log("system theme applied");
+            `}
+          </script>
+        )}
+      </head>
 
       <panda.body
-        className={theme === "dark" ? "dark" : ""}
+        className={cx(theme === "dark" && "dark", "use-panda")}
         backgroundColor={{ base: "gray.4", _dark: "gray.2" }}
       >
         <ListenToThemeChanges />

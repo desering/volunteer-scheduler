@@ -1,17 +1,14 @@
 import path from "node:path";
 import process from "node:process";
 
-import { fileURLToPath } from "node:url";
 import { postgresAdapter } from "@payloadcms/db-postgres";
+import { fileURLToPath } from "node:url";
 import { buildConfig } from "payload";
 import { migrations } from "./migrations";
 
-import {
-  HTMLConverterFeature,
-  lexicalEditor,
-} from "@payloadcms/richtext-lexical";
-import sharp from "sharp";
 import { nodemailerAdapter } from "@payloadcms/email-nodemailer";
+import { lexicalEditor } from "@payloadcms/richtext-lexical";
+import sharp from "sharp";
 
 import { EventTemplates } from "./collections/event-templates";
 import { Events } from "./collections/events";
@@ -82,7 +79,7 @@ export default buildConfig({
       views: {
         calender: {
           Component: "/views/calender-view#CalenderView",
-          path: "calender/:collectionSlug",
+          path: "/calender/:collectionSlug",
         },
       },
     },
@@ -92,17 +89,12 @@ export default buildConfig({
     api: "/payload-api",
   },
 
-  cors: [process.env.NEXT_PUBLIC_SERVER_URL || ""].filter(Boolean),
-  csrf: [process.env.NEXT_PUBLIC_SERVER_URL || ""].filter(Boolean),
+  cors: [process.env.NEXT_PUBLIC_SERVER_URL ?? ""].filter(Boolean),
+  csrf: [process.env.NEXT_PUBLIC_SERVER_URL ?? ""].filter(Boolean),
 
   collections: [Users, EventTemplates, Events, Sections, Roles, Signups],
-  editor: lexicalEditor({
-    features: ({ defaultFeatures }) => [
-      ...defaultFeatures,
-      HTMLConverterFeature({}),
-    ],
-  }),
-  secret: process.env.PAYLOAD_SECRET || "",
+  editor: lexicalEditor(),
+  secret: process.env.PAYLOAD_SECRET ?? "",
   typescript: {
     outputFile: path.resolve(dirname, "payload-types.ts"),
   },

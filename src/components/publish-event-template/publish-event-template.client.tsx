@@ -160,7 +160,7 @@ export const PublishEventTemplateForm = (props: { doc: EventTemplate }) => {
               >
                 <panda.h3 marginTop="8">{month}</panda.h3>
 
-                <Grid columns={7} width="100%" className="panda">
+                <Grid columns={7} width="100%">
                   {daysOfWeek.map(({ name, short }) => (
                     <Center key={`day-of-week-${month}-${name}+${short}`}>
                       {short}

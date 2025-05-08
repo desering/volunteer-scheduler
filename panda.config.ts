@@ -6,14 +6,16 @@ import tomato from "@park-ui/panda-preset/colors/tomato";
 
 import { sheet } from "@/components/ui/recipes/sheet";
 
-// const globalCss = defineGlobalStyles({
-//   // reset park ui conflicting global style against payload
-//   // "*, *::before, *::after": {},
-// });
+const globalCss = defineGlobalStyles({
+  // reset park ui conflicting global style against payload
+  // use .park-ui class to scope
+  "*, *::before, *::after": {},
+});
 
 export default defineConfig({
   // Avoid overriding payload styles, only reset within scope
-  preflight: { scope: ".panda" },
+  preflight: { scope: ".use-panda" },
+  // preflight: true,
   presets: [
     createPreset({
       accentColor: olive,
@@ -23,9 +25,11 @@ export default defineConfig({
   ],
   include: ["./src/**/*.{ts,tsx,js,jsx}"],
   outdir: "styled-system",
+  prefix: "panda",
+  // hash: true,
   jsxFactory: "panda",
   jsxFramework: "react",
-  // globalCss,
+  globalCss,
   conditions: {
     extend: {
       // react to dark mode from payload
