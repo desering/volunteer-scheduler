@@ -1,26 +1,26 @@
-"use client";
+'use client'
 
-import { EventButton } from "@/components/event-button";
-import { EventDetailsDrawer } from "@/components/event-details-sheet";
-import type { DisplayableEvent } from "@/lib/mappers/map-events";
-import type { getUpcomingEventsForUserId } from "@/lib/services/get-upcoming-events-for-user-id";
-import type { Event, Role, Signup, User } from "@payload-types";
-import { Clock, PersonStanding } from "lucide-react";
-import { useState } from "react";
-import { Box, HStack, panda } from "styled-system/jsx";
-import { Container } from "styled-system/jsx/container";
-import { Flex } from "styled-system/jsx/flex";
+import { EventButton } from '@/components/event-button'
+import { EventDetailsDrawer } from '@/components/event-details-sheet'
+import type { DisplayableEvent } from '@/lib/mappers/map-events'
+import type { getUpcomingEventsForUserId } from '@/lib/services/get-upcoming-events-for-user-id'
+import type { Event, Role, Signup, User } from '@payload-types'
+import { Clock, PersonStanding } from 'lucide-react'
+import { useState } from 'react'
+import { Box, HStack, panda } from 'styled-system/jsx'
+import { Container } from 'styled-system/jsx/container'
+import { Flex } from 'styled-system/jsx/flex'
 
 type Props = {
-  user: User;
-  data?: Awaited<ReturnType<typeof getUpcomingEventsForUserId>>;
-};
+  user: User
+  data?: Awaited<ReturnType<typeof getUpcomingEventsForUserId>>
+}
 
 export const UpcomingEventsList = (props: Props) => {
-  const [selectedEvent, setSelectedEvent] = useState<DisplayableEvent>();
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<DisplayableEvent>()
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false)
 
-  const [events, setEvents] = useState(props.data?.events);
+  const [events, setEvents] = useState(props.data?.events)
 
   // todo: implement refetching of upcoming events
   // const refetch = async () => {
@@ -30,15 +30,15 @@ export const UpcomingEventsList = (props: Props) => {
   const eventsList = events?.map((event: DisplayableEvent) => {
     const signup = props.data?.signups.docs.find(
       (signup: Signup) => (signup.event as Event).id === event.doc.id,
-    );
-    const roleTitle = (signup?.role as Role)?.title;
+    )
+    const roleTitle = (signup?.role as Role)?.title
 
     return (
       <EventButton.Root
         key={event.doc.id}
         onClick={() => {
-          setIsDrawerOpen(true);
-          setSelectedEvent(event);
+          setIsDrawerOpen(true)
+          setSelectedEvent(event)
         }}
         display="flex"
         flexDirection="column"
@@ -46,11 +46,7 @@ export const UpcomingEventsList = (props: Props) => {
       >
         <EventButton.Title>{event.doc.title}</EventButton.Title>
 
-        <Box
-          marginInline="-4"
-          borderBottom="1px solid"
-          borderColor="colorPalette.10"
-        />
+        <Box marginInline="-4" borderBottom="1px solid" borderColor="colorPalette.10" />
 
         <HStack>
           <PersonStanding />
@@ -60,11 +56,7 @@ export const UpcomingEventsList = (props: Props) => {
           </Box>
         </HStack>
 
-        <Box
-          marginInline="-4"
-          borderBottom="1px solid"
-          borderColor="colorPalette.8"
-        />
+        <Box marginInline="-4" borderBottom="1px solid" borderColor="colorPalette.8" />
 
         <HStack>
           <Clock />
@@ -79,12 +71,12 @@ export const UpcomingEventsList = (props: Props) => {
         <EventButton.Description
           // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
           dangerouslySetInnerHTML={{
-            __html: event.descriptionHtml || "",
+            __html: event.descriptionHtml || '',
           }}
         />
       </EventButton.Root>
-    );
-  });
+    )
+  })
 
   return (
     <>
@@ -96,13 +88,13 @@ export const UpcomingEventsList = (props: Props) => {
       <EventDetailsDrawer
         user={props.user}
         open={isDrawerOpen}
-        event={selectedEvent}
+        eventId={selectedEvent}
         onClose={() => {
-          setIsDrawerOpen(false);
+          setIsDrawerOpen(false)
           //await refetch(); // todo: replace astro createResource with useState plus ??? above
         }}
         onExitComplete={() => setSelectedEvent(undefined)}
       />
     </>
-  );
-};
+  )
+}

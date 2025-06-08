@@ -20,12 +20,13 @@ import type { getEventDetails } from "@/lib/services/get-event-details";
 import { Portal } from "@ark-ui/react";
 import { InfoIcon } from "lucide-react";
 import { XIcon } from "lucide-react";
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
+import type { DisplayableEvent } from "@/lib/mappers/map-events";
 
 type Props = {
   user?: User;
 
-  event?: Awaited<ReturnType<typeof getEventDetails>>; // todo: should this be a DisplayableEvent?
+  eventId?: string;
 
   open: boolean;
   onClose: () => void;
@@ -33,26 +34,25 @@ type Props = {
 };
 
 export const EventDetailsDrawer = (props: Props) => {
-  const { data: details, refetch } = useQuery<
-    Awaited<ReturnType<typeof getEventDetails>> // todo: should this be a DisplayableEvent?
-  >({
-    queryKey: ["eventDetails", props.event?.id],
-    queryFn: async () => {
-      const params = new URLSearchParams();
-      params.append("id", props.event?.id?.toString() || "");
+  const { data: details, refetch } = useQuery({
+    queryKey: ["eventDetails", props.eventId],
+    queryFn: async (): ReturnType<typeof getEventDetails> => {
+      const params = new URLSearchParams({
+        id: props.eventId ?? "",
+      });
       return fetch(`/api/event-details?${params}`).then((res) => res.json());
     },
-    initialData: props.event,
+    enabled: !!props.eventId,
   });
 
-  const [selectedRoleId, setSelectedRoleId] = useState<string | null>(null);
+  const [selectedRoleId, setSelectedRoleId] = useState<string>();
 
-  const [isDeleting, deleteSignup] = createAsyncFunc(async (id: number) => {
+  const [isDeleting, deleteSignup] = useAsyncFunc(async (id: number) => {
     await deleteSignupAction(id);
     await refetch();
-    setSelectedRoleId(null);
+    setSelectedRoleId(undefined);
   });
-  const [isCreating, createSignup] = createAsyncFunc(
+  const [isCreating, createSignup] = useAsyncFunc(
     async (event: number, role: number) => {
       await createSignupAction(event, role);
       await refetch();
@@ -73,44 +73,38 @@ export const EventDetailsDrawer = (props: Props) => {
   const userSignups = () =>
     details?.signups?.docs.filter(({ user }) => user === props.user?.id);
   const hasUserSignedUp = () => (userSignups()?.length ?? 0) > 0;
-  const newEventLoading = () => details?.id !== props.event?.id;
-  const timeRange = () => {
-    const start = props.event?.start_date;
-    const end = props.event?.end_date;
+  const newEventLoading = useMemo(
+    () => details?.id !== props.eventId,
+    [details?.id, props.eventId],
+  );
+  const timeRange = useMemo(() => {
+    const start = details?.start_date;
+    const end = details?.end_date;
 
     if (!start || !end) return;
 
     return `${format(start, "iiii dd MMMM")}, ${format(start, "HH:mm")} - ${format(end, "HH:mm")}`;
-  };
+  }, [details]);
 
-  // todo: this was a solid createEffect before. Properly implement it with useEffect in react.
+  useEffect(() => {
+    // Reset selected role on exit
+    if (!props.eventId) {
+      setSelectedRoleId(undefined);
+    }
 
-  // in solid, the input parameter of the useEffect callback function was the result of the previous invocation.
-  // in react, there is no input parameter.
-
-  // "selected" only exists in the context of this function, not outside.
-
-  // useEffect((selected: boolean) => {
-  //   // Reset selected role on exit
-  //   if (!props.event?.id) {
-  //     setSelectedRoleId(null);
-  //     return false;
-  //   }
-  //
-  //   // On new event, select the role the user has signed up for
-  //   const shouldSelectRole = !selected && !newEventLoading();
-  //   if (shouldSelectRole) {
-  //     selectCurrentRole();
-  //     return true;
-  //   }
-  // });
+    // On loading a new event, select the role the user has signed up for
+    const shouldSelectRole = !selectedRoleId && !newEventLoading;
+    if (shouldSelectRole) {
+      selectCurrentRole();
+    }
+  }, [props.eventId, newEventLoading, selectedRoleId]);
 
   const selectCurrentRole = () =>
     setSelectedRoleId(
       details?.signups?.docs
         .filter((signup) => signup.user === props.user?.id)
         .map((signup) => signup.role?.toString())
-        .shift() ?? null,
+        .shift() ?? undefined,
     );
 
   const onSigningButtonClicked = () => {
@@ -154,21 +148,21 @@ export const EventDetailsDrawer = (props: Props) => {
             maxHeight={{ base: "80vh", md: "100vh" }}
             overflowY="auto"
             // avoid flash of old content on open, delay open animation
-            display={newEventLoading() ? "none" : undefined}
+            display={newEventLoading ? "none" : undefined}
           >
             <Suspense>
               <Sheet.Header>
                 <Sheet.Title fontSize="2xl">{details?.title}</Sheet.Title>
-                {props.event?.descriptionHtml && (
+                {details?.descriptionHtml && (
                   <Sheet.Description
                     // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
                     dangerouslySetInnerHTML={{
-                      __html: props.event?.descriptionHtml,
+                      __html: details.descriptionHtml,
                     }}
                   />
                 )}
                 <Sheet.Description>
-                  <Badge>{timeRange()}</Badge>
+                  <Badge>{timeRange}</Badge>
                 </Sheet.Description>
                 <Sheet.CloseTrigger
                   position="absolute"
@@ -192,7 +186,9 @@ export const EventDetailsDrawer = (props: Props) => {
                 <RadioButtonGroup.Root
                   direction="vertical"
                   value={selectedRoleId}
-                  onValueChange={(event) => setSelectedRoleId(event.value)}
+                  onValueChange={(event) =>
+                    setSelectedRoleId(event.value ?? undefined)
+                  }
                   disabled={details === undefined}
                 >
                   <RoleRadioItems
@@ -240,11 +236,11 @@ export const EventDetailsDrawer = (props: Props) => {
               <Sheet.Footer justifyContent="center">
                 {!props.user && (
                   <HStack>
-                    Want to help out?
+                    Want to help out?{" "}
                     <a className={button({})} href="/auth/login">
                       Sign in
-                    </a>
-                    or
+                    </a>{" "}
+                    or{" "}
                     <a className={button({})} href="/auth/register">
                       Register
                     </a>
@@ -305,7 +301,7 @@ const animateFireworks = (end: number) => {
   }
 };
 
-const createAsyncFunc = <T, P extends unknown[]>(
+const useAsyncFunc = <T, P extends unknown[]>(
   fn: (...args: P) => Promise<T>,
 ) => {
   const [isRunning, setIsRunning] = useState(false);
