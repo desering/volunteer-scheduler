@@ -27,7 +27,7 @@ type Props = {
 export const EventOverview = (props: Props & BoxProps) => {
   const [cssProps, localProps] = splitCssProps(props)
   const [selectedDate, setSelectedDate] = useState(startOfDay(new Date()))
-  const [selectedEventId, setSelectedEventId] = useState<string>()
+  const [selectedEventId, setSelectedEventId] = useState<number>()
 
   // separation of selectedEvent and isDrawerOpen, otherwise breaks exitAnim
   const [isDrawerOpen, setIsDrawerOpen] = useState(false)
@@ -84,7 +84,7 @@ export const EventOverview = (props: Props & BoxProps) => {
                 key={event.doc.id}
                 onClick={() => {
                   setIsDrawerOpen(true)
-                  setSelectedEvent(event)
+                  setSelectedEventId(event.doc.id)
                 }}
               >
                 <EventButton.Time startDate={event.start_date} endDate={event.end_date} />
