@@ -1,7 +1,9 @@
 import { getEventDetails } from "@/lib/services/get-event-details";
 
 export async function GET(request: Request) {
-  const id = (await request.formData()).get("id");
+  const url = new URL(request.url);
+  const id = url.searchParams.get("id");
+
 
   if (!id) {
     return Response.json({ error: "ID is required" }, { status: 400 });
