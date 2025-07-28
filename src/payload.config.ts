@@ -4,7 +4,7 @@ import process from "node:process";
 import { postgresAdapter } from "@payloadcms/db-postgres";
 import { fileURLToPath } from "node:url";
 import { buildConfig } from "payload";
-import { migrations } from "./migrations";
+import { migrations } from "../migrations";
 
 import { nodemailerAdapter } from "@payloadcms/email-nodemailer";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
