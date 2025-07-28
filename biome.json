@@ -9,10 +9,11 @@
     "ignoreUnknown": false,
     "ignore": [
       ".next/*",
+      "./migrations/*",
+      "styled-system/*",
+      "src/app/(payload)/layout.tsx",
       "src/app/(payload)/importMap.js",
-      "src/migrations/*",
-      "src/payload-types.ts",
-      "styled-system/*"
+      "src/payload-types.ts"
     ]
   },
   "formatter": {
