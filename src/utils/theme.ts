@@ -1,3 +1,5 @@
+"use client";
+
 import { token } from "styled-system/tokens";
 import Cookies from "js-cookie";
 
@@ -13,8 +15,8 @@ export const applyTheme = () => {
   const prefersDark = colorSchemeMediaQuery.matches;
   const userSetting = fromStorage("theme", "system") as Theme;
 
-  const theme =
-    userSetting === "system" ? (prefersDark ? "dark" : "light") : userSetting;
+  const systemTheme = prefersDark ? "dark" : "light";
+  const theme = userSetting === "system" ? systemTheme : userSetting;
 
   const color = theme === "light" ? themeColors.light : themeColors.dark;
   document
