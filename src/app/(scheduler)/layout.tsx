@@ -51,7 +51,14 @@ export default async function RootLayout({ children }: Props) {
   const theme = await getCookieTheme();
 
   return (
-    <html lang="en" className={sourceSans.className}>
+    <html
+      lang="en"
+      className={cx(
+        theme === "dark" && "dark",
+        "use-panda",
+        sourceSans.className,
+      )}
+    >
       <head>
         {theme === "system" && (
           // only add this script if the theme is set to system
@@ -66,10 +73,7 @@ export default async function RootLayout({ children }: Props) {
         )}
       </head>
 
-      <panda.body
-        className={cx(theme === "dark" && "dark", "use-panda")}
-        backgroundColor={{ base: "gray.4", _dark: "gray.2" }}
-      >
+      <panda.body backgroundColor={{ base: "gray.4", _dark: "gray.2" }}>
         <ListenToThemeChanges />
         <Providers>
           <AuthProvider>
