@@ -25,7 +25,7 @@ import { Fragment, Suspense, useEffect, useMemo, useState } from "react";
 type Props = {
   user?: User;
 
-  eventId?: string | number;
+  eventId?: number;
 
   open: boolean;
   onClose: () => void;
@@ -33,7 +33,11 @@ type Props = {
 };
 
 export const EventDetailsDrawer = (props: Props) => {
-  const { data: details, refetch, isFetching } = useQuery({
+  const { 
+    data: details,  
+    refetch, 
+    isFetching,
+  } = useQuery({
     queryKey: ["eventDetails", props.eventId],
     queryFn: async (): ReturnType<typeof getEventDetails> => {
       const params = new URLSearchParams({
@@ -72,6 +76,7 @@ export const EventDetailsDrawer = (props: Props) => {
   const userSignups = () =>
     details?.signups?.docs.filter(({ user }) => user === props.user?.id);
   const hasUserSignedUp = () => (userSignups()?.length ?? 0) > 0;
+  const newEventLoading = details?.id !== props.eventId;
   const timeRange = useMemo(() => {
     const start = details?.start_date;
     const end = details?.end_date;
@@ -88,7 +93,7 @@ export const EventDetailsDrawer = (props: Props) => {
     }
 
     // On loading a new event, select the role the user has signed up for
-    const shouldSelectRole = !selectedRoleId && !isFetching;
+    const shouldSelectRole = !selectedRoleId && !newEventLoading;
     if (shouldSelectRole) {
       selectCurrentRole();
     }
@@ -143,7 +148,7 @@ export const EventDetailsDrawer = (props: Props) => {
             maxHeight={{ base: "80vh", md: "100vh" }}
             overflowY="auto"
             // avoid flash of old content on open, delay open animation
-            display={isFetching ? "none" : undefined}
+            display={newEventLoading ? "none" : undefined}
           >
             <Suspense>
               <Sheet.Header>
@@ -177,7 +182,6 @@ export const EventDetailsDrawer = (props: Props) => {
                 <panda.h2 fontSize="xl" fontWeight="semibold" marginBottom="2">
                   Select a role
                 </panda.h2>
-
                 <RadioButtonGroup.Root
                   direction="vertical"
                   value={selectedRoleId}

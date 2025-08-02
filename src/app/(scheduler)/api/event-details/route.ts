@@ -14,5 +14,5 @@ export async function GET(request: Request) {
     return Response.json({ error: "Invalid ID" }, { status: 400 });
   }
 
-  return Response.json(await getEventDetails(1));
+  return Response.json(await getEventDetails(eventId));
 }
