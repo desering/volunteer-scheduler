@@ -33,9 +33,9 @@ type Props = {
 };
 
 export const EventDetailsDrawer = (props: Props) => {
-  const { 
-    data: details,  
-    refetch, 
+  const {
+    data: details,
+    refetch,
     isFetching,
   } = useQuery({
     queryKey: ["eventDetails", props.eventId],
@@ -199,11 +199,7 @@ export const EventDetailsDrawer = (props: Props) => {
                   />
                   {details?.sections?.docs.map((section) => (
                     <Fragment key={section.id}>
-                      <panda.h3
-                        fontSize="lg"
-                        fontWeight="medium"
-                        marginTop="4"
-                      >
+                      <panda.h3 fontSize="lg" fontWeight="medium" marginTop="4">
                         {section.title}
                       </panda.h3>
 

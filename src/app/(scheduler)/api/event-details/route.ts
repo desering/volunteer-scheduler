@@ -4,7 +4,6 @@ export async function GET(request: Request) {
   const url = new URL(request.url);
   const id = url.searchParams.get("id");
 
-
   if (!id) {
     return Response.json({ error: "ID is required" }, { status: 400 });
   }

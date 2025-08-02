@@ -96,7 +96,7 @@ export const EventOverview = (props: Props & BoxProps) => {
                 key={event.doc.id}
                 onClick={() => {
                   setIsDrawerOpen(true);
-                  setSelectedEventId(event.doc.id)
+                  setSelectedEventId(event.doc.id);
                 }}
               >
                 <EventButton.Time
