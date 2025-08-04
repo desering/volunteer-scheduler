@@ -20,13 +20,12 @@ import type { getEventDetails } from "@/lib/services/get-event-details";
 import { Portal } from "@ark-ui/react";
 import { InfoIcon } from "lucide-react";
 import { XIcon } from "lucide-react";
-import { Suspense, useEffect, useMemo, useState } from "react";
-import type { DisplayableEvent } from "@/lib/mappers/map-events";
+import { Fragment, Suspense, useEffect, useMemo, useState } from "react";
 
 type Props = {
   user?: User;
 
-  eventId?: string;
+  eventId?: number;
 
   open: boolean;
   onClose: () => void;
@@ -34,11 +33,15 @@ type Props = {
 };
 
 export const EventDetailsDrawer = (props: Props) => {
-  const { data: details, refetch } = useQuery({
+  const {
+    data: details,
+    refetch,
+    isFetching,
+  } = useQuery({
     queryKey: ["eventDetails", props.eventId],
     queryFn: async (): ReturnType<typeof getEventDetails> => {
       const params = new URLSearchParams({
-        id: props.eventId ?? "",
+        id: props.eventId?.toString() ?? "",
       });
       return fetch(`/api/event-details?${params}`).then((res) => res.json());
     },
@@ -73,10 +76,7 @@ export const EventDetailsDrawer = (props: Props) => {
   const userSignups = () =>
     details?.signups?.docs.filter(({ user }) => user === props.user?.id);
   const hasUserSignedUp = () => (userSignups()?.length ?? 0) > 0;
-  const newEventLoading = useMemo(
-    () => details?.id !== props.eventId,
-    [details?.id, props.eventId],
-  );
+  const newEventLoading = details?.id !== props.eventId;
   const timeRange = useMemo(() => {
     const start = details?.start_date;
     const end = details?.end_date;
@@ -97,7 +97,7 @@ export const EventDetailsDrawer = (props: Props) => {
     if (shouldSelectRole) {
       selectCurrentRole();
     }
-  }, [props.eventId, newEventLoading, selectedRoleId]);
+  }, [props.eventId, isFetching, selectedRoleId]);
 
   const selectCurrentRole = () =>
     setSelectedRoleId(
@@ -182,7 +182,6 @@ export const EventDetailsDrawer = (props: Props) => {
                 <panda.h2 fontSize="xl" fontWeight="semibold" marginBottom="2">
                   Select a role
                 </panda.h2>
-
                 <RadioButtonGroup.Root
                   direction="vertical"
                   value={selectedRoleId}
@@ -199,23 +198,17 @@ export const EventDetailsDrawer = (props: Props) => {
                     user={props.user}
                   />
                   {details?.sections?.docs.map((section) => (
-                    <>
-                      <panda.h3
-                        key={section.id}
-                        fontSize="lg"
-                        fontWeight="medium"
-                        marginTop="4"
-                      >
+                    <Fragment key={section.id}>
+                      <panda.h3 fontSize="lg" fontWeight="medium" marginTop="4">
                         {section.title}
                       </panda.h3>
 
                       <RoleRadioItems
-                        key={section.id}
                         details={details}
                         roles={section.roles?.docs ?? []}
                         user={props.user}
                       />
-                    </>
+                    </Fragment>
                   ))}
                 </RadioButtonGroup.Root>
                 {props.user && (

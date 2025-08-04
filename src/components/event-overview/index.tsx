@@ -3,7 +3,7 @@
 import { EventButton } from "@/components/event-button";
 import { EventDetailsDrawer } from "@/components/event-details-sheet";
 import { NoEventsMessage } from "@/components/event-overview/no-events-message";
-import type { DisplayableEvent, EventsByDay } from "@/lib/mappers/map-events";
+import type { EventsByDay } from "@/lib/mappers/map-events";
 import type { User } from "@payload-types";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -33,7 +33,7 @@ type Props = {
 export const EventOverview = (props: Props & BoxProps) => {
   const [cssProps, localProps] = splitCssProps(props);
   const [selectedDate, setSelectedDate] = useState(startOfDay(new Date()));
-  const [selectedEventId, setSelectedEventId] = useState<string>();
+  const [selectedEventId, setSelectedEventId] = useState<number>();
 
   // separation of selectedEvent and isDrawerOpen, otherwise breaks exitAnim
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -96,7 +96,7 @@ export const EventOverview = (props: Props & BoxProps) => {
                 key={event.doc.id}
                 onClick={() => {
                   setIsDrawerOpen(true);
-                  setSelectedEvent(event);
+                  setSelectedEventId(event.doc.id);
                 }}
               >
                 <EventButton.Time

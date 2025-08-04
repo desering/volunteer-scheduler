@@ -96,7 +96,7 @@ export const UpcomingEventsList = (props: Props) => {
       <EventDetailsDrawer
         user={props.user}
         open={isDrawerOpen}
-        eventId={selectedEvent}
+        eventId={selectedEvent?.doc.id}
         onClose={() => {
           setIsDrawerOpen(false);
           //await refetch(); // todo: replace astro createResource with useState plus ??? above
