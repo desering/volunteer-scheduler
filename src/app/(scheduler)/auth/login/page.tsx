@@ -1,37 +1,37 @@
-import config from "@payload-config";
-import { headers as getHeaders } from "next/headers";
-import { redirect } from "next/navigation";
-import { getPayload } from "payload";
+import config from '@payload-config'
+import { headers as getHeaders } from 'next/headers'
+import { redirect } from 'next/navigation'
+import { getPayload } from 'payload'
 
-import { LoginForm } from "@/components/auth/login-form";
+import { LoginForm } from '@/components/auth/login-form'
 
-import { panda } from "styled-system/jsx";
-import { Container } from "styled-system/jsx";
-
-// https://payloadcms.com/docs/local-api/overview#login
-// https://github.com/payloadcms/payload/blob/main/packages/next/src/routes/rest/auth/login.ts
+import { Box, Container, Grid, panda } from 'styled-system/jsx'
 
 export default async function Page() {
-  const headers = await getHeaders();
-  const payload = await getPayload({ config });
-  const { user } = await payload.auth({ headers });
+  const headers = await getHeaders()
+  const payload = await getPayload({ config })
+  const { user } = await payload.auth({ headers })
 
   if (user) {
-    redirect("/");
+    redirect('/')
   }
 
   return (
-    <panda.div
-      display="flex"
-      minHeight="screen"
-      width="screen"
-      justifyContent="center"
-      alignItems="center"
-    >
+    <Box display="flex" width="screen" flexGrow="1" justifyContent="center" alignItems="center">
       <Container>
-        <h1>Login</h1>
-        <LoginForm />
+        <Grid background="bg.default" padding="8" borderRadius="3xl" boxShadow="lg" gap="8">
+          <div>
+            <panda.h1 fontSize="2xl" textAlign="center">
+              Welcome back :)
+            </panda.h1>
+            <Box textAlign="center" color="fg.muted">
+              Please enter your details to sign in
+            </Box>
+          </div>
+
+          <LoginForm />
+        </Grid>
       </Container>
-    </panda.div>
-  );
+    </Box>
+  )
 }

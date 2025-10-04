@@ -1,22 +1,10 @@
-import { EventOverview } from "@/components/event-overview";
-import { headers as getHeaders } from "next/dist/server/request/headers";
-import { getPayload } from "payload";
-import config from "@payload-config";
-import { getEventsByDay } from "@/lib/services/get-events-by-day";
+import { EventOverview } from '@/components/event-overview'
+import { getEventsByDay } from '@/lib/services/get-events-by-day'
+import { getUser } from '@/lib/services/get-user'
 
 export default async function Page() {
-  const headers = await getHeaders();
-  const payload = await getPayload({ config });
-  const { user } = await payload.auth({ headers });
+  const { user } = await getUser()
+  const eventsByDay = await getEventsByDay()
 
-  const eventsByDay = await getEventsByDay();
-
-  return (
-    <EventOverview
-      user={user ?? undefined}
-      events={eventsByDay}
-      flex="1"
-      marginTop="4"
-    />
-  );
+  return <EventOverview user={user ?? undefined} events={eventsByDay} flex="1" marginTop="4" />
 }

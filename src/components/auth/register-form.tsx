@@ -1,58 +1,55 @@
-"use client";
+'use client'
 
-import { register } from "@/actions/auth/register";
-import { redirect } from "next/navigation";
-import { useActionState } from "react";
-import { useFormStatus } from "react-dom";
-import { css, cx } from "styled-system/css";
-import { HStack, panda } from "styled-system/jsx";
-import { vstack } from "styled-system/patterns";
-import { button, input, link } from "styled-system/recipes";
+import { register } from '@/actions/auth/register'
+import { redirect } from 'next/navigation'
+import { useActionState } from 'react'
+import { useFormStatus } from 'react-dom'
+import { css, cx } from 'styled-system/css'
+import { HStack, panda } from 'styled-system/jsx'
+import { vstack } from 'styled-system/patterns'
+import { button, input, link } from 'styled-system/recipes'
 
 const initialState = {
-  message: "",
+  message: '',
   success: false,
-};
+}
 
 function SubmitButton() {
-  const { pending } = useFormStatus();
+  const { pending } = useFormStatus()
 
   return (
     <button
       type="submit"
       aria-disabled={pending}
-      className={cx(
-        button({ size: "lg", variant: "solid" }),
-        css({ flexGrow: 1 }),
-      )}
+      className={cx(button({ size: 'lg', variant: 'solid' }), css({ flexGrow: 1 }))}
     >
       Register
     </button>
-  );
+  )
 }
 
 export function RegisterForm() {
-  const [state, formAction] = useActionState(register, initialState);
+  const [state, formAction] = useActionState(register, initialState)
 
   if (state.success) {
-    redirect("/");
+    redirect('/')
   }
 
   return (
-    <form action={formAction} className={vstack({ alignItems: "stretch" })}>
+    <form action={formAction} className={vstack({ alignItems: 'stretch' })}>
       {state?.message ? (
         <panda.div
           className={css({
-            color: "gray.1",
-            backgroundColor: "tomato",
-            paddingX: "4",
-            paddingY: "2",
+            color: 'gray.1',
+            backgroundColor: 'tomato',
+            paddingX: '4',
+            paddingY: '2',
           })}
         >
           <p>{state?.message}</p>
         </panda.div>
       ) : (
-        ""
+        ''
       )}
 
       <panda.div width="full">
@@ -63,7 +60,7 @@ export function RegisterForm() {
           name="preferredName"
           required
           className={input({
-            size: "lg",
+            size: 'lg',
           })}
         />
         <p>This will be visible to everyone</p>
@@ -77,7 +74,7 @@ export function RegisterForm() {
           name="email"
           required
           className={input({
-            size: "lg",
+            size: 'lg',
           })}
         />
       </panda.div>
@@ -90,7 +87,7 @@ export function RegisterForm() {
           name="phoneNumber"
           required
           className={input({
-            size: "lg",
+            size: 'lg',
           })}
         />
       </panda.div>
@@ -103,7 +100,7 @@ export function RegisterForm() {
           name="password"
           required
           className={input({
-            size: "lg",
+            size: 'lg',
           })}
         />
       </panda.div>
@@ -116,7 +113,7 @@ export function RegisterForm() {
           name="passwordAgain"
           required
           className={input({
-            size: "lg",
+            size: 'lg',
           })}
         />
       </panda.div>
@@ -125,22 +122,19 @@ export function RegisterForm() {
         <a
           type="button"
           href="/"
-          className={cx(
-            button({ size: "lg", variant: "outline" }),
-            css({ flexGrow: 1 }),
-          )}
+          className={cx(button({ size: 'lg', variant: 'outline' }), css({ flexGrow: 1 }))}
         >
           Cancel
         </a>
         <SubmitButton />
       </HStack>
 
-      <div className={css({ textAlign: "center", marginY: "10px" })}>
-        Already have an account?{" "}
+      <div className={css({ textAlign: 'center', marginY: '10px' })}>
+        Already have an account?{' '}
         <a href="/auth/login" className={link()}>
           Login
         </a>
       </div>
     </form>
-  );
+  )
 }

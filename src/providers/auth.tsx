@@ -1,43 +1,18 @@
-"use client";
+'use client'
 
-import type { User } from "@/payload-types";
-import { createContext, use, useEffect, useState } from "react";
+import { createContext, use, useState } from 'react'
+import type { User } from '@/payload-types'
 
-const Context = createContext(
-  {} as {
-    user: User | undefined;
-    setUser: (user?: User) => void;
-  },
-);
+const Context = createContext({} as { user?: User; setUser: (user?: User) => void })
 
 type Props = {
-  children: React.ReactNode;
-};
+  initialUser?: User
+  children: React.ReactNode
+}
 
-export const useAuth = () => use(Context);
+export const useAuth = () => use(Context)
 
-export const AuthProvider = (props: Props) => {
-  const [user, setUser] = useState<User>();
-
-  useEffect(() => {
-    const fetchMe = async () => {
-      const user = await fetch("/payload-api/auth/me");
-      if (!user) {
-        return;
-      }
-      const { user: userData } = await user.json();
-      if (!userData) {
-        return;
-      }
-      setUser(userData);
-    };
-
-    void fetchMe();
-  }, []);
-
-  return (
-    <Context.Provider value={{ user, setUser }}>
-      {props.children}
-    </Context.Provider>
-  );
-};
+export const AuthProvider = ({ initialUser, children }: Props) => {
+  const [user, setUser] = useState(initialUser)
+  return <Context.Provider value={{ user, setUser }}>{children}</Context.Provider>
+}

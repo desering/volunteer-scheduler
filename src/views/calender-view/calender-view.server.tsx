@@ -1,27 +1,23 @@
-import { DefaultTemplate } from "@payloadcms/next/templates";
-import type { AdminViewProps, CollectionSlug } from "payload";
-import { CalenderViewClient } from "./calender-view.client";
-import Providers from "@/app/providers";
+import { DefaultTemplate } from '@payloadcms/next/templates'
+import type { AdminViewProps, CollectionSlug } from 'payload'
+import { CalenderViewClient } from './calender-view.client'
+import Providers from '@/app/(scheduler)/client-providers'
 
-const supportedSlugs: CollectionSlug[] = ["events"];
+const supportedSlugs: CollectionSlug[] = ['events']
 
-export const CalenderView = async ({
-  params,
-  initPageResult,
-  searchParams,
-}: AdminViewProps) => {
-  let collectionSlug: CollectionSlug | undefined = undefined;
+export const CalenderView = async ({ params, initPageResult, searchParams }: AdminViewProps) => {
+  let collectionSlug: CollectionSlug | undefined = undefined
 
-  if (typeof params?.segments === "object") {
-    const potentialSlug = params.segments[1] as CollectionSlug;
+  if (typeof params?.segments === 'object') {
+    const potentialSlug = params.segments[1] as CollectionSlug
 
     if (supportedSlugs.includes(potentialSlug)) {
-      collectionSlug = potentialSlug;
+      collectionSlug = potentialSlug
     }
   }
 
   if (!collectionSlug) {
-    throw new Error("Unsupported collection slug");
+    throw new Error('Unsupported collection slug')
   }
 
   return (
@@ -39,5 +35,5 @@ export const CalenderView = async ({
         <CalenderViewClient />
       </Providers>
     </DefaultTemplate>
-  );
-};
+  )
+}
