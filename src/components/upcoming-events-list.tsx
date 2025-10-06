@@ -3,8 +3,9 @@
 import { EventButton } from "@/components/event-button";
 import { EventDetailsDrawer } from "@/components/event-details-sheet";
 import type { DisplayableEvent } from "@/lib/mappers/map-events";
-import type { getUpcomingEventsForUserId } from "@/lib/services/get-upcoming-events-for-user-id";
+import type { UpcomingEventsForUserId } from "@/lib/services/get-upcoming-events-for-user-id";
 import type { Event, Role, Signup, User } from "@payload-types";
+import { useQuery } from "@tanstack/react-query";
 import { Clock, PersonStanding } from "lucide-react";
 import { useState } from "react";
 import { Box, HStack, panda } from "styled-system/jsx";
@@ -13,22 +14,24 @@ import { Flex } from "styled-system/jsx/flex";
 
 type Props = {
   user: User;
-  data?: Awaited<ReturnType<typeof getUpcomingEventsForUserId>>;
+  initialData?: UpcomingEventsForUserId;
 };
 
 export const UpcomingEventsList = (props: Props) => {
   const [selectedEvent, setSelectedEvent] = useState<DisplayableEvent>();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  const [events, setEvents] = useState(props.data?.events);
+  const { data } = useQuery<UpcomingEventsForUserId>({
+    queryKey: ["upcoming-events", props.user.id],
+    queryFn: async () =>
+      await fetch(`/api/events/upcoming`).then((res) => res.json()),
+    initialData: props.initialData,
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    refetchOnWindowFocus: true,
+  });
 
-  // todo: implement refetching of upcoming events
-  // const refetch = async () => {
-  //   setEvents((await getUpcomingEventsForUserId(props.user.id)).events);
-  // }
-
-  const eventsList = events?.map((event: DisplayableEvent) => {
-    const signup = props.data?.signups.docs.find(
+  const eventsList = data?.events?.map((event: DisplayableEvent) => {
+    const signup = props.initialData?.signups.docs.find(
       (signup: Signup) => (signup.event as Event).id === event.doc.id,
     );
     const roleTitle = (signup?.role as Role)?.title;
@@ -77,7 +80,7 @@ export const UpcomingEventsList = (props: Props) => {
           </Box>
         </HStack>
         <EventButton.Description
-          // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: rich text from CMS
           dangerouslySetInnerHTML={{
             __html: event.descriptionHtml || "",
           }}

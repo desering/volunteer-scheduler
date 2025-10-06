@@ -1,10 +1,10 @@
-import { Container, panda } from "styled-system/jsx";
 import { UpcomingEventsList } from "@/components/upcoming-events-list";
-import { headers as getHeaders } from "next/headers";
-import { getPayload } from "payload";
-import config from "@payload-config";
-import { redirect } from "next/navigation";
 import { getUpcomingEventsForUserId } from "@/lib/services/get-upcoming-events-for-user-id";
+import config from "@payload-config";
+import { headers as getHeaders } from "next/headers";
+import { redirect } from "next/navigation";
+import { getPayload } from "payload";
+import { Container, panda } from "styled-system/jsx";
 
 export default async function Page() {
   const headers = await getHeaders();
@@ -24,7 +24,7 @@ export default async function Page() {
           My upcoming shifts
         </panda.h1>
       </Container>
-      <UpcomingEventsList user={user} data={events} />
+      <UpcomingEventsList user={user} initialData={events} />
     </>
   );
 }

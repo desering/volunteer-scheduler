@@ -6,6 +6,9 @@ import type { Event } from "@payload-types";
 import { startOfDay } from "date-fns";
 import { getPayload } from "payload";
 
+export type UpcomingEventsForUserId = Awaited<
+  ReturnType<typeof getUpcomingEventsForUserId>
+>;
 export async function getUpcomingEventsForUserId(id: number) {
   const payload = await getPayload({ config });
 

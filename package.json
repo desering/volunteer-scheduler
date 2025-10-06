@@ -8,7 +8,7 @@
     "dev": "panda codegen && next dev --port 3000",
     "devsafe": "rm -rf .next && next dev",
     "build": "panda codegen && next build",
-    "lint": "next lint",
+    "lint": "biome lint",
     "payload": "payload",
     "start": "next start",
     "generate": "bun run generate:importmap && bun run generate:types && bun run generate:panda",

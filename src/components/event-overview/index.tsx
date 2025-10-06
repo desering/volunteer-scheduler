@@ -83,8 +83,8 @@ export const EventOverview = (props: Props & BoxProps) => {
   return (
     <Box {...(cssProps as BoxProps)}>
       <DateSelect
-        date={selectedDate}
-        dates={allDates}
+        selectedDate={selectedDate}
+        items={allDates}
         onDateSelect={setSelectedDate}
       />
       <Container>
@@ -105,7 +105,7 @@ export const EventOverview = (props: Props & BoxProps) => {
                 />
                 <EventButton.Title>{event.doc.title}</EventButton.Title>
                 <EventButton.Description
-                  // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+                  // biome-ignore lint/security/noDangerouslySetInnerHtml: rich text from CMS
                   dangerouslySetInnerHTML={{
                     __html: event.descriptionHtml || "",
                   }}
