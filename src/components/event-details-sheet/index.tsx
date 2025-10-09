@@ -160,7 +160,9 @@ export const EventDetailsDrawer = (props: Props) => {
             maxHeight={{ base: "80vh", md: "100vh" }}
             overflowY="auto"
             // avoid flash of old content on open, delay open animation
-            display={newEventLoading ? "none" : undefined}
+            style={{
+              display: newEventLoading ? "none" : undefined,
+            }}
           >
             <Suspense>
               <Sheet.Header>
