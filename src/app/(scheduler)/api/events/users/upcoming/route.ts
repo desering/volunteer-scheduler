@@ -5,12 +5,15 @@ export const GET = async () => {
   const { user } = await getUser();
 
   if (!user) {
-    return new Response(JSON.stringify({ error: "Unauthorized" }), {
-      status: 401,
-    });
+    return Response.json(
+      { error: "Unauthorized" },
+      {
+        status: 401,
+      },
+    );
   }
 
   const events = getUpcomingEventsForUserId(user.id);
 
-  return new Response(JSON.stringify(events), { status: 200 });
+  return Response.json(events);
 };

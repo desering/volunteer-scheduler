@@ -69,7 +69,7 @@ export const register = async (
     });
 
     return {
-      success: loginResult.token ? true : false,
+      success: loginResult.token,
       message: loginResult.token
         ? "Registration and login successful"
         : "Registration successful, but login failed",

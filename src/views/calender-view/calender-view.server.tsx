@@ -10,7 +10,7 @@ export const CalenderView = async ({
   initPageResult,
   searchParams,
 }: AdminViewProps) => {
-  let collectionSlug: CollectionSlug | undefined = undefined;
+  let collectionSlug: CollectionSlug | undefined;
 
   if (typeof params?.segments === "object") {
     const potentialSlug = params.segments[1] as CollectionSlug;

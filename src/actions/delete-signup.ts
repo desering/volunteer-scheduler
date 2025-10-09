@@ -1,14 +1,12 @@
 "use server";
 
-import { z } from "zod";
-import { headers as getHeaders } from "next/dist/server/request/headers";
-import { getPayload } from "payload";
+import { getUser } from "@/lib/services/get-user";
 import config from "@payload-config";
+import { getPayload } from "payload";
+import { z } from "zod";
 
 export async function deleteSignup(id: number) {
-  const headers = await getHeaders();
-  const payload = await getPayload({ config });
-  const { user } = await payload.auth({ headers });
+  const { user } = await getUser();
 
   if (!user) {
     return {
@@ -34,6 +32,7 @@ export async function deleteSignup(id: number) {
 
   const data = parse.data;
 
+  const payload = await getPayload({ config });
   const signup = await payload.delete({
     collection: "signups",
     id: data.id,

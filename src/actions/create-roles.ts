@@ -4,16 +4,16 @@ import config from "@payload-config";
 import type { EventTemplate } from "@payload-types";
 import { getPayload } from "payload";
 
-const payload = await getPayload({
-  config,
-});
-
 export const createRoles = async (
   eventId: number,
   transactionID: string | number,
   roles: EventTemplate["roles"],
   sectionId?: number,
 ) => {
+  const payload = await getPayload({
+    config,
+  });
+
   if (!roles) return;
 
   for (const role of roles) {

@@ -1,14 +1,10 @@
+import { getUser } from "@/lib/services/get-user";
+import { redirect } from "next/navigation";
 import { Container, Flex, panda } from "styled-system/jsx";
 import { button } from "styled-system/recipes/button";
-import { headers as getHeaders } from "next/headers";
-import { getPayload } from "payload";
-import config from "@payload-config";
-import { redirect } from "next/navigation";
 
 export default async function Page() {
-  const headers = await getHeaders();
-  const payload = await getPayload({ config });
-  const { user } = await payload.auth({ headers });
+  const { user } = await getUser();
 
   if (!user) {
     redirect("/auth/login");

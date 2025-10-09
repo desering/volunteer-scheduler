@@ -1,14 +1,10 @@
 import { RegisterForm } from "@/components/auth/register-form";
-import config from "@payload-config";
-import { headers as getHeaders } from "next/dist/server/request/headers";
+import { getUser } from "@/lib/services/get-user";
 import { redirect } from "next/navigation";
-import { getPayload } from "payload";
 import { Container, panda } from "styled-system/jsx";
 
 export default async function Page() {
-  const headers = await getHeaders();
-  const payload = await getPayload({ config });
-  const { user } = await payload.auth({ headers });
+  const { user } = await getUser();
 
   if (user) {
     redirect("/");

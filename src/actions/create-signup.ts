@@ -1,14 +1,12 @@
 "use server";
 
-import { z } from "zod";
-import { getPayload } from "payload";
+import { getUser } from "@/lib/services/get-user";
 import config from "@payload-config";
-import { headers as getHeaders } from "next/dist/server/request/headers";
+import { getPayload } from "payload";
+import { z } from "zod";
 
 export async function createSignup(eventId: number, roleId: number) {
-  const headers = await getHeaders();
-  const payload = await getPayload({ config });
-  const { user } = await payload.auth({ headers });
+  const { user } = await getUser();
 
   if (!user) {
     return {
@@ -36,6 +34,7 @@ export async function createSignup(eventId: number, roleId: number) {
 
   const data = parse.data;
 
+  const payload = await getPayload({ config });
   const signup = await payload.create({
     collection: "signups",
     data: {

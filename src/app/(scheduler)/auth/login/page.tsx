@@ -1,16 +1,12 @@
-import config from "@payload-config";
-import { headers as getHeaders } from "next/headers";
 import { redirect } from "next/navigation";
-import { getPayload } from "payload";
 
 import { LoginForm } from "@/components/auth/login-form";
 
+import { getUser } from "@/lib/services/get-user";
 import { Box, Container, Grid, panda } from "styled-system/jsx";
 
 export default async function Page() {
-  const headers = await getHeaders();
-  const payload = await getPayload({ config });
-  const { user } = await payload.auth({ headers });
+  const { user } = await getUser();
 
   if (user) {
     redirect("/");
