@@ -38,7 +38,8 @@ export const EventOverview = (props: Props & BoxProps) => {
 
   const { data: events, refetch } = useQuery<GroupedEventsByDay>({
     queryKey: ["eventsByDay"],
-    queryFn: async () => fetch("/api/events-by-day").then((res) => res.json()),
+    queryFn: async () =>
+      fetch("/api/events/overview").then((res) => res.json()),
     initialData: localProps.events,
   });
 
