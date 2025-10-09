@@ -69,7 +69,7 @@ export const EventDetailsDrawer = (props: Props) => {
     },
   );
 
-  const selectedRole = () => {
+  const selectedRole = useMemo(() => {
     const roleId = Number(selectedRoleId);
     return (
       details?.roles?.docs.find(({ id }) => id === roleId) ??
@@ -77,17 +77,24 @@ export const EventDetailsDrawer = (props: Props) => {
         .flatMap((s) => s.roles?.docs ?? [])
         .find(({ id }) => id === roleId)
     );
-  };
+  }, [selectedRoleId, details]);
 
-  const userSignups = () =>
-    details?.signups?.docs.filter(
-      ({ user: signupUser }) => signupUser === user?.id,
-    );
+  const userSignups = useMemo(
+    () =>
+      details?.signups?.docs.filter(
+        ({ user: signupUser }) => signupUser === user?.id,
+      ),
+    [details, user],
+  );
 
   console.log("details", details);
   console.log("props", props);
 
-  const hasUserSignedUp = () => (userSignups()?.length ?? 0) > 0;
+  const hasUserSignedUp = useMemo(
+    () => (userSignups?.length ?? 0) > 0,
+    [userSignups],
+  );
+
   const newEventLoading = details?.id !== props.eventId;
   const timeRange = useMemo(() => {
     const start = details?.start_date;
@@ -130,8 +137,8 @@ export const EventDetailsDrawer = (props: Props) => {
       : undefined;
     if (!_selectedRole) throw new Error("Unexpected, missing role id");
 
-    if (hasUserSignedUp()) {
-      const signup = userSignups()?.find((su) => su.role === _selectedRole);
+    if (hasUserSignedUp) {
+      const signup = userSignups?.find((su) => su.role === _selectedRole);
       if (!signup) return;
 
       deleteSignup(signup.id);
@@ -256,16 +263,16 @@ export const EventDetailsDrawer = (props: Props) => {
                   <Button
                     width="full"
                     variant="solid"
-                    colorPalette={hasUserSignedUp() ? "tomato" : "olive"}
-                    disabled={!hasUserSignedUp() && !selectedRoleId}
+                    colorPalette={hasUserSignedUp ? "tomato" : "olive"}
+                    disabled={!hasUserSignedUp && !selectedRoleId}
                     loading={details === undefined || isCreating || isDeleting}
                     onClick={() => onSigningButtonClicked()}
                   >
                     {selectedRoleId ? (
                       <>
-                        {hasUserSignedUp() ? "Sign out of" : "Sign up for"}
+                        {hasUserSignedUp ? "Sign out of" : "Sign up for"}
                         <panda.span fontWeight="black">
-                          {selectedRole()?.title}
+                          {selectedRole?.title}
                         </panda.span>
                         role
                       </>
