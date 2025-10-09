@@ -28,7 +28,7 @@ function getQueryClient() {
   return browserQueryClient;
 }
 
-export const ClientProviders = async ({
+export const ClientProviders = ({
   children,
 }: {
   children: React.ReactNode;
