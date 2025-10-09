@@ -1,11 +1,11 @@
 import { ThemeSwitchButton } from "@/components/theme-switch-button";
-import { useAuth } from "@/providers/auth";
+import { getUser } from "@/lib/services/get-user";
 import { Container } from "styled-system/jsx";
 import { panda } from "styled-system/jsx/factory";
 import { button } from "styled-system/recipes/button";
 
 export default async function NavBar() {
-  const { user } = useAuth();
+  const { user } = await getUser();
 
   return (
     <Container marginTop="4">

@@ -7,5 +7,5 @@ export const getUser = cache(async () => {
   const headers = await getHeaders();
   const payload = await getPayload({ config });
 
-  return await payload.auth({ headers: headers });
+  return await payload.auth({ headers });
 });
