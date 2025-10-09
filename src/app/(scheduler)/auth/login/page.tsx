@@ -37,7 +37,7 @@ export default async function Page() {
               Welcome back :)
             </panda.h1>
             <Box textAlign="center" color="fg.muted">
-              Please enter your details to sign in
+              Please enter your details to log in
             </Box>
           </div>
 

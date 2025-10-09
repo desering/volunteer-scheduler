@@ -69,7 +69,7 @@ export const LoginForm = () => {
         loading={isPending}
         className={button({ size: "lg", variant: "solid" })}
       >
-        Sign in
+        Log in
       </Button>
 
       <Divider borderColor="border.muted" />

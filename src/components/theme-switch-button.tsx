@@ -20,11 +20,11 @@ export function ThemeSwitchButton() {
           {(() => {
             switch (themeSelection) {
               case "light":
-                return <SunIcon />;
+                return <SunIcon suppressHydrationWarning />;
               case "dark":
-                return <MoonIcon />;
+                return <MoonIcon suppressHydrationWarning />;
               default:
-                return <SunMoonIcon />;
+                return <SunMoonIcon suppressHydrationWarning />;
             }
           })()}
         </IconButton>
