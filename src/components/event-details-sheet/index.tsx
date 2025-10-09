@@ -45,7 +45,7 @@ export const EventDetailsDrawer = (props: Props) => {
       const params = new URLSearchParams({
         id: props.eventId?.toString() ?? "",
       });
-      return fetch(`/api/event-details?${params}`).then((res) => res.json());
+      return fetch(`/api/event?${params}`).then((res) => res.json());
     },
     enabled: !!props.eventId,
   });
