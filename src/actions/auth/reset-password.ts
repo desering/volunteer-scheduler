@@ -1,3 +1,6 @@
-export const resetPasswordAction = async (prevState: { message: string }, formData: FormData) => {
-  return {}
-}
+export const resetPasswordAction = async (
+  prevState: { message: string },
+  formData: FormData,
+) => {
+  return {};
+};

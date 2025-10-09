@@ -21,12 +21,12 @@
 
 /* fix datepicker having white background to be deselected dates */
 .react-datepicker__month--selecting-range
-  .react-datepicker__day--in-range:not(
-    .react-datepicker__day--in-selecting-range,
-    .react-datepicker__month-text--in-selecting-range,
-    .react-datepicker__quarter-text--in-selecting-range,
-    .react-datepicker__year-text--in-selecting-range
-  ),
+.react-datepicker__day--in-range:not(
+  .react-datepicker__day--in-selecting-range,
+  .react-datepicker__month-text--in-selecting-range,
+  .react-datepicker__quarter-text--in-selecting-range,
+  .react-datepicker__year-text--in-selecting-range
+),
 .react-datepicker__year--selecting-range
   .react-datepicker__day--in-range:not(
     .react-datepicker__day--in-selecting-range,

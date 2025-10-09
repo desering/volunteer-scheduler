@@ -1,7 +1,7 @@
-'use server'
+"use server";
 
-import { logout } from '@/actions/auth/logout'
+import { logout } from "@/actions/auth/logout";
 
 export default async function Page() {
-  logout()
+  logout();
 }
