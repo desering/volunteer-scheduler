@@ -84,6 +84,8 @@ export const EventDetailsDrawer = (props: Props) => {
       ({ user: signupUser }) => signupUser === user?.id,
     );
 
+  console.log("details", details);
+
   const hasUserSignedUp = () => (userSignups()?.length ?? 0) > 0;
   const newEventLoading = details?.id !== props.eventId;
   const timeRange = useMemo(() => {
