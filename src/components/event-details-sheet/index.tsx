@@ -85,6 +85,7 @@ export const EventDetailsDrawer = (props: Props) => {
     );
 
   console.log("details", details);
+  console.log("props", props);
 
   const hasUserSignedUp = () => (userSignups()?.length ?? 0) > 0;
   const newEventLoading = details?.id !== props.eventId;
