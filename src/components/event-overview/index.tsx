@@ -3,8 +3,7 @@
 import { EventButton } from "@/components/event-button";
 import { EventDetailsDrawer } from "@/components/event-details-sheet";
 import { NoEventsMessage } from "@/components/event-overview/no-events-message";
-import type { EventsByDay } from "@/lib/mappers/map-events";
-import type { User } from "@payload-types";
+import type { GroupedEventsByDay } from "@/lib/mappers/map-events";
 import { useQuery } from "@tanstack/react-query";
 import {
   addDays,
@@ -15,7 +14,7 @@ import {
   subDays,
   subMonths,
 } from "date-fns";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   Box,
   type BoxProps,
@@ -26,8 +25,7 @@ import {
 import { DateSelect } from "./date-select";
 
 type Props = {
-  user?: User;
-  events?: EventsByDay;
+  events?: GroupedEventsByDay;
 };
 
 export const EventOverview = (props: Props & BoxProps) => {
@@ -38,58 +36,66 @@ export const EventOverview = (props: Props & BoxProps) => {
   // separation of selectedEvent and isDrawerOpen, otherwise breaks exitAnim
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  const { data: events, refetch } = useQuery<EventsByDay>({
+  const { data: events, refetch } = useQuery<GroupedEventsByDay>({
     queryKey: ["eventsByDay"],
     queryFn: async () => fetch("/api/events-by-day").then((res) => res.json()),
     initialData: localProps.events,
   });
 
+  const completeDateRange = useMemo(() => {
+    if (!events) return [];
+
+    const entries = Object.entries(events);
+    const start = startOfDay(new Date()); // add some disabled buttons
+    const end = entries.reduce((max, [date]) => {
+      const d = new Date(date);
+      return d > max ? d : max;
+    }, startOfDay(new Date()));
+
+    return [
+      // fake days
+      ...eachDayOfInterval({
+        start: subMonths(start, 1),
+        end: subDays(start, 1),
+      }).map((date) => ({ date, hasEvents: false, isPublished: false })),
+      // real days
+      ...eachDayOfInterval({ start, end }).map((date) => {
+        const [, events] =
+          entries.find(([d]) => isSameDay(new Date(d), date)) ?? [];
+        const hasEvents = (events ?? []).length > 0;
+
+        return { date, hasEvents, isPublished: true };
+      }),
+      // fake days
+      ...eachDayOfInterval({
+        start: addDays(end, 1),
+        end: addMonths(end, 1),
+      }).map((date) => ({ date, hasEvents: false, isPublished: false })),
+    ];
+  }, [events]);
+
+  const eventsOnSelectedDate = useMemo(() => {
+    if (!events) return;
+    const [, filteredEvents] =
+      Object.entries(events).find(([date]) => isSameDay(date, selectedDate)) ??
+      [];
+    return filteredEvents;
+  }, [events, selectedDate]);
+
   if (!events) {
     return "Something went wrong, please try again later.";
   }
-
-  const entries = Object.entries(events);
-  const start = startOfDay(new Date()); // add some disabled buttons
-  const end = entries.reduce((max, [date]) => {
-    const d = new Date(date);
-    return d > max ? d : max;
-  }, startOfDay(new Date()));
-
-  const allDates = [
-    // fake days
-    ...eachDayOfInterval({
-      start: subMonths(start, 1),
-      end: subDays(start, 1),
-    }).map((date) => ({ date, hasEvents: false, isPublished: false })),
-    // real days
-    ...eachDayOfInterval({ start, end }).map((date) => {
-      const [, events] =
-        entries.find(([d]) => isSameDay(new Date(d), date)) ?? [];
-      const hasEvents = (events ?? []).length > 0;
-
-      return { date, hasEvents, isPublished: true };
-    }),
-    // fake days
-    ...eachDayOfInterval({
-      start: addDays(end, 1),
-      end: addMonths(end, 1),
-    }).map((date) => ({ date, hasEvents: false, isPublished: false })),
-  ];
-
-  const [, todayEvents] =
-    Object.entries(events).find(([date]) => isSameDay(date, selectedDate)) ??
-    [];
 
   return (
     <Box {...(cssProps as BoxProps)}>
       <DateSelect
         selectedDate={selectedDate}
-        items={allDates}
+        items={completeDateRange}
         onDateSelect={setSelectedDate}
       />
       <Container>
         <Grid gap="4">
-          {todayEvents?.map((event) => {
+          {eventsOnSelectedDate?.map((event) => {
             const signups = event.doc.signups?.docs?.length;
             return (
               <EventButton.Root
@@ -122,7 +128,6 @@ export const EventOverview = (props: Props & BoxProps) => {
         </Grid>
       </Container>
       <EventDetailsDrawer
-        user={localProps.user}
         open={isDrawerOpen}
         eventId={selectedEventId}
         onClose={() => {

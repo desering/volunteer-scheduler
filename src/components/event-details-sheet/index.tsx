@@ -5,7 +5,6 @@ import { IconButton } from "@/components/ui/icon-button";
 import { RadioButtonGroup } from "@/components/ui/radio-button-group";
 import { Sheet } from "@/components/ui/sheet";
 import { format } from "@/utils/tz-format";
-import type { User } from "@payload-types";
 import { useQuery } from "@tanstack/react-query";
 import { HStack, panda } from "styled-system/jsx";
 import { button } from "styled-system/recipes/button";
@@ -17,14 +16,19 @@ import { deleteSignup as deleteSignupAction } from "@/actions/delete-signup";
 import confetti from "canvas-confetti";
 
 import type { getEventDetails } from "@/lib/services/get-event-details";
+import { useAuth } from "@/providers/auth";
 import { Portal } from "@ark-ui/react";
-import { InfoIcon } from "lucide-react";
-import { XIcon } from "lucide-react";
-import { Fragment, Suspense, useEffect, useMemo, useState } from "react";
+import { InfoIcon, XIcon } from "lucide-react";
+import {
+  Fragment,
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
 type Props = {
-  user?: User;
-
   eventId?: number;
 
   open: boolean;
@@ -33,11 +37,9 @@ type Props = {
 };
 
 export const EventDetailsDrawer = (props: Props) => {
-  const {
-    data: details,
-    refetch,
-    isFetching,
-  } = useQuery({
+  const { user } = useAuth();
+
+  const { data: details, refetch } = useQuery({
     queryKey: ["eventDetails", props.eventId],
     queryFn: async (): ReturnType<typeof getEventDetails> => {
       const params = new URLSearchParams({
@@ -50,11 +52,14 @@ export const EventDetailsDrawer = (props: Props) => {
 
   const [selectedRoleId, setSelectedRoleId] = useState<string>();
 
+  // TODO: replace to useMutation
   const [isDeleting, deleteSignup] = useAsyncFunc(async (id: number) => {
     await deleteSignupAction(id);
     await refetch();
     setSelectedRoleId(undefined);
   });
+
+  // TODO: replace to useMutation
   const [isCreating, createSignup] = useAsyncFunc(
     async (event: number, role: number) => {
       await createSignupAction(event, role);
@@ -73,8 +78,12 @@ export const EventDetailsDrawer = (props: Props) => {
         .find(({ id }) => id === roleId)
     );
   };
+
   const userSignups = () =>
-    details?.signups?.docs.filter(({ user }) => user === props.user?.id);
+    details?.signups?.docs.filter(
+      ({ user: signupUser }) => signupUser === user?.id,
+    );
+
   const hasUserSignedUp = () => (userSignups()?.length ?? 0) > 0;
   const newEventLoading = details?.id !== props.eventId;
   const timeRange = useMemo(() => {
@@ -85,6 +94,15 @@ export const EventDetailsDrawer = (props: Props) => {
 
     return `${format(start, "iiii dd MMMM")}, ${format(start, "HH:mm")} - ${format(end, "HH:mm")}`;
   }, [details]);
+
+  const selectCurrentRole = useCallback(() => {
+    setSelectedRoleId(
+      details?.signups?.docs
+        .filter((signup) => signup.user === user?.id)
+        .map((signup) => signup.role?.toString())
+        .shift() ?? undefined,
+    );
+  }, [details, user]);
 
   useEffect(() => {
     // Reset selected role on exit
@@ -97,15 +115,7 @@ export const EventDetailsDrawer = (props: Props) => {
     if (shouldSelectRole) {
       selectCurrentRole();
     }
-  }, [props.eventId, isFetching, selectedRoleId]);
-
-  const selectCurrentRole = () =>
-    setSelectedRoleId(
-      details?.signups?.docs
-        .filter((signup) => signup.user === props.user?.id)
-        .map((signup) => signup.role?.toString())
-        .shift() ?? undefined,
-    );
+  }, [props.eventId, selectedRoleId, newEventLoading, selectCurrentRole]);
 
   const onSigningButtonClicked = () => {
     const id = details?.id;
@@ -113,7 +123,7 @@ export const EventDetailsDrawer = (props: Props) => {
 
     const _selectedRoleId = selectedRoleId;
     const _selectedRole = _selectedRoleId
-      ? Number.parseInt(_selectedRoleId)
+      ? Number.parseInt(_selectedRoleId, 10)
       : undefined;
     if (!_selectedRole) throw new Error("Unexpected, missing role id");
 
@@ -155,7 +165,7 @@ export const EventDetailsDrawer = (props: Props) => {
                 <Sheet.Title fontSize="2xl">{details?.title}</Sheet.Title>
                 {details?.descriptionHtml && (
                   <Sheet.Description
-                    // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+                    // biome-ignore lint/security/noDangerouslySetInnerHtml: rich text from CMS
                     dangerouslySetInnerHTML={{
                       __html: details.descriptionHtml,
                     }}
@@ -195,7 +205,6 @@ export const EventDetailsDrawer = (props: Props) => {
                     roles={
                       details?.roles?.docs.filter((role) => !role.section) ?? []
                     }
-                    user={props.user}
                   />
                   {details?.sections?.docs.map((section) => (
                     <Fragment key={section.id}>
@@ -206,12 +215,11 @@ export const EventDetailsDrawer = (props: Props) => {
                       <RoleRadioItems
                         details={details}
                         roles={section.roles?.docs ?? []}
-                        user={props.user}
                       />
                     </Fragment>
                   ))}
                 </RadioButtonGroup.Root>
-                {props.user && (
+                {user && (
                   <Alert.Root marginBottom="-4" marginTop="8">
                     <Alert.Icon asChild>
                       <InfoIcon />
@@ -227,7 +235,7 @@ export const EventDetailsDrawer = (props: Props) => {
                 )}
               </Sheet.Body>
               <Sheet.Footer justifyContent="center">
-                {!props.user && (
+                {!user && (
                   <HStack>
                     Want to help out?{" "}
                     <a className={button({})} href="/auth/login">
@@ -239,7 +247,7 @@ export const EventDetailsDrawer = (props: Props) => {
                     </a>
                   </HStack>
                 )}
-                {props.user && (
+                {user && (
                   <Button
                     width="full"
                     variant="solid"

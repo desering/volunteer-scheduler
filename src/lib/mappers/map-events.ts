@@ -3,15 +3,15 @@ import { convertLexicalToHTML } from "@/utils/convert-lexical-to-html";
 
 export type DisplayableEvent = {
   doc: Event;
-  descriptionHtml?: string;
+  descriptionHtml?: string; // TODO - replace with payload rich text to HTML converter
   start_date: Date;
   end_date: Date;
 };
-export type EventsByDay = Record<string, DisplayableEvent[]>;
+export type GroupedEventsByDay = Record<string, DisplayableEvent[]>;
 
 export const groupAndSortEventsByDate = async (
   events: Event[],
-): Promise<EventsByDay> => {
+): Promise<GroupedEventsByDay> => {
   // https://payloadcms.com/docs/lexical/converters#generating-html-anywhere-on-the-server
 
   const mappedEvents = await Promise.all(

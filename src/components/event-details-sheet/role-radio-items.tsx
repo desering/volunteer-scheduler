@@ -1,20 +1,20 @@
-import type { Role, User } from "@payload-types";
-import type { EventDetails } from "@/lib/services/get-event-details";
-import { RadioButtonGroup } from "../ui/radio-button-group";
-import { Bleed, Divider, Flex, panda } from "styled-system/jsx";
 import { Text } from "@/components/ui/text";
+import type { EventDetails } from "@/lib/services/get-event-details";
+import { useAuth } from "@/providers/auth";
+import type { Role } from "@payload-types";
+import { Bleed, Divider, Flex, panda } from "styled-system/jsx";
+import { RadioButtonGroup } from "../ui/radio-button-group";
 
 type RoleItemsProps = {
   details?: EventDetails;
   roles: Role[];
-  user?: User;
 };
 
 export const RoleRadioItems = (props: RoleItemsProps) => {
+  const { user } = useAuth();
+
   const userSignups = () =>
-    props.details?.signups?.docs.filter(
-      (signup) => signup.user === props.user?.id,
-    );
+    props.details?.signups?.docs.filter((signup) => signup.user === user?.id);
 
   const hasUserSignedUp = () => (userSignups()?.length ?? 0) > 0;
 

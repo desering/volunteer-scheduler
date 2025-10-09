@@ -21,10 +21,10 @@ export const UpcomingEventsList = (props: Props) => {
   const [selectedEvent, setSelectedEvent] = useState<DisplayableEvent>();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  const { data } = useQuery<UpcomingEventsForUserId>({
-    queryKey: ["upcoming-events", props.user.id],
+  const { data, refetch } = useQuery<UpcomingEventsForUserId>({
+    queryKey: ["events", "users", "upcoming"],
     queryFn: async () =>
-      await fetch(`/api/events/upcoming`).then((res) => res.json()),
+      await fetch(`/api/events/users/upcoming`).then((res) => res.json()),
     initialData: props.initialData,
     staleTime: 1000 * 60 * 5, // 5 minutes
     refetchOnWindowFocus: true,
@@ -97,12 +97,11 @@ export const UpcomingEventsList = (props: Props) => {
         </Flex>
       </Container>
       <EventDetailsDrawer
-        user={props.user}
         open={isDrawerOpen}
         eventId={selectedEvent?.doc.id}
         onClose={() => {
           setIsDrawerOpen(false);
-          //await refetch(); // todo: replace astro createResource with useState plus ??? above
+          refetch();
         }}
         onExitComplete={() => setSelectedEvent(undefined)}
       />

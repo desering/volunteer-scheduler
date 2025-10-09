@@ -44,7 +44,7 @@
     "zod": "3.24.2"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.2.5",
+    "@biomejs/biome": "2.2.5",
     "@pandacss/dev": "^1.2.0",
     "@park-ui/panda-preset": "^0.43.1",
     "@types/node": "^22.14.0",
