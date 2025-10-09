@@ -41,9 +41,6 @@ next-env.d.ts
 
 /media
 
-## Payload
-src/payload-types.ts
-
 ## Panda
 styled-system
 styled-system-studio
