@@ -85,6 +85,10 @@ export default buildConfig({
     },
   },
 
+  routes: {
+    api: "/payload-api",
+  },
+
   cors: [process.env.NEXT_PUBLIC_SERVER_URL ?? ""].filter(Boolean),
   csrf: [process.env.NEXT_PUBLIC_SERVER_URL ?? ""].filter(Boolean),
 
