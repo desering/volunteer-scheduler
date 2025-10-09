@@ -87,9 +87,6 @@ export const EventDetailsDrawer = (props: Props) => {
     [details, user],
   );
 
-  console.log("details", details);
-  console.log("props", props);
-
   const hasUserSignedUp = useMemo(
     () => (userSignups?.length ?? 0) > 0,
     [userSignups],
@@ -206,7 +203,7 @@ export const EventDetailsDrawer = (props: Props) => {
                 </panda.h2>
                 <RadioButtonGroup.Root
                   direction="vertical"
-                  value={selectedRoleId}
+                  value={selectedRoleId ?? null}
                   onValueChange={(event) =>
                     setSelectedRoleId(event.value ?? undefined)
                   }
