@@ -1,13 +1,12 @@
-import { ListenToThemeChanges } from "@/components/listen-to-theme-changes";
 import NavBar from "@/components/navbar";
-import { themeColors, type Theme } from "@/utils/theme";
 import { Source_Sans_3 } from "next/font/google";
-import { cookies } from "next/headers";
 import { cx } from "styled-system/css";
 import { panda } from "styled-system/jsx";
 import { ClientProviders } from "./client-providers";
 import { ServerProviders } from "./server-providers";
 
+import { themeColors } from "@/constants/theme-colors";
+import { getThemeFromCookie } from "@/lib/services/get-theme-from-cookie";
 import "./globals.css";
 
 const sourceSans = Source_Sans_3({
@@ -16,14 +15,9 @@ const sourceSans = Source_Sans_3({
   display: "swap",
 });
 
-const getCookieTheme = async () => {
-  const cookieStore = await cookies();
-  const theme = (cookieStore.get("theme")?.value || "system") as Theme;
-  return theme;
-};
-
 export const generateViewport = async () => {
-  const theme = await getCookieTheme();
+  const theme = await getThemeFromCookie();
+
   const color = {
     light: themeColors.light,
     dark: themeColors.dark,
@@ -48,7 +42,7 @@ type Props = {
 };
 
 export default async function RootLayout({ children }: Props) {
-  const theme = await getCookieTheme();
+  const theme = await getThemeFromCookie();
 
   return (
     <html
@@ -58,6 +52,7 @@ export default async function RootLayout({ children }: Props) {
         "use-panda",
         sourceSans.className,
       )}
+      suppressHydrationWarning
     >
       <head>
         {theme === "system" && (
@@ -78,9 +73,7 @@ export default async function RootLayout({ children }: Props) {
         minHeight="screen"
         display="flex"
         flexDirection="column"
-        alignItems="stretch"
       >
-        <ListenToThemeChanges />
         <ServerProviders>
           <ClientProviders>
             <NavBar />

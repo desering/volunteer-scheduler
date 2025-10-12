@@ -46,6 +46,8 @@ export const UpcomingEventsList = (props: Props) => {
         display="flex"
         flexDirection="column"
         gap="3"
+        border="1px solid"
+        borderColor={{ base: "transparent", _hover: "border.default" }}
       >
         <EventButton.Title>{event.doc.title}</EventButton.Title>
 
@@ -91,11 +93,9 @@ export const UpcomingEventsList = (props: Props) => {
 
   return (
     <>
-      <Container>
-        <Flex flexDirection="column" gap="4">
-          {eventsList}
-        </Flex>
-      </Container>
+      <Flex flexDirection="column" gap="4">
+        {eventsList}
+      </Flex>
       <EventDetailsDrawer
         open={isDrawerOpen}
         eventId={selectedEvent?.doc.id}

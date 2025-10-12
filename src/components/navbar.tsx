@@ -8,7 +8,7 @@ export default async function NavBar() {
   const { user } = await getUser();
 
   return (
-    <Container marginTop="4">
+    <Container marginTop="4" width="100%">
       <panda.nav display="flex" justifyContent="space-between">
         <panda.div display="flex" gap="4">
           <a href="/" className={button({ variant: "outline" })}>

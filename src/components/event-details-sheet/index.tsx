@@ -229,7 +229,11 @@ export const EventDetailsDrawer = (props: Props) => {
                   ))}
                 </RadioButtonGroup.Root>
                 {user && (
-                  <Alert.Root marginBottom="-4" marginTop="8">
+                  <Alert.Root
+                    marginBottom="-4"
+                    marginTop="8"
+                    borderColor="border.default"
+                  >
                     <Alert.Icon asChild>
                       <InfoIcon />
                     </Alert.Icon>

@@ -18,13 +18,22 @@ export default async function Page() {
   const events = await getUpcomingEventsForUserId(user.id);
 
   return (
-    <>
-      <Container marginTop={{ base: 4, xl: 20 }} marginBottom="4">
-        <panda.h1 fontSize="xl" fontWeight="medium">
-          My upcoming shifts
-        </panda.h1>
-      </Container>
+    <Container
+      alignItems="stretch"
+      display="flex"
+      flexDirection="column"
+      width="full"
+      marginTop={{ base: 4, md: 10, xl: 20 }}
+    >
+      <panda.h1
+        fontSize="xl"
+        fontWeight="medium"
+        marginBottom="4"
+        textAlign="center"
+      >
+        My upcoming shifts
+      </panda.h1>
       <UpcomingEventsList user={user} initialData={events} />
-    </>
+    </Container>
   );
 }
