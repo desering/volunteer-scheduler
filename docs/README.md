@@ -10,8 +10,8 @@ Repo for the Volunteer Scheduler project.
 
 ## How to get started with development
 
-
 ### Setup & run
+
 1. Install all dependencies:
    ```shell
    bun install
@@ -32,12 +32,22 @@ Repo for the Volunteer Scheduler project.
    ```shell
    bun dev
    ```
+
 ### Create a user and event
 
-After running the dev server, it is possible to access the app (default: localhost:3000), but there will be no events to show. To fix this, create an admin account and an event
+After running the dev server, it is possible to access the app (default:
+`localhost:3000`), but there will be no events to show. To fix this, create an
+admin account and an event:
 
 1. Navigate to `localhost:3000/admin`
 2. Fill in the form. Make sure to select `admin` as the user role. This process is only necessary for first time setup or when rebuilding the db.
 
 Now, you can create and publish new event templates, which will show up in the app for non-privileged users.
 
+### Connect to te database
+
+To connect to the database container:
+
+```shell
+docker exec -it volunteer-scheduler-postgres-1 psql -U schedule
+```
