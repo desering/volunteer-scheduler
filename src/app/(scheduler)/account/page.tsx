@@ -1,7 +1,7 @@
-import { getUser } from "@/lib/services/get-user";
 import { redirect } from "next/navigation";
 import { Container, Flex, panda } from "styled-system/jsx";
-import { button } from "styled-system/recipes/button";
+import LogoutButton from "@/components/auth/logout-button";
+import { getUser } from "@/lib/services/get-user";
 
 export default async function Page() {
   const { user } = await getUser();
@@ -26,12 +26,7 @@ export default async function Page() {
       </panda.p>
 
       <Flex flexDir="column" gap="10">
-        <a
-          href="/auth/logout"
-          className={button({ size: "lg", variant: "outline" })}
-        >
-          Logout
-        </a>
+        <LogoutButton />
       </Flex>
     </Container>
   );
