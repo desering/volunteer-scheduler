@@ -1,9 +1,9 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
-
-import { LoginForm } from "@/components/auth/login-form";
-
-import { getUser } from "@/lib/services/get-user";
 import { Box, Container, Grid, panda } from "styled-system/jsx";
+import { link } from "styled-system/recipes";
+import { LoginForm } from "@/components/auth/login-form";
+import { getUser } from "@/lib/services/get-user";
 
 export default async function Page() {
   const { user } = await getUser();
@@ -38,6 +38,13 @@ export default async function Page() {
           </div>
 
           <LoginForm />
+
+          <panda.div textAlign="center" marginY="10px">
+            Don't have an account yet?{" "}
+            <Link href="/auth/register" className={link()}>
+              Create account
+            </Link>
+          </panda.div>
         </Grid>
       </Container>
     </Box>

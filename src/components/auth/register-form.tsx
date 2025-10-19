@@ -1,14 +1,14 @@
 /** biome-ignore-all lint/correctness/useUniqueElementIds: <explanation> */
 "use client";
 
-import { register } from "@/actions/auth/register";
 import { redirect } from "next/navigation";
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import { css, cx } from "styled-system/css";
 import { HStack, panda } from "styled-system/jsx";
 import { vstack } from "styled-system/patterns";
-import { button, input, link } from "styled-system/recipes";
+import { button, input } from "styled-system/recipes";
+import { register } from "@/actions/auth/register";
 
 const initialState = {
   message: "",
@@ -135,13 +135,6 @@ export function RegisterForm() {
         </a>
         <SubmitButton />
       </HStack>
-
-      <div className={css({ textAlign: "center", marginY: "10px" })}>
-        Already have an account?{" "}
-        <a href="/auth/login" className={link()}>
-          Login
-        </a>
-      </div>
     </form>
   );
 }

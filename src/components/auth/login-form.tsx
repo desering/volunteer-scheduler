@@ -1,19 +1,14 @@
 "use client";
 
-import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import { css, cx } from "styled-system/css";
-import { Divider, Grid, panda } from "styled-system/jsx";
-import { vstack } from "styled-system/patterns";
-import { button, formLabel, input, link } from "styled-system/recipes";
-import { Button } from "../ui/button";
-import Link from "next/link";
 import { Field } from "@ark-ui/react";
-
-const initialState = {
-  message: "",
-  success: false,
-};
+import { useMutation } from "@tanstack/react-query";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { css } from "styled-system/css";
+import { Grid } from "styled-system/jsx";
+import { vstack } from "styled-system/patterns";
+import { button, input } from "styled-system/recipes";
+import { Button } from "../ui/button";
 
 export const LoginForm = () => {
   const router = useRouter();
@@ -71,15 +66,6 @@ export const LoginForm = () => {
       >
         Log in
       </Button>
-
-      <Divider borderColor="border.muted" />
-
-      <panda.div textAlign="center" marginY="10px">
-        Don't have an account yet?{" "}
-        <Link href="/auth/register" className={link()}>
-          Create account
-        </Link>
-      </panda.div>
     </form>
   );
 };
