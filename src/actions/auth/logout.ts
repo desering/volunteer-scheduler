@@ -1,14 +1,16 @@
 "use server";
 
-import { logout as payloadLogout } from "@payloadcms/next/auth";
 import config from "@payload-config";
+import { logout as payloadLogout } from "@payloadcms/next/auth";
+import { redirect } from "next/navigation";
 
-export const logout = async () => {
+export async function logout() {
   try {
-    return await payloadLogout({ config });
+    await payloadLogout({ config });
   } catch (error) {
     throw new Error(
       `Logout failed: ${error instanceof Error ? error.message : "Unknown error"}`,
     );
   }
-};
+  return redirect("/");
+}
