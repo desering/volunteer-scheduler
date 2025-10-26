@@ -1,9 +1,9 @@
 "use server";
 
-import { getUser } from "@/lib/services/get-user";
 import config from "@payload-config";
 import { getPayload } from "payload";
 import { z } from "zod";
+import { getUser } from "@/lib/services/get-user";
 
 export async function deleteSignup(id: number) {
   const { user } = await getUser();

@@ -1,9 +1,5 @@
 "use client";
 
-import { EventButton } from "@/components/event-button";
-import { EventDetailsDrawer } from "@/components/event-details-sheet";
-import { NoEventsMessage } from "@/components/event-overview/no-events-message";
-import type { GroupedEventsByDay } from "@/lib/mappers/map-events";
 import { useQuery } from "@tanstack/react-query";
 import {
   addDays,
@@ -22,6 +18,10 @@ import {
   Grid,
   splitCssProps,
 } from "styled-system/jsx";
+import { EventButton } from "@/components/event-button";
+import { EventDetailsDrawer } from "@/components/event-details-sheet";
+import { NoEventsMessage } from "@/components/event-overview/no-events-message";
+import type { GroupedEventsByDay } from "@/lib/mappers/map-events";
 import { DateSelect } from "./date-select";
 
 type Props = {

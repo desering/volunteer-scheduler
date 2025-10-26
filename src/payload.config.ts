@@ -1,14 +1,12 @@
 import path from "node:path";
 import process from "node:process";
-
-import { postgresAdapter } from "@payloadcms/db-postgres";
 import { fileURLToPath } from "node:url";
-import { buildConfig } from "payload";
-import { migrations } from "../migrations";
-
+import { postgresAdapter } from "@payloadcms/db-postgres";
 import { nodemailerAdapter } from "@payloadcms/email-nodemailer";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
+import { buildConfig } from "payload";
 import sharp from "sharp";
+import { migrations } from "../migrations";
 
 import { EventTemplates } from "./collections/event-templates";
 import { Events } from "./collections/events";

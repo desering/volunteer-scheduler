@@ -1,8 +1,8 @@
 "use server";
 
-import { groupAndSortEventsByDate } from "@/lib/mappers/map-events";
 import config from "@payload-config";
 import { getPayload } from "payload";
+import { groupAndSortEventsByDate } from "@/lib/mappers/map-events";
 
 export const getEventsByDay = async () => {
   const payload = await getPayload({ config });

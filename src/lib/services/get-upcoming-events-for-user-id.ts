@@ -1,10 +1,10 @@
 "use server";
 
-import { prepareEvent } from "@/lib/mappers/map-events";
 import config from "@payload-config";
 import type { Event } from "@payload-types";
 import { startOfDay } from "date-fns";
 import { getPayload } from "payload";
+import { prepareEvent } from "@/lib/mappers/map-events";
 
 export type UpcomingEventsForUserId = Awaited<
   ReturnType<typeof getUpcomingEventsForUserId>

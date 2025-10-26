@@ -1,6 +1,6 @@
-import type { Theme } from "@/providers/theme-provider";
 import { cookies } from "next/headers";
 import { cache } from "react";
+import type { Theme } from "@/providers/theme-provider";
 
 export const getThemeFromCookie = cache(async () => {
   const cookieStore = await cookies();

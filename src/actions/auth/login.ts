@@ -1,7 +1,7 @@
 "use server";
 
-import { login as payloadLogin } from "@payloadcms/next/auth";
 import config from "@payload-config";
+import { login as payloadLogin } from "@payloadcms/next/auth";
 
 export const login = async ({
   email,

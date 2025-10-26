@@ -1,8 +1,8 @@
 "use server";
 
-import { convertLexicalToHTML } from "@/utils/convert-lexical-to-html";
 import config from "@payload-config";
 import { getPayload } from "payload";
+import { convertLexicalToHTML } from "@/utils/convert-lexical-to-html";
 
 export const getEventDetails = async (id: number) => {
   const payload = await getPayload({ config });

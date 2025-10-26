@@ -1,9 +1,5 @@
 "use client";
 
-import { createEventsFromTemplate } from "@/actions/create-events-from-template";
-import { daysOfWeek } from "@/constants/days-of-week";
-import { getEventsInPeriod } from "@/lib/services/get-events-in-period";
-import { startOfMonth } from "@/utils/utc";
 import { UTCDate, utc } from "@date-fns/utc";
 import type { EventTemplate } from "@payload-types";
 import { DatePicker, toast } from "@payloadcms/ui";
@@ -18,7 +14,11 @@ import {
 } from "date-fns";
 import { useMemo, useState } from "react";
 import { cx } from "styled-system/css";
-import { Box, Center, Grid, HStack, VStack, panda } from "styled-system/jsx";
+import { Box, Center, Grid, HStack, panda, VStack } from "styled-system/jsx";
+import { createEventsFromTemplate } from "@/actions/create-events-from-template";
+import { daysOfWeek } from "@/constants/days-of-week";
+import { getEventsInPeriod } from "@/lib/services/get-events-in-period";
+import { startOfMonth } from "@/utils/utc";
 import { Button } from "../ui/button";
 import { bleedX, divider, gutterX, gutterY } from "../ui/utils";
 

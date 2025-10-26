@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Box, panda, splitCssProps, type BoxProps } from "styled-system/jsx";
+import { Box, type BoxProps, panda, splitCssProps } from "styled-system/jsx";
 import { format } from "@/utils/tz-format";
 
 type Props = {

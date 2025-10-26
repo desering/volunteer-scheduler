@@ -12,7 +12,7 @@ import {
   getMonth,
   getYear,
 } from "date-fns";
-import { type RequiredDataFromCollectionSlug, getPayload } from "payload";
+import { getPayload, type RequiredDataFromCollectionSlug } from "payload";
 import { createRoles } from "./create-roles";
 
 export const createEventsFromTemplate = async (

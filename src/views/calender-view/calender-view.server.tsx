@@ -1,7 +1,7 @@
 import { DefaultTemplate } from "@payloadcms/next/templates";
 import type { AdminViewProps, CollectionSlug } from "payload";
-import { CalenderViewClient } from "./calender-view.client";
 import { ClientProviders } from "@/app/(scheduler)/client-providers";
+import { CalenderViewClient } from "./calender-view.client";
 
 const supportedSlugs: CollectionSlug[] = ["events"];
 

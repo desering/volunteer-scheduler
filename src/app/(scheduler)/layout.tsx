@@ -1,12 +1,11 @@
-import NavBar from "@/components/navbar";
 import { Source_Sans_3 } from "next/font/google";
 import { cx } from "styled-system/css";
 import { panda } from "styled-system/jsx";
-import { ClientProviders } from "./client-providers";
-import { ServerProviders } from "./server-providers";
-
+import NavBar from "@/components/navbar";
 import { themeColors } from "@/constants/theme-colors";
 import { getThemeFromCookie } from "@/lib/services/get-theme-from-cookie";
+import { ClientProviders } from "./client-providers";
+import { ServerProviders } from "./server-providers";
 import "./globals.css";
 
 const sourceSans = Source_Sans_3({

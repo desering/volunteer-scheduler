@@ -1,5 +1,5 @@
-import { getEventDetails } from "@/lib/services/get-event-details";
 import type { NextRequest } from "next/server";
+import { getEventDetails } from "@/lib/services/get-event-details";
 
 export const GET = async (request: NextRequest) => {
   const searchParams = request.nextUrl.searchParams;

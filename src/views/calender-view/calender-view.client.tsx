@@ -1,9 +1,5 @@
 "use client";
 
-import { bleedX, divider, gutterX, gutterY } from "@/components/ui/utils";
-import { daysOfWeek } from "@/constants/days-of-week";
-import { getEventsInPeriod } from "@/lib/services/get-events-in-period";
-import { endOfMonth, startOfMonth } from "@/utils/utc";
 import { UTCDate, utc } from "@date-fns/utc";
 import { DatePicker } from "@payloadcms/ui";
 import { useQuery } from "@tanstack/react-query";
@@ -24,9 +20,13 @@ import {
   Flex,
   Grid,
   HStack,
-  VStack,
   panda,
+  VStack,
 } from "styled-system/jsx";
+import { bleedX, divider, gutterX, gutterY } from "@/components/ui/utils";
+import { daysOfWeek } from "@/constants/days-of-week";
+import { getEventsInPeriod } from "@/lib/services/get-events-in-period";
+import { endOfMonth, startOfMonth } from "@/utils/utc";
 
 const useEventsByMonth = (start: Date, end: Date) => {
   const allDays = useMemo(

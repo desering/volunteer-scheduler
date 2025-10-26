@@ -1,5 +1,5 @@
-import { type DateArg, type FormatOptions, format as dfFormat } from "date-fns";
 import { tz } from "@date-fns/tz";
+import { type DateArg, format as dfFormat, type FormatOptions } from "date-fns";
 
 export const format = (
   date: DateArg<Date> & {},

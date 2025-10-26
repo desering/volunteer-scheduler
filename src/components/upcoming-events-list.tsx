@@ -1,16 +1,15 @@
 "use client";
 
-import { EventButton } from "@/components/event-button";
-import { EventDetailsDrawer } from "@/components/event-details-sheet";
-import type { DisplayableEvent } from "@/lib/mappers/map-events";
-import type { UpcomingEventsForUserId } from "@/lib/services/get-upcoming-events-for-user-id";
 import type { Event, Role, Signup, User } from "@payload-types";
 import { useQuery } from "@tanstack/react-query";
 import { Clock, PersonStanding } from "lucide-react";
 import { useState } from "react";
 import { Box, HStack, panda } from "styled-system/jsx";
-import { Container } from "styled-system/jsx/container";
 import { Flex } from "styled-system/jsx/flex";
+import { EventButton } from "@/components/event-button";
+import { EventDetailsDrawer } from "@/components/event-details-sheet";
+import type { DisplayableEvent } from "@/lib/mappers/map-events";
+import type { UpcomingEventsForUserId } from "@/lib/services/get-upcoming-events-for-user-id";
 
 type Props = {
   user: User;

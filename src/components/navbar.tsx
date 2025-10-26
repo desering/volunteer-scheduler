@@ -1,8 +1,8 @@
-import { ThemeSwitchButton } from "@/components/theme-switch-button";
-import { getUser } from "@/lib/services/get-user";
 import { Container } from "styled-system/jsx";
 import { panda } from "styled-system/jsx/factory";
 import { button } from "styled-system/recipes/button";
+import { ThemeSwitchButton } from "@/components/theme-switch-button";
+import { getUser } from "@/lib/services/get-user";
 
 export default async function NavBar() {
   const { user } = await getUser();

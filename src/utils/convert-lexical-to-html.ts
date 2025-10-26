@@ -1,3 +1,4 @@
+import config from "@payload-config";
 import {
   consolidateHTMLConverters,
   convertLexicalToHTML as convert,
@@ -7,7 +8,6 @@ import {
   sanitizeServerEditorConfig,
 } from "@payloadcms/richtext-lexical";
 import type { SerializedEditorState, SerializedLexicalNode } from "lexical";
-import config from "@payload-config";
 
 export const convertLexicalToHTML = async (
   data: SerializedEditorState<SerializedLexicalNode>,

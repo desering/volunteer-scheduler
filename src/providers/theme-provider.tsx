@@ -1,8 +1,8 @@
 "use client";
 
-import { themeColors } from "@/constants/theme-colors";
 import CookieStore from "js-cookie";
 import { createContext, useContext, useEffect, useState } from "react";
+import { themeColors } from "@/constants/theme-colors";
 
 export type Theme = "light" | "dark" | "system";
 
