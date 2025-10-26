@@ -1,23 +1,6 @@
-import { Alert } from "@/components/ui/alert";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { IconButton } from "@/components/ui/icon-button";
-import { RadioButtonGroup } from "@/components/ui/radio-button-group";
-import { Sheet } from "@/components/ui/sheet";
-import { format } from "@/utils/tz-format";
-import { useQuery } from "@tanstack/react-query";
-import { HStack, panda } from "styled-system/jsx";
-import { button } from "styled-system/recipes/button";
-import { RoleRadioItems } from "./role-radio-items";
-
-import { createSignup as createSignupAction } from "@/actions/create-signup";
-import { deleteSignup as deleteSignupAction } from "@/actions/delete-signup";
-
-import confetti from "canvas-confetti";
-
-import type { getEventDetails } from "@/lib/services/get-event-details";
-import { useAuth } from "@/providers/auth";
 import { Portal } from "@ark-ui/react";
+import { useQuery } from "@tanstack/react-query";
+import confetti from "canvas-confetti";
 import { InfoIcon, XIcon } from "lucide-react";
 import {
   Fragment,
@@ -27,6 +10,20 @@ import {
   useMemo,
   useState,
 } from "react";
+import { HStack, panda } from "styled-system/jsx";
+import { button } from "styled-system/recipes/button";
+import { createSignup as createSignupAction } from "@/actions/create-signup";
+import { deleteSignup as deleteSignupAction } from "@/actions/delete-signup";
+import { Alert } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { IconButton } from "@/components/ui/icon-button";
+import { RadioButtonGroup } from "@/components/ui/radio-button-group";
+import { Sheet } from "@/components/ui/sheet";
+import type { getEventDetails } from "@/lib/services/get-event-details";
+import { useAuth } from "@/providers/auth";
+import { format } from "@/utils/tz-format";
+import { RoleRadioItems } from "./role-radio-items";
 
 type Props = {
   eventId?: number;

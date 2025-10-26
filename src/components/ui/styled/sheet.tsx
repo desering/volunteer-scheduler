@@ -1,9 +1,9 @@
 import type { Assign, PolymorphicProps } from "@ark-ui/react";
 import { Dialog } from "@ark-ui/react/dialog";
 import { ark } from "@ark-ui/react/factory";
+import { type SheetVariantProps, sheet } from "styled-system/recipes";
 import type { ComponentProps, HTMLPandaProps } from "styled-system/types";
 import { createStyleContext } from "./utils/create-style-context";
-import { sheet, type SheetVariantProps } from "styled-system/recipes";
 
 const { withRootProvider, withContext } = createStyleContext(sheet);
 

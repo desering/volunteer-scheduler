@@ -1,9 +1,8 @@
 "use client";
 
 import { MoonIcon, SunIcon, SunMoonIcon } from "lucide-react";
-
-import { useTheme } from "@/providers/theme-provider";
 import { HStack } from "styled-system/jsx";
+import { useTheme } from "@/providers/theme-provider";
 import { IconButton } from "./ui/icon-button";
 import { Menu } from "./ui/menu";
 
