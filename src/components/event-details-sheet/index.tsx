@@ -24,6 +24,7 @@ import type { getEventDetails } from "@/lib/services/get-event-details";
 import { useAuth } from "@/providers/auth";
 import { format } from "@/utils/tz-format";
 import { RoleRadioItems } from "./role-radio-items";
+import Link from "next/link";
 
 type Props = {
   eventId?: number;
@@ -248,13 +249,13 @@ export const EventDetailsDrawer = (props: Props) => {
                 {!user && (
                   <HStack>
                     Want to help out?{" "}
-                    <a className={button({})} href="/auth/login">
-                      Sign in
-                    </a>{" "}
+                    <Button asChild>
+                      <Link href="/auth/sign-in">Sign in</Link>
+                    </Button>{" "}
                     or{" "}
-                    <a className={button({})} href="/auth/register">
-                      Register
-                    </a>
+                    <Button asChild>
+                      <Link href="/auth/register">Register</Link>
+                    </Button>
                   </HStack>
                 )}
                 {user && (

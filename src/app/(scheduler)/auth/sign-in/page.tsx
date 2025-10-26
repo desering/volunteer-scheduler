@@ -20,12 +20,12 @@ export default async function Page() {
       justifyContent="center"
       alignItems="center"
     >
-      <Container>
+      <Container width={{ base: "full", sm: "450px" }}>
         <Grid
-          background="bg.default"
+          background={{ base: "bg.default", _dark: "bg.subtle" }}
           padding="8"
           borderRadius="3xl"
-          boxShadow="lg"
+          boxShadow={{ base: "lg", _dark: "unset" }}
           gap="8"
         >
           <div>
@@ -33,7 +33,7 @@ export default async function Page() {
               Welcome back :)
             </panda.h1>
             <Box textAlign="center" color="fg.muted">
-              Please enter your details to log in
+              Please enter your details to sign in
             </Box>
           </div>
 

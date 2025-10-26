@@ -1,10 +1,12 @@
 "use client";
 
 import { useMutation } from "@tanstack/react-query";
+import { AlertCircleIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { css } from "styled-system/css";
-import { Divider, Grid, panda } from "styled-system/jsx";
+import { Grid } from "styled-system/jsx";
 import { vstack } from "styled-system/patterns";
+import { Alert } from "../ui/alert";
 import { Button } from "../ui/button";
 import { Field } from "../ui/field";
 import { Link } from "../ui/link";
@@ -14,7 +16,7 @@ export const LoginForm = () => {
 
   const { isPending, error, mutate } = useMutation({
     mutationFn: async (formData: FormData) => {
-      const res = await fetch("/api/users/login", {
+      const res = await fetch("/payload-api/users/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -22,29 +24,49 @@ export const LoginForm = () => {
         body: JSON.stringify(Object.fromEntries(formData)),
       });
 
+      console.log(res);
+
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.message);
+        console.log(data);
+        throw new Error(data.errors?.[0]?.message ?? data.message);
       }
 
       router.push("/");
+      router.refresh();
     },
   });
 
   return (
     <form
-      action={mutate}
       className={vstack({ alignItems: "stretch", gap: "4" })}
+      onSubmit={(e) => {
+        e.preventDefault();
+        const formData = new FormData(e.currentTarget);
+        mutate(formData);
+      }}
     >
+      {error && (
+        <Alert.Root borderColor="red.500">
+          <Alert.Icon asChild>
+            <AlertCircleIcon />
+          </Alert.Icon>
+          <Alert.Content>
+            <Alert.Title>We couldn't sign you in :/</Alert.Title>
+            <Alert.Description>{(error as Error).message}</Alert.Description>
+          </Alert.Content>
+        </Alert.Root>
+      )}
+
       <Field.Root>
         <Field.Label>Email address</Field.Label>
-        <Field.Input type="email" required />
+        <Field.Input name="email" type="email" required />
       </Field.Root>
 
       <Grid>
         <Field.Root>
           <Field.Label>Password</Field.Label>
-          <Field.Input type="password" required />
+          <Field.Input name="password" type="password" required />
         </Field.Root>
 
         <Link
@@ -59,16 +81,9 @@ export const LoginForm = () => {
         </Link>
       </Grid>
 
-      <Button size="lg" variant="solid" type="submit" loading={isPending}>
+      <Button variant="solid" loading={isPending} type="submit">
         Log in
       </Button>
-
-      <Divider borderColor="border.muted" />
-
-      <panda.div textAlign="center" marginY="10px">
-        Don't have an account yet?{" "}
-        <Link href="/auth/register">Create account</Link>
-      </panda.div>
     </form>
   );
 };

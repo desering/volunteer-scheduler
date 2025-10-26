@@ -3,6 +3,8 @@ import { panda } from "styled-system/jsx/factory";
 import { button } from "styled-system/recipes/button";
 import { ThemeSwitchButton } from "@/components/theme-switch-button";
 import { getUser } from "@/lib/services/get-user";
+import { Button } from "./ui/button";
+import { Link } from "./ui/link";
 
 export default async function NavBar() {
   const { user } = await getUser();
@@ -11,38 +13,31 @@ export default async function NavBar() {
     <Container marginTop="4" width="100%">
       <panda.nav display="flex" justifyContent="space-between">
         <panda.div display="flex" gap="4">
-          <a href="/" className={button({ variant: "outline" })}>
-            Shifts
-          </a>
-          {user?.roles?.includes("admin") && (
+          <Button variant="outline">
+            <Link href="/">Shifts</Link>
+          </Button>
+          {/* {user?.roles?.includes("admin") && (
+
             <a href="/admin" className={button({ variant: "outline" })}>
               Manage Shifts
             </a>
-          )}
+          )} */}
         </panda.div>
 
         <panda.div display="flex" gap="4">
           <ThemeSwitchButton />
           {user ? (
-            <>
-              <a
-                href="/account/my-events"
-                className={button({ variant: "outline" })}
-              >
-                My Shifts
-              </a>
-              <a href="/account" className={button({ variant: "solid" })}>
-                {user.preferredName}
-              </a>
-            </>
+            <Button variant="solid">
+              <Link href="/account">{user.preferredName}</Link>
+            </Button>
           ) : (
             <>
-              <a href="/auth/login" className={button({ variant: "outline" })}>
-                Login
-              </a>
-              <a href="/auth/register" className={button({ variant: "solid" })}>
-                Register
-              </a>
+              <Button variant="outline">
+                <Link href="/auth/sign-in">Sign in</Link>
+              </Button>
+              <Button variant="solid">
+                <Link href="/auth/register">Become a volunteer</Link>
+              </Button>
             </>
           )}
         </panda.div>

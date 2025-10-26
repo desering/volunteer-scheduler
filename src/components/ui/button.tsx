@@ -1,17 +1,14 @@
 import { forwardRef } from "react";
 import { Center, panda } from "styled-system/jsx";
 import { Spinner } from "./spinner";
-import {
-  Button as PandaButton,
-  type ButtonProps as PandaButtonProps,
-} from "./styled/button";
+import * as Styled from "./styled/button";
 
 interface ButtonLoadingProps {
   loading?: boolean;
   loadingText?: React.ReactNode;
 }
 
-export interface ButtonProps extends PandaButtonProps, ButtonLoadingProps {}
+export interface ButtonProps extends Styled.ButtonProps, ButtonLoadingProps {}
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   (props, ref) => {
@@ -20,7 +17,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     const trulyDisabled = loading || disabled;
 
     return (
-      <PandaButton disabled={trulyDisabled} ref={ref} {...rest}>
+      <Styled.Button disabled={trulyDisabled} ref={ref} {...rest}>
         {loading && !loadingText ? (
           <>
             <ButtonSpinner />
@@ -31,7 +28,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ) : (
           children
         )}
-      </PandaButton>
+      </Styled.Button>
     );
   },
 );

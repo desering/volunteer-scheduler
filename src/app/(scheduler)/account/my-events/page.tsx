@@ -12,7 +12,7 @@ export default async function Page() {
   const { user } = await payload.auth({ headers });
 
   if (!user) {
-    redirect("/auth/login");
+    redirect("/auth/sign-in");
   }
 
   const events = await getUpcomingEventsForUserId(user.id);

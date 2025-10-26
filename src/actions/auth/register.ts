@@ -5,30 +5,48 @@ import { getPayload } from "payload";
 import { z } from "zod";
 import { login } from "./login";
 
-export const register = async (
-  _prevState: { message: string },
-  formData: FormData,
-) => {
-  const schema = z.object({
+const schema = z
+  .object({
     preferredName: z.string(),
-    email: z.string(),
-    phoneNumber: z.string(),
+    email: z.email(),
+    phoneNumber: z.e164(),
     password: z.string().min(8),
     passwordAgain: z.string().min(8),
+  })
+  .refine((data) => data.password === data.passwordAgain, {
+    message: "Passwords don't match",
+    path: ["passwordAgain"], // path of error
   });
+
+export type RegisterUserData = z.infer<typeof schema>;
+
+export type RegisterSuccess = {
+  success: true;
+  message: string;
+};
+
+export type RegisterFailure = {
+  success: false;
+  errors: ReturnType<typeof z.flattenError<RegisterUserData>>;
+};
+
+export type RegisterUserResult = RegisterSuccess | RegisterFailure;
+
+export const register = async (
+  formData: FormData,
+): Promise<RegisterUserResult> => {
   const parse = schema.safeParse({
-    preferredName: formData.get("preferredName"),
+    preferredName: formData.get("preferred-name"),
     email: formData.get("email"),
-    phoneNumber: formData.get("phoneNumber"),
+    phoneNumber: formData.get("phone-number"),
     password: formData.get("password"),
-    passwordAgain: formData.get("passwordAgain"),
+    passwordAgain: formData.get("password-again"),
   });
 
   if (!parse.success) {
     return {
       success: false,
-      message: "Failed to register",
-      errors: parse.error.errors,
+      errors: z.flattenError(parse.error),
     };
   }
 
@@ -48,7 +66,15 @@ export const register = async (
     });
 
     if (findUserResult.totalDocs > 0) {
-      return { success: false, message: "Email is already in use" };
+      return {
+        success: false,
+        errors: {
+          formErrors: [],
+          fieldErrors: {
+            email: ["The provided e-mail is already in use"],
+          },
+        },
+      };
     }
 
     await payload.create({
@@ -58,7 +84,10 @@ export const register = async (
   } catch (error) {
     return {
       success: false,
-      message: `Registration failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+      errors: {
+        formErrors: [error instanceof Error ? error.message : "Unknown error"],
+        fieldErrors: {},
+      },
     };
   }
 
@@ -68,16 +97,25 @@ export const register = async (
       password: data.password,
     });
 
+    if (!loginResult.success) {
+      throw new Error(loginResult.message);
+    }
+
     return {
-      success: loginResult.token,
-      message: loginResult.token
-        ? "Registration and login successful"
-        : "Registration successful, but login failed",
+      success: true,
+      message: "Welcome to the team!",
     };
   } catch (error) {
     return {
       success: false,
-      message: `Login after registration failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+      errors: {
+        formErrors: [
+          `Signing-in after registration has failed: ${
+            error instanceof Error ? error.message : "Unknown error"
+          }`,
+        ],
+        fieldErrors: {},
+      },
     };
   }
 };

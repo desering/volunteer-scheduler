@@ -20,14 +20,14 @@ export const login = async ({
 
     return {
       success: true,
-      message: "Login successful",
+      message: "Sign-in successful",
       user: result.user,
       token: result.token,
     };
   } catch (error) {
     return {
       success: false,
-      message: `Login failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+      message: `Sign-in failed: ${error instanceof Error ? error.message : "Unknown error"}`,
     };
   }
 };

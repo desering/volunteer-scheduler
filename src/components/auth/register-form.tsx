@@ -1,140 +1,146 @@
-/** biome-ignore-all lint/correctness/useUniqueElementIds: <explanation> */
 "use client";
 
-import { redirect } from "next/navigation";
-import { useActionState } from "react";
-import { useFormStatus } from "react-dom";
-import { css, cx } from "styled-system/css";
-import { HStack, panda } from "styled-system/jsx";
+import { useMutation } from "@tanstack/react-query";
+import { AlertCircleIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Divider } from "styled-system/jsx";
 import { vstack } from "styled-system/patterns";
-import { button, input } from "styled-system/recipes";
-import { register } from "@/actions/auth/register";
-
-const initialState = {
-  message: "",
-  success: false,
-};
-
-function SubmitButton() {
-  const { pending } = useFormStatus();
-
-  return (
-    <button
-      type="submit"
-      aria-disabled={pending}
-      className={cx(
-        button({ size: "lg", variant: "solid" }),
-        css({ flexGrow: 1 }),
-      )}
-    >
-      Register
-    </button>
-  );
-}
+import {
+  type RegisterFailure,
+  type RegisterSuccess,
+  register,
+} from "@/actions/auth/register";
+import { Alert } from "../ui/alert";
+import { Button } from "../ui/button";
+import { Field } from "../ui/field";
 
 export function RegisterForm() {
-  const [state, formAction] = useActionState(register, initialState);
+  const router = useRouter();
 
-  if (state.success) {
-    redirect("/");
-  }
+  const { mutate, isPending, error, data } = useMutation<
+    RegisterSuccess,
+    RegisterFailure,
+    FormData
+  >({
+    mutationFn: async (formData) => {
+      const result = await register(formData);
+      if (!result.success) {
+        throw result;
+      }
+      return result;
+    },
+    onSuccess: () => {
+      router.push("/");
+      router.refresh();
+    },
+  });
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    mutate(formData);
+  };
 
   return (
-    <form action={formAction} className={vstack({ alignItems: "stretch" })}>
-      {state?.message ? (
-        <panda.div
-          className={css({
-            color: "gray.1",
-            backgroundColor: "tomato",
-            paddingX: "4",
-            paddingY: "2",
-          })}
-        >
-          <p>{state?.message}</p>
-        </panda.div>
-      ) : (
-        ""
+    <form
+      className={vstack({ alignItems: "stretch", gap: "4" })}
+      onSubmit={handleSubmit}
+    >
+      {(error?.errors?.formErrors.length ?? 0) > 0 && (
+        <Alert.Root>
+          <Alert.Icon asChild>
+            <AlertCircleIcon />
+          </Alert.Icon>
+          <Alert.Content>
+            <Alert.Title>Oh.. something went wrong :/</Alert.Title>
+            <Alert.Description>
+              {error?.errors?.formErrors.join(" ")}
+            </Alert.Description>
+          </Alert.Content>
+        </Alert.Root>
       )}
 
-      <panda.div width="full">
-        <label htmlFor="preferredName">Preferred Name:</label>
-        <input
-          type="text"
-          id="preferredName"
-          name="preferredName"
-          required
-          className={input({
-            size: "lg",
-          })}
-        />
-        <p>This will be visible to everyone</p>
-      </panda.div>
+      {data && (
+        <Alert.Root>
+          <Alert.Content>
+            <Alert.Title>Success!</Alert.Title>
+            <Alert.Description>{data.message}</Alert.Description>
+          </Alert.Content>
+        </Alert.Root>
+      )}
 
-      <panda.div width="full">
-        <label htmlFor="email">Email:</label>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          required
-          className={input({
-            size: "lg",
-          })}
-        />
-      </panda.div>
+      <Field.Root
+        required
+        width="full"
+        invalid={!!error?.errors.fieldErrors.preferredName}
+      >
+        <Field.Label>Preferred Name:</Field.Label>
+        <Field.Input name="preferred-name" />
+        <Field.HelperText>
+          This is the name that will be displayed on your profile and to others.
+        </Field.HelperText>
+        <Field.ErrorText>
+          {error?.errors.fieldErrors.preferredName?.join(", ")}
+        </Field.ErrorText>
+      </Field.Root>
 
-      <panda.div width="full">
-        <label htmlFor="phoneNumber">Phone Number:</label>
-        <input
-          type="tel"
-          id="phoneNumber"
-          name="phoneNumber"
-          required
-          className={input({
-            size: "lg",
-          })}
-        />
-      </panda.div>
+      <Field.Root
+        required
+        width="full"
+        invalid={!!error?.errors.fieldErrors.email}
+      >
+        <Field.Label>Email:</Field.Label>
+        <Field.Input type="email" name="email" />
+        <Field.ErrorText>
+          {error?.errors.fieldErrors.email?.join(", ")}
+        </Field.ErrorText>
+      </Field.Root>
 
-      <panda.div width="full">
-        <label htmlFor="password">Password:</label>
-        <input
-          type="password"
-          id="password"
-          name="password"
-          required
-          className={input({
-            size: "lg",
-          })}
-        />
-      </panda.div>
+      <Field.Root
+        required
+        width="full"
+        invalid={!!error?.errors.fieldErrors.phoneNumber}
+      >
+        <Field.Label>Phone Number:</Field.Label>
+        <Field.Input type="tel" name="phone-number" />
+        <Field.HelperText>
+          Enter your phone number with country code (e.g., +31612345678). This
+          helps us contact you if needed.
+        </Field.HelperText>
+        <Field.ErrorText>
+          {error?.errors.fieldErrors.phoneNumber?.join(", ")}
+        </Field.ErrorText>
+      </Field.Root>
 
-      <panda.div width="full">
-        <label htmlFor="password">Confirm Password:</label>
-        <input
-          type="password"
-          id="passwordAgain"
-          name="passwordAgain"
-          required
-          className={input({
-            size: "lg",
-          })}
-        />
-      </panda.div>
+      <Field.Root
+        required
+        width="full"
+        invalid={!!error?.errors.fieldErrors.password}
+      >
+        <Field.Label>Password:</Field.Label>
+        <Field.Input type="password" name="password" />
+        <Field.ErrorText>
+          {error?.errors.fieldErrors.password?.join(", ")}
+        </Field.ErrorText>
+      </Field.Root>
 
-      <HStack>
-        <a
-          type="button"
-          href="/"
-          className={cx(
-            button({ size: "lg", variant: "outline" }),
-            css({ flexGrow: 1 }),
-          )}
-        >
-          Cancel
-        </a>
-        <SubmitButton />
-      </HStack>
+      <Field.Root
+        required
+        width="full"
+        invalid={!!error?.errors.fieldErrors.passwordAgain}
+      >
+        <Field.Label>Confirm Password:</Field.Label>
+        <Field.Input type="password" name="password-again" />
+        <Field.ErrorText>
+          {error?.errors.fieldErrors.passwordAgain?.join(", ")}
+        </Field.ErrorText>
+      </Field.Root>
+
+      <Divider borderColor="border.muted" />
+
+      <Button type="submit" variant="solid" loading={isPending}>
+        {isPending ? "Creating your account..." : "Become a Volunteer"}
+      </Button>
     </form>
   );
 }

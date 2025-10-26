@@ -1,16 +1,15 @@
 "use client";
 
-import { button } from "styled-system/recipes/button";
 import { logout } from "@/actions/auth/logout";
+import { Button } from "../ui/button";
 
-export default function LogoutButton() {
-  return (
-    <button
-      type={"button"}
-      onClick={() => logout()}
-      className={button({ size: "lg", variant: "outline" })}
-    >
-      Logout
-    </button>
-  );
-}
+export const LogoutButton = () => (
+  <Button
+    onClick={() => {
+      logout();
+    }}
+    variant="outline"
+  >
+    Sign out
+  </Button>
+);
