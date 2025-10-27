@@ -9,7 +9,7 @@
     "devsafe": "rm -rf .next && next dev",
     "build": "panda codegen && next build",
     "lint": "biome lint",
-    "payload": "payload",
+    "payload": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts payload",
     "start": "next start",
     "generate": "bun run generate:importmap && bun run generate:types && bun run generate:panda",
     "generate:panda": "panda codegen",
@@ -51,6 +51,7 @@
     "@types/nodemailer": "^6.4.17",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
+    "cross-env": "^10.1.0",
     "typescript": "^5.8.2"
   },
   "engines": {

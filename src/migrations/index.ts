@@ -1,6 +1,7 @@
 import * as migration_20250107_215304 from './20250107_215304';
 import * as migration_20250131_082459_add_phone_number from './20250131_082459_add_phone_number';
 import * as migration_20250402_113720_timezones_in_event_template from './20250402_113720_timezones_in_event_template';
+import * as migration_20251027_155038_payload_version_migration from './20251027_155038_payload_version_migration';
 
 export const migrations = [
   {
@@ -16,6 +17,11 @@ export const migrations = [
   {
     up: migration_20250402_113720_timezones_in_event_template.up,
     down: migration_20250402_113720_timezones_in_event_template.down,
-    name: '20250402_113720_timezones_in_event_template'
+    name: '20250402_113720_timezones_in_event_template',
+  },
+  {
+    up: migration_20251027_155038_payload_version_migration.up,
+    down: migration_20251027_155038_payload_version_migration.down,
+    name: '20251027_155038_payload_version_migration'
   },
 ];
