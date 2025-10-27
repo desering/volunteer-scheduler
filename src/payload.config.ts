@@ -104,10 +104,10 @@ export default buildConfig({
     push: process.env.NODE_ENV !== "production",
   }),
   email: nodemailerAdapter({
-    defaultFromAddress: process.env.EMAIL_FROM_ADDRESS || '',
-    defaultFromName: process.env.EMAIL_FROM_NAME || '',
+    defaultFromAddress: process.env.EMAIL_FROM_ADDRESS || "",
+    defaultFromName: process.env.EMAIL_FROM_NAME || "",
     transportOptions: {
-      host: process.env.SMTP_HOST || 'localhost',
+      host: process.env.SMTP_HOST || "localhost",
       auth: {
         user: process.env.SMTP_USER || undefined,
         pass: process.env.SMTP_PASS || undefined,

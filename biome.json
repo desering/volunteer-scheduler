@@ -10,7 +10,7 @@
     "includes": [
       "**",
       "!**/.next/**/*",
-      "!migrations/**/*",
+      "!**/src/migrations/**/*",
       "!**/styled-system/**/*",
       "!**/src/app/(payload)/layout.tsx",
       "!**/src/app/(payload)/admin/importMap.js",
