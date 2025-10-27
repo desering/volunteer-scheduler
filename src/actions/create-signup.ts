@@ -5,7 +5,14 @@ import { getPayload } from "payload";
 import { z } from "zod";
 import { getUser } from "@/lib/services/get-user";
 
-export async function createSignup(eventId: number, roleId: number) {
+const schema = z.object({
+  eventId: z.number(),
+  roleId: z.number(),
+});
+
+export type CreateSignupRequest = z.infer<typeof schema>;
+
+export async function createSignup(request: CreateSignupRequest) {
   const { user } = await getUser();
 
   if (!user) {
@@ -15,20 +22,13 @@ export async function createSignup(eventId: number, roleId: number) {
     };
   }
 
-  const schema = z.object({
-    eventId: z.number(),
-    roleId: z.number(),
-  });
-  const parse = schema.safeParse({
-    eventId: eventId,
-    roleId: roleId,
-  });
+  const parse = schema.safeParse(request);
 
   if (!parse.success) {
     return {
       success: false,
       message: "Submitted data incorrect",
-      errors: parse.error.errors,
+      errors: z.flattenError(parse.error),
     };
   }
 

@@ -5,7 +5,13 @@ import { getPayload } from "payload";
 import { z } from "zod";
 import { getUser } from "@/lib/services/get-user";
 
-export async function deleteSignup(id: number) {
+const schema = z.object({
+  id: z.number(),
+});
+
+export type DeleteSignupRequest = z.infer<typeof schema>;
+
+export async function deleteSignup(request: DeleteSignupRequest) {
   const { user } = await getUser();
 
   if (!user) {
@@ -15,18 +21,13 @@ export async function deleteSignup(id: number) {
     };
   }
 
-  const schema = z.object({
-    id: z.number(),
-  });
-  const parse = schema.safeParse({
-    id: id,
-  });
+  const parse = schema.safeParse(request);
 
   if (!parse.success) {
     return {
       success: false,
       message: "Submitted data incorrect",
-      errors: parse.error.errors,
+      errors: z.flattenError(parse.error),
     };
   }
 

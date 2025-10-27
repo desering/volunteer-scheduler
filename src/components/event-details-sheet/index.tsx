@@ -2,6 +2,7 @@ import { Portal } from "@ark-ui/react";
 import { useQuery } from "@tanstack/react-query";
 import confetti from "canvas-confetti";
 import { InfoIcon, XIcon } from "lucide-react";
+import Link from "next/link";
 import {
   Fragment,
   Suspense,
@@ -11,7 +12,6 @@ import {
   useState,
 } from "react";
 import { HStack, panda } from "styled-system/jsx";
-import { button } from "styled-system/recipes/button";
 import { createSignup as createSignupAction } from "@/actions/create-signup";
 import { deleteSignup as deleteSignupAction } from "@/actions/delete-signup";
 import { Alert } from "@/components/ui/alert";
@@ -24,7 +24,6 @@ import type { getEventDetails } from "@/lib/services/get-event-details";
 import { useAuth } from "@/providers/auth";
 import { format } from "@/utils/tz-format";
 import { RoleRadioItems } from "./role-radio-items";
-import Link from "next/link";
 
 type Props = {
   eventId?: number;
@@ -52,15 +51,15 @@ export const EventDetailsDrawer = (props: Props) => {
 
   // TODO: replace to useMutation
   const [isDeleting, deleteSignup] = useAsyncFunc(async (id: number) => {
-    await deleteSignupAction(id);
+    await deleteSignupAction({ id });
     await refetch();
     setSelectedRoleId(undefined);
   });
 
   // TODO: replace to useMutation
   const [isCreating, createSignup] = useAsyncFunc(
-    async (event: number, role: number) => {
-      await createSignupAction(event, role);
+    async (eventId: number, roleId: number) => {
+      await createSignupAction({ eventId, roleId });
       await refetch();
       selectCurrentRole();
       animateFireworks(Date.now() + 1500);
