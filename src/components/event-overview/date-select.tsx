@@ -51,7 +51,7 @@ const DateButton = ({ item, selected, onDateSelect }: DateButtonProps) => {
   useEffect(() => {
     if (selected && ref.current) {
       ref.current.scrollIntoView({
-        behavior: "instant",
+        behavior: "smooth",
         inline: "center",
         block: "nearest",
       });

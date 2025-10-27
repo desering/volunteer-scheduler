@@ -92,13 +92,10 @@ export const register = async (
   }
 
   try {
-    const loginResult = await login({
-      email: data.email,
-      password: data.password,
-    });
+    const loginResult = await login(formData);
 
     if (!loginResult.success) {
-      throw new Error(loginResult.message);
+      throw loginResult;
     }
 
     return {

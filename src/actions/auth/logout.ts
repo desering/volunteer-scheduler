@@ -12,5 +12,5 @@ export async function logout() {
       `Logout failed: ${error instanceof Error ? error.message : "Unknown error"}`,
     );
   }
-  return redirect("/");
+  return redirect("/auth/signed-out");
 }

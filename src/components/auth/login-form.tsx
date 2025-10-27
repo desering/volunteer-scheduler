@@ -6,6 +6,11 @@ import { useRouter } from "next/navigation";
 import { css } from "styled-system/css";
 import { Grid } from "styled-system/jsx";
 import { vstack } from "styled-system/patterns";
+import {
+  type LoginFailure,
+  type LoginSuccess,
+  login,
+} from "@/actions/auth/login";
 import { Alert } from "../ui/alert";
 import { Button } from "../ui/button";
 import { Field } from "../ui/field";
@@ -14,24 +19,19 @@ import { Link } from "../ui/link";
 export const LoginForm = () => {
   const router = useRouter();
 
-  const { isPending, error, mutate } = useMutation({
-    mutationFn: async (formData: FormData) => {
-      const res = await fetch("/payload-api/users/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(Object.fromEntries(formData)),
-      });
-
-      console.log(res);
-
-      if (!res.ok) {
-        const data = await res.json();
-        console.log(data);
-        throw new Error(data.errors?.[0]?.message ?? data.message);
+  const { isPending, error, mutate } = useMutation<
+    LoginSuccess,
+    LoginFailure,
+    FormData
+  >({
+    mutationFn: async (formData) => {
+      const res = await login(formData);
+      if (!res.success) {
+        throw res;
       }
-
+      return res;
+    },
+    onSuccess: () => {
       router.push("/");
       router.refresh();
     },
@@ -53,7 +53,9 @@ export const LoginForm = () => {
           </Alert.Icon>
           <Alert.Content>
             <Alert.Title>We couldn't sign you in :/</Alert.Title>
-            <Alert.Description>{(error as Error).message}</Alert.Description>
+            <Alert.Description>
+              {error.message.formErrors.join(", ")}
+            </Alert.Description>
           </Alert.Content>
         </Alert.Root>
       )}
