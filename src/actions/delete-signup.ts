@@ -17,7 +17,7 @@ export async function deleteSignup(request: DeleteSignupRequest) {
   if (!user) {
     return {
       success: false,
-      message: "User must be logged in",
+      message: "User must be signed in",
     };
   }
 

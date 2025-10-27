@@ -213,12 +213,8 @@
           "name": "event_templates_sections_roles_signups_user_id_users_id_fk",
           "tableFrom": "event_templates_sections_roles_signups",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -226,12 +222,8 @@
           "name": "event_templates_sections_roles_signups_parent_id_fk",
           "tableFrom": "event_templates_sections_roles_signups",
           "tableTo": "event_templates_sections_roles",
-          "columnsFrom": [
-            "_parent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["_parent_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -321,12 +313,8 @@
           "name": "event_templates_sections_roles_parent_id_fk",
           "tableFrom": "event_templates_sections_roles",
           "tableTo": "event_templates_sections",
-          "columnsFrom": [
-            "_parent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["_parent_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -409,12 +397,8 @@
           "name": "event_templates_sections_parent_id_fk",
           "tableFrom": "event_templates_sections",
           "tableTo": "event_templates",
-          "columnsFrom": [
-            "_parent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["_parent_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -506,12 +490,8 @@
           "name": "event_templates_roles_signups_user_id_users_id_fk",
           "tableFrom": "event_templates_roles_signups",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -519,12 +499,8 @@
           "name": "event_templates_roles_signups_parent_id_fk",
           "tableFrom": "event_templates_roles_signups",
           "tableTo": "event_templates_roles",
-          "columnsFrom": [
-            "_parent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["_parent_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -614,12 +590,8 @@
           "name": "event_templates_roles_parent_id_fk",
           "tableFrom": "event_templates_roles",
           "tableTo": "event_templates",
-          "columnsFrom": [
-            "_parent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["_parent_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -915,12 +887,8 @@
           "name": "sections_event_id_events_id_fk",
           "tableFrom": "sections",
           "tableTo": "events",
-          "columnsFrom": [
-            "event_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["event_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -1054,12 +1022,8 @@
           "name": "roles_event_id_events_id_fk",
           "tableFrom": "roles",
           "tableTo": "events",
-          "columnsFrom": [
-            "event_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["event_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -1067,12 +1031,8 @@
           "name": "roles_section_id_sections_id_fk",
           "tableFrom": "roles",
           "tableTo": "sections",
-          "columnsFrom": [
-            "section_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["section_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -1214,12 +1174,8 @@
           "name": "signups_event_id_events_id_fk",
           "tableFrom": "signups",
           "tableTo": "events",
-          "columnsFrom": [
-            "event_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["event_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -1227,12 +1183,8 @@
           "name": "signups_role_id_roles_id_fk",
           "tableFrom": "signups",
           "tableTo": "roles",
-          "columnsFrom": [
-            "role_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["role_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -1240,12 +1192,8 @@
           "name": "signups_user_id_users_id_fk",
           "tableFrom": "signups",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -1548,12 +1496,8 @@
           "name": "payload_locked_documents_rels_parent_fk",
           "tableFrom": "payload_locked_documents_rels",
           "tableTo": "payload_locked_documents",
-          "columnsFrom": [
-            "parent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["parent_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1561,12 +1505,8 @@
           "name": "payload_locked_documents_rels_users_fk",
           "tableFrom": "payload_locked_documents_rels",
           "tableTo": "users",
-          "columnsFrom": [
-            "users_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["users_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1574,12 +1514,8 @@
           "name": "payload_locked_documents_rels_event_templates_fk",
           "tableFrom": "payload_locked_documents_rels",
           "tableTo": "event_templates",
-          "columnsFrom": [
-            "event_templates_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["event_templates_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1587,12 +1523,8 @@
           "name": "payload_locked_documents_rels_events_fk",
           "tableFrom": "payload_locked_documents_rels",
           "tableTo": "events",
-          "columnsFrom": [
-            "events_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["events_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1600,12 +1532,8 @@
           "name": "payload_locked_documents_rels_sections_fk",
           "tableFrom": "payload_locked_documents_rels",
           "tableTo": "sections",
-          "columnsFrom": [
-            "sections_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["sections_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1613,12 +1541,8 @@
           "name": "payload_locked_documents_rels_roles_fk",
           "tableFrom": "payload_locked_documents_rels",
           "tableTo": "roles",
-          "columnsFrom": [
-            "roles_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["roles_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1626,12 +1550,8 @@
           "name": "payload_locked_documents_rels_signups_fk",
           "tableFrom": "payload_locked_documents_rels",
           "tableTo": "signups",
-          "columnsFrom": [
-            "signups_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["signups_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1835,12 +1755,8 @@
           "name": "payload_preferences_rels_parent_fk",
           "tableFrom": "payload_preferences_rels",
           "tableTo": "payload_preferences",
-          "columnsFrom": [
-            "parent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["parent_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -1848,12 +1764,8 @@
           "name": "payload_preferences_rels_users_fk",
           "tableFrom": "payload_preferences_rels",
           "tableTo": "users",
-          "columnsFrom": [
-            "users_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["users_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1945,18 +1857,12 @@
     "public.enum_users_roles": {
       "name": "enum_users_roles",
       "schema": "public",
-      "values": [
-        "admin",
-        "editor",
-        "volunteer"
-      ]
+      "values": ["admin", "editor", "volunteer"]
     },
     "public.enum_event_templates_start_time_tz": {
       "name": "enum_event_templates_start_time_tz",
       "schema": "public",
-      "values": [
-        "Europe/Amsterdam"
-      ]
+      "values": ["Europe/Amsterdam"]
     }
   },
   "schemas": {},

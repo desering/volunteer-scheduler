@@ -10,23 +10,23 @@ const schema = z.object({
   password: z.string(),
 });
 
-export type LoginUserData = z.infer<typeof schema>;
+export type SignInUserData = z.infer<typeof schema>;
 
-export type LoginSuccess = {
+export type SignInSuccess = {
   success: true;
   message: string;
   user: User;
   token?: string;
 };
 
-export type LoginFailure = {
+export type SignInFailure = {
   success: false;
-  message: ReturnType<typeof z.flattenError<LoginUserData>>;
+  message: ReturnType<typeof z.flattenError<SignInUserData>>;
 };
 
-export type LoginResult = LoginSuccess | LoginFailure;
+export type SignInResult = SignInSuccess | SignInFailure;
 
-export const login = async (formData: FormData): Promise<LoginResult> => {
+export const signIn = async (formData: FormData): Promise<SignInResult> => {
   const parse = schema.safeParse({
     email: formData.get("email"),
     password: formData.get("password"),
@@ -59,7 +59,9 @@ export const login = async (formData: FormData): Promise<LoginResult> => {
     return {
       success: false,
       message: {
-        formErrors: [error instanceof Error ? error.message : "Unknown error"],
+        formErrors: [
+          `Sign-in failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+        ],
         fieldErrors: {},
       },
     };

@@ -1,6 +1,6 @@
-import { getUser } from "@/lib/services/get-user";
 import { redirect } from "next/navigation";
 import { Flex, panda } from "styled-system/jsx";
+import { getUser } from "@/lib/services/get-user";
 
 export default async function SignedOutPage() {
   const { user } = await getUser();

@@ -3,7 +3,7 @@
 import config from "@payload-config";
 import { getPayload } from "payload";
 import { z } from "zod";
-import { login } from "./login";
+import { signIn } from "./sign-in";
 
 const schema = z
   .object({
@@ -92,10 +92,10 @@ export const register = async (
   }
 
   try {
-    const loginResult = await login(formData);
+    const signInResult = await signIn(formData);
 
-    if (!loginResult.success) {
-      throw loginResult;
+    if (!signInResult.success) {
+      throw signInResult;
     }
 
     return {
@@ -107,7 +107,7 @@ export const register = async (
       success: false,
       errors: {
         formErrors: [
-          `Signing-in after registration has failed: ${
+          `Sign-in after registration has failed: ${
             error instanceof Error ? error.message : "Unknown error"
           }`,
         ],
