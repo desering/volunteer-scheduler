@@ -59,7 +59,9 @@ export const signIn = async (formData: FormData): Promise<SignInResult> => {
     return {
       success: false,
       message: {
-        formErrors: [`Sign-in failed: ${error instanceof Error ? error.message : "Unknown error"}`],
+        formErrors: [
+          `Sign-in failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+        ],
         fieldErrors: {},
       },
     };
