@@ -101,7 +101,18 @@ export default buildConfig({
     prodMigrations: migrations,
     push: process.env.NODE_ENV !== 'production',
   }),
-  email: nodemailerAdapter(),
+  email: nodemailerAdapter({
+    defaultFromAddress: process.env.EMAIL_FROM_ADDRESS || '',
+    defaultFromName: process.env.EMAIL_FROM_NAME || '',
+    transportOptions: {
+      host: process.env.SMTP_HOST || 'localhost',
+      auth: {
+        user: process.env.SMTP_USER || undefined,
+        pass: process.env.SMTP_PASS || undefined,
+      },
+      port: process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT, 10) : 1025,
+    },
+  }),
   sharp,
   plugins: [],
 })
