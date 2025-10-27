@@ -1,12 +1,12 @@
 "use client";
 
-import { logout } from "@/actions/auth/logout";
+import { signOut } from "@/actions/auth/sign-out";
 import { Button } from "../ui/button";
 
-export const LogoutButton = () => (
+export const SignOutButton = () => (
   <Button
     onClick={() => {
-      logout();
+      signOut();
     }}
     variant="outline"
   >

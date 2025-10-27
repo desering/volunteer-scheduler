@@ -7,25 +7,25 @@ import { css } from "styled-system/css";
 import { Grid } from "styled-system/jsx";
 import { vstack } from "styled-system/patterns";
 import {
-  type LoginFailure,
-  type LoginSuccess,
-  login,
-} from "@/actions/auth/login";
+  type SignInFailure,
+  type SignInSuccess,
+  signIn,
+} from "@/actions/auth/sign-in";
 import { Alert } from "../ui/alert";
 import { Button } from "../ui/button";
 import { Field } from "../ui/field";
 import { Link } from "../ui/link";
 
-export const LoginForm = () => {
+export const SignInForm = () => {
   const router = useRouter();
 
   const { isPending, error, mutate } = useMutation<
-    LoginSuccess,
-    LoginFailure,
+    SignInSuccess,
+    SignInFailure,
     FormData
   >({
     mutationFn: async (formData) => {
-      const res = await login(formData);
+      const res = await signIn(formData);
       if (!res.success) {
         throw res;
       }
@@ -84,7 +84,7 @@ export const LoginForm = () => {
       </Grid>
 
       <Button variant="solid" loading={isPending} type="submit">
-        Log in
+        Sign in
       </Button>
     </form>
   );

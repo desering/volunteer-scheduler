@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { Container, Flex, panda } from "styled-system/jsx";
-import { LogoutButton } from "@/components/auth/logout-button";
+import { SignOutButton } from "@/components/auth/sign-out-button";
 import { getUser } from "@/lib/services/get-user";
 
 export default async function Page() {
@@ -26,7 +26,7 @@ export default async function Page() {
       </panda.p>
 
       <Flex flexDir="column" gap="10">
-        <LogoutButton />
+        <SignOutButton />
       </Flex>
     </Container>
   );

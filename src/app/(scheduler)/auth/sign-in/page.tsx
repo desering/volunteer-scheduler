@@ -2,7 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Box, Container, Grid, panda } from "styled-system/jsx";
 import { link } from "styled-system/recipes";
-import { LoginForm } from "@/components/auth/login-form";
+import { SignInForm } from "@/components/auth/sign-in-form";
 import { getUser } from "@/lib/services/get-user";
 
 export default async function Page() {
@@ -37,7 +37,7 @@ export default async function Page() {
             </Box>
           </div>
 
-          <LoginForm />
+          <SignInForm />
 
           <panda.div textAlign="center" marginY="10px">
             Don't have an account yet?{" "}
