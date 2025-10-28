@@ -83,6 +83,11 @@ export const getEventDetails = async (id: number) => {
   };
 
   // add descriptionHtml
+  if (event.description) {
+    transformedEvent.descriptionHtml = await convertLexicalToHTML(
+      event.description,
+    );
+  }
   for (const role of transformedEvent.roles.docs) {
     role.descriptionHtml =
       role.description && (await convertLexicalToHTML(role.description));
