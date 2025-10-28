@@ -1,4 +1,5 @@
 import { Portal } from "@ark-ui/react";
+import { RichText } from "@payloadcms/richtext-lexical/react";
 import { useQuery } from "@tanstack/react-query";
 import confetti from "canvas-confetti";
 import { InfoIcon, XIcon } from "lucide-react";
@@ -24,7 +25,6 @@ import type { getEventDetails } from "@/lib/services/get-event-details";
 import { useAuth } from "@/providers/auth";
 import { format } from "@/utils/tz-format";
 import { RoleRadioItems } from "./role-radio-items";
-import { RichText } from "@payloadcms/richtext-lexical/react";
 
 type Props = {
   eventId?: number;
