@@ -40,31 +40,31 @@ export default async function NavBar() {
               <Menu.Positioner>
                 <Menu.Content>
                   <Menu.ItemGroup>
-                    <Link href="/account">
-                      <Menu.Item value="account">
+                    <Menu.Item asChild value="account">
+                      <Link href="/account">
                         <HStack gap="2">
                           <CircleUserRoundIcon />
                           Account
                         </HStack>
-                      </Menu.Item>
-                    </Link>
-                    <Link href="/account/my-events">
-                      <Menu.Item value="my-shifts">
+                      </Link>
+                    </Menu.Item>
+                    <Menu.Item asChild value="my-shifts">
+                      <Link href="/account/my-events">
                         <HStack gap="2">
                           <CalendarDaysIcon />
                           My Shifts
                         </HStack>
-                      </Menu.Item>
-                    </Link>
+                      </Link>
+                    </Menu.Item>
                     {user?.roles?.includes("admin") && (
-                      <Link href="/admin">
-                        <Menu.Item value="manage-shifts">
+                      <Menu.Item asChild value="manage-shifts">
+                        <Link href="/admin">
                           <HStack gap="2">
                             <CalendarSyncIcon />
                             Manage Shifts
                           </HStack>
-                        </Menu.Item>
-                      </Link>
+                        </Link>
+                      </Menu.Item>
                     )}
                     <Menu.Item value="sign-out" onClick={signOut}>
                       <HStack gap="2">
