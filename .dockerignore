@@ -1,6 +1,14 @@
 .astro
 .github
+docs
+node_modules
+.env*
+docker-compose.*
+
+# IDEs
 .idea
 .vscode
-node_modules
-docker-compose.*
+
+# Panda CSS
+styled-system
+styled-system-studio

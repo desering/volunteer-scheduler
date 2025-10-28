@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.9.4/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.2.5/schema.json",
   "vcs": {
     "enabled": false,
     "clientKind": "git",
@@ -7,17 +7,15 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "ignore": [
-      "packages/astro/.astro/*",
-      "packages/astro/styled-system/*",
-      "packages/astro/dist/*",
-
-      "packages/payload/.next/*",
-      "packages/payload/styled-system/*",
-      "packages/payload/src/app/(payload)/importMap.js",
-
-      "packages/shared/payload-types.ts",
-      "packages/shared/migrations/*"
+    "includes": [
+      "**",
+      "!**/.next/**/*",
+      "!**/src/migrations/**/*",
+      "!**/styled-system/**/*",
+      "!**/src/app/(payload)/layout.tsx",
+      "!**/src/app/(payload)/admin/importMap.js",
+      "!**/src/payload-generated-schema.ts",
+      "!**/src/payload-types.ts"
     ]
   },
   "formatter": {
@@ -25,8 +23,13 @@
     "indentStyle": "space",
     "indentWidth": 2
   },
-  "organizeImports": {
-    "enabled": true
+  "assist": {
+    "enabled": true,
+    "actions": {
+      "source": {
+        "organizeImports": "on"
+      }
+    }
   },
   "linter": {
     "enabled": true,

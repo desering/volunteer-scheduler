@@ -14,12 +14,13 @@ https://schedule.desering.org/
 ## Preview Deployments
 
 Coolify [Preview Deployments](https://coolify.io/docs/applications/#preview-deployments)
-are configured to automatically create a new deployment of both Astro and
-Payload for each PR opened in this repo. Cloudflare does not offer Wildcard SSL
-certificates for second-level subdomains (e.g. `*.schedule.desering.org`), so we
-configured `*.desering.org` to point to Coolify instead (see
+are configured to automatically create a new deployment for each PR opened in
+this repo. Cloudflare does not offer Wildcard SSL certificates for second-level
+subdomains (e.g. `*.schedule.desering.org`), so we configured `*.desering.org`
+to point to Coolify instead (see
 [here](https://github.com/desering/terraform/blob/main/dns_desering.org.tf)).
-The preview deployment urls for Schedule look as follows:
+
+The preview deployment urls look as follows:
 
 ```
 https://schedule-pr-{PR-Number}.desering.org/
@@ -38,13 +39,9 @@ Use `docker-compose` to build and run the whole stack including a database conta
 docker-compose -f docker-compose.deploy.yml up
 ```
 
-Or build and run the images individually:
+Or build and run the docker image directly:
 ```shell
-# Astro:
-docker build -f Dockerfile.astro -t ghcr.io/desering/volunteer-scheduler-astro:dev .
-docker run -p 3000:3000 --env-file packages/shared/.env ghcr.io/desering/volunteer-scheduler-astro:dev
-
-# Payload:
-docker build -f Dockerfile.payload -t ghcr.io/desering/volunteer-scheduler-payload:dev .
-docker run -p 3000:3000 --env-file packages/shared/.env ghcr.io/desering/volunteer-scheduler-payload:dev
+docker build . -t ghcr.io/desering/volunteer-scheduler:dev
+docker run --init -p 3000:3000 --rm --env-file .env ghcr.io/desering/volunteer-scheduler:dev
+docker run --init --network host --rm --env-file .env ghcr.io/desering/volunteer-scheduler:dev
 ```
