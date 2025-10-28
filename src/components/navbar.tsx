@@ -13,7 +13,7 @@ import { getUser } from "@/lib/services/get-user";
 import { Button } from "./ui/button";
 import { Menu } from "./ui/menu";
 
-export default async function NavBar() {
+export const NavBar = async () => {
   const { user } = await getUser();
 
   return (
@@ -90,4 +90,4 @@ export default async function NavBar() {
       </panda.nav>
     </Container>
   );
-}
+};

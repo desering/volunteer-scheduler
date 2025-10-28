@@ -19,5 +19,6 @@ export async function signOut() {
       `Sign-out failed: ${error instanceof Error ? error.message : "Unknown error"}`,
     );
   }
+
   return redirect("/auth/signed-out");
 }

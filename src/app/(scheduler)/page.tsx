@@ -1,7 +1,7 @@
+"use server";
+
 import { EventOverview } from "@/components/event-overview";
 import { getEventsByDay } from "@/lib/services/get-events-by-day";
-
-export const dynamic = "force-dynamic";
 
 export default async function Page() {
   const eventsByDay = await getEventsByDay();

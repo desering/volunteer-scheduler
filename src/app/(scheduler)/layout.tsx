@@ -1,7 +1,7 @@
 import { Source_Sans_3 } from "next/font/google";
 import { cx } from "styled-system/css";
 import { panda } from "styled-system/jsx";
-import NavBar from "@/components/navbar";
+import { NavBar } from "@/components/navbar";
 import { themeColors } from "@/constants/theme-colors";
 import { getThemeFromCookie } from "@/lib/services/get-theme-from-cookie";
 import { ClientProviders } from "./client-providers";

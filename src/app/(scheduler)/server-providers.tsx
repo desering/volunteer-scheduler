@@ -1,3 +1,5 @@
+"use server";
+
 import { getThemeFromCookie } from "@/lib/services/get-theme-from-cookie";
 import { getUser } from "@/lib/services/get-user";
 import { AuthProvider } from "@/providers/auth";
