@@ -13,7 +13,7 @@ export const GET = async () => {
     );
   }
 
-  const events = getUpcomingEventsForUserId(user.id);
+  const events = await getUpcomingEventsForUserId(user.id);
 
   return Response.json(events);
 };
