@@ -34,7 +34,7 @@ export const EventOverview = ({
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const { data: events, refetch } = useQuery<GroupedEventsByDay>({
-    queryKey: ["eventsByDay"],
+    queryKey: ["eventsByDay", initialEvents],
     queryFn: async () =>
       fetch("/api/events/overview").then((res) => res.json()),
     initialData: () => {

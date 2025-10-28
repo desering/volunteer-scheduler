@@ -21,7 +21,7 @@ export const UpcomingEventsList = (props: Props) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const { data, refetch } = useQuery<UpcomingEventsForUserId>({
-    queryKey: ["events", "users", "upcoming"],
+    queryKey: ["events", "users", "upcoming", props.initialData?.events],
     queryFn: async () =>
       await fetch(`/api/events/users/upcoming`).then((res) => res.json()),
     initialData: props.initialData,
