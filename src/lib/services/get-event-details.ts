@@ -2,7 +2,6 @@
 
 import config from "@payload-config";
 import { getPayload } from "payload";
-import { convertLexicalToHTML } from "@/utils/convert-lexical-to-html";
 
 export const getEventDetails = async (id: number) => {
   const payload = await getPayload({ config });
@@ -22,10 +21,9 @@ export const getEventDetails = async (id: number) => {
   // Narrow down to keep frontend simple
   // Roles are assigned to their sections, any remaining added to the event itself
   // Signups are added to the relevant roles
-  const transformedEvent = {
+  return {
     ...event,
     id: forceNumber(event.id),
-    descriptionHtml: "" as string | null | undefined,
     sections: {
       ...event.sections,
       docs: mapObjects(event.sections?.docs, (section) => ({
@@ -37,7 +35,6 @@ export const getEventDetails = async (id: number) => {
             event.roles?.docs,
             (role) => ({
               ...role,
-              descriptionHtml: "" as string | null | undefined,
               signups: {
                 ...role.signups,
                 docs: mapObjects(
@@ -59,7 +56,6 @@ export const getEventDetails = async (id: number) => {
         (role) => ({
           ...role,
           section: forceNumber(role.section),
-          descriptionHtml: "" as string | null | undefined,
           signups: {
             ...role.signups,
             docs: mapObjects(
@@ -81,25 +77,6 @@ export const getEventDetails = async (id: number) => {
       })),
     },
   };
-
-  // add descriptionHtml
-  if (event.description) {
-    transformedEvent.descriptionHtml = await convertLexicalToHTML(
-      event.description,
-    );
-  }
-  for (const role of transformedEvent.roles.docs) {
-    role.descriptionHtml =
-      role.description && (await convertLexicalToHTML(role.description));
-  }
-  for (const section of transformedEvent.sections.docs) {
-    for (const role of section.roles.docs) {
-      role.descriptionHtml =
-        role.description && (await convertLexicalToHTML(role.description));
-    }
-  }
-
-  return transformedEvent;
 };
 
 const forceNumber = (value: unknown) =>

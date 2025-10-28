@@ -55,10 +55,9 @@ const EventButtonTitle = (props: EventButtonTitleProps) => (
   </panda.h5>
 );
 
-const EventButtonDescription = (props: BoxProps) =>
-  props.dangerouslySetInnerHTML ? (
-    <Box color="colorPalette.11" {...props} />
-  ) : null;
+const EventButtonDescription = (props: BoxProps) => (
+  <panda.div>{props.children}</panda.div>
+);
 
 export const EventButton = {
   Root: EventButtonRoot,

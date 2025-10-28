@@ -1,6 +1,7 @@
 "use client";
 
 import type { Event, Role, Signup, User } from "@payload-types";
+import { RichText } from "@payloadcms/richtext-lexical/react";
 import { useQuery } from "@tanstack/react-query";
 import { Clock, PersonStanding } from "lucide-react";
 import { useState } from "react";
@@ -80,12 +81,9 @@ export const UpcomingEventsList = (props: Props) => {
             />
           </Box>
         </HStack>
-        <EventButton.Description
-          // biome-ignore lint/security/noDangerouslySetInnerHtml: rich text from CMS
-          dangerouslySetInnerHTML={{
-            __html: event.descriptionHtml || "",
-          }}
-        />
+        <EventButton.Description>
+          {event.doc.description && <RichText data={event.doc.description} />}
+        </EventButton.Description>
       </EventButton.Root>
     );
   });

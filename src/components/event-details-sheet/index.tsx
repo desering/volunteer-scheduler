@@ -24,6 +24,7 @@ import type { getEventDetails } from "@/lib/services/get-event-details";
 import { useAuth } from "@/providers/auth";
 import { format } from "@/utils/tz-format";
 import { RoleRadioItems } from "./role-radio-items";
+import { RichText } from "@payloadcms/richtext-lexical/react";
 
 type Props = {
   eventId?: number;
@@ -169,14 +170,11 @@ export const EventDetailsDrawer = (props: Props) => {
             <Suspense>
               <Sheet.Header>
                 <Sheet.Title fontSize="2xl">{details?.title}</Sheet.Title>
-                {details?.descriptionHtml && (
-                  <Sheet.Description
-                    // biome-ignore lint/security/noDangerouslySetInnerHtml: rich text from CMS
-                    dangerouslySetInnerHTML={{
-                      __html: details.descriptionHtml,
-                    }}
-                  />
-                )}
+                <Sheet.Description>
+                  {details?.description && (
+                    <RichText data={details.description} />
+                  )}
+                </Sheet.Description>
                 <Sheet.Description>
                   <Badge>{timeRange}</Badge>
                 </Sheet.Description>
