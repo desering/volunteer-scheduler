@@ -40,28 +40,34 @@ export default async function NavBar() {
               <Menu.Positioner>
                 <Menu.Content>
                   <Menu.ItemGroup>
-                    <Menu.Item value="account">
-                      <HStack gap="2">
-                        <CircleUserRoundIcon />
-                        <Link href="/account">Account</Link>
-                      </HStack>
-                    </Menu.Item>
-                    <Menu.Item value="my-shifts">
-                      <HStack gap="2">
-                        <CalendarDaysIcon />
-                        <Link href="/account/my-events">My Shifts</Link>
-                      </HStack>
-                    </Menu.Item>
-                    {user?.roles?.includes("admin") && (
-                      <Menu.Item value="manage-shifts">
+                    <Link href="/account">
+                      <Menu.Item value="account">
                         <HStack gap="2">
-                          <CalendarSyncIcon />
-                          <Link href="/admin">Manage Shifts</Link>
+                          <CircleUserRoundIcon />
+                          Account
                         </HStack>
                       </Menu.Item>
+                    </Link>
+                    <Link href="/account/my-events">
+                      <Menu.Item value="my-shifts">
+                        <HStack gap="2">
+                          <CalendarDaysIcon />
+                          My Shifts
+                        </HStack>
+                      </Menu.Item>
+                    </Link>
+                    {user?.roles?.includes("admin") && (
+                      <Link href="/admin">
+                        <Menu.Item value="manage-shifts">
+                          <HStack gap="2">
+                            <CalendarSyncIcon />
+                            Manage Shifts
+                          </HStack>
+                        </Menu.Item>
+                      </Link>
                     )}
-                    <Menu.Item value="sign-out">
-                      <HStack gap="2" onClick={signOut}>
+                    <Menu.Item value="sign-out" onClick={signOut}>
+                      <HStack gap="2">
                         <LogOutIcon />
                         Sign out
                       </HStack>
