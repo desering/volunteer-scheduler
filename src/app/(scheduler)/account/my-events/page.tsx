@@ -1,3 +1,5 @@
+"use server";
+
 import config from "@payload-config";
 import { headers as getHeaders } from "next/headers";
 import { redirect } from "next/navigation";
@@ -33,7 +35,7 @@ export default async function Page() {
       >
         My upcoming shifts
       </panda.h1>
-      <UpcomingEventsList user={user} initialData={events} />
+      <UpcomingEventsList initialData={events} />
     </Container>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import type { Event, Role, Signup, User } from "@payload-types";
+import type { Event, Role, Signup } from "@payload-types";
 import { RichText } from "@payloadcms/richtext-lexical/react";
 import { useQuery } from "@tanstack/react-query";
 import { Clock, PersonStanding } from "lucide-react";
@@ -13,7 +13,6 @@ import type { DisplayableEvent } from "@/lib/mappers/map-events";
 import type { UpcomingEventsForUserId } from "@/lib/services/get-upcoming-events-for-user-id";
 
 type Props = {
-  user: User;
   initialData?: UpcomingEventsForUserId;
 };
 
@@ -34,6 +33,7 @@ export const UpcomingEventsList = (props: Props) => {
     const signup = props.initialData?.signups.docs.find(
       (signup: Signup) => (signup.event as Event).id === event.doc.id,
     );
+
     const roleTitle = (signup?.role as Role)?.title;
 
     return (

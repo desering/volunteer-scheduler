@@ -9,14 +9,14 @@ import { prepareEvent } from "@/lib/mappers/map-events";
 export type UpcomingEventsForUserId = Awaited<
   ReturnType<typeof getUpcomingEventsForUserId>
 >;
-export async function getUpcomingEventsForUserId(id: number) {
+export const getUpcomingEventsForUserId = async (userId: number) => {
   const payload = await getPayload({ config });
 
   const signups = await payload.find({
     collection: "signups",
     depth: 1,
     where: {
-      user: { equals: id },
+      user: { equals: userId },
       "event.start_date": { greater_than_equal: startOfDay(Date.now()) },
     },
     sort: "event.start_date",
@@ -29,4 +29,4 @@ export async function getUpcomingEventsForUserId(id: number) {
       signups.docs.map((s) => prepareEvent(s.event as Event)),
     ),
   };
-}
+};
