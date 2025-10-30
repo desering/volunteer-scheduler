@@ -13,6 +13,9 @@ export const getEventsByDay = async () => {
     joins: {
       roles: false,
       sections: false,
+      signups: {
+        limit: 100,
+      },
     },
 
     pagination: false,
