@@ -70,7 +70,7 @@ export async function createSignup(
     };
   }
 
-  if (role.maxSignups === 0 || existingSignups.totalDocs >= role.maxSignups) {
+  if (role.maxSignups !== 0 && existingSignups.totalDocs >= role.maxSignups) {
     return {
       success: false,
       message:
