@@ -169,7 +169,7 @@ export const CalenderViewClient = () => {
                     {relatedEvents?.map((event) => (
                       <Link
                         key={event.id}
-                        href={`/collections/events/${event.id}`}
+                        href={`/admin/collections/events/${event.id}`}
                         className={css({
                           lineHeight: "1",
                           _hover: {

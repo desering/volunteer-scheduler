@@ -4,6 +4,7 @@ import config from "@payload-config";
 import { getPayload } from "payload";
 import { z } from "zod";
 import { getUser } from "@/lib/services/get-user";
+import type { Signup } from "@/payload-types";
 
 const schema = z.object({
   eventId: z.number(),
@@ -12,7 +13,20 @@ const schema = z.object({
 
 export type CreateSignupRequest = z.infer<typeof schema>;
 
-export async function createSignup(request: CreateSignupRequest) {
+export type CreateSignupResponse =
+  | {
+      success: true;
+      data: Signup;
+    }
+  | {
+      success: false;
+      message: string;
+      errors?: ReturnType<typeof z.flattenError<CreateSignupRequest>>;
+    };
+
+export async function createSignup(
+  request: CreateSignupRequest,
+): Promise<CreateSignupResponse> {
   const { user } = await getUser();
 
   if (!user) {
@@ -35,6 +49,35 @@ export async function createSignup(request: CreateSignupRequest) {
   const data = parse.data;
 
   const payload = await getPayload({ config });
+
+  const existingSignups = await payload.find({
+    collection: "signups",
+    where: {
+      event: { equals: data.eventId },
+      role: { equals: data.roleId },
+    },
+  });
+
+  const role = await payload.findByID({
+    collection: "roles",
+    id: data.roleId,
+  });
+
+  if (!role) {
+    return {
+      success: false,
+      message: "Role does not exist",
+    };
+  }
+
+  if (role.maxSignups === 0 || existingSignups.totalDocs >= role.maxSignups) {
+    return {
+      success: false,
+      message:
+        "This role unfortunately has reached the maximum number of signups.",
+    };
+  }
+
   const signup = await payload.create({
     collection: "signups",
     data: {
@@ -44,5 +87,8 @@ export async function createSignup(request: CreateSignupRequest) {
     },
   });
 
-  return signup;
+  return {
+    success: true,
+    data: signup,
+  };
 }
