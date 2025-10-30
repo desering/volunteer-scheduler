@@ -62,8 +62,13 @@ export const EventDetailsDrawer = (props: Props) => {
   // TODO: replace to useMutation
   const [isCreating, createSignup] = useAsyncFunc(
     async (eventId: number, roleId: number) => {
-      await createSignupAction({ eventId, roleId });
+      const response = await createSignupAction({ eventId, roleId });
       await refetch();
+
+      if (!response.success) {
+        return;
+      }
+
       selectCurrentRole();
       animateFireworks(Date.now() + 1500);
     },
