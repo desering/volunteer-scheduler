@@ -18,6 +18,9 @@ import { EventDetailsDrawer } from "@/components/event-details-sheet";
 import { NoEventsMessage } from "@/components/event-overview/no-events-message";
 import type { GroupedEventsByDay } from "@/lib/mappers/map-events";
 import { DateSelect } from "./date-select";
+import Link from "next/link";
+import { css } from "styled-system/css";
+import { useAuth } from "@/providers/auth";
 
 type Props = {
   events?: GroupedEventsByDay;
@@ -27,6 +30,8 @@ export const EventOverview = ({
   events: initialEvents,
   ...cssProps
 }: Props & BoxProps) => {
+  const { user } = useAuth();
+
   const [selectedDate, setSelectedDate] = useState(startOfDay(new Date()));
   const [selectedEventId, setSelectedEventId] = useState<number>();
 
@@ -109,7 +114,21 @@ export const EventOverview = ({
                   startDate={event.start_date}
                   endDate={event.end_date}
                 />
-                <EventButton.Title>{event.doc.title}</EventButton.Title>
+                <EventButton.Title>
+                  {event.doc.title}
+                  {user?.roles?.includes("admin") && (
+                    <>
+                      {" - "}
+                      <Link
+                        href={"/admin/collections/events/" + event.doc.id}
+                        target={"_blank"}
+                        className={css({ textDecoration: "underline" })}
+                      >
+                        edit
+                      </Link>
+                    </>
+                  )}
+                </EventButton.Title>
                 <EventButton.Description>
                   {event.doc.description && (
                     <RichText data={event.doc.description} />
