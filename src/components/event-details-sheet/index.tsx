@@ -27,7 +27,7 @@ import type { getEventDetails } from "@/lib/services/get-event-details";
 import { useAuth } from "@/providers/auth";
 import { format } from "@/utils/tz-format";
 import { RoleRadioItems } from "./role-radio-items";
-import { css } from "../../../styled-system/css";
+import { css } from "styled-system/css";
 
 type Props = {
   eventId?: number;
