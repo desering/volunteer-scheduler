@@ -10,11 +10,11 @@ export type GroupedEventsByDay = Record<string, DisplayableEvent[]>;
 export const groupAndSortEventsByDate = async (
   events: Event[],
 ): Promise<GroupedEventsByDay> => {
-  const mappedEvents = await Promise.all(
+  const displayableEvents = await Promise.all(
     events.map(async (doc) => await eventToDisplayableEvent(doc)),
   );
 
-  const groupedByDay = mappedEvents.reduce(
+  const displayableEventsGroupedByDay = displayableEvents.reduce(
     (acc, event) => {
       const date = event.start_date.toDateString();
       if (!acc[date]) {
@@ -23,10 +23,10 @@ export const groupAndSortEventsByDate = async (
       acc[date].push(event);
       return acc;
     },
-    {} as Record<string, typeof mappedEvents>,
+    {} as Record<string, typeof displayableEvents>,
   );
 
-  return groupedByDay;
+  return displayableEventsGroupedByDay;
 };
 
 export const eventToDisplayableEvent = async (
