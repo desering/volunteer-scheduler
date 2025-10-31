@@ -11,9 +11,9 @@ export const getEventDetails = async (id: number) => {
     id: id,
     depth: 1,
 
-    populate: {
-      roles: {
-        signups: false,
+    joins: {
+      signups: {
+        limit: 100,
       },
     },
   });

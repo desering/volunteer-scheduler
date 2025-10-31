@@ -11,6 +11,8 @@ import { EventButton } from "@/components/event-button";
 import { EventDetailsDrawer } from "@/components/event-details-sheet";
 import type { DisplayableEvent } from "@/lib/mappers/map-events";
 import type { UpcomingEventsForUserId } from "@/lib/services/get-upcoming-events-for-user-id";
+import Link from "next/link";
+import { css } from "styled-system/css";
 
 type Props = {
   initialData?: UpcomingEventsForUserId;
@@ -91,7 +93,17 @@ export const UpcomingEventsList = (props: Props) => {
   return (
     <>
       <Flex flexDirection="column" gap="4">
-        {eventsList}
+        {eventsList && eventsList.length > 0 ? (
+          eventsList
+        ) : (
+          <panda.p textAlign="center">
+            You currently have no upcoming shifts. Go to{" "}
+            <Link href={"/"} className={css({ textDecoration: "underline" })}>
+              Shifts
+            </Link>{" "}
+            and check out what's available!
+          </panda.p>
+        )}
       </Flex>
       <EventDetailsDrawer
         open={isDrawerOpen}
