@@ -11,7 +11,7 @@ export const groupAndSortEventsByDate = async (
   events: Event[],
 ): Promise<GroupedEventsByDay> => {
   const mappedEvents = await Promise.all(
-    events.map(async (doc) => await prepareEvent(doc)),
+    events.map(async (doc) => await eventToDisplayableEvent(doc)),
   );
 
   const sorted = mappedEvents.sort(
@@ -33,7 +33,7 @@ export const groupAndSortEventsByDate = async (
   return groupedByDay;
 };
 
-export const prepareEvent = async (
+export const eventToDisplayableEvent = async (
   event: Event,
 ): Promise<DisplayableEvent> => ({
   doc: event,
