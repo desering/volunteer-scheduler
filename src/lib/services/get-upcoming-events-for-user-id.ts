@@ -4,7 +4,7 @@ import config from "@payload-config";
 import type { Event } from "@payload-types";
 import { startOfDay } from "date-fns";
 import { getPayload } from "payload";
-import { prepareEvent } from "@/lib/mappers/map-events";
+import { eventToDisplayableEvent } from "@/lib/mappers/map-events";
 
 export type UpcomingEventsForUserId = Awaited<
   ReturnType<typeof getUpcomingEventsForUserId>
@@ -26,7 +26,7 @@ export const getUpcomingEventsForUserId = async (userId: number) => {
   return {
     signups,
     events: await Promise.all(
-      signups.docs.map((s) => prepareEvent(s.event as Event)),
+      signups.docs.map((s) => eventToDisplayableEvent(s.event as Event)),
     ),
   };
 };
