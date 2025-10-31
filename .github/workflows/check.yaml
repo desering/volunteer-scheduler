@@ -7,7 +7,7 @@ jobs:
   biome:
     runs-on: [ ubuntu-24.04 ]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: oven-sh/setup-bun@v2
       - run: bun install
       - run: bunx biome format src
@@ -15,7 +15,7 @@ jobs:
   generate-types:
     runs-on: [ ubuntu-24.04 ]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: oven-sh/setup-bun@v2
       - run: bun install
       - run: bun generate:types
@@ -26,7 +26,7 @@ jobs:
 #  generate-schema:
 #    runs-on: [ ubuntu-24.04 ]
 #    steps:
-#      - uses: actions/checkout@v4
+#      - uses: actions/checkout@v5
 #      - uses: oven-sh/setup-bun@v2
 #      - run: bun install
 #      - run: bun generate:db-schema
