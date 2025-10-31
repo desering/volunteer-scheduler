@@ -46,6 +46,8 @@ export const getEventsByDay = async (date: UTCDate | undefined) => {
       },
     },
 
+    sort: "start_date",
+
     pagination: false,
   });
 

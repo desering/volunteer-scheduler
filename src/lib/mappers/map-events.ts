@@ -14,11 +14,7 @@ export const groupAndSortEventsByDate = async (
     events.map(async (doc) => await eventToDisplayableEvent(doc)),
   );
 
-  const sorted = mappedEvents.sort(
-    (a, b) => a.start_date.getTime() - b.start_date.getTime(),
-  );
-
-  const groupedByDay = sorted.reduce(
+  const groupedByDay = mappedEvents.reduce(
     (acc, event) => {
       const date = event.start_date.toDateString();
       if (!acc[date]) {
