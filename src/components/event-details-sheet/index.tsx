@@ -27,6 +27,7 @@ import type { getEventDetails } from "@/lib/services/get-event-details";
 import { useAuth } from "@/providers/auth";
 import { format } from "@/utils/tz-format";
 import { RoleRadioItems } from "./role-radio-items";
+import { css } from "../../../styled-system/css";
 
 type Props = {
   eventId?: number;
@@ -176,7 +177,21 @@ export const EventDetailsDrawer = (props: Props) => {
           >
             <Suspense>
               <Sheet.Header>
-                <Sheet.Title fontSize="2xl">{details?.title}</Sheet.Title>
+                <Sheet.Title fontSize="2xl">
+                  {details?.title}
+                  {user?.roles?.includes("admin") && (
+                    <>
+                      {" - "}
+                      <Link
+                        href={"/admin/collections/events/" + details?.id}
+                        target={"_blank"}
+                        className={css({ textDecoration: "underline" })}
+                      >
+                        edit
+                      </Link>
+                    </>
+                  )}
+                </Sheet.Title>
                 <Sheet.Description>
                   {details?.description && (
                     <RichText data={details.description} />
