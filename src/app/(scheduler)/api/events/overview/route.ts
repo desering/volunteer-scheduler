@@ -1,3 +1,3 @@
-import { getEventsByDay } from "@/lib/services/get-events-by-day";
+import { getEventsGroupedByDay } from "@/lib/services/get-events-grouped-by-day";
 
-export const GET = async () => Response.json(await getEventsByDay(undefined));
+export const GET = async () => Response.json(await getEventsGroupedByDay());
