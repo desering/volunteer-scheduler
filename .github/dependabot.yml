@@ -1,7 +1,7 @@
 # https://docs.github.com/en/code-security/dependabot/working-with-dependabot/dependabot-options-reference
 ---
 version: 2
-enable-beta-ecosystems: true
+#enable-beta-ecosystems: true
 updates:
   - package-ecosystem: "npm"
     directory: "/"
