@@ -20,6 +20,7 @@
         "date-fns": "4.1.0",
         "dotenv": "16.4.7",
         "graphql": "16.12.0",
+        "ical-generator": "^10.0.0",
         "js-cookie": "3.0.5",
         "lucide-react": "0.553.0",
         "next": "15.5.6",
@@ -1070,6 +1071,8 @@
     "html-escaper": ["html-escaper@2.0.2", "", {}, "sha512-H2iMtd0I4Mt5eYiapRdIDjp+XzelXQ0tFE4JS7YFwFevXXMmOp9myNrUvCg0D6ws8iqkRPBfKHgbwig1SmlLfg=="],
 
     "http-status": ["http-status@2.1.0", "", {}, "sha512-O5kPr7AW7wYd/BBiOezTwnVAnmSNFY+J7hlZD2X5IOxVBetjcHAiTXhzj0gMrnojQlwy+UT1/Y3H3vJ3UlmvLA=="],
+
+    "ical-generator": ["ical-generator@10.0.0", "", { "peerDependencies": { "@touch4it/ical-timezones": ">=1.6.0", "@types/luxon": ">= 1.26.0", "@types/mocha": ">= 8.2.1", "dayjs": ">= 1.10.0", "luxon": ">= 1.26.0", "moment": ">= 2.29.0", "moment-timezone": ">= 0.5.33", "rrule": ">= 2.6.8" }, "optionalPeers": ["@touch4it/ical-timezones", "@types/luxon", "@types/mocha", "dayjs", "luxon", "moment", "moment-timezone", "rrule"] }, "sha512-YUQ7H4eZdLfYvx3zE/qN4AoG0qqwMZG37vLdWzysXFDn/YQEfctZ9tQuPSBncARKgv79d2smWf5Sh67k6xiZfg=="],
 
     "ieee754": ["ieee754@1.2.1", "", {}, "sha512-dcyqhDvX1C46lXZcVqCpK+FtMRQVdIMN6/Df5js2zouUsqG7I6sFxitIC+7KYK29KdXOLHdu9zL4sFnoVQnqaA=="],
 
