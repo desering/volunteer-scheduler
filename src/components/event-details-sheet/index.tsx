@@ -14,7 +14,7 @@ import {
   useMemo,
   useState,
 } from "react";
-import { HStack, panda } from "styled-system/jsx";
+import { Flex, HStack, panda } from "styled-system/jsx";
 import { createSignup as createSignupAction } from "@/actions/create-signup";
 import { deleteSignup as deleteSignupAction } from "@/actions/delete-signup";
 import { Alert } from "@/components/ui/alert";
@@ -177,28 +177,28 @@ export const EventDetailsDrawer = (props: Props) => {
           >
             <Suspense>
               <Sheet.Header>
-                <Sheet.Title fontSize="2xl">
-                  {details?.title}
+                <Flex gap="2" alignItems={"flex-end"}>
+                  <Sheet.Title fontSize="2xl">{details?.title}</Sheet.Title>
                   {user?.roles?.includes("admin") && (
-                    <>
-                      {" - "}
-                      <Link
-                        href={"/admin/collections/events/" + details?.id}
-                        target={"_blank"}
-                        className={css({ textDecoration: "underline" })}
-                      >
-                        edit
-                      </Link>
-                    </>
+                    <Link
+                      href={"/admin/collections/events/" + details?.id}
+                      target={"_blank"}
+                      className={css({
+                        textDecoration: "underline",
+                        fontSize: "xl",
+                      })}
+                    >
+                      edit
+                    </Link>
                   )}
-                </Sheet.Title>
+                </Flex>
+                <Sheet.Description>
+                  <Badge>{timeRange}</Badge>
+                </Sheet.Description>
                 <Sheet.Description>
                   {details?.description && (
                     <RichText data={details.description} />
                   )}
-                </Sheet.Description>
-                <Sheet.Description>
-                  <Badge>{timeRange}</Badge>
                 </Sheet.Description>
                 <Sheet.CloseTrigger
                   position="absolute"
