@@ -29,7 +29,7 @@
     "@tanstack/react-query": "5.90.5",
     "@types/canvas-confetti": "1.9.0",
     "@types/js-cookie": "3.0.6",
-    "canvas-confetti": "1.9.3",
+    "canvas-confetti": "1.9.4",
     "date-fns": "4.1.0",
     "dotenv": "16.4.7",
     "graphql": "16.11.0",
