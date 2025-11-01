@@ -49,11 +49,11 @@ export const users = pgTable(
     salt: varchar('salt'),
     hash: varchar('hash'),
   },
-  (columns) => ({
-    users_updated_at_idx: index('users_updated_at_idx').on(columns.updatedAt),
-    users_created_at_idx: index('users_created_at_idx').on(columns.createdAt),
-    users_email_idx: uniqueIndex('users_email_idx').on(columns.email),
-  }),
+  (columns) => [
+    index('users_updated_at_idx').on(columns.updatedAt),
+    index('users_created_at_idx').on(columns.createdAt),
+    uniqueIndex('users_email_idx').on(columns.email),
+  ],
 )
 
 export const event_templates_sections_roles_signups = pgTable(
@@ -68,20 +68,16 @@ export const event_templates_sections_roles_signups = pgTable(
         onDelete: 'set null',
       }),
   },
-  (columns) => ({
-    _orderIdx: index('event_templates_sections_roles_signups_order_idx').on(columns._order),
-    _parentIDIdx: index('event_templates_sections_roles_signups_parent_id_idx').on(
-      columns._parentID,
-    ),
-    event_templates_sections_roles_signups_user_idx: index(
-      'event_templates_sections_roles_signups_user_idx',
-    ).on(columns.user),
-    _parentIDFk: foreignKey({
+  (columns) => [
+    index('event_templates_sections_roles_signups_order_idx').on(columns._order),
+    index('event_templates_sections_roles_signups_parent_id_idx').on(columns._parentID),
+    index('event_templates_sections_roles_signups_user_idx').on(columns.user),
+    foreignKey({
       columns: [columns['_parentID']],
       foreignColumns: [event_templates_sections_roles.id],
       name: 'event_templates_sections_roles_signups_parent_id_fk',
     }).onDelete('cascade'),
-  }),
+  ],
 )
 
 export const event_templates_sections_roles = pgTable(
@@ -92,17 +88,17 @@ export const event_templates_sections_roles = pgTable(
     id: varchar('id').primaryKey(),
     title: varchar('title').notNull(),
     description: jsonb('description'),
-    maxSignups: numeric('max_signups').notNull().default('1'),
+    maxSignups: numeric('max_signups', { mode: 'number' }).notNull().default(1),
   },
-  (columns) => ({
-    _orderIdx: index('event_templates_sections_roles_order_idx').on(columns._order),
-    _parentIDIdx: index('event_templates_sections_roles_parent_id_idx').on(columns._parentID),
-    _parentIDFk: foreignKey({
+  (columns) => [
+    index('event_templates_sections_roles_order_idx').on(columns._order),
+    index('event_templates_sections_roles_parent_id_idx').on(columns._parentID),
+    foreignKey({
       columns: [columns['_parentID']],
       foreignColumns: [event_templates_sections.id],
       name: 'event_templates_sections_roles_parent_id_fk',
     }).onDelete('cascade'),
-  }),
+  ],
 )
 
 export const event_templates_sections = pgTable(
@@ -114,15 +110,15 @@ export const event_templates_sections = pgTable(
     title: varchar('title').notNull(),
     description: jsonb('description'),
   },
-  (columns) => ({
-    _orderIdx: index('event_templates_sections_order_idx').on(columns._order),
-    _parentIDIdx: index('event_templates_sections_parent_id_idx').on(columns._parentID),
-    _parentIDFk: foreignKey({
+  (columns) => [
+    index('event_templates_sections_order_idx').on(columns._order),
+    index('event_templates_sections_parent_id_idx').on(columns._parentID),
+    foreignKey({
       columns: [columns['_parentID']],
       foreignColumns: [event_templates.id],
       name: 'event_templates_sections_parent_id_fk',
     }).onDelete('cascade'),
-  }),
+  ],
 )
 
 export const event_templates_roles_signups = pgTable(
@@ -137,18 +133,16 @@ export const event_templates_roles_signups = pgTable(
         onDelete: 'set null',
       }),
   },
-  (columns) => ({
-    _orderIdx: index('event_templates_roles_signups_order_idx').on(columns._order),
-    _parentIDIdx: index('event_templates_roles_signups_parent_id_idx').on(columns._parentID),
-    event_templates_roles_signups_user_idx: index('event_templates_roles_signups_user_idx').on(
-      columns.user,
-    ),
-    _parentIDFk: foreignKey({
+  (columns) => [
+    index('event_templates_roles_signups_order_idx').on(columns._order),
+    index('event_templates_roles_signups_parent_id_idx').on(columns._parentID),
+    index('event_templates_roles_signups_user_idx').on(columns.user),
+    foreignKey({
       columns: [columns['_parentID']],
       foreignColumns: [event_templates_roles.id],
       name: 'event_templates_roles_signups_parent_id_fk',
     }).onDelete('cascade'),
-  }),
+  ],
 )
 
 export const event_templates_roles = pgTable(
@@ -159,17 +153,17 @@ export const event_templates_roles = pgTable(
     id: varchar('id').primaryKey(),
     title: varchar('title').notNull(),
     description: jsonb('description'),
-    maxSignups: numeric('max_signups').notNull().default('1'),
+    maxSignups: numeric('max_signups', { mode: 'number' }).notNull().default(1),
   },
-  (columns) => ({
-    _orderIdx: index('event_templates_roles_order_idx').on(columns._order),
-    _parentIDIdx: index('event_templates_roles_parent_id_idx').on(columns._parentID),
-    _parentIDFk: foreignKey({
+  (columns) => [
+    index('event_templates_roles_order_idx').on(columns._order),
+    index('event_templates_roles_parent_id_idx').on(columns._parentID),
+    foreignKey({
       columns: [columns['_parentID']],
       foreignColumns: [event_templates.id],
       name: 'event_templates_roles_parent_id_fk',
     }).onDelete('cascade'),
-  }),
+  ],
 )
 
 export const event_templates = pgTable(
@@ -195,10 +189,10 @@ export const event_templates = pgTable(
       .defaultNow()
       .notNull(),
   },
-  (columns) => ({
-    event_templates_updated_at_idx: index('event_templates_updated_at_idx').on(columns.updatedAt),
-    event_templates_created_at_idx: index('event_templates_created_at_idx').on(columns.createdAt),
-  }),
+  (columns) => [
+    index('event_templates_updated_at_idx').on(columns.updatedAt),
+    index('event_templates_created_at_idx').on(columns.createdAt),
+  ],
 )
 
 export const events = pgTable(
@@ -220,10 +214,10 @@ export const events = pgTable(
       .defaultNow()
       .notNull(),
   },
-  (columns) => ({
-    events_updated_at_idx: index('events_updated_at_idx').on(columns.updatedAt),
-    events_created_at_idx: index('events_created_at_idx').on(columns.createdAt),
-  }),
+  (columns) => [
+    index('events_updated_at_idx').on(columns.updatedAt),
+    index('events_created_at_idx').on(columns.createdAt),
+  ],
 )
 
 export const sections = pgTable(
@@ -244,11 +238,11 @@ export const sections = pgTable(
       .defaultNow()
       .notNull(),
   },
-  (columns) => ({
-    sections_event_idx: index('sections_event_idx').on(columns.event),
-    sections_updated_at_idx: index('sections_updated_at_idx').on(columns.updatedAt),
-    sections_created_at_idx: index('sections_created_at_idx').on(columns.createdAt),
-  }),
+  (columns) => [
+    index('sections_event_idx').on(columns.event),
+    index('sections_updated_at_idx').on(columns.updatedAt),
+    index('sections_created_at_idx').on(columns.createdAt),
+  ],
 )
 
 export const roles = pgTable(
@@ -263,7 +257,7 @@ export const roles = pgTable(
     }),
     title: varchar('title').notNull(),
     description: jsonb('description'),
-    maxSignups: numeric('max_signups').notNull().default('1'),
+    maxSignups: numeric('max_signups', { mode: 'number' }).notNull().default(1),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -271,12 +265,12 @@ export const roles = pgTable(
       .defaultNow()
       .notNull(),
   },
-  (columns) => ({
-    roles_event_idx: index('roles_event_idx').on(columns.event),
-    roles_section_idx: index('roles_section_idx').on(columns.section),
-    roles_updated_at_idx: index('roles_updated_at_idx').on(columns.updatedAt),
-    roles_created_at_idx: index('roles_created_at_idx').on(columns.createdAt),
-  }),
+  (columns) => [
+    index('roles_event_idx').on(columns.event),
+    index('roles_section_idx').on(columns.section),
+    index('roles_updated_at_idx').on(columns.updatedAt),
+    index('roles_created_at_idx').on(columns.createdAt),
+  ],
 )
 
 export const signups = pgTable(
@@ -304,13 +298,23 @@ export const signups = pgTable(
       .defaultNow()
       .notNull(),
   },
-  (columns) => ({
-    signups_event_idx: index('signups_event_idx').on(columns.event),
-    signups_role_idx: index('signups_role_idx').on(columns.role),
-    signups_user_idx: index('signups_user_idx').on(columns.user),
-    signups_updated_at_idx: index('signups_updated_at_idx').on(columns.updatedAt),
-    signups_created_at_idx: index('signups_created_at_idx').on(columns.createdAt),
-  }),
+  (columns) => [
+    index('signups_event_idx').on(columns.event),
+    index('signups_role_idx').on(columns.role),
+    index('signups_user_idx').on(columns.user),
+    index('signups_updated_at_idx').on(columns.updatedAt),
+    index('signups_created_at_idx').on(columns.createdAt),
+  ],
+)
+
+export const payload_kv = pgTable(
+  'payload_kv',
+  {
+    id: serial('id').primaryKey(),
+    key: varchar('key').notNull(),
+    data: jsonb('data').notNull(),
+  },
+  (columns) => [uniqueIndex('payload_kv_key_idx').on(columns.key)],
 )
 
 export const payload_locked_documents = pgTable(
@@ -325,17 +329,11 @@ export const payload_locked_documents = pgTable(
       .defaultNow()
       .notNull(),
   },
-  (columns) => ({
-    payload_locked_documents_global_slug_idx: index('payload_locked_documents_global_slug_idx').on(
-      columns.globalSlug,
-    ),
-    payload_locked_documents_updated_at_idx: index('payload_locked_documents_updated_at_idx').on(
-      columns.updatedAt,
-    ),
-    payload_locked_documents_created_at_idx: index('payload_locked_documents_created_at_idx').on(
-      columns.createdAt,
-    ),
-  }),
+  (columns) => [
+    index('payload_locked_documents_global_slug_idx').on(columns.globalSlug),
+    index('payload_locked_documents_updated_at_idx').on(columns.updatedAt),
+    index('payload_locked_documents_created_at_idx').on(columns.createdAt),
+  ],
 )
 
 export const payload_locked_documents_rels = pgTable(
@@ -351,65 +349,60 @@ export const payload_locked_documents_rels = pgTable(
     sectionsID: integer('sections_id'),
     rolesID: integer('roles_id'),
     signupsID: integer('signups_id'),
+    'payload-kvID': integer('payload_kv_id'),
   },
-  (columns) => ({
-    order: index('payload_locked_documents_rels_order_idx').on(columns.order),
-    parentIdx: index('payload_locked_documents_rels_parent_idx').on(columns.parent),
-    pathIdx: index('payload_locked_documents_rels_path_idx').on(columns.path),
-    payload_locked_documents_rels_users_id_idx: index(
-      'payload_locked_documents_rels_users_id_idx',
-    ).on(columns.usersID),
-    payload_locked_documents_rels_event_templates_id_idx: index(
-      'payload_locked_documents_rels_event_templates_id_idx',
-    ).on(columns['event-templatesID']),
-    payload_locked_documents_rels_events_id_idx: index(
-      'payload_locked_documents_rels_events_id_idx',
-    ).on(columns.eventsID),
-    payload_locked_documents_rels_sections_id_idx: index(
-      'payload_locked_documents_rels_sections_id_idx',
-    ).on(columns.sectionsID),
-    payload_locked_documents_rels_roles_id_idx: index(
-      'payload_locked_documents_rels_roles_id_idx',
-    ).on(columns.rolesID),
-    payload_locked_documents_rels_signups_id_idx: index(
-      'payload_locked_documents_rels_signups_id_idx',
-    ).on(columns.signupsID),
-    parentFk: foreignKey({
+  (columns) => [
+    index('payload_locked_documents_rels_order_idx').on(columns.order),
+    index('payload_locked_documents_rels_parent_idx').on(columns.parent),
+    index('payload_locked_documents_rels_path_idx').on(columns.path),
+    index('payload_locked_documents_rels_users_id_idx').on(columns.usersID),
+    index('payload_locked_documents_rels_event_templates_id_idx').on(columns['event-templatesID']),
+    index('payload_locked_documents_rels_events_id_idx').on(columns.eventsID),
+    index('payload_locked_documents_rels_sections_id_idx').on(columns.sectionsID),
+    index('payload_locked_documents_rels_roles_id_idx').on(columns.rolesID),
+    index('payload_locked_documents_rels_signups_id_idx').on(columns.signupsID),
+    index('payload_locked_documents_rels_payload_kv_id_idx').on(columns['payload-kvID']),
+    foreignKey({
       columns: [columns['parent']],
       foreignColumns: [payload_locked_documents.id],
       name: 'payload_locked_documents_rels_parent_fk',
     }).onDelete('cascade'),
-    usersIdFk: foreignKey({
+    foreignKey({
       columns: [columns['usersID']],
       foreignColumns: [users.id],
       name: 'payload_locked_documents_rels_users_fk',
     }).onDelete('cascade'),
-    'event-templatesIdFk': foreignKey({
+    foreignKey({
       columns: [columns['event-templatesID']],
       foreignColumns: [event_templates.id],
       name: 'payload_locked_documents_rels_event_templates_fk',
     }).onDelete('cascade'),
-    eventsIdFk: foreignKey({
+    foreignKey({
       columns: [columns['eventsID']],
       foreignColumns: [events.id],
       name: 'payload_locked_documents_rels_events_fk',
     }).onDelete('cascade'),
-    sectionsIdFk: foreignKey({
+    foreignKey({
       columns: [columns['sectionsID']],
       foreignColumns: [sections.id],
       name: 'payload_locked_documents_rels_sections_fk',
     }).onDelete('cascade'),
-    rolesIdFk: foreignKey({
+    foreignKey({
       columns: [columns['rolesID']],
       foreignColumns: [roles.id],
       name: 'payload_locked_documents_rels_roles_fk',
     }).onDelete('cascade'),
-    signupsIdFk: foreignKey({
+    foreignKey({
       columns: [columns['signupsID']],
       foreignColumns: [signups.id],
       name: 'payload_locked_documents_rels_signups_fk',
     }).onDelete('cascade'),
-  }),
+    foreignKey({
+      columns: [columns['payload-kvID']],
+      foreignColumns: [payload_kv.id],
+      name: 'payload_locked_documents_rels_payload_kv_fk',
+    }).onDelete('cascade'),
+  ],
 )
 
 export const payload_preferences = pgTable(
@@ -425,15 +418,11 @@ export const payload_preferences = pgTable(
       .defaultNow()
       .notNull(),
   },
-  (columns) => ({
-    payload_preferences_key_idx: index('payload_preferences_key_idx').on(columns.key),
-    payload_preferences_updated_at_idx: index('payload_preferences_updated_at_idx').on(
-      columns.updatedAt,
-    ),
-    payload_preferences_created_at_idx: index('payload_preferences_created_at_idx').on(
-      columns.createdAt,
-    ),
-  }),
+  (columns) => [
+    index('payload_preferences_key_idx').on(columns.key),
+    index('payload_preferences_updated_at_idx').on(columns.updatedAt),
+    index('payload_preferences_created_at_idx').on(columns.createdAt),
+  ],
 )
 
 export const payload_preferences_rels = pgTable(
@@ -445,24 +434,22 @@ export const payload_preferences_rels = pgTable(
     path: varchar('path').notNull(),
     usersID: integer('users_id'),
   },
-  (columns) => ({
-    order: index('payload_preferences_rels_order_idx').on(columns.order),
-    parentIdx: index('payload_preferences_rels_parent_idx').on(columns.parent),
-    pathIdx: index('payload_preferences_rels_path_idx').on(columns.path),
-    payload_preferences_rels_users_id_idx: index('payload_preferences_rels_users_id_idx').on(
-      columns.usersID,
-    ),
-    parentFk: foreignKey({
+  (columns) => [
+    index('payload_preferences_rels_order_idx').on(columns.order),
+    index('payload_preferences_rels_parent_idx').on(columns.parent),
+    index('payload_preferences_rels_path_idx').on(columns.path),
+    index('payload_preferences_rels_users_id_idx').on(columns.usersID),
+    foreignKey({
       columns: [columns['parent']],
       foreignColumns: [payload_preferences.id],
       name: 'payload_preferences_rels_parent_fk',
     }).onDelete('cascade'),
-    usersIdFk: foreignKey({
+    foreignKey({
       columns: [columns['usersID']],
       foreignColumns: [users.id],
       name: 'payload_preferences_rels_users_fk',
     }).onDelete('cascade'),
-  }),
+  ],
 )
 
 export const payload_migrations = pgTable(
@@ -470,7 +457,7 @@ export const payload_migrations = pgTable(
   {
     id: serial('id').primaryKey(),
     name: varchar('name'),
-    batch: numeric('batch'),
+    batch: numeric('batch', { mode: 'number' }),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
@@ -478,14 +465,10 @@ export const payload_migrations = pgTable(
       .defaultNow()
       .notNull(),
   },
-  (columns) => ({
-    payload_migrations_updated_at_idx: index('payload_migrations_updated_at_idx').on(
-      columns.updatedAt,
-    ),
-    payload_migrations_created_at_idx: index('payload_migrations_created_at_idx').on(
-      columns.createdAt,
-    ),
-  }),
+  (columns) => [
+    index('payload_migrations_updated_at_idx').on(columns.updatedAt),
+    index('payload_migrations_created_at_idx').on(columns.createdAt),
+  ],
 )
 
 export const relations_users = relations(users, () => ({}))
@@ -603,6 +586,7 @@ export const relations_signups = relations(signups, ({ one }) => ({
     relationName: 'user',
   }),
 }))
+export const relations_payload_kv = relations(payload_kv, () => ({}))
 export const relations_payload_locked_documents_rels = relations(
   payload_locked_documents_rels,
   ({ one }) => ({
@@ -640,6 +624,11 @@ export const relations_payload_locked_documents_rels = relations(
       fields: [payload_locked_documents_rels.signupsID],
       references: [signups.id],
       relationName: 'signups',
+    }),
+    'payload-kvID': one(payload_kv, {
+      fields: [payload_locked_documents_rels['payload-kvID']],
+      references: [payload_kv.id],
+      relationName: 'payload-kv',
     }),
   }),
 )
@@ -687,6 +676,7 @@ type DatabaseSchema = {
   sections: typeof sections
   roles: typeof roles
   signups: typeof signups
+  payload_kv: typeof payload_kv
   payload_locked_documents: typeof payload_locked_documents
   payload_locked_documents_rels: typeof payload_locked_documents_rels
   payload_preferences: typeof payload_preferences
@@ -703,6 +693,7 @@ type DatabaseSchema = {
   relations_sections: typeof relations_sections
   relations_roles: typeof relations_roles
   relations_signups: typeof relations_signups
+  relations_payload_kv: typeof relations_payload_kv
   relations_payload_locked_documents_rels: typeof relations_payload_locked_documents_rels
   relations_payload_locked_documents: typeof relations_payload_locked_documents
   relations_payload_preferences_rels: typeof relations_payload_preferences_rels
