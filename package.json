@@ -52,7 +52,7 @@
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
     "cross-env": "^10.1.0",
-    "typescript": "^5.8.2"
+    "typescript": "^5.9.3"
   },
   "engines": {
     "node": "^18.20.2 || >=20.9.0"
