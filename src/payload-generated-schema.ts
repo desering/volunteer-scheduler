@@ -307,16 +307,6 @@ export const signups = pgTable(
   ],
 )
 
-export const payload_kv = pgTable(
-  'payload_kv',
-  {
-    id: serial('id').primaryKey(),
-    key: varchar('key').notNull(),
-    data: jsonb('data').notNull(),
-  },
-  (columns) => [uniqueIndex('payload_kv_key_idx').on(columns.key)],
-)
-
 export const payload_locked_documents = pgTable(
   'payload_locked_documents',
   {
@@ -349,7 +339,6 @@ export const payload_locked_documents_rels = pgTable(
     sectionsID: integer('sections_id'),
     rolesID: integer('roles_id'),
     signupsID: integer('signups_id'),
-    'payload-kvID': integer('payload_kv_id'),
   },
   (columns) => [
     index('payload_locked_documents_rels_order_idx').on(columns.order),
@@ -361,7 +350,6 @@ export const payload_locked_documents_rels = pgTable(
     index('payload_locked_documents_rels_sections_id_idx').on(columns.sectionsID),
     index('payload_locked_documents_rels_roles_id_idx').on(columns.rolesID),
     index('payload_locked_documents_rels_signups_id_idx').on(columns.signupsID),
-    index('payload_locked_documents_rels_payload_kv_id_idx').on(columns['payload-kvID']),
     foreignKey({
       columns: [columns['parent']],
       foreignColumns: [payload_locked_documents.id],
@@ -396,11 +384,6 @@ export const payload_locked_documents_rels = pgTable(
       columns: [columns['signupsID']],
       foreignColumns: [signups.id],
       name: 'payload_locked_documents_rels_signups_fk',
-    }).onDelete('cascade'),
-    foreignKey({
-      columns: [columns['payload-kvID']],
-      foreignColumns: [payload_kv.id],
-      name: 'payload_locked_documents_rels_payload_kv_fk',
     }).onDelete('cascade'),
   ],
 )
@@ -586,7 +569,6 @@ export const relations_signups = relations(signups, ({ one }) => ({
     relationName: 'user',
   }),
 }))
-export const relations_payload_kv = relations(payload_kv, () => ({}))
 export const relations_payload_locked_documents_rels = relations(
   payload_locked_documents_rels,
   ({ one }) => ({
@@ -624,11 +606,6 @@ export const relations_payload_locked_documents_rels = relations(
       fields: [payload_locked_documents_rels.signupsID],
       references: [signups.id],
       relationName: 'signups',
-    }),
-    'payload-kvID': one(payload_kv, {
-      fields: [payload_locked_documents_rels['payload-kvID']],
-      references: [payload_kv.id],
-      relationName: 'payload-kv',
     }),
   }),
 )
@@ -676,7 +653,6 @@ type DatabaseSchema = {
   sections: typeof sections
   roles: typeof roles
   signups: typeof signups
-  payload_kv: typeof payload_kv
   payload_locked_documents: typeof payload_locked_documents
   payload_locked_documents_rels: typeof payload_locked_documents_rels
   payload_preferences: typeof payload_preferences
@@ -693,7 +669,6 @@ type DatabaseSchema = {
   relations_sections: typeof relations_sections
   relations_roles: typeof relations_roles
   relations_signups: typeof relations_signups
-  relations_payload_kv: typeof relations_payload_kv
   relations_payload_locked_documents_rels: typeof relations_payload_locked_documents_rels
   relations_payload_locked_documents: typeof relations_payload_locked_documents
   relations_payload_preferences_rels: typeof relations_payload_preferences_rels
