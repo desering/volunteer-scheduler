@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Box, Container, Grid, panda } from "styled-system/jsx";
+import { Box, Container, Grid, panda, VStack } from "styled-system/jsx";
 import { link } from "styled-system/recipes";
 import { RegisterForm } from "@/components/auth/register-form";
 import { getUser } from "@/lib/services/get-user";
@@ -40,10 +40,12 @@ export default async function Page() {
           <RegisterForm />
 
           <panda.div textAlign="center" marginY="10px">
-            Already have an account?{" "}
-            <Link href="/auth/sign-in" className={link()}>
-              Sign in
-            </Link>
+            <VStack gap={0}>
+              Already have an account?
+              <Link href="/auth/sign-in" className={link()}>
+                Sign in
+              </Link>
+            </VStack>
           </panda.div>
         </Grid>
       </Container>
