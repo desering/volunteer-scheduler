@@ -21,11 +21,11 @@ function SubmitButton() {
         css({ flexGrow: 1 }),
       )}
     >
-      Reset Password
+      Send reset link
     </button>
   );
 }
 
-export function ResetPasswordForm() {
-  return "ResetPasswordForm";
+export function ForgotPasswordForm() {
+  return "ForgotPasswordForm";
 }
