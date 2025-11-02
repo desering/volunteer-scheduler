@@ -39,7 +39,7 @@ const useEventsByMonth = (start: Date, end: Date) => {
   );
 
   const { data: groupedByMonth } = useQuery({
-    queryKey: ["calender", start, end],
+    queryKey: ["calendar", start, end],
     queryFn: async () => {
       const data = await getEventsInPeriod(start, end);
 
@@ -58,7 +58,7 @@ const useEventsByMonth = (start: Date, end: Date) => {
   return { groupedByMonth };
 };
 
-export const CalenderViewClient = () => {
+export const CalendarViewClient = () => {
   const [start, setStart] = useState(startOfMonth(new UTCDate()));
   const [end, setEnd] = useState(endOfMonth(addMonths(new UTCDate(), 2)));
 
@@ -118,7 +118,7 @@ export const CalenderViewClient = () => {
 
       <panda.div alignSelf="stretch" className={cx(bleedX, divider)} />
 
-      <h1>Calender</h1>
+      <h1>Calendar</h1>
 
       {groupedByMonth &&
         Object.keys(groupedByMonth).map((month) => {
