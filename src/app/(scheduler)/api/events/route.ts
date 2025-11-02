@@ -1,13 +1,35 @@
 import type { NextRequest } from "next/server";
-import { getEventDetails } from "@/lib/services/get-event-details";
+import Type from "typebox";
+import Value, { Errors } from "typebox/value";
+import { IsoDate } from "@/lib/schemas/iso-date";
+import { getEvents } from "@/lib/services/get-events";
 
-export const GET = async (request: NextRequest) => {
-  const searchParams = request.nextUrl.searchParams;
-  const id = Number(searchParams.get("id"));
+const GetEventsRequestSchema = Type.Object({
+  minDate: Type.Optional(IsoDate),
+  maxDate: Type.Optional(IsoDate),
+});
 
-  if (Number.isNaN(id)) {
-    return Response.json({ error: "Invalid ID" }, { status: 400 });
+export const GET = async (req: NextRequest) => {
+  const searchParams = req.nextUrl.searchParams;
+
+  const data = {
+    minDate: searchParams.get("min_date") ?? undefined,
+    maxDate: searchParams.get("max_date") ?? undefined,
+  } satisfies Type.Static<typeof GetEventsRequestSchema>;
+
+  const isValidResponse = Value.Check(GetEventsRequestSchema, data);
+
+  if (!isValidResponse) {
+    return Response.json(Errors(GetEventsRequestSchema, data), {
+      status: 400,
+    });
   }
 
-  return Response.json(await getEventDetails(id));
+  const decodedReq = Value.Decode(GetEventsRequestSchema, data);
+
+  await new Promise((resolve) => setTimeout(resolve, 2000));
+
+  const events = await getEvents(decodedReq);
+
+  return Response.json(events);
 };
