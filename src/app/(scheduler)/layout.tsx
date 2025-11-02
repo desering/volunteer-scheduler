@@ -7,6 +7,7 @@ import { getThemeFromCookie } from "@/lib/services/get-theme-from-cookie";
 import { ClientProviders } from "./client-providers";
 import { ServerProviders } from "./server-providers";
 import "./globals.css";
+import { Footer } from "@/components/footer";
 
 const sourceSans = Source_Sans_3({
   subsets: ["latin"],
@@ -79,6 +80,7 @@ export default async function RootLayout({ children }: Props) {
             <panda.main display="flex" flexDirection="column" flexGrow="1">
               {children}
             </panda.main>
+            <Footer />
           </ClientProviders>
         </ServerProviders>
       </panda.body>
