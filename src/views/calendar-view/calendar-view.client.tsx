@@ -13,7 +13,7 @@ import {
 } from "date-fns";
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { css, cx } from "../../../styled-system/css";
+import { css, cx } from "styled-system/css";
 import {
   Box,
   Center,
@@ -22,7 +22,7 @@ import {
   HStack,
   panda,
   VStack,
-} from "../../../styled-system/jsx";
+} from "styled-system/jsx";
 import { bleedX, divider, gutterX, gutterY } from "@/components/ui/utils";
 import { daysOfWeek } from "@/constants/days-of-week";
 import { getEventsInPeriod } from "@/lib/services/get-events-in-period";
