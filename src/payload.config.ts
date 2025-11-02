@@ -74,9 +74,9 @@ export default buildConfig({
       beforeDashboard: ["@/components/dashboard-header#DashboardHeader"],
 
       views: {
-        calender: {
-          Component: "/views/calender-view#CalenderView",
-          path: "/calender/:collectionSlug",
+        calendar: {
+          Component: "/views/calendar-view#CalendarView",
+          path: "/calendar/:collectionSlug",
         },
       },
     },

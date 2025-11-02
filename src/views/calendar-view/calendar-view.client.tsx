@@ -13,7 +13,7 @@ import {
 } from "date-fns";
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { css, cx } from "styled-system/css";
+import { css, cx } from "../../../styled-system/css";
 import {
   Box,
   Center,
@@ -22,7 +22,7 @@ import {
   HStack,
   panda,
   VStack,
-} from "styled-system/jsx";
+} from "../../../styled-system/jsx";
 import { bleedX, divider, gutterX, gutterY } from "@/components/ui/utils";
 import { daysOfWeek } from "@/constants/days-of-week";
 import { getEventsInPeriod } from "@/lib/services/get-events-in-period";
@@ -39,7 +39,7 @@ const useEventsByMonth = (start: Date, end: Date) => {
   );
 
   const { data: groupedByMonth } = useQuery({
-    queryKey: ["calender", start, end],
+    queryKey: ["calendar", start, end],
     queryFn: async () => {
       const data = await getEventsInPeriod(start, end);
 
@@ -58,7 +58,7 @@ const useEventsByMonth = (start: Date, end: Date) => {
   return { groupedByMonth };
 };
 
-export const CalenderViewClient = () => {
+export const CalendarViewClient = () => {
   const [start, setStart] = useState(startOfMonth(new UTCDate()));
   const [end, setEnd] = useState(endOfMonth(addMonths(new UTCDate(), 2)));
 
@@ -118,7 +118,7 @@ export const CalenderViewClient = () => {
 
       <panda.div alignSelf="stretch" className={cx(bleedX, divider)} />
 
-      <h1>Calender</h1>
+      <h1>Calendar</h1>
 
       {groupedByMonth &&
         Object.keys(groupedByMonth).map((month) => {

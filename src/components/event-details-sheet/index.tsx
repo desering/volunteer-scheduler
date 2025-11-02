@@ -4,7 +4,7 @@ import { Portal } from "@ark-ui/react";
 import { RichText } from "@payloadcms/richtext-lexical/react";
 import { useQuery } from "@tanstack/react-query";
 import confetti from "canvas-confetti";
-import { InfoIcon, XIcon } from "lucide-react";
+import { InfoIcon, XIcon, SquarePenIcon } from "lucide-react";
 import Link from "next/link";
 import {
   Fragment,
@@ -188,7 +188,10 @@ export const EventDetailsDrawer = (props: Props) => {
                         fontSize: "xl",
                       })}
                     >
-                      edit
+                      <HStack gap={1}>
+                        edit
+                        <SquarePenIcon size={16} />
+                      </HStack>
                     </Link>
                   )}
                 </Flex>

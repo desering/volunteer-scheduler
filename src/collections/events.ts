@@ -11,7 +11,7 @@ export const Events: CollectionConfig = {
         list: {
           actions: [
             {
-              path: "/components/switch-to-calender-view#SwitchToCalenderView",
+              path: "/components/switch-to-calendar-view#SwitchToCalendarView",
             },
           ],
         },
