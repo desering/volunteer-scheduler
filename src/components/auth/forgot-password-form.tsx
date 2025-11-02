@@ -4,12 +4,12 @@ import { useFormStatus } from "react-dom";
 import { css, cx } from "styled-system/css";
 import { button } from "styled-system/recipes";
 
-const _initialState = {
+const initialState = {
   message: "",
   success: false,
 };
 
-function _SubmitButton() {
+function SubmitButton() {
   const { pending } = useFormStatus();
 
   return (
@@ -21,11 +21,11 @@ function _SubmitButton() {
         css({ flexGrow: 1 }),
       )}
     >
-      Reset Password
+      Send reset link
     </button>
   );
 }
 
-export function ResetPasswordForm() {
-  return "ResetPasswordForm";
+export function ForgotPasswordForm() {
+  return "ForgotPasswordForm";
 }
