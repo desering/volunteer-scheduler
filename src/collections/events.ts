@@ -42,6 +42,8 @@ export const Events: CollectionConfig = {
               admin: {
                 date: {
                   pickerAppearance: "dayAndTime",
+                  timeFormat: "HH:mm",
+                  displayFormat: "dd/MM/y HH:mm",
                 },
               },
             },
@@ -53,6 +55,8 @@ export const Events: CollectionConfig = {
               admin: {
                 date: {
                   pickerAppearance: "dayAndTime",
+                  timeFormat: "HH:mm",
+                  displayFormat: "dd/MM/y HH:mm",
                 },
               },
               validate: (
