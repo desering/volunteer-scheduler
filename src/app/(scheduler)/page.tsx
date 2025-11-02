@@ -1,10 +1,15 @@
 "use server";
 
+import { css } from "styled-system/css";
 import { EventOverview } from "@/components/event-overview";
-import { getEventsGroupedByDay } from "@/lib/services/get-events-grouped-by-day";
 
 export default async function Page() {
-  const eventsByDay = await getEventsGroupedByDay();
-
-  return <EventOverview events={eventsByDay} flex="1" marginTop="4" />;
+  return (
+    <EventOverview
+      className={css({
+        flex: "1",
+        marginTop: "4",
+      })}
+    />
+  );
 }
