@@ -42,4 +42,4 @@ jobs:
       - run: bun install
       - run: bun generate:importmap
       # exits with 1 if there are changes, 0 if there are no differences.
-      - run: git diff --exit-code src/app/(payload)/admin/importMap.js
+      - run: git diff --exit-code "src/app/(payload)/admin/importMap.js"
