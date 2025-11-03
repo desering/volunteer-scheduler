@@ -46,6 +46,8 @@ jobs:
 
   migrations:
     runs-on: [ ubuntu-24.04 ]
+    env:
+      PAYLOAD_SECRET: dummy-for-migrate-create
     steps:
       - uses: actions/checkout@v5
       - uses: oven-sh/setup-bun@v2
