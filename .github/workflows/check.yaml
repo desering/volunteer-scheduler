@@ -20,7 +20,7 @@ jobs:
       - run: bun install
       - run: bun generate:types
       # exits with 1 if there are changes, 0 if there are no differences.
-      - run: git diff --exit-code src/payload-types.ts
+      - run: git diff --exit-code src/payload-types.ts || (echo 'WARNING - run `bun generate:types` to update payload-types.ts' && exit 1)
 
   schema:
     runs-on: [ ubuntu-24.04 ]
@@ -32,7 +32,7 @@ jobs:
       - run: bun install
       - run: bun generate:db-schema
       # exits with 1 if there are changes, 0 if there are no differences.
-      - run: git diff --exit-code src/payload-generated-schema.ts
+      - run: git diff --exit-code src/payload-generated-schema.ts || (echo 'WARNING - run `bun generate:db-schema` to update payload-generated-schema.ts' && exit 1)
 
   importmap:
     runs-on: [ ubuntu-24.04 ]
@@ -42,4 +42,16 @@ jobs:
       - run: bun install
       - run: bun generate:importmap
       # exits with 1 if there are changes, 0 if there are no differences.
-      - run: git diff --exit-code "src/app/(payload)/admin/importMap.js"
+      - run: git diff --exit-code "src/app/(payload)/admin/importMap.js" || (echo 'WARNING - run `bun generate:importmap` to update importMap.js' && exit 1)
+
+  migrations:
+    runs-on: [ ubuntu-24.04 ]
+    env:
+      PAYLOAD_SECRET: dummy-for-migrate-create
+    steps:
+      - uses: actions/checkout@v5
+      - uses: oven-sh/setup-bun@v2
+      - run: bun install
+      - run: bun payload migrate:create
+      # exits with 1 if there are changes, 0 if there are no differences.
+      - run: git diff --exit-code "src/migrations" || (echo 'WARNING - run `bun payload migrate:create` to add missing migrations' && exit 1)
