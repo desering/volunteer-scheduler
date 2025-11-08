@@ -48,8 +48,7 @@ We use conventional commit for meaningful git commit messages:
 
 Requirements:
 * All automated checks must pass
-* Your PR needs approval from one of the maintainers
-* ?
+* Your PR needs approval from one of the maintainers. Their review will be automatically requested.
 
 After your PR is merged, a new version of the `volunteer-scheduler` will
 automatically be built and deployed. 
