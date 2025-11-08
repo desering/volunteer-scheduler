@@ -4,50 +4,71 @@ Repo for the Volunteer Scheduler project.
 
 ## Tech Stack
 
-* [Park UI](https://park-ui.com/) ([Panda CSS](https://panda-css.com/) & [Ark UI](https://ark-ui.com/)) - Style, UI components, etc.
-* [Payload CMS](https://payloadcms.com/) - Database abstraction, API, etc.
-* [Next.js](https://nextjs.org/) & [React](https://react.dev/)
+The `volunteer-scheduler` is a [Next.js](https://nextjs.org/) and
+[React](https://react.dev/)-based web application.
+
+We use [Payload CMS](https://payloadcms.com/) as an out-of-the-box backend - it
+provides an admin panel, database abstractions, an API, and a lot more that we
+would otherwise have to build ourselves.
+
+The frontend is built with [Park UI](https://park-ui.com/)
+([Panda CSS](https://panda-css.com/) & [Ark UI](https://ark-ui.com/)), and uses API endpoints
+and interfaces exposed by Payload.
 
 ## How to get started with development
 
-### Setup & run
+1. Clone the repository:
+   ```shell
+   git clone git@github.com:desering/volunteer-scheduler.git
+   ```
 
-1. Install all dependencies:
+2. Install all dependencies:
    ```shell
    bun install
    ```
 
-2. Create a `.env` file and generate a secret key for Payload:
+3. Create a `.env` file and generate a secret key for Payload:
    ```shell
    cp .env.example .env
    sed -i -e "s/YOUR_SECRET_HERE/$(openssl rand -hex 32)/g" .env
    ```
 
-3. Start a database container:
+4. Start additional development services (database, mail):
    ```shell
-   docker compose -f docker-compose.db.yml up
+   docker compose -f docker-compose.dev.yml up
    ```
 
-4. Start Next:
+5. Start the Next.js development server:
    ```shell
    bun dev
    ```
 
-### Create a user and event
+You should now be able to access your local version of `volunteer-scheduler` at
+http://localhost:3000/.
 
-After running the dev server, it is possible to access the app (default:
-`localhost:3000`), but there will be no events to show. To fix this, create an
-admin account and an event:
+### Create a user and events
 
-1. Navigate to `localhost:3000/admin`
-2. Fill in the form. Make sure to select `admin` as the user role. This process is only necessary for first time setup or when rebuilding the db.
+When starting the app for the first time or after resetting the database, you
+will have to first create an admin user to access the backend and create events:
 
-Now, you can create and publish new event templates, which will show up in the app for non-privileged users.
+1. Go to http://localhost:3000/admin
+2. Fill in the form and make sure to select `admin` as the user role
 
-### Connect to te database
+Now, you can create and publish new events, which will show up in the frontend.
 
-To connect to the database container:
+### Working with the database
+
+To connect to the [PostgreSQL](https://www.postgresql.org/) database container
+of your local development environment:
 
 ```shell
 docker exec -it volunteer-scheduler-postgres-1 psql -U schedule
 ```
+
+### Working with mail
+
+Payload requires an external mail server to send emails like password resets or
+shift reminders. To view emails sent from your local development environment,
+use [MailDev](https://maildev.github.io/maildev/):
+
+* http://localhost:1080/#/
