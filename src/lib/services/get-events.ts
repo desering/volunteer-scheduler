@@ -13,27 +13,18 @@ type GetEventsOptions = {
 export const getEvents = async (params?: GetEventsOptions) => {
   const payload = await getPayload({ config });
 
-  const startDateFilter: WhereField = {
-    greater_than_equal: params?.minDate?.toISOString(),
-    less_than_equal: params?.maxDate?.toISOString(),
-  };
+  const minDate = params?.minDate ?? startOfDay(new Date(), { in: utc });
+  const maxDate = params?.maxDate;
 
-  // Remove undefined fields, payload includes them in the query which breaks it
-  for (const key in startDateFilter) {
-    if (startDateFilter[key as keyof typeof startDateFilter] === undefined) {
-      delete startDateFilter[key as keyof typeof startDateFilter];
-    }
-  }
+  const startDateFilter: WhereField = {
+    greater_than_equal: minDate.toISOString(),
+    ...(maxDate && { less_than_equal: maxDate.toISOString() }),
+  };
 
   const events = await payload.find({
     collection: "events",
 
-    where: {
-      start_date: {
-        greater_than_equal: utc(startOfDay(new Date())).toISOString(),
-        ...startDateFilter,
-      },
-    },
+    where: { start_date: startDateFilter },
 
     joins: {
       roles: false,

@@ -4,9 +4,13 @@ export type EventsGroupedByDay = Record<string, Event[]>;
 
 export const groupEventsByDate = (events: Event[]): EventsGroupedByDay =>
   events.reduce((acc, event) => {
-    if (!acc[event.start_date]) {
-      acc[event.start_date] = [];
+    const day = new Date(event.start_date).toDateString();
+
+    if (!acc[day]) {
+      acc[day] = [];
     }
-    acc[event.start_date].push(event);
+
+    acc[day].push(event);
+
     return acc;
   }, {} as EventsGroupedByDay);
