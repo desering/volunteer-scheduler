@@ -27,8 +27,6 @@ export const GET = async (req: NextRequest) => {
 
   const decodedReq = Value.Decode(GetEventsRequestSchema, data);
 
-  await new Promise((resolve) => setTimeout(resolve, 2000));
-
   const events = await getEvents(decodedReq);
 
   return Response.json(events);
