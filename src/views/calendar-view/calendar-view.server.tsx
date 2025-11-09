@@ -1,11 +1,11 @@
 import { DefaultTemplate } from "@payloadcms/next/templates";
 import type { AdminViewProps, CollectionSlug } from "payload";
 import { ClientProviders } from "@/app/(scheduler)/client-providers";
-import { CalenderViewClient } from "./calender-view.client";
+import { CalendarViewClient } from "./calendar-view.client";
 
 const supportedSlugs: CollectionSlug[] = ["events"];
 
-export const CalenderView = async ({
+export const CalendarView = async ({
   params,
   initPageResult,
   searchParams,
@@ -36,7 +36,7 @@ export const CalenderView = async ({
       visibleEntities={initPageResult.visibleEntities}
     >
       <ClientProviders>
-        <CalenderViewClient />
+        <CalendarViewClient />
       </ClientProviders>
     </DefaultTemplate>
   );

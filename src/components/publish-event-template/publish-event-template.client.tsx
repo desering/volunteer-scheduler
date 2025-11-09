@@ -39,7 +39,7 @@ export const PublishEventTemplateForm = (props: { doc: EventTemplate }) => {
   });
 
   const existingEvents = useQuery({
-    queryKey: ["calender", start, end],
+    queryKey: ["calendar", start, end],
     queryFn: async () => await getEventsInPeriod(start, end),
     refetchOnMount: "always",
   });
@@ -135,7 +135,7 @@ export const PublishEventTemplateForm = (props: { doc: EventTemplate }) => {
         <VStack alignSelf="stretch" alignItems="stretch">
           <div>
             <panda.h3>
-              Calender {existingEvents.isFetching && "(fetching events...)"}
+              Calendar {existingEvents.isFetching && "(fetching events...)"}
             </panda.h3>
             <p>Select the days you want to create events for.</p>
           </div>

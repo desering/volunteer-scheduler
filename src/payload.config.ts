@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 import { postgresAdapter } from "@payloadcms/db-postgres";
 import { nodemailerAdapter } from "@payloadcms/email-nodemailer";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
-import { buildConfig } from "payload";
+import { buildConfig, inMemoryKVAdapter } from "payload";
 import sharp from "sharp";
 import { EventTemplates } from "./collections/event-templates";
 import { Events } from "./collections/events";
@@ -74,9 +74,9 @@ export default buildConfig({
       beforeDashboard: ["@/components/dashboard-header#DashboardHeader"],
 
       views: {
-        calender: {
-          Component: "/views/calender-view#CalenderView",
-          path: "/calender/:collectionSlug",
+        calendar: {
+          Component: "/views/calendar-view#CalendarView",
+          path: "/calendar/:collectionSlug",
         },
       },
     },
@@ -102,6 +102,7 @@ export default buildConfig({
     prodMigrations: migrations,
     push: process.env.NODE_ENV !== "production",
   }),
+  kv: inMemoryKVAdapter(),
   email: nodemailerAdapter(
     process.env.SMTP_HOST
       ? {

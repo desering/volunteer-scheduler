@@ -4,7 +4,7 @@ import { Portal } from "@ark-ui/react";
 import { RichText } from "@payloadcms/richtext-lexical/react";
 import { useQuery } from "@tanstack/react-query";
 import confetti from "canvas-confetti";
-import { InfoIcon, XIcon } from "lucide-react";
+import { InfoIcon, XIcon, SquarePenIcon } from "lucide-react";
 import Link from "next/link";
 import {
   Fragment,
@@ -14,7 +14,7 @@ import {
   useMemo,
   useState,
 } from "react";
-import { HStack, panda } from "styled-system/jsx";
+import { Flex, HStack, panda } from "styled-system/jsx";
 import { createSignup as createSignupAction } from "@/actions/create-signup";
 import { deleteSignup as deleteSignupAction } from "@/actions/delete-signup";
 import { Alert } from "@/components/ui/alert";
@@ -27,6 +27,7 @@ import type { getEventDetails } from "@/lib/services/get-event-details";
 import { useAuth } from "@/providers/auth";
 import { format } from "@/utils/tz-format";
 import { RoleRadioItems } from "./role-radio-items";
+import { css } from "styled-system/css";
 
 type Props = {
   eventId?: number;
@@ -176,14 +177,31 @@ export const EventDetailsDrawer = (props: Props) => {
           >
             <Suspense>
               <Sheet.Header>
-                <Sheet.Title fontSize="2xl">{details?.title}</Sheet.Title>
+                <Flex gap="2" alignItems={"flex-end"}>
+                  <Sheet.Title fontSize="2xl">{details?.title}</Sheet.Title>
+                  {user?.roles?.includes("admin") && (
+                    <Link
+                      href={"/admin/collections/events/" + details?.id}
+                      target={"_blank"}
+                      className={css({
+                        textDecoration: "underline",
+                        fontSize: "xl",
+                      })}
+                    >
+                      <HStack gap={1}>
+                        edit
+                        <SquarePenIcon size={16} />
+                      </HStack>
+                    </Link>
+                  )}
+                </Flex>
+                <Sheet.Description>
+                  <Badge>{timeRange}</Badge>
+                </Sheet.Description>
                 <Sheet.Description>
                   {details?.description && (
                     <RichText data={details.description} />
                   )}
-                </Sheet.Description>
-                <Sheet.Description>
-                  <Badge>{timeRange}</Badge>
                 </Sheet.Description>
                 <Sheet.CloseTrigger
                   position="absolute"

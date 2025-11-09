@@ -11,7 +11,7 @@ export const Events: CollectionConfig = {
         list: {
           actions: [
             {
-              path: "/components/switch-to-calender-view#SwitchToCalenderView",
+              path: "/components/switch-to-calendar-view#SwitchToCalendarView",
             },
           ],
         },
@@ -42,6 +42,8 @@ export const Events: CollectionConfig = {
               admin: {
                 date: {
                   pickerAppearance: "dayAndTime",
+                  timeFormat: "HH:mm",
+                  displayFormat: "dd/MM/y HH:mm",
                 },
               },
             },
@@ -53,6 +55,8 @@ export const Events: CollectionConfig = {
               admin: {
                 date: {
                   pickerAppearance: "dayAndTime",
+                  timeFormat: "HH:mm",
+                  displayFormat: "dd/MM/y HH:mm",
                 },
               },
               validate: (
