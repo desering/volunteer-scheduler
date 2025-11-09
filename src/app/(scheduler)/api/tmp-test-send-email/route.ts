@@ -8,6 +8,6 @@ export const GET = async (request: NextRequest) => {
 
   return Response.json({
     endpoint: "sendSignupConfirmationEmail",
-    ...result,
+    ...(result !== null && typeof result === "object" ? result : { result }),
   });
 };
