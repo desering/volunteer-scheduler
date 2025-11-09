@@ -7,12 +7,14 @@ import { createCalendarInvite } from "@/lib/email/create-calendar-invite";
 import { sendEmail } from "@/lib/email/send-email";
 
 export const sendSignupConfirmationEmail = async () => {
-  const start = addHours(new Date(), 1);
-  const end = addHours(new Date(), 2);
+  const start = addHours(new Date(), 2);
+  start.setMinutes(0);
+  const end = addHours(new Date(), 3);
+  end.setMinutes(0);
 
   const invite = createCalendarInvite({
     summary: "Tuesday Evening First Shift",
-    description: "plain event description",
+    description: "You'll be doing stuff in this shift. Lets go team!",
     start: start,
     end: end,
     location: "De Sering, Rhoneweg 6, 1043 AH Amsterdam",

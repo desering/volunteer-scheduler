@@ -1,18 +1,20 @@
-import { Html } from "@react-email/html";
+import { Container, Heading, Html, Text } from "@react-email/components";
 
 export const ShiftSignupConfirmationEmail = ({ name }: { name: string }) => {
   return (
     <Html lang="en">
-      <h1>Shift Signup Confirmation</h1>
+      <Container>
+        <Heading as="h2">Shift Signup Confirmation</Heading>
 
-      <p>Hi {name}!</p>
-      <p>You signed up for a volunteering shift at De Sering:</p>
+        <Text>Hi {name}!</Text>
+        <Text>You signed up for a volunteering shift at De Sering:</Text>
 
-      <p>(Some facts here)</p>
+        <Text>(Some facts here)</Text>
 
-      {/*<Button href="https://desering.org">Click me</Button>*/}
+        {/*<Button href="https://desering.org">Click me</Button>*/}
 
-      <p>We are excited to see you there!</p>
+        <Text>We are excited to see you there!</Text>
+      </Container>
     </Html>
   );
 };
