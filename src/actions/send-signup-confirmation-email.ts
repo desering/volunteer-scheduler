@@ -1,65 +1,14 @@
 "use server";
 
-import config from "@payload-config";
-import type { Signup } from "@payload-types";
-import ical, {
-  type ICalCalendar,
-  ICalCalendarMethod,
-  type ICalEventData,
-} from "ical-generator";
-import { getPayload, type SendEmailOptions } from "payload";
+import { pretty, render, toPlainText } from "@react-email/render";
+import { addHours } from "date-fns";
+import { ShiftSignupConfirmationEmail } from "@/email/templates/ShiftSignupConfirmationEmail";
+import { createCalendarInvite } from "@/lib/email/create-calendar-invite";
+import { sendEmail } from "@/lib/email/send-email";
 
-type CreateCalendarInviteParams = {
-  summary: string;
-  description?: string;
-  start: Date;
-  end: Date;
-  location?: string;
-};
-const createCalendarInvite = (
-  params: CreateCalendarInviteParams,
-): ICalCalendar => {
-  const calendar = ical({
-    name: "De Sering",
-    method: ICalCalendarMethod.REQUEST,
-  });
-
-  calendar.createEvent({
-    summary: params.summary,
-    description: {
-      plain: params.description,
-    },
-    start: params.start,
-    end: params.end,
-    location: params.location,
-    organizer: "schedule@desering.org",
-  } as ICalEventData);
-
-  return calendar;
-};
-
-type SendEmailParams = SendEmailOptions;
-const sendEmail = async (params: SendEmailParams) => {
-  const payload = await getPayload({ config });
-
-  return payload.sendEmail({
-    from: "De Sering Schedule <schedule@desering.org>",
-    ...params,
-  });
-};
-
-type SendSignupConfirmationEmailParams = {
-  signup: Signup;
-};
-
-export const sendSignupConfirmationEmail = async (
-  params: SendSignupConfirmationEmailParams,
-) => {
-  console.log(params);
-
-  const start = new Date();
-  const end = new Date();
-  end.setHours(start.getHours() + 1);
+export const sendSignupConfirmationEmail = async () => {
+  const start = addHours(new Date(), 1);
+  const end = addHours(new Date(), 2);
 
   const invite = createCalendarInvite({
     summary: "Tuesday Evening First Shift",
@@ -69,11 +18,16 @@ export const sendSignupConfirmationEmail = async (
     location: "De Sering, Rhoneweg 6, 1043 AH Amsterdam",
   });
 
-  const email = await sendEmail({
-    to: "TODO: RECIPIENT HERE",
-    subject: "Shift Signup Notification",
-    text: "This is a plain text body",
-    html: "<p>This a html body</p>",
+  const htmlEmail = await pretty(
+    await render(ShiftSignupConfirmationEmail({ name: "Bernhard" })),
+  );
+  const plainEmail = toPlainText(htmlEmail);
+
+  return await sendEmail({
+    to: "frickb95@gmail.com",
+    subject: "Shift Signup Confirmation",
+    text: plainEmail,
+    html: htmlEmail,
     attachments: [
       {
         content: invite.toString(),
