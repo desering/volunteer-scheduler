@@ -51,7 +51,7 @@ http://localhost:3000/.
 When starting the app for the first time or after resetting the database, you
 will have to first create an admin user to access the backend and create events:
 
-1. Go to http://localhost:3000/admin
+1. Open http://localhost:3000/admin/create-first-user
 2. Fill in the form and make sure to select `admin` as the user role
 
 Now, you can create and publish new events, which will show up in the frontend.
@@ -64,6 +64,8 @@ of your local development environment:
 ```shell
 docker exec -it volunteer-scheduler-postgres-1 psql -U schedule
 ```
+
+Check out our [PostgreSQL Cheat Sheet](PostgreSQL%20Cheat%20Sheet.md)!
 
 ### Working with mail
 
