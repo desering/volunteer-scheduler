@@ -73,5 +73,5 @@ dependency.
 If any update ends up requiring additional code changes to make the update
 compatible, an approving review from another maintainer is required.
 
-`devDependencies` can be merged without local testing as long as the build and
-all checks are green.
+Any upgrades to `devDependencies` can be merged without local testing as long as
+the build and all checks are green.
