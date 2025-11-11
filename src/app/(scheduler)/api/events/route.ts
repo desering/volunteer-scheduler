@@ -17,9 +17,9 @@ export const GET = async (req: NextRequest) => {
     maxDate: searchParams.get("max_date") ?? undefined,
   } satisfies Type.Static<typeof GetEventsRequestSchema>;
 
-  const isValidResponse = Value.Check(GetEventsRequestSchema, data);
+  const isValidRequest = Value.Check(GetEventsRequestSchema, data);
 
-  if (!isValidResponse) {
+  if (!isValidRequest) {
     return Response.json(Errors(GetEventsRequestSchema, data), {
       status: 400,
     });
