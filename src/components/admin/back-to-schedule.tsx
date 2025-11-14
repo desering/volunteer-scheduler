@@ -4,7 +4,7 @@ import Link from "next/link";
 import { HStack } from "styled-system/jsx";
 
 export const BackToSchedule = () => (
-  <NavGroup label="Custom Group">
+  <NavGroup label="Navigate...">
     <Link href="/">
       <Button buttonStyle={"secondary"}>
         <HStack gap={1}>
