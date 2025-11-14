@@ -6,7 +6,7 @@ import { HStack } from "styled-system/jsx";
 export const BackToSchedule = () => (
   <NavGroup label="Navigate...">
     <Link href="/">
-      <Button buttonStyle={"secondary"}>
+      <Button buttonStyle="secondary">
         <HStack gap={1}>
           <Undo2Icon size={16} />
           Back to schedule
