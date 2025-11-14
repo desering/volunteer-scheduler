@@ -72,6 +72,7 @@ export default buildConfig({
     },
     components: {
       beforeDashboard: ["@/components/dashboard-header#DashboardHeader"],
+      beforeNavLinks: ["@/components/admin/back-to-schedule#BackToSchedule"],
 
       views: {
         calendar: {
