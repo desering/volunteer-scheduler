@@ -23,6 +23,7 @@ import { BoldFeatureClient as BoldFeatureClient_e70f5e05f09f93e00b997edb1ef0c864
 import { ItalicFeatureClient as ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { PublishEventTemplate as PublishEventTemplate_1e3fcc053ab5e0eb55a23f0b1fa2bd4e } from '../../../components/publish-event-template'
 import { SwitchToCalendarView as SwitchToCalendarView_5a247bd8b1f39ad5c39e286ac7a32a34 } from '../../../components/switch-to-calendar-view'
+import { BackToSchedule as BackToSchedule_ed8fa7269d6e99d15d1949d13c717bd3 } from '@/components/admin/back-to-schedule'
 import { DashboardHeader as DashboardHeader_0c59d0d196f0404bf841cd4d190d7596 } from '@/components/dashboard-header'
 import { CalendarView as CalendarView_38e806c25d81fcefba307a609b16ade2 } from '../../../views/calendar-view'
 
@@ -52,6 +53,7 @@ export const importMap = {
   "@payloadcms/richtext-lexical/client#ItalicFeatureClient": ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "/components/publish-event-template#PublishEventTemplate": PublishEventTemplate_1e3fcc053ab5e0eb55a23f0b1fa2bd4e,
   "/components/switch-to-calendar-view#SwitchToCalendarView": SwitchToCalendarView_5a247bd8b1f39ad5c39e286ac7a32a34,
+  "@/components/admin/back-to-schedule#BackToSchedule": BackToSchedule_ed8fa7269d6e99d15d1949d13c717bd3,
   "@/components/dashboard-header#DashboardHeader": DashboardHeader_0c59d0d196f0404bf841cd4d190d7596,
   "/views/calendar-view#CalendarView": CalendarView_38e806c25d81fcefba307a609b16ade2
 }
