@@ -17,19 +17,20 @@ and interfaces exposed by Payload.
 
 ## How to get started with development
 
-This guide is tested on macOS. If you run into steps that work differently on
-Windows or Linux, please open a PR to improve it.
+> [!IMPORTANT]
+> This guide is tested on macOS. If you run into steps that work differently on
+> Windows or Linux, please open a PR to improve it.
 
 ### Prerequisites
 
 Install the following prerequisites:
 
-1. Docker Desktop (https://docs.docker.com/desktop/, https://rancherdesktop.io/)
-   * `brew install --cask docker-desktop` or `brew install --cask rancher`
-2. The Bun Javascript runtime (https://bun.com/)
-   * `brew tap oven-sh/bun; brew install bun`
-3. The Node.js Javascript runtime (https://nodejs.org/en)
-   * `brew install node` / https://nodejs.org/en/download
+1. [Docker Desktop](https://docs.docker.com/desktop/) or [Rancher Desktop](https://rancherdesktop.io/)
+   * macOS Homebrew: `brew install --cask docker-desktop` or `brew install --cask rancher`
+2. The [Bun Javascript Runtime](https://bun.com/)
+   * macOS Homebrew: `brew tap oven-sh/bun; brew install bun`
+3. The [Node.js Javascript Runtime](https://nodejs.org/en/download)
+   * macOS Homebrew: `brew install node`
 
 ### Run the project locally
 
@@ -58,7 +59,7 @@ Then, follow the steps below to start the project:
 
 5. Start the Next.js development server:
    ```shell
-   bun dev
+   bun --bun dev
    ```
 
 You should now be able to access your local version of `volunteer-scheduler` at
