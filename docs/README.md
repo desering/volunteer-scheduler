@@ -17,6 +17,9 @@ and interfaces exposed by Payload.
 
 ## How to get started with development
 
+This guide is tested on macOS. If you run into steps that work differently on
+Windows or Linux, please open a PR to improve it.
+
 Install the following prerequisites:
 
 1. Docker Desktop (https://docs.docker.com/desktop/, https://rancherdesktop.io/)
