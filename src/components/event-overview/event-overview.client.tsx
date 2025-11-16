@@ -134,10 +134,10 @@ export const EventOverviewClient = ({
                       {event.tags.map((tag) =>
                         typeof tag === "object" && tag !== null ? (
                           <Badge key={tag.id}>{tag.text}</Badge>
-                        ) : null
+                        ) : null,
                       )}
                     </Box>
-                )}
+                  )}
                 <EventButton.Description>
                   {event.description && <RichText data={event.description} />}
                 </EventButton.Description>

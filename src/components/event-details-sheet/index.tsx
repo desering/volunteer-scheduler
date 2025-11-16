@@ -204,10 +204,10 @@ export const EventDetailsDrawer = (props: Props) => {
                         {details.tags.map((tag) =>
                           typeof tag === "object" && tag !== null ? (
                             <Badge key={tag.id}>{tag.text}</Badge>
-                          ) : null
+                          ) : null,
                         )}
                       </HStack>
-                  )}
+                    )}
                 </Sheet.Description>
                 <Sheet.Description>
                   {details?.description && (
