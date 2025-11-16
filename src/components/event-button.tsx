@@ -28,8 +28,8 @@ const EventButtonRoot = (props: Props & BoxProps) => {
 };
 
 type EventButtonDateProps = {
-  startDate: Date;
-  endDate: Date;
+  startDate: Date | string;
+  endDate: Date | string;
 };
 const EventButtonTime = (props: EventButtonDateProps) => (
   <panda.p>

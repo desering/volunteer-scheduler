@@ -41,12 +41,10 @@ export const EventDetailsDrawer = (props: Props) => {
   const { user } = useAuth();
 
   const { data: details, refetch } = useQuery({
-    queryKey: ["eventDetails", props.eventId],
+    queryKey: ["events", props.eventId],
     queryFn: async (): ReturnType<typeof getEventDetails> => {
-      const params = new URLSearchParams({
-        id: props.eventId?.toString() ?? "",
-      });
-      return fetch(`/api/events?${params}`).then((res) => res.json());
+      const res = await fetch(`/api/events/${props.eventId}`);
+      return await res.json();
     },
     enabled: !!props.eventId,
   });
