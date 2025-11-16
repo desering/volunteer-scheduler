@@ -20,12 +20,16 @@ and interfaces exposed by Payload.
 This guide is tested on macOS. If you run into steps that work differently on
 Windows or Linux, please open a PR to improve it.
 
+### Prerequisites
+
 Install the following prerequisites:
 
 1. Docker Desktop (https://docs.docker.com/desktop/, https://rancherdesktop.io/)
    * `brew install --cask docker-desktop` or `brew install --cask rancher`
 2. The Bun Javascript runtime (https://bun.com/)
    * `brew tap oven-sh/bun; brew install bun`
+
+### Run the project locally
 
 Then, follow the steps below to start the project:
 
