@@ -24,6 +24,7 @@ import {
 import type { Event } from "@/payload-types";
 import { DateSelect } from "./date-select";
 import { Badge } from "@/components/ui/badge";
+import { TagFilter } from "./tag-filter";
 
 type Props = {
   placeholder?: EventsGroupedByDay;
@@ -35,6 +36,7 @@ export const EventOverviewClient = ({
 }: Props & BoxProps) => {
   const [selectedDate, setSelectedDate] = useState(startOfDay(new Date()));
   const [selectedEventId, setSelectedEventId] = useState<number>();
+  const [selectedTags, setSelectedTags] = useState<number[]>([]);
 
   // separation of selectedEvent and isDrawerOpen, otherwise breaks exitAnim
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -93,11 +95,34 @@ export const EventOverviewClient = ({
 
   const eventsOnSelectedDate = useMemo(() => {
     if (!events) return;
-    const [, filteredEvents] =
+    const [, filteredEventsByDate] =
       Object.entries(events).find(([date]) => isSameDay(date, selectedDate)) ??
       [];
-    return filteredEvents;
-  }, [events, selectedDate]);
+
+    if (selectedTags.length === 0) {
+      return filteredEventsByDate;
+    }
+    
+    return filteredEventsByDate?.filter((event) => {
+      if (!event.tags || !Array.isArray(event.tags)) return false;
+      const eventTagIds = event.tags.map((tag) =>
+        tag.id,
+      );
+      return selectedTags.some((tagId) => eventTagIds.includes(tagId));
+    });
+  }, [events, selectedDate, selectedTags]);
+
+  const availableTagIds = useMemo(() => {
+    if (!eventsOnSelectedDate) return [] as number[];
+    const ids = new Set<number>();
+    eventsOnSelectedDate.forEach((event) => {
+      if (!event.tags || !Array.isArray(event.tags)) return;
+      event.tags.forEach((tag) => {
+        ids.add(tag.id);
+      });
+    });
+    return Array.from(ids);
+  }, [eventsOnSelectedDate]);
 
   if (error) {
     return `Something went wrong, please try again later. ${error.message}`;
@@ -111,6 +136,7 @@ export const EventOverviewClient = ({
         onDateSelect={setSelectedDate}
       />
       <Container>
+        <TagFilter selectedTags={selectedTags} onTagsChange={setSelectedTags} onlyTagIds={availableTagIds} />
         <Grid gap="4">
           {eventsOnSelectedDate?.map((event) => {
             const signups = event.signups?.docs?.length;
