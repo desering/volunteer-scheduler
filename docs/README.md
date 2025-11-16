@@ -46,7 +46,7 @@ Then, follow the steps below to start the project:
 3. Create a `.env` file and generate a secret key for Payload:
    ```shell
    cp .env.example .env
-   sed -i -e "s/YOUR_SECRET_HERE/$(openssl rand -hex 32)/g" .env
+   sed -i '' -e "s/PAYLOAD_SECRET_PLACEHOLDER/$(openssl rand -hex 32)/g" .env
    ```
 
 4. Start additional development services (database, mail):
