@@ -3,6 +3,9 @@
 import { useFormStatus } from "react-dom";
 import { css, cx } from "styled-system/css";
 import { button } from "styled-system/recipes";
+import { Field } from "../ui/field";
+import { Button } from "../ui/button";
+import { vstack } from "styled-system/patterns";
 
 const initialState = {
   message: "",
@@ -27,5 +30,16 @@ function SubmitButton() {
 }
 
 export function ForgotPasswordForm() {
-  return "ForgotPasswordForm";
+  return (
+    <form
+      className={vstack({ alignItems: "stretch", gap: "4" })}
+    >
+      <Field.Root>
+        <Field.Label>Email address</Field.Label>
+        <Field.Input name="email" type="email" required />
+      </Field.Root>
+
+      {SubmitButton()}
+    </form>
+  );
 }
