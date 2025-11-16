@@ -4,8 +4,10 @@ import { useFormStatus } from "react-dom";
 import { css, cx } from "styled-system/css";
 import { button } from "styled-system/recipes";
 import { Field } from "../ui/field";
-import { Button } from "../ui/button";
 import { vstack } from "styled-system/patterns";
+import { Alert } from "../ui/alert";
+import { Button } from "../ui/button"
+
 
 const initialState = {
   message: "",
@@ -16,16 +18,9 @@ function SubmitButton() {
   const { pending } = useFormStatus();
 
   return (
-    <button
-      type="submit"
-      aria-disabled={pending}
-      className={cx(
-        button({ size: "lg", variant: "solid" }),
-        css({ flexGrow: 1 }),
-      )}
-    >
+    <Button type="submit" variant="solid">
       Send reset link
-    </button>
+    </Button>
   );
 }
 
