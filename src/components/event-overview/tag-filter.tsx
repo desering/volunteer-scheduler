@@ -19,9 +19,9 @@ type TagFilterProps = {
 };
 
 export const TagFilter = ({
-    selectedTags,
-    onTagsChange,
-    onlyTagIds
+  selectedTags,
+  onTagsChange,
+  onlyTagIds,
 }: TagFilterProps) => {
   const { data: tags = [] } = useQuery<Tag[]>({
     queryKey: ["tags"],
