@@ -28,6 +28,8 @@ Install the following prerequisites:
    * `brew install --cask docker-desktop` or `brew install --cask rancher`
 2. The Bun Javascript runtime (https://bun.com/)
    * `brew tap oven-sh/bun; brew install bun`
+3. The Node.js Javascript runtime (https://nodejs.org/en)
+   * `brew install node` / https://nodejs.org/en/download
 
 ### Run the project locally
 
