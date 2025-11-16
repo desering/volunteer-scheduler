@@ -17,6 +17,15 @@ and interfaces exposed by Payload.
 
 ## How to get started with development
 
+Install the following prerequisites:
+
+1. Docker Desktop (https://docs.docker.com/desktop/, https://rancherdesktop.io/)
+   * `brew install --cask docker-desktop` or `brew install --cask rancher`
+2. The Bun Javascript runtime (https://bun.com/)
+   * `brew tap oven-sh/bun; brew install bun`
+
+Then, follow the steps below to start the project:
+
 1. Clone the repository:
    ```shell
    git clone git@github.com:desering/volunteer-scheduler.git
