@@ -18,7 +18,11 @@ type TagFilterProps = {
   onlyTagIds?: number[];
 };
 
-export const TagFilter = ({ selectedTags, onTagsChange, onlyTagIds }: TagFilterProps) => {
+export const TagFilter = ({
+    selectedTags,
+    onTagsChange,
+    onlyTagIds
+}: TagFilterProps) => {
   const { data: tags = [] } = useQuery<Tag[]>({
     queryKey: ["tags"],
     queryFn: async () => {
@@ -63,7 +67,7 @@ export const TagFilter = ({ selectedTags, onTagsChange, onlyTagIds }: TagFilterP
             left="0"
             top="100%"
             marginTop="2"
-        >
+          >
             {visibleTags.map((tag) => (
               <Menu.CheckboxItem
                 key={tag.id}
@@ -72,10 +76,10 @@ export const TagFilter = ({ selectedTags, onTagsChange, onlyTagIds }: TagFilterP
                 onCheckedChange={() => handleToggleTag(tag.id)}
               >
                 <Box
-                    display="flex"
-                    alignItems="center"
-                    justifyContent="space-between"
-                    width="100%"
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="space-between"
+                  width="100%"
                 >
                   <Badge>{tag.text}</Badge>
                   {selectedTags.includes(tag.id) && <Check size={16} />}
