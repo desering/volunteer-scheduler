@@ -30,7 +30,7 @@ Signal that you are picking up a specific issue by moving it to the "In
 Progress" column and adding yourself as an assignee.
 
 Have a look at
-[Get started with development](docs/README.md#how-to-get-started-with-development)
+[Get started with development](README.md#how-to-get-started-with-development)
 to set up your local dev environment.
 
 ## Conventions
