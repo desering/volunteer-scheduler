@@ -56,7 +56,14 @@ export const TagFilter = ({ selectedTags, onTagsChange, onlyTagIds }: TagFilterP
           <Menu.Trigger asChild data-menu-trigger>
             <Button variant="outline">Filter by Tags</Button>
           </Menu.Trigger>
-          <Menu.Content maxWidth="64" position="absolute" zIndex="50" left="0" top="100%" marginTop="2">
+          <Menu.Content
+            maxWidth="64"
+            position="absolute"
+            zIndex="50"
+            left="0"
+            top="100%"
+            marginTop="2"
+        >
             {visibleTags.map((tag) => (
               <Menu.CheckboxItem
                 key={tag.id}
@@ -64,15 +71,20 @@ export const TagFilter = ({ selectedTags, onTagsChange, onlyTagIds }: TagFilterP
                 checked={selectedTags.includes(tag.id)}
                 onCheckedChange={() => handleToggleTag(tag.id)}
               >
-                <Box display="flex" alignItems="center" justifyContent="space-between" width="100%">
+                <Box
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="space-between"
+                    width="100%"
+                >
                   <Badge>{tag.text}</Badge>
                   {selectedTags.includes(tag.id) && <Check size={16} />}
                 </Box>
               </Menu.CheckboxItem>
             ))}
             <Menu.Separator />
-            <Menu.Item 
-              value="clear-all" 
+            <Menu.Item
+              value="clear-all"
               onClick={handleClearTags}
               disabled={selectedTags.length === 0}
             >

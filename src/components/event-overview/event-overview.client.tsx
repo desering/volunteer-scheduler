@@ -102,12 +102,10 @@ export const EventOverviewClient = ({
     if (selectedTags.length === 0) {
       return filteredEventsByDate;
     }
-    
+
     return filteredEventsByDate?.filter((event) => {
       if (!event.tags || !Array.isArray(event.tags)) return false;
-      const eventTagIds = event.tags.map((tag) =>
-        tag.id,
-      );
+      const eventTagIds = event.tags.map((tag) => tag.id);
       return selectedTags.some((tagId) => eventTagIds.includes(tagId));
     });
   }, [events, selectedDate, selectedTags]);
@@ -136,7 +134,11 @@ export const EventOverviewClient = ({
         onDateSelect={setSelectedDate}
       />
       <Container>
-        <TagFilter selectedTags={selectedTags} onTagsChange={setSelectedTags} onlyTagIds={availableTagIds} />
+        <TagFilter
+          selectedTags={selectedTags}
+          onTagsChange={setSelectedTags}
+          onlyTagIds={availableTagIds}
+        />
         <Grid gap="4">
           {eventsOnSelectedDate?.map((event) => {
             const signups = event.signups?.docs?.length;
