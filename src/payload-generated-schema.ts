@@ -220,6 +220,33 @@ export const events = pgTable(
   ],
 )
 
+export const events_rels = pgTable(
+  'events_rels',
+  {
+    id: serial('id').primaryKey(),
+    order: integer('order'),
+    parent: integer('parent_id').notNull(),
+    path: varchar('path').notNull(),
+    tagsID: integer('tags_id'),
+  },
+  (columns) => [
+    index('events_rels_order_idx').on(columns.order),
+    index('events_rels_parent_idx').on(columns.parent),
+    index('events_rels_path_idx').on(columns.path),
+    index('events_rels_tags_id_idx').on(columns.tagsID),
+    foreignKey({
+      columns: [columns['parent']],
+      foreignColumns: [events.id],
+      name: 'events_rels_parent_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'events_rels_tags_fk',
+    }).onDelete('cascade'),
+  ],
+)
+
 export const sections = pgTable(
   'sections',
   {
@@ -307,6 +334,24 @@ export const signups = pgTable(
   ],
 )
 
+export const tags = pgTable(
+  'tags',
+  {
+    id: serial('id').primaryKey(),
+    text: varchar('text').notNull(),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('tags_updated_at_idx').on(columns.updatedAt),
+    index('tags_created_at_idx').on(columns.createdAt),
+  ],
+)
+
 export const payload_locked_documents = pgTable(
   'payload_locked_documents',
   {
@@ -339,6 +384,7 @@ export const payload_locked_documents_rels = pgTable(
     sectionsID: integer('sections_id'),
     rolesID: integer('roles_id'),
     signupsID: integer('signups_id'),
+    tagsID: integer('tags_id'),
   },
   (columns) => [
     index('payload_locked_documents_rels_order_idx').on(columns.order),
@@ -350,6 +396,7 @@ export const payload_locked_documents_rels = pgTable(
     index('payload_locked_documents_rels_sections_id_idx').on(columns.sectionsID),
     index('payload_locked_documents_rels_roles_id_idx').on(columns.rolesID),
     index('payload_locked_documents_rels_signups_id_idx').on(columns.signupsID),
+    index('payload_locked_documents_rels_tags_id_idx').on(columns.tagsID),
     foreignKey({
       columns: [columns['parent']],
       foreignColumns: [payload_locked_documents.id],
@@ -384,6 +431,11 @@ export const payload_locked_documents_rels = pgTable(
       columns: [columns['signupsID']],
       foreignColumns: [signups.id],
       name: 'payload_locked_documents_rels_signups_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['tagsID']],
+      foreignColumns: [tags.id],
+      name: 'payload_locked_documents_rels_tags_fk',
     }).onDelete('cascade'),
   ],
 )
@@ -532,7 +584,23 @@ export const relations_event_templates = relations(event_templates, ({ many }) =
     relationName: 'roles',
   }),
 }))
-export const relations_events = relations(events, () => ({}))
+export const relations_events_rels = relations(events_rels, ({ one }) => ({
+  parent: one(events, {
+    fields: [events_rels.parent],
+    references: [events.id],
+    relationName: '_rels',
+  }),
+  tagsID: one(tags, {
+    fields: [events_rels.tagsID],
+    references: [tags.id],
+    relationName: 'tags',
+  }),
+}))
+export const relations_events = relations(events, ({ many }) => ({
+  _rels: many(events_rels, {
+    relationName: '_rels',
+  }),
+}))
 export const relations_sections = relations(sections, ({ one }) => ({
   event: one(events, {
     fields: [sections.event],
@@ -569,6 +637,7 @@ export const relations_signups = relations(signups, ({ one }) => ({
     relationName: 'user',
   }),
 }))
+export const relations_tags = relations(tags, () => ({}))
 export const relations_payload_locked_documents_rels = relations(
   payload_locked_documents_rels,
   ({ one }) => ({
@@ -606,6 +675,11 @@ export const relations_payload_locked_documents_rels = relations(
       fields: [payload_locked_documents_rels.signupsID],
       references: [signups.id],
       relationName: 'signups',
+    }),
+    tagsID: one(tags, {
+      fields: [payload_locked_documents_rels.tagsID],
+      references: [tags.id],
+      relationName: 'tags',
     }),
   }),
 )
@@ -650,9 +724,11 @@ type DatabaseSchema = {
   event_templates_roles: typeof event_templates_roles
   event_templates: typeof event_templates
   events: typeof events
+  events_rels: typeof events_rels
   sections: typeof sections
   roles: typeof roles
   signups: typeof signups
+  tags: typeof tags
   payload_locked_documents: typeof payload_locked_documents
   payload_locked_documents_rels: typeof payload_locked_documents_rels
   payload_preferences: typeof payload_preferences
@@ -665,10 +741,12 @@ type DatabaseSchema = {
   relations_event_templates_roles_signups: typeof relations_event_templates_roles_signups
   relations_event_templates_roles: typeof relations_event_templates_roles
   relations_event_templates: typeof relations_event_templates
+  relations_events_rels: typeof relations_events_rels
   relations_events: typeof relations_events
   relations_sections: typeof relations_sections
   relations_roles: typeof relations_roles
   relations_signups: typeof relations_signups
+  relations_tags: typeof relations_tags
   relations_payload_locked_documents_rels: typeof relations_payload_locked_documents_rels
   relations_payload_locked_documents: typeof relations_payload_locked_documents
   relations_payload_preferences_rels: typeof relations_payload_preferences_rels

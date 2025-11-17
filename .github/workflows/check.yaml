@@ -9,6 +9,8 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.0
       - run: bun install
       - run: bunx biome format src
 
@@ -17,6 +19,8 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.0
       - run: bun install
       - run: bun generate:types
       # exits with 1 if there are changes, 0 if there are no differences.
@@ -29,6 +33,8 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.0
       - run: bun install
       - run: bun generate:db-schema
       # exits with 1 if there are changes, 0 if there are no differences.
@@ -39,6 +45,8 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.0
       - run: bun install
       - run: bun generate:importmap
       # exits with 1 if there are changes, 0 if there are no differences.
@@ -51,7 +59,19 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.0
       - run: bun install
       - run: bun payload migrate:create
       # exits with 1 if there are changes, 0 if there are no differences.
       - run: git diff --exit-code "src/migrations" || (echo 'WARNING - run `bun payload migrate:create` to add missing migrations' && exit 1)
+
+  vitest:
+    runs-on: [ ubuntu-24.04 ]
+    steps:
+      - uses: actions/checkout@v5
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.0
+      - run: bun install
+      - run: bun run test

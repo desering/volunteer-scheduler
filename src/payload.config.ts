@@ -11,6 +11,7 @@ import { Events } from "./collections/events";
 import { Roles } from "./collections/roles";
 import { Sections } from "./collections/sections";
 import { Signups } from "./collections/signups";
+import { Tags } from "./collections/tags";
 import { Users } from "./collections/users";
 import { migrations } from "./migrations";
 
@@ -90,7 +91,7 @@ export default buildConfig({
   cors: [process.env.NEXT_PUBLIC_SERVER_URL ?? ""].filter(Boolean),
   csrf: [process.env.NEXT_PUBLIC_SERVER_URL ?? ""].filter(Boolean),
 
-  collections: [Users, EventTemplates, Events, Sections, Roles, Signups],
+  collections: [Users, EventTemplates, Events, Sections, Roles, Signups, Tags],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET ?? "",
   typescript: {

@@ -48,18 +48,6 @@ jobs:
           push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
           tags: ${{ env.IMAGE_TAGS }}
 
-      - uses: actions/github-script@v8
-        if: github.event_name == 'pull_request'
-        with:
-          github-token: ${{secrets.GITHUB_TOKEN}}
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: '`docker pull ${{ env.IMAGE_TAGS }}`'
-            })
-
   deploy-to-coolify:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: [ docker ]
