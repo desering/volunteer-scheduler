@@ -41,12 +41,10 @@ export const EventDetailsDrawer = (props: Props) => {
   const { user } = useAuth();
 
   const { data: details, refetch } = useQuery({
-    queryKey: ["eventDetails", props.eventId],
+    queryKey: ["events", props.eventId],
     queryFn: async (): ReturnType<typeof getEventDetails> => {
-      const params = new URLSearchParams({
-        id: props.eventId?.toString() ?? "",
-      });
-      return fetch(`/api/events?${params}`).then((res) => res.json());
+      const res = await fetch(`/api/events/${props.eventId}`);
+      return await res.json();
     },
     enabled: !!props.eventId,
   });
@@ -197,6 +195,19 @@ export const EventDetailsDrawer = (props: Props) => {
                 </Flex>
                 <Sheet.Description>
                   <Badge>{timeRange}</Badge>
+                </Sheet.Description>
+                <Sheet.Description>
+                  {details?.tags &&
+                    Array.isArray(details.tags) &&
+                    details.tags.length > 0 && (
+                      <HStack gap="2" marginY="2">
+                        {details.tags.map((tag) =>
+                          typeof tag === "object" && tag !== null ? (
+                            <Badge key={tag.id}>{tag.text}</Badge>
+                          ) : null,
+                        )}
+                      </HStack>
+                    )}
                 </Sheet.Description>
                 <Sheet.Description>
                   {details?.description && (

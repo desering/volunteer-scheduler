@@ -9,7 +9,6 @@ import { Box, HStack, panda } from "styled-system/jsx";
 import { Flex } from "styled-system/jsx/flex";
 import { EventButton } from "@/components/event-button";
 import { EventDetailsDrawer } from "@/components/event-details-sheet";
-import type { DisplayableEvent } from "@/lib/mappers/map-events";
 import type { UpcomingEventsForUserId } from "@/lib/services/get-upcoming-events-for-user-id";
 import Link from "next/link";
 import { css } from "styled-system/css";
@@ -19,7 +18,7 @@ type Props = {
 };
 
 export const UpcomingEventsList = (props: Props) => {
-  const [selectedEvent, setSelectedEvent] = useState<DisplayableEvent>();
+  const [selectedEvent, setSelectedEvent] = useState<Event>();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const { data, refetch } = useQuery<UpcomingEventsForUserId>({
@@ -31,16 +30,16 @@ export const UpcomingEventsList = (props: Props) => {
     refetchOnWindowFocus: true,
   });
 
-  const eventsList = data?.events?.map((event: DisplayableEvent) => {
+  const eventsList = data?.events?.map((event) => {
     const signup = props.initialData?.signups.docs.find(
-      (signup: Signup) => (signup.event as Event).id === event.doc.id,
+      (signup: Signup) => (signup.event as Event).id === event.id,
     );
 
     const roleTitle = (signup?.role as Role)?.title;
 
     return (
       <EventButton.Root
-        key={event.doc.id}
+        key={event.id}
         onClick={() => {
           setIsDrawerOpen(true);
           setSelectedEvent(event);
@@ -51,7 +50,7 @@ export const UpcomingEventsList = (props: Props) => {
         border="1px solid"
         borderColor={{ base: "transparent", _hover: "border.default" }}
       >
-        <EventButton.Title>{event.doc.title}</EventButton.Title>
+        <EventButton.Title>{event.title}</EventButton.Title>
 
         <Box
           marginInline="-4"
@@ -84,7 +83,7 @@ export const UpcomingEventsList = (props: Props) => {
           </Box>
         </HStack>
         <EventButton.Description>
-          {event.doc.description && <RichText data={event.doc.description} />}
+          {event.description && <RichText data={event.description} />}
         </EventButton.Description>
       </EventButton.Root>
     );
@@ -107,7 +106,7 @@ export const UpcomingEventsList = (props: Props) => {
       </Flex>
       <EventDetailsDrawer
         open={isDrawerOpen}
-        eventId={selectedEvent?.doc.id}
+        eventId={selectedEvent?.id}
         onClose={() => {
           setIsDrawerOpen(false);
           refetch();
