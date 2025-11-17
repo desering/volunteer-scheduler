@@ -79,6 +79,12 @@ export const Events: CollectionConfig = {
               name: "description",
               type: "richText",
             },
+            {
+              name: "tags",
+              type: "relationship",
+              relationTo: "tags",
+              hasMany: true,
+            },
           ],
         },
         {

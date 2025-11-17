@@ -23,6 +23,7 @@ import {
 } from "@/lib/mappers/group-events-by-date";
 import type { Event } from "@/payload-types";
 import { DateSelect } from "./date-select";
+import { Badge } from "@/components/ui/badge";
 
 type Props = {
   placeholder?: EventsGroupedByDay;
@@ -126,6 +127,17 @@ export const EventOverviewClient = ({
                   endDate={event.end_date}
                 />
                 <EventButton.Title>{event.title}</EventButton.Title>
+                {event.tags &&
+                  Array.isArray(event.tags) &&
+                  event.tags.length > 0 && (
+                    <Box display="flex" gap="2" marginY="2">
+                      {event.tags.map((tag) =>
+                        typeof tag === "object" && tag !== null ? (
+                          <Badge key={tag.id}>{tag.text}</Badge>
+                        ) : null,
+                      )}
+                    </Box>
+                  )}
                 <EventButton.Description>
                   {event.description && <RichText data={event.description} />}
                 </EventButton.Description>
