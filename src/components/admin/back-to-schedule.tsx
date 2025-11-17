@@ -1,17 +1,27 @@
-import { Button, NavGroup } from "@payloadcms/ui";
-import { Undo2Icon } from "lucide-react";
+import { SquareArrowOutUpLeft } from "lucide-react";
 import Link from "next/link";
-import { HStack } from "styled-system/jsx";
+import { css, cx } from "styled-system/css";
 
 export const BackToSchedule = () => (
-  <NavGroup label="Navigate...">
-    <Link href="/">
-      <Button buttonStyle="secondary">
-        <HStack gap={1}>
-          <Undo2Icon size={16} />
-          Back to schedule
-        </HStack>
-      </Button>
+  <div
+    className={css({
+      marginBlockEnd: "10",
+      width: "full",
+    })}
+  >
+    <Link
+      href="/"
+      className={cx(
+        "nav__link",
+        css({
+          display: "flex",
+          gap: "1",
+          alignItems: "center",
+        }),
+      )}
+    >
+      <SquareArrowOutUpLeft size="1rem" />
+      <span className="nav__link-label">Back to Schedule</span>
     </Link>
-  </NavGroup>
+  </div>
 );
