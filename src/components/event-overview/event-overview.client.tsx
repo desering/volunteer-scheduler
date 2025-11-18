@@ -105,7 +105,9 @@ export const EventOverviewClient = ({
 
     return filteredEventsByDate?.filter((event) => {
       if (!event.tags || !Array.isArray(event.tags)) return false;
-      const eventTagIds = event.tags.map((tag) => tag.id);
+      const eventTagIds = event.tags.map((tag) =>
+        typeof tag === "object" && tag !== null ? tag.id : tag,
+      );
       return selectedTags.some((tagId) => eventTagIds.includes(tagId));
     });
   }, [events, selectedDate, selectedTags]);
@@ -116,7 +118,9 @@ export const EventOverviewClient = ({
     eventsOnSelectedDate.forEach((event) => {
       if (!event.tags || !Array.isArray(event.tags)) return;
       event.tags.forEach((tag) => {
-        ids.add(tag.id);
+        if (typeof tag === "object" && tag !== null) {
+          ids.add(tag.id);
+        }
       });
     });
     return Array.from(ids);
