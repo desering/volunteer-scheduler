@@ -12,7 +12,7 @@ import {
   subDays,
   subMonths,
 } from "date-fns";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { Box, type BoxProps, Container, Grid } from "styled-system/jsx";
 import { EventButton } from "@/components/event-button";
 import { EventDetailsDrawer } from "@/components/event-details-sheet";
@@ -40,6 +40,10 @@ export const EventOverviewClient = ({
 
   // separation of selectedEvent and isDrawerOpen, otherwise breaks exitAnim
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  useEffect(() => {
+    setSelectedTags([]);
+  }, [selectedDate]);
 
   const {
     data: events,
@@ -138,11 +142,13 @@ export const EventOverviewClient = ({
         onDateSelect={setSelectedDate}
       />
       <Container>
-        <TagFilter
-          selectedTags={selectedTags}
-          onTagsChange={setSelectedTags}
-          onlyTagIds={availableTagIds}
-        />
+        {availableTagIds.length > 0 && (
+          <TagFilter
+            selectedTags={selectedTags}
+            onTagsChange={setSelectedTags}
+            onlyTagIds={availableTagIds}
+          />
+        )}
         <Grid gap="4">
           {eventsOnSelectedDate?.map((event) => {
             const signups = event.signups?.docs?.length;
