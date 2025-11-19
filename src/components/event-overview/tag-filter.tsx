@@ -1,11 +1,8 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { Check, X } from "lucide-react";
-import { Box, Flex, HStack } from "styled-system/jsx";
+import { Box, Flex } from "styled-system/jsx";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Menu } from "@/components/ui/menu";
 
 type Tag = {
   id: number;
@@ -40,86 +37,36 @@ export const TagFilter = ({
     }
   };
 
-  const handleClearTags = () => {
-    onTagsChange([]);
-  };
-
   const visibleTags =
     onlyTagIds && onlyTagIds.length > 0
       ? tags.filter((t) => onlyTagIds.includes(t.id))
       : tags;
 
-  const selectedTagObjects = visibleTags.filter((tag) =>
-    selectedTags.includes(tag.id),
-  );
-
   return (
     <Box>
-      <Flex alignItems="center" gap="2" marginBottom="4" position="relative">
-        <Menu.Root closeOnSelect={false}>
-          <Menu.Trigger asChild data-menu-trigger>
-            <Button variant="outline">Filter by Tags</Button>
-          </Menu.Trigger>
-          <Menu.Content
-            maxWidth="64"
-            position="absolute"
-            zIndex="50"
-            left="0"
-            top="100%"
-            marginTop="2"
-          >
-            {visibleTags.map((tag) => (
-              <Menu.CheckboxItem
+      <Flex alignItems="center" gap="2" marginBottom="4">
+        <Box display="flex" gap="2" flexWrap="wrap">
+          {visibleTags.map((tag) => {
+            const isSelected = selectedTags.includes(tag.id);
+            return (
+              <Badge
                 key={tag.id}
-                value={tag.id.toString()}
-                checked={selectedTags.includes(tag.id)}
-                onCheckedChange={() => handleToggleTag(tag.id)}
-              >
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="space-between"
-                  width="100%"
-                >
-                  <Badge>{tag.text}</Badge>
-                  {selectedTags.includes(tag.id) && <Check size={16} />}
-                </Box>
-              </Menu.CheckboxItem>
-            ))}
-            <Menu.Separator />
-            <Menu.Item
-              value="clear-all"
-              onClick={handleClearTags}
-              disabled={selectedTags.length === 0}
-            >
-              Clear
-            </Menu.Item>
-          </Menu.Content>
-        </Menu.Root>
-      </Flex>
-
-      {selectedTagObjects.length > 0 && (
-        <HStack gap="2" marginBottom="4">
-          {selectedTagObjects.map((tag) => (
-            <Badge
-              key={tag.id}
-              display="flex"
-              alignItems="center"
-              gap="1"
-              paddingRight="1"
-            >
-              {tag.text}
-              <button
-                type="reset"
+                display="inline-flex"
+                alignItems="center"
+                gap="1"
+                paddingX="3"
+                height="8"
+                variant={isSelected ? "solid" : "subtle"}
+                style={{ cursor: "pointer" }}
                 onClick={() => handleToggleTag(tag.id)}
-                className="ml-1 hover:opacity-70"
+                aria-pressed={isSelected}
               >
-                <X size={14} />
-              </button>
-            </Badge>
-          ))}
-        </HStack>
-      )}
+                <span>{tag.text}</span>
+              </Badge>
+            );
+          })}
+        </Box>
+      </Flex>
     </Box>
   );
 };
