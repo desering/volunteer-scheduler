@@ -33,5 +33,5 @@
     "**/*.tsx",
     "styled-system"
   ],
-  "exclude": ["node_modules", "packages"]
+  "exclude": ["node_modules"]
 }
