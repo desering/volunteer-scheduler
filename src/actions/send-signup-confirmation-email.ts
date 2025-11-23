@@ -8,7 +8,8 @@ import { ShiftSignupConfirmationEmail } from "@/email/templates/ShiftSignupConfi
 import { createCalendarInvite } from "@/lib/email/create-calendar-invite";
 import { sendEmail } from "@/lib/email/send-email";
 
-export type SendSignupConfirmationPayload = {
+export type SendSignupConfirmationParams = {
+
   to: string;
   name: string;
   eventSummary: string;
@@ -20,7 +21,7 @@ export type SendSignupConfirmationPayload = {
 };
 
 export const sendSignupConfirmationEmail = async (
-  payload: SendSignupConfirmationPayload,
+  payload: SendSignupConfirmationParams,
 ) => {
   const { to, name, eventSummary, description, start, end, location, role } =
     payload;

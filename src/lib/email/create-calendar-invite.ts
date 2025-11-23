@@ -16,7 +16,7 @@ export const createCalendarInvite = (
   params: CreateCalendarInviteParams,
 ): ICalCalendar => {
   const calendar = ical({
-    name: process.env.ORG_NAME + "Calendar" || "Event Calendar",
+    name: process.env.ORG_NAME + " Calendar" || "Event Calendar",
     method: ICalCalendarMethod.REQUEST,
   });
 
