@@ -1,40 +1,94 @@
 "use server";
 
+import type { SerializedEditorState } from "@payloadcms/richtext-lexical/lexical";
+import { convertLexicalToPlaintext } from "@payloadcms/richtext-lexical/plaintext";
 import { pretty, render, toPlainText } from "@react-email/render";
 import { addHours } from "date-fns";
 import { ShiftSignupConfirmationEmail } from "@/email/templates/ShiftSignupConfirmationEmail";
 import { createCalendarInvite } from "@/lib/email/create-calendar-invite";
 import { sendEmail } from "@/lib/email/send-email";
 
-export const sendSignupConfirmationEmail = async () => {
-  const start = addHours(new Date(), 2);
-  start.setMinutes(0);
-  const end = addHours(new Date(), 3);
-  end.setMinutes(0);
+export type SendSignupConfirmationPayload = {
+  to: string;
+  name: string;
+  eventSummary: string;
+  description?: object;
+  start: string | Date;
+  end: string | Date;
+  location: string;
+  role: string;
+};
 
-  const invite = createCalendarInvite({
-    summary: "Tuesday Evening First Shift",
-    description: "You'll be doing stuff in this shift. Lets go team!",
-    start: start,
-    end: end,
-    location: "De Sering, Rhoneweg 6, 1043 AH Amsterdam",
-  });
+export const sendSignupConfirmationEmail = async (
+  payload: SendSignupConfirmationPayload,
+) => {
+  const { to, name, eventSummary, description, start, end, location, role } =
+    payload;
 
   const htmlEmail = await pretty(
-    await render(ShiftSignupConfirmationEmail({ name: "Bernhard" })),
+    await render(ShiftSignupConfirmationEmail({ name, eventSummary, role })),
   );
   const plainEmail = toPlainText(htmlEmail);
 
   return await sendEmail({
-    to: "frickb95@gmail.com",
-    subject: "Shift Signup Confirmation",
+    to,
+    subject: `${eventSummary} — Signup Confirmation`,
     text: plainEmail,
     html: htmlEmail,
     attachments: [
       {
-        content: invite.toString(),
+        content: createInvite({
+          eventSummary,
+          role,
+          description,
+          start,
+          end,
+          location,
+        }).toString(),
         contentType: "text/calendar",
       },
     ],
+  });
+};
+
+const createInvite = ({
+  eventSummary,
+  role,
+  description,
+  start,
+  end,
+  location,
+}: {
+  eventSummary: string;
+  role: string;
+  description?: object;
+  start: string | Date;
+  end: string | Date;
+  location: string;
+}) => {
+  let startDate: Date;
+  let endDate: Date;
+
+  if (start) {
+    startDate = typeof start === "string" ? new Date(start) : start;
+  } else {
+    startDate = addHours(new Date(), 2);
+    startDate.setMinutes(0);
+  }
+
+  if (end) {
+    endDate = typeof end === "string" ? new Date(end) : end;
+  } else {
+    endDate = addHours(startDate, 1);
+    endDate.setMinutes(0);
+  }
+  const inviteDescription = `You're joining as a ${role} \n\n${description && "for".concat(convertLexicalToPlaintext({ data: description as SerializedEditorState }))}`;
+
+  return createCalendarInvite({
+    summary: eventSummary,
+    description: inviteDescription,
+    start: startDate,
+    end: endDate,
+    location: location,
   });
 };

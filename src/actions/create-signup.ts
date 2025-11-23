@@ -4,6 +4,7 @@ import config from "@payload-config";
 import { getPayload } from "payload";
 import { z } from "zod";
 import { getUser } from "@/lib/services/get-user";
+import { sendSignupConfirmationEmail } from "@/actions/send-signup-confirmation-email";
 import type { Signup } from "@/payload-types";
 
 const schema = z.object({
@@ -86,6 +87,31 @@ export async function createSignup(
       user: user.id,
     },
   });
+
+  try {
+    const event = await payload.findByID({
+      collection: "events",
+      id: data.eventId,
+    });
+
+    const roleObj = role as any;
+
+    const payloadForEmail = {
+      to: (user as any).email,
+      name: (user as any).preferredName ?? "Volunteer",
+      eventSummary: (event as any)?.title ?? "Volunteer Shift",
+      description: (event as any)?.description ?? undefined,
+      start: (event as any)?.start_date,
+      end: (event as any)?.end_date,
+      location:
+        (event as any)?.location ?? "De Sering, Rhoneweg 6, 1043 AH Amsterdam",
+      role: roleObj?.title ?? (roleObj as any),
+    };
+
+    await sendSignupConfirmationEmail(payloadForEmail as any);
+  } catch (emailError) {
+    console.error("Failed to send signup confirmation email:", emailError);
+  }
 
   return {
     success: true,
