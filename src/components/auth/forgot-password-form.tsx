@@ -3,6 +3,7 @@
 import { Field } from "../ui/field";
 import { vstack } from "styled-system/patterns";
 import { Alert } from "../ui/alert";
+import { AlertCircleIcon } from "lucide-react";
 import { Button } from "../ui/button"
 import { forgotPassword } from "../../actions/auth/forgot-password";
 import { useMutation } from "@tanstack/react-query"
@@ -17,15 +18,10 @@ export function ForgotPasswordForm() {
     mutationFn: async (formData) => {
       const result = await forgotPassword(formData);
       if (!result.success) {
-        console.log("result failure", result)
         throw result;
       }
-      console.log("result success:", result)
       return result;
-    },
-    onSuccess: () => {
-      console.log("result success!!!")
-    },
+    }
   });
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -39,6 +35,33 @@ export function ForgotPasswordForm() {
       className={vstack({ alignItems: "stretch", gap: "4" })}
       onSubmit={handleSubmit}
     >
+      {/* Error alert */}
+      {error && (
+        <Alert.Root>
+          <Alert.Icon asChild>
+            <AlertCircleIcon />
+          </Alert.Icon>
+          <Alert.Content>
+            <Alert.Title>Oh.. something went wrong :/</Alert.Title>
+            <Alert.Description>
+              {error.errors.formErrors?.length > 0 
+                ? error.errors.formErrors.join(" ") 
+                : "An error occurred"}
+            </Alert.Description>
+          </Alert.Content>
+        </Alert.Root>
+      )}
+
+      {/* Success alert */}
+      {data && (
+        <Alert.Root>
+          <Alert.Content>
+            <Alert.Title>Success!</Alert.Title>
+            <Alert.Description>{data.message}</Alert.Description>
+          </Alert.Content>
+        </Alert.Root>
+      )}
+
       <Field.Root>
         <Field.Label>Email address</Field.Label>
         <Field.Input name="email" type="email" required />
