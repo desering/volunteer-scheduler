@@ -1,4 +1,8 @@
+import config from "@payload-config";
 import type { Signup } from "@payload-types";
+import { format } from "@/utils/tz-format";
+import type { SerializedEditorState } from "@payloadcms/richtext-lexical/lexical";
+import { convertLexicalToPlaintext } from "@payloadcms/richtext-lexical/plaintext";
 import { pretty, render, toPlainText } from "@react-email/render";
 import type { CollectionAfterChangeHook } from "payload";
 import { SignupConfirmation } from "@/email/templates/signup-confirmation";
@@ -28,40 +32,55 @@ export const sendConfirmationEmail: CollectionAfterChangeHook<Signup> = async ({
   if (!event) {
     return doc;
   }
+    const name =
+      typeof doc.user === "object" ? doc.user.preferredName : "Volunteer";
+    const eventSummary = event.title ?? "Volunteer Shift";
+    const description = event.description ?? undefined;
+    const start = new Date(event.start_date);
+    const end = new Date(event.end_date);
+    const location = process.env.ORG_ADDRESS || "Event Location";
+    const roleTitle = typeof role === "object" ? role?.title : "Volunteer";
 
-  const inviteDescription = "You're joining as a Volunteer \nDetails:";
+    const descriptionText = convertLexicalToPlaintext({
+      data: description as SerializedEditorState,
+    });
 
-  const htmlEmail = await pretty(
-    await render(
-      SignupConfirmation({
-        name: "Volunteer",
-      }),
-    ),
-  );
+    const inviteDescription = `You're joining as: ${roleTitle} \nDetails:\n ${descriptionText}`;
 
-  const plainEmail = toPlainText(htmlEmail);
+    const formattedDate = `${format(start, "iiii dd MMMM")}, ${format(start, "HH:mm")} - ${format(end, "HH:mm")}`;
 
-  const icalEvent = createIcalEvent({
-    id: await hashString(`${event.id}-${role.id}`),
-    summary: "eventSummary",
-    description: inviteDescription,
-    start: new Date(event.start_date),
-    end: new Date(event.end_date),
-    location: "somewhere",
-  }).toString();
+    const htmlEmail = await pretty(
+      await render(
+        SignupConfirmation({
+          name,
+          eventSummary,
+          role: roleTitle,
+          description: descriptionText,
+          date: formattedDate,
+        }),
+      ),
+    );
+    const plainEmail = toPlainText(htmlEmail);
 
-  await sendEmail({
-    to: "deSering@deserig.org",
-    subject: "Signup Confirmation",
-    text: plainEmail,
-    html: htmlEmail,
-    attachments: [
-      {
-        content: icalEvent,
-        contentType: "text/calendar",
-      },
-    ],
-  });
+    const invitation = createIcalEvent({
+      id: await hashString(`${event.id}-${role.id}`),
+      summary: eventSummary,
+      description: inviteDescription,
+      start,
+      end,
+      location,
+    }).toString();
 
-  return doc;
-};
+    return await sendEmail({
+      to: typeof doc.user === "object" && doc.user.email,
+      subject: `${eventSummary} — Signup Confirmation`,
+      text: plainEmail,
+      html: htmlEmail,
+      attachments: [
+        {
+          content: invitation,
+          contentType: "text/calendar",
+        },
+      ],
+    });
+  };
