@@ -44,8 +44,8 @@ export function ForgotPasswordForm() {
         <Field.Input name="email" type="email" required />
       </Field.Root>
 
-      <Button type="submit" variant="solid">
-        Send reset link
+      <Button type="submit" variant="solid" loading={isPending}>
+        {isPending ? "Sending reset link..." : "Send reset link"}
       </Button>
     </form>
   );
