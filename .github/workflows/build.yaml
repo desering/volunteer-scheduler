@@ -28,7 +28,7 @@ jobs:
   docker:
     runs-on: [ ubuntu-24.04 ]
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - if: github.event_name == 'pull_request'
         run: echo "IMAGE_TAGS=${{ env.DOCKER_REPO }}/${{ github.event.repository.name }}:${{ github.sha }}" >> "$GITHUB_ENV"
