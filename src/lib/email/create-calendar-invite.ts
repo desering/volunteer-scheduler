@@ -25,14 +25,16 @@ export const createCalendarInvite = (
   let endDate: Date;
 
   if (params.start) {
-    startDate = typeof params.start === "string" ? new Date(params.start) : params.start;
+    startDate =
+      typeof params.start === "string" ? new Date(params.start) : params.start;
   } else {
     startDate = addHours(new Date(), 2);
     startDate.setMinutes(0);
   }
 
   if (params.end) {
-    endDate = typeof params.end === "string" ? new Date(params.end) : params.end;
+    endDate =
+      typeof params.end === "string" ? new Date(params.end) : params.end;
   } else {
     endDate = addHours(startDate, 1);
     endDate.setMinutes(0);

@@ -1,5 +1,6 @@
 "use server";
 
+import { format } from "@/utils/tz-format";
 import type { SerializedEditorState } from "@payloadcms/richtext-lexical/lexical";
 import { convertLexicalToPlaintext } from "@payloadcms/richtext-lexical/plaintext";
 import { pretty, render, toPlainText } from "@react-email/render";
@@ -24,13 +25,34 @@ export const sendSignupConfirmationEmail = async (
   const { to, name, eventSummary, description, start, end, location, role } =
     payload;
 
-  const inviteDescription = `You're joining as: ${role} \n
-    Details: ${convertLexicalToPlaintext({ data: description as SerializedEditorState })}`;
+  const descriptionText = convertLexicalToPlaintext({
+    data: description as SerializedEditorState,
+  });
 
-    const htmlEmail = await pretty(
-    await render(ShiftSignupConfirmationEmail({ name, eventSummary, role })),
+  const inviteDescription = `You're joining as: ${role} \nDetails:\n ${descriptionText}`;
+
+  const formattedDate = `${format(start, "iiii dd MMMM")}, ${format(start, "HH:mm")} - ${format(end, "HH:mm")}`;
+
+  const htmlEmail = await pretty(
+    await render(
+      ShiftSignupConfirmationEmail({
+        name,
+        eventSummary,
+        role,
+        description: descriptionText,
+        date: formattedDate,
+      }),
+    ),
   );
   const plainEmail = toPlainText(htmlEmail);
+
+  const invitation = createCalendarInvite({
+    summary: eventSummary,
+    description: inviteDescription,
+    start,
+    end,
+    location,
+  }).toString();
 
   return await sendEmail({
     to,
@@ -39,13 +61,7 @@ export const sendSignupConfirmationEmail = async (
     html: htmlEmail,
     attachments: [
       {
-        content: createCalendarInvite({
-          summary: eventSummary,
-          description: inviteDescription,
-          start,
-          end,
-          location,
-        }).toString(),
+        content: invitation,
         contentType: "text/calendar",
       },
     ],
