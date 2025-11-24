@@ -51,7 +51,7 @@
     "@pandacss/dev": "^1.5.0",
     "@park-ui/panda-preset": "^0.43.1",
     "@types/node": "^24.10.0",
-    "@types/nodemailer": "^7.0.3",
+    "@types/nodemailer": "^7.0.4",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
     "@vitest/coverage-v8": "4.0.13",
