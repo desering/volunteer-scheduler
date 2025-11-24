@@ -45,7 +45,7 @@
         "@vitest/coverage-v8": "4.0.9",
         "cross-env": "^10.1.0",
         "typescript": "^5.9.3",
-        "vitest": "^4.0.9",
+        "vitest": "^4.0.13",
       },
     },
   },
