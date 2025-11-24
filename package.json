@@ -54,7 +54,7 @@
     "@types/nodemailer": "^7.0.3",
     "@types/react": "^19.2.2",
     "@types/react-dom": "^19.2.2",
-    "@vitest/coverage-v8": "4.0.9",
+    "@vitest/coverage-v8": "4.0.13",
     "cross-env": "^10.1.0",
     "typescript": "^5.9.3",
     "vitest": "^4.0.13"
