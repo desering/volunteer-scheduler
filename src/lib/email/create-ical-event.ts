@@ -16,7 +16,7 @@ export const createIcalEvent = (
   params: CreateIcalEventParams,
 ): ICalCalendar => {
   const calendar = ical({
-    name: "De Sering",
+    name: "De Sering", // todo: don't hardcode our name anywhere
     method: ICalCalendarMethod.REQUEST,
   });
 
@@ -28,7 +28,6 @@ export const createIcalEvent = (
     start: params.start,
     end: params.end,
     location: params.location,
-    // organizer: "schedule@desering.org",
   } as ICalEventData);
 
   return calendar;
