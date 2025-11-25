@@ -1,39 +1,67 @@
 import type { Signup } from "@payload-types";
+import { convertLexicalToPlaintext } from "@payloadcms/richtext-lexical/plaintext";
 import { pretty, render, toPlainText } from "@react-email/render";
-import { addHours } from "date-fns";
+import type { SerializedEditorState } from "lexical";
 import type { CollectionAfterChangeHook } from "payload";
 import { ShiftSignupConfirmationEmail } from "@/email/templates/ShiftSignupConfirmationEmail";
 import { createIcalEvent } from "@/lib/email/create-ical-event";
 import { sendEmail } from "@/lib/email/send-email";
+import { format } from "@/utils/tz-format";
 
 export const sendSignupConfirmationEmailHook: CollectionAfterChangeHook =
   async ({ doc }: { doc: Signup }) => {
-    const start = addHours(new Date(), 2);
-    start.setMinutes(0);
-    const end = addHours(new Date(), 3);
-    end.setMinutes(0);
-
-    const icalEvent = createIcalEvent({
-      summary: "Tuesday Evening First Shift",
-      description: "You'll be doing stuff in this shift. Lets go team!",
-      start: start,
-      end: end,
-      location: "De Sering, Rhoneweg 6, 1043 AH Amsterdam",
+    const event = await payload.findByID({
+      collection: "events",
+      id: doc.event,
     });
 
+    const to = doc.user.email;
+    const name = doc.user.preferredName ?? "Volunteer";
+    const eventSummary = event?.title ?? "Volunteer Shift";
+    const description = event?.description ?? undefined;
+    const start = event?.start_date;
+    const end = event?.end_date;
+    const location = "De Sering, Rhoneweg 6, 1043 AH Amsterdam";
+    const role = doc.role?.title ?? "Volunteer";
+
+    const descriptionText = convertLexicalToPlaintext({
+      data: description as SerializedEditorState,
+    });
+
+    const inviteDescription = `You're joining as: ${role} \nDetails:\n ${descriptionText}`;
+
+    const formattedDate = `${format(start, "iiii dd MMMM")}, ${format(start, "HH:mm")} - ${format(end, "HH:mm")}`;
+
     const htmlEmail = await pretty(
-      await render(ShiftSignupConfirmationEmail({ name: "Bernhard" })),
+      await render(
+        ShiftSignupConfirmationEmail({
+          name,
+          eventSummary,
+          role,
+          description: descriptionText,
+          date: formattedDate,
+        }),
+      ),
     );
+
     const plainEmail = toPlainText(htmlEmail);
 
+    const icalEvent = createIcalEvent({
+      summary: eventSummary,
+      description: inviteDescription,
+      start,
+      end,
+      location,
+    }).toString();
+
     await sendEmail({
-      to: "frickb95@gmail.com",
-      subject: "Shift Signup Confirmation",
+      to,
+      subject: `${eventSummary} — Signup Confirmation`,
       text: plainEmail,
       html: htmlEmail,
       attachments: [
         {
-          content: icalEvent.toString(),
+          content: icalEvent,
           contentType: "text/calendar",
         },
       ],
