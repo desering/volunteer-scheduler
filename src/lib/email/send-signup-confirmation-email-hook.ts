@@ -3,7 +3,7 @@ import { pretty, render, toPlainText } from "@react-email/render";
 import { addHours } from "date-fns";
 import type { CollectionAfterChangeHook } from "payload";
 import { ShiftSignupConfirmationEmail } from "@/email/templates/ShiftSignupConfirmationEmail";
-import { createCalendarInvite } from "@/lib/email/create-calendar-invite";
+import { createIcalEvent } from "@/lib/email/create-ical-event";
 import { sendEmail } from "@/lib/email/send-email";
 
 export const sendSignupConfirmationEmailHook: CollectionAfterChangeHook =
@@ -13,7 +13,7 @@ export const sendSignupConfirmationEmailHook: CollectionAfterChangeHook =
     const end = addHours(new Date(), 3);
     end.setMinutes(0);
 
-    const invite = createCalendarInvite({
+    const icalEvent = createIcalEvent({
       summary: "Tuesday Evening First Shift",
       description: "You'll be doing stuff in this shift. Lets go team!",
       start: start,
@@ -33,7 +33,7 @@ export const sendSignupConfirmationEmailHook: CollectionAfterChangeHook =
       html: htmlEmail,
       attachments: [
         {
-          content: invite.toString(),
+          content: icalEvent.toString(),
           contentType: "text/calendar",
         },
       ],

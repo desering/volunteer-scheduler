@@ -4,7 +4,7 @@ import ical, {
   type ICalEventData,
 } from "ical-generator";
 
-type CreateCalendarInviteParams = {
+type CreateIcalEventParams = {
   summary: string;
   description?: string;
   start: Date;
@@ -12,8 +12,8 @@ type CreateCalendarInviteParams = {
   location?: string;
 };
 
-export const createCalendarInvite = (
-  params: CreateCalendarInviteParams,
+export const createIcalEvent = (
+  params: CreateIcalEventParams,
 ): ICalCalendar => {
   const calendar = ical({
     name: "De Sering",
