@@ -7,7 +7,7 @@ export const sendEmail = async (params: SendEmailParams) => {
   const payload = await getPayload({ config });
 
   return payload.sendEmail({
-    from: "De Sering Schedule <schedule@desering.org>",
+    from: `${process.env.EMAIL_FROM_NAME} <${process.env.EMAIL_FROM_ADDRESS}>`,
     ...params,
   });
 };
