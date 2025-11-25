@@ -1,8 +1,9 @@
+import config from "@payload-config";
 import type { Signup } from "@payload-types";
 import { convertLexicalToPlaintext } from "@payloadcms/richtext-lexical/plaintext";
 import { pretty, render, toPlainText } from "@react-email/render";
 import type { SerializedEditorState } from "lexical";
-import type { CollectionAfterChangeHook } from "payload";
+import { type CollectionAfterChangeHook, getPayload } from "payload";
 import { ShiftSignupConfirmationEmail } from "@/email/templates/ShiftSignupConfirmationEmail";
 import { createIcalEvent } from "@/lib/email/create-ical-event";
 import { sendEmail } from "@/lib/email/send-email";
@@ -10,9 +11,11 @@ import { format } from "@/utils/tz-format";
 
 export const sendSignupConfirmationEmailHook: CollectionAfterChangeHook =
   async ({ doc }: { doc: Signup }) => {
+    const payload = await getPayload({ config });
+
     const event = await payload.findByID({
       collection: "events",
-      id: doc.event,
+      id: doc.event?.id,
     });
 
     const to = doc.user.email;
