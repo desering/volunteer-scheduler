@@ -1,5 +1,3 @@
-"use server";
-
 import { pretty, render, toPlainText } from "@react-email/render";
 import { addHours } from "date-fns";
 import { ShiftSignupConfirmationEmail } from "@/email/templates/ShiftSignupConfirmationEmail";
