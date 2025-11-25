@@ -27,5 +27,5 @@ function SubmitButton() {
 }
 
 export function ResetPasswordForm() {
-  return "";
+  return "ResetPasswordForm";
 }
