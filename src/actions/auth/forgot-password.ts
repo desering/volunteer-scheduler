@@ -4,10 +4,9 @@ import config from "@payload-config";
 import { getPayload } from "payload";
 import { z } from "zod";
 
-const schema = z
-  .object({
-    email: z.email()
-  })
+const schema = z.object({
+  email: z.email(),
+});
 
 export type ForgotPasswordData = z.infer<typeof schema>;
 
@@ -21,17 +20,20 @@ export type ForgotPasswordFailure = {
   errors: ReturnType<typeof z.flattenError<ForgotPasswordData>>;
 };
 
-export type ForgotPasswordResult = ForgotPasswordSuccess | ForgotPasswordFailure;
+export type ForgotPasswordResult =
+  | ForgotPasswordSuccess
+  | ForgotPasswordFailure;
 
-export const forgotPassword = async (formData: FormData): Promise<ForgotPasswordResult> => {
-  const parse = schema.safeParse({ email : formData.get("email")})
-
+export const forgotPassword = async (
+  formData: FormData,
+): Promise<ForgotPasswordResult> => {
+  const parse = schema.safeParse({ email: formData.get("email") });
 
   if (!parse.success) {
     return {
       success: false,
-      errors: z.flattenError(parse.error)
-    }
+      errors: z.flattenError(parse.error),
+    };
   }
 
   const data = parse.data;
@@ -41,16 +43,18 @@ export const forgotPassword = async (formData: FormData): Promise<ForgotPassword
   try {
     await payload.forgotPassword({
       collection: "users",
-      data
+      data,
     });
   } catch (error) {
-      return {
-        success: false,
-        errors: {
-          formErrors: [`Failed to send reset password email: ${error instanceof Error ? error.message : "Unknown error"}`],
-          fieldErrors: {},
-        },
-      };
+    return {
+      success: false,
+      errors: {
+        formErrors: [
+          `Failed to send reset password email: ${error instanceof Error ? error.message : "Unknown error"}`,
+        ],
+        fieldErrors: {},
+      },
+    };
   }
 
   return {
