@@ -6,6 +6,8 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    commit-message:
+      prefix: "chore(deps): "
     open-pull-requests-limit: 10
     groups:
       payload-monorepo:
@@ -16,4 +18,6 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    commit-message:
+      prefix: "chore(deps): "
     open-pull-requests-limit: 10
