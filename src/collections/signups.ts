@@ -1,4 +1,5 @@
-import { APIError, type CollectionConfig, type FieldHook } from "payload";
+import { APIError, type CollectionConfig } from "payload";
+import { sendSignupConfirmationEmailHook } from "@/lib/email/send-signup-confirmation-email-hook";
 
 export const Signups: CollectionConfig = {
   slug: "signups",
@@ -6,6 +7,9 @@ export const Signups: CollectionConfig = {
     useAsTitle: "title",
     defaultColumns: ["role", "user"],
     group: false,
+  },
+  hooks: {
+    afterChange: [sendSignupConfirmationEmailHook],
   },
   fields: [
     {
