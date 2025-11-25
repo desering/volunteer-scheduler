@@ -4,10 +4,13 @@ import { Field } from "../ui/field";
 import { vstack } from "styled-system/patterns";
 import { Alert } from "../ui/alert";
 import { AlertCircleIcon } from "lucide-react";
-import { Button } from "../ui/button"
+import { Button } from "../ui/button";
 import { forgotPassword } from "../../actions/auth/forgot-password";
-import { useMutation } from "@tanstack/react-query"
-import type { ForgotPasswordSuccess, ForgotPasswordFailure } from "../../actions/auth/forgot-password";
+import { useMutation } from "@tanstack/react-query";
+import type {
+  ForgotPasswordSuccess,
+  ForgotPasswordFailure,
+} from "../../actions/auth/forgot-password";
 
 export function ForgotPasswordForm() {
   const { mutate, isPending, error, data } = useMutation<
@@ -21,7 +24,7 @@ export function ForgotPasswordForm() {
         throw result;
       }
       return result;
-    }
+    },
   });
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -44,8 +47,8 @@ export function ForgotPasswordForm() {
           <Alert.Content>
             <Alert.Title>Oh.. something went wrong :/</Alert.Title>
             <Alert.Description>
-              {error.errors.formErrors?.length > 0 
-                ? error.errors.formErrors.join(" ") 
+              {error.errors.formErrors?.length > 0
+                ? error.errors.formErrors.join(" ")
                 : "An error occurred"}
             </Alert.Description>
           </Alert.Content>
