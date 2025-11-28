@@ -50,6 +50,7 @@ export const sendSignupConfirmationEmailHook: CollectionAfterChangeHook =
     const plainEmail = toPlainText(htmlEmail);
 
     const icalEvent = createIcalEvent({
+      id: event?.id?.toString(),
       summary: eventSummary,
       description: inviteDescription,
       start,

@@ -5,6 +5,7 @@ import ical, {
 } from "ical-generator";
 
 type CreateIcalEventParams = {
+  id?: string;
   summary: string;
   description?: string;
   start: Date;
@@ -21,6 +22,7 @@ export const createIcalEvent = (
   });
 
   calendar.createEvent({
+    id: params.id,
     summary: params.summary,
     description: {
       plain: params.description,
