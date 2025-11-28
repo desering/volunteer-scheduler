@@ -12,18 +12,18 @@ import {
   subDays,
   subMonths,
 } from "date-fns";
-import { useMemo, useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Box, type BoxProps, Container, Grid } from "styled-system/jsx";
 import { EventButton } from "@/components/event-button";
 import { EventDetailsDrawer } from "@/components/event-details-sheet";
 import { NoEventsMessage } from "@/components/event-overview/no-events-message";
+import { Badge } from "@/components/ui/badge";
 import {
   type EventsGroupedByDay,
   groupEventsByDate,
 } from "@/lib/mappers/group-events-by-date";
 import type { Event } from "@/payload-types";
 import { DateSelect } from "./date-select";
-import { Badge } from "@/components/ui/badge";
 import { TagFilter } from "./tag-filter";
 
 type Props = {
@@ -41,6 +41,7 @@ export const EventOverviewClient = ({
   // separation of selectedEvent and isDrawerOpen, otherwise breaks exitAnim
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: reset selected tags on date change
   useEffect(() => {
     setSelectedTags([]);
   }, [selectedDate]);
