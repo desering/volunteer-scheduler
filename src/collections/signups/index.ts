@@ -1,5 +1,5 @@
 import { APIError, type CollectionConfig } from "payload";
-import { sendSignupConfirmationEmailHook } from "@/collections/signups/hooks/send-confirmation-email";
+import { sendConfirmationEmail } from "@/collections/signups/hooks/send-confirmation-email";
 
 export const Signups: CollectionConfig = {
   slug: "signups",
@@ -9,7 +9,7 @@ export const Signups: CollectionConfig = {
     group: false,
   },
   hooks: {
-    afterChange: [sendSignupConfirmationEmailHook],
+    afterChange: [sendConfirmationEmail],
   },
   fields: [
     {
