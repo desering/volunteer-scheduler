@@ -4,7 +4,7 @@ import { convertLexicalToPlaintext } from "@payloadcms/richtext-lexical/plaintex
 import { pretty, render, toPlainText } from "@react-email/render";
 import type { SerializedEditorState } from "lexical";
 import { type CollectionAfterChangeHook, getPayload } from "payload";
-import { ShiftSignupConfirmationEmail } from "@/email/templates/ShiftSignupConfirmationEmail";
+import { ShiftSignupConfirmationEmail } from "@/email/templates/signup-confirmation";
 import { createIcalEvent } from "@/lib/email/create-ical-event";
 import { sendEmail } from "@/lib/email/send-email";
 import { format } from "@/utils/tz-format";
