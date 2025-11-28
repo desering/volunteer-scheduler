@@ -1,18 +1,6 @@
 import { Container, Heading, Html, Text } from "@react-email/components";
 
-export const ShiftSignupConfirmationEmail = ({
-  name,
-  eventSummary,
-  role,
-  description,
-  date,
-}: {
-  name: string;
-  eventSummary: string;
-  role: string;
-  description: string;
-  date: string;
-}) => {
+export const ShiftSignupConfirmationEmail = ({ name }: { name: string }) => {
   return (
     <Html lang="en">
       <Container>

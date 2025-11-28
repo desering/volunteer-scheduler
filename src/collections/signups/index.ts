@@ -1,5 +1,5 @@
 import { APIError, type CollectionConfig } from "payload";
-import { sendSignupConfirmationEmailHook } from "@/lib/email/send-signup-confirmation-email-hook";
+import { sendSignupConfirmationEmailHook } from "@/collections/signups/hooks/send-confirmation-email";
 
 export const Signups: CollectionConfig = {
   slug: "signups",
