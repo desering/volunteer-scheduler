@@ -53,8 +53,7 @@ export const Roles: CollectionConfig = {
       hasMany: false,
       maxDepth: 0,
       filterOptions: ({ siblingData }) => {
-        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-        const event = (siblingData as any).event;
+        const event = (siblingData as { event?: string }).event;
         if (!event) return false;
 
         return { event: { equals: event } };

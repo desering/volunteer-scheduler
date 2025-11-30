@@ -4,12 +4,12 @@ import { useFormStatus } from "react-dom";
 import { css, cx } from "styled-system/css";
 import { button } from "styled-system/recipes";
 
-const initialState = {
+const _initialState = {
   message: "",
   success: false,
 };
 
-function SubmitButton() {
+function _SubmitButton() {
   const { pending } = useFormStatus();
 
   return (

@@ -1,4 +1,4 @@
-import { APIError, type CollectionConfig, type FieldHook } from "payload";
+import { APIError, type CollectionConfig } from "payload";
 
 export const Signups: CollectionConfig = {
   slug: "signups",
@@ -50,10 +50,9 @@ export const Signups: CollectionConfig = {
       required: true,
       hasMany: false,
       maxDepth: 1,
-      filterOptions: ({ siblingData }) => {
-        // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-        return { event: { equals: (siblingData as any).event } };
-      },
+      filterOptions: ({ siblingData }) => ({
+        event: { equals: (siblingData as { event?: string }).event },
+      }),
       hooks: {
         beforeValidate: [
           async ({ operation, req, data }) => {
