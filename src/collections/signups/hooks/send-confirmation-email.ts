@@ -1,5 +1,5 @@
 import type { Signup } from "@payload-types";
-import { pretty, render, toPlainText } from "@react-email/render";
+import { render, toPlainText } from "@react-email/render";
 import type { CollectionAfterChangeHook } from "payload";
 import { SignupConfirmation } from "@/email/templates/signup-confirmation";
 import { createIcalEvent } from "@/lib/email/create-ical-event";
@@ -31,13 +31,9 @@ export const sendConfirmationEmail: CollectionAfterChangeHook<Signup> = async ({
 
   const inviteDescription = "You're joining as a Volunteer \nDetails:";
 
-  const htmlEmail = await pretty(
-    await render(
-      SignupConfirmation({
-        name: "Volunteer",
-      }),
-    ),
-  );
+  const htmlEmail = await render(SignupConfirmation({ name: "Volunteer" }), {
+    pretty: true,
+  });
 
   const plainEmail = toPlainText(htmlEmail);
 

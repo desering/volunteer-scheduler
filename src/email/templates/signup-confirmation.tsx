@@ -1,6 +1,10 @@
 import { Container, Heading, Html, Text } from "@react-email/components";
 
-export const SignupConfirmation = ({ name }: { name: string }) => {
+export type SignupConfirmationProps = {
+  name: string;
+};
+
+export const SignupConfirmation = ({ name }: SignupConfirmationProps) => {
   return (
     <Html lang="en">
       <Container>

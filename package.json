@@ -5,9 +5,9 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "dev": "panda codegen && next dev --port 3000",
-    "devsafe": "rm -rf .next && next dev",
-    "build": "panda codegen && next build",
+    "dev": "panda codegen && next dev --port 3000 --turbopack",
+    "devsafe": "rm -rf .next && next dev --turbopack",
+    "build": "panda codegen && next build --turbopack",
     "lint": "biome lint",
     "test": "vitest",
     "coverage": "vitest run --coverage",
