@@ -12,18 +12,17 @@ import {
   subDays,
   subMonths,
 } from "date-fns";
-import { useMemo, useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Box, type BoxProps, Container, Grid } from "styled-system/jsx";
 import { EventButton } from "@/components/event-button";
-import { EventDetailsDrawer } from "@/components/event-details-sheet";
 import { NoEventsMessage } from "@/components/event-overview/no-events-message";
+import { Badge } from "@/components/ui/badge";
 import {
   type EventsGroupedByDay,
   groupEventsByDate,
 } from "@/lib/mappers/group-events-by-date";
 import type { Event } from "@/payload-types";
 import { DateSelect } from "./date-select";
-import { Badge } from "@/components/ui/badge";
 import { TagFilter } from "./tag-filter";
 
 type Props = {
@@ -35,21 +34,13 @@ export const EventOverviewClient = ({
   ...cssProps
 }: Props & BoxProps) => {
   const [selectedDate, setSelectedDate] = useState(startOfDay(new Date()));
-  const [selectedEventId, setSelectedEventId] = useState<number>();
   const [selectedTags, setSelectedTags] = useState<number[]>([]);
-
-  // separation of selectedEvent and isDrawerOpen, otherwise breaks exitAnim
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   useEffect(() => {
     setSelectedTags([]);
   }, [selectedDate]);
 
-  const {
-    data: events,
-    refetch,
-    error,
-  } = useQuery<EventsGroupedByDay>({
+  const { data: events, error } = useQuery<EventsGroupedByDay>({
     queryKey: ["eventsByDay", initialEvents],
     queryFn: async () => {
       const url = "/api/events?";
@@ -153,29 +144,21 @@ export const EventOverviewClient = ({
           {eventsOnSelectedDate?.map((event) => {
             const signups = event.signups?.docs?.length;
             return (
-              <EventButton.Root
-                key={event.id}
-                onClick={() => {
-                  setIsDrawerOpen(true);
-                  setSelectedEventId(event.id);
-                }}
-              >
+              <EventButton.Root key={event.id} href={`/events/${event.id}`}>
                 <EventButton.Time
                   startDate={event.start_date}
                   endDate={event.end_date}
                 />
                 <EventButton.Title>{event.title}</EventButton.Title>
-                {event.tags &&
-                  Array.isArray(event.tags) &&
-                  event.tags.length > 0 && (
-                    <Box display="flex" gap="2" marginY="2">
-                      {event.tags.map((tag) =>
-                        typeof tag === "object" && tag !== null ? (
-                          <Badge key={tag.id}>{tag.text}</Badge>
-                        ) : null,
-                      )}
-                    </Box>
-                  )}
+                {Array.isArray(event.tags) && event.tags.length > 0 && (
+                  <Box display="flex" gap="2" marginY="2">
+                    {event.tags.map((tag) =>
+                      typeof tag === "object" && tag !== null ? (
+                        <Badge key={tag.id}>{tag.text}</Badge>
+                      ) : null,
+                    )}
+                  </Box>
+                )}
                 <EventButton.Description>
                   {event.description && <RichText data={event.description} />}
                 </EventButton.Description>
@@ -190,15 +173,6 @@ export const EventOverviewClient = ({
           }) ?? <NoEventsMessage />}
         </Grid>
       </Container>
-      <EventDetailsDrawer
-        open={isDrawerOpen}
-        eventId={selectedEventId}
-        onClose={() => {
-          setIsDrawerOpen(false);
-          refetch();
-        }}
-        onExitComplete={() => setSelectedEventId(undefined)}
-      />
     </Box>
   );
 };

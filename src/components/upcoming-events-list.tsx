@@ -18,10 +18,7 @@ type Props = {
 };
 
 export const UpcomingEventsList = (props: Props) => {
-  const [selectedEvent, setSelectedEvent] = useState<Event>();
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
-  const { data, refetch } = useQuery<UpcomingEventsForUserId>({
+  const { data } = useQuery<UpcomingEventsForUserId>({
     queryKey: ["events", "users", "upcoming", props.initialData?.events],
     queryFn: async () =>
       await fetch(`/api/events/users/upcoming`).then((res) => res.json()),
@@ -40,15 +37,14 @@ export const UpcomingEventsList = (props: Props) => {
     return (
       <EventButton.Root
         key={event.id}
-        onClick={() => {
-          setIsDrawerOpen(true);
-          setSelectedEvent(event);
-        }}
-        display="flex"
-        flexDirection="column"
-        gap="3"
-        border="1px solid"
-        borderColor={{ base: "transparent", _hover: "border.default" }}
+        href={`/events/${event.id}`}
+        className={css({
+          display: "flex",
+          flexDirection: "column",
+          gap: "3",
+          border: "1px solid",
+          borderColor: { base: "transparent", _hover: "border.default" },
+        })}
       >
         <EventButton.Title>{event.title}</EventButton.Title>
 
@@ -90,29 +86,18 @@ export const UpcomingEventsList = (props: Props) => {
   });
 
   return (
-    <>
-      <Flex flexDirection="column" gap="4">
-        {eventsList && eventsList.length > 0 ? (
-          eventsList
-        ) : (
-          <panda.p textAlign="center">
-            You currently have no upcoming shifts. Go to{" "}
-            <Link href={"/"} className={css({ textDecoration: "underline" })}>
-              Shifts
-            </Link>{" "}
-            and check out what's available!
-          </panda.p>
-        )}
-      </Flex>
-      <EventDetailsDrawer
-        open={isDrawerOpen}
-        eventId={selectedEvent?.id}
-        onClose={() => {
-          setIsDrawerOpen(false);
-          refetch();
-        }}
-        onExitComplete={() => setSelectedEvent(undefined)}
-      />
-    </>
+    <Flex flexDirection="column" gap="4">
+      {eventsList && eventsList.length > 0 ? (
+        eventsList
+      ) : (
+        <panda.p textAlign="center">
+          You currently have no upcoming shifts. Go to{" "}
+          <Link href={"/"} className={css({ textDecoration: "underline" })}>
+            Shifts
+          </Link>{" "}
+          and check out what's available!
+        </panda.p>
+      )}
+    </Flex>
   );
 };

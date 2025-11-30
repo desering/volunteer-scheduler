@@ -36,11 +36,10 @@ export const metadata = {
   },
 };
 
-type Props = {
-  children: React.ReactNode;
-};
-
-export default async function RootLayout({ children }: Props) {
+export default async function RootLayout({
+  children,
+  modals,
+}: LayoutProps<"/">) {
   const theme = await getThemeFromCookie();
 
   return (
@@ -79,6 +78,8 @@ export default async function RootLayout({ children }: Props) {
             <panda.main display="flex" flexDirection="column" flexGrow="1">
               {children}
             </panda.main>
+
+            {modals}
           </ClientProviders>
         </ServerProviders>
       </panda.body>

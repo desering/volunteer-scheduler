@@ -179,7 +179,7 @@ export const EventDetailsDrawer = (props: Props) => {
                   <Sheet.Title fontSize="2xl">{details?.title}</Sheet.Title>
                   {user?.roles?.includes("admin") && (
                     <Link
-                      href={"/admin/collections/events/" + details?.id}
+                      href={`/admin/collections/events/${details?.id}`}
                       target={"_blank"}
                       className={css({
                         textDecoration: "underline",
