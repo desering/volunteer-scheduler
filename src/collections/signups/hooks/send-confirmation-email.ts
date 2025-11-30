@@ -1,7 +1,7 @@
 import type { Signup } from "@payload-types";
 import { pretty, render, toPlainText } from "@react-email/render";
 import type { CollectionAfterChangeHook } from "payload";
-import { ShiftSignupConfirmationEmail } from "@/email/templates/signup-confirmation";
+import { SignupConfirmation } from "@/email/templates/signup-confirmation";
 import { createIcalEvent } from "@/lib/email/create-ical-event";
 import { sendEmail } from "@/lib/email/send-email";
 import { hashString } from "@/utils/hash-string";
@@ -33,7 +33,7 @@ export const sendConfirmationEmail: CollectionAfterChangeHook<Signup> = async ({
 
   const htmlEmail = await pretty(
     await render(
-      ShiftSignupConfirmationEmail({
+      SignupConfirmation({
         name: "Volunteer",
       }),
     ),
