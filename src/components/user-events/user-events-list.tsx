@@ -5,12 +5,10 @@ import { RichText } from "@payloadcms/richtext-lexical/react";
 import { useQuery } from "@tanstack/react-query";
 import { Clock, PersonStanding } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
 import { css } from "styled-system/css";
 import { Box, HStack, panda } from "styled-system/jsx";
 import { Flex } from "styled-system/jsx/flex";
 import { EventButton } from "@/components/event-button";
-import { EventDetailsDrawer } from "@/components/event-details-sheet";
 import type { EventsForUserId } from "@/lib/services/get-upcoming-events-for-user-id";
 
 type Props = {
