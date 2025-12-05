@@ -52,7 +52,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.7",
-    "@pandacss/dev": "^1.5.0",
+    "@pandacss/dev": "^1.6.1",
     "@park-ui/panda-preset": "^0.43.1",
     "@types/node": "^24.10.0",
     "@types/nodemailer": "^7.0.3",
