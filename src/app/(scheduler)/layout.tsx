@@ -7,7 +7,6 @@ import { getThemeFromCookie } from "@/lib/services/get-theme-from-cookie";
 import { ClientProviders } from "./client-providers";
 import { ServerProviders } from "./server-providers";
 import "./globals.css";
-import { Footer } from "@/components/footer";
 
 const sourceSans = Source_Sans_3({
   subsets: ["latin"],
@@ -80,9 +79,22 @@ export default async function RootLayout({ children }: Props) {
             <panda.main display="flex" flexDirection="column" flexGrow="1">
               {children}
             </panda.main>
-            <Footer />
           </ClientProviders>
         </ServerProviders>
+
+        <panda.footer display="flex" justifyContent="center">
+          <panda.p paddingBlock="10">
+            Made with
+            <panda.span
+              aria-label="love"
+              role="img"
+              paddingInline="2"
+              position="relative"
+              insetBlockStart="2px"
+            >&#129654;</panda.span>
+            by volunteers at De Sering
+          </panda.p>
+        </panda.footer>
       </panda.body>
     </html>
   );
