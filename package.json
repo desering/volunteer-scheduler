@@ -62,7 +62,7 @@
     "cross-env": "^10.1.0",
     "pino-pretty": "13.1.2",
     "typescript": "^5.9.3",
-    "vitest": "^4.0.13"
+    "vitest": "^4.0.15"
   },
   "engines": {
     "node": "^18.20.2 || >=20.9.0"
