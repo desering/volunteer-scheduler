@@ -91,7 +91,9 @@ export default async function RootLayout({ children }: Props) {
               paddingInline="2"
               position="relative"
               insetBlockStart="2px"
-            >&#129654;</panda.span>
+            >
+              &#129654;
+            </panda.span>
             by volunteers at De Sering
           </panda.p>
         </panda.footer>
