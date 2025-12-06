@@ -250,6 +250,12 @@ export const EventDetailsDrawer = (props: Props) => {
                         {section.title}
                       </panda.h3>
 
+                      {section?.description && (
+                        <Sheet.Description>
+                          <RichText data={section.description} />
+                        </Sheet.Description>
+                      )}
+
                       <RoleRadioItems
                         details={details}
                         roles={section.roles?.docs ?? []}
