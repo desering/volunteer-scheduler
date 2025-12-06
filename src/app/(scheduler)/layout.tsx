@@ -3,6 +3,7 @@ import { Source_Sans_3 } from "next/font/google";
 import { cx } from "styled-system/css";
 import { panda } from "styled-system/jsx";
 import { NavBar } from "@/components/navbar";
+import { LayoutFooter } from "@/components/layout-footer";
 import { themeColors } from "@/constants/theme-colors";
 import { getThemeFromCookie } from "@/lib/services/get-theme-from-cookie";
 import { ClientProviders } from "./client-providers";
@@ -82,6 +83,8 @@ export default async function RootLayout({ children }: Props) {
             </panda.main>
           </ClientProviders>
         </ServerProviders>
+
+        <LayoutFooter />
       </panda.body>
     </html>
   );
