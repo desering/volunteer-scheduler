@@ -2,6 +2,7 @@ import { Source_Sans_3 } from "next/font/google";
 import { cx } from "styled-system/css";
 import { panda } from "styled-system/jsx";
 import { NavBar } from "@/components/navbar";
+import { LayoutFooter } from "@/components/layout-footer";
 import { themeColors } from "@/constants/theme-colors";
 import { getThemeFromCookie } from "@/lib/services/get-theme-from-cookie";
 import { ClientProviders } from "./client-providers";
@@ -82,21 +83,7 @@ export default async function RootLayout({ children }: Props) {
           </ClientProviders>
         </ServerProviders>
 
-        <panda.footer display="flex" justifyContent="center">
-          <panda.p paddingBlock="10">
-            Made with
-            <panda.span
-              aria-label="love"
-              role="img"
-              paddingInline="2"
-              position="relative"
-              insetBlockStart="2px"
-            >
-              &#129654;
-            </panda.span>
-            by volunteers at De Sering
-          </panda.p>
-        </panda.footer>
+        <LayoutFooter />
       </panda.body>
     </html>
   );
