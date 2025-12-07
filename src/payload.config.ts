@@ -13,6 +13,7 @@ import { Sections } from "./collections/sections";
 import { Signups } from "./collections/signups";
 import { Tags } from "./collections/tags";
 import { Users } from "./collections/users";
+import { logger } from "./lib/logger";
 import { migrations } from "./migrations";
 
 const filename = fileURLToPath(import.meta.url);
@@ -38,17 +39,18 @@ const getConnectionString = () => {
   }
 
   if (!process.env.COOLIFY_BRANCH) {
-    console.info("Database connection string: no modifications");
+    logger.debug("Database connection string: no modifications");
     return process.env.DATABASE_URI;
   }
 
   if (process.env.COOLIFY_BRANCH === "main") {
-    console.info("Database connection string: no modifications");
+    logger.debug("Database connection string: no modifications");
     return process.env.DATABASE_URI;
   }
 
-  console.info(
-    `Database connection string: using COOLIFY_BRANCH (${process.env.COOLIFY_BRANCH})`,
+  logger.debug(
+    { branch: process.env.COOLIFY_BRANCH },
+    "Database connection string: using COOLIFY_BRANCH",
   );
 
   const prNumber = process.env.COOLIFY_BRANCH.match(/\/(\d+)\//)?.[1];

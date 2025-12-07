@@ -1,10 +1,8 @@
-"use client";
-
 import { Portal } from "@ark-ui/react";
 import { RichText } from "@payloadcms/richtext-lexical/react";
 import { useQuery } from "@tanstack/react-query";
 import confetti from "canvas-confetti";
-import { InfoIcon, XIcon, SquarePenIcon } from "lucide-react";
+import { InfoIcon, SquarePenIcon, XIcon } from "lucide-react";
 import Link from "next/link";
 import {
   Fragment,
@@ -14,6 +12,7 @@ import {
   useMemo,
   useState,
 } from "react";
+import { css } from "styled-system/css";
 import { Flex, HStack, panda } from "styled-system/jsx";
 import { createSignup as createSignupAction } from "@/actions/create-signup";
 import { deleteSignup as deleteSignupAction } from "@/actions/delete-signup";
@@ -27,7 +26,6 @@ import type { getEventDetails } from "@/lib/services/get-event-details";
 import { useAuth } from "@/providers/auth";
 import { format } from "@/utils/tz-format";
 import { RoleRadioItems } from "./role-radio-items";
-import { css } from "styled-system/css";
 
 type Props = {
   eventId?: number;
@@ -179,7 +177,7 @@ export const EventDetailsDrawer = (props: Props) => {
                   <Sheet.Title fontSize="2xl">{details?.title}</Sheet.Title>
                   {user?.roles?.includes("admin") && (
                     <Link
-                      href={"/admin/collections/events/" + details?.id}
+                      href={`/admin/collections/events/${details?.id}`}
                       target={"_blank"}
                       className={css({
                         textDecoration: "underline",
@@ -251,6 +249,12 @@ export const EventDetailsDrawer = (props: Props) => {
                       <panda.h3 fontSize="lg" fontWeight="medium" marginTop="4">
                         {section.title}
                       </panda.h3>
+
+                      {section?.description && (
+                        <Sheet.Description>
+                          <RichText data={section.description} />
+                        </Sheet.Description>
+                      )}
 
                       <RoleRadioItems
                         details={details}
