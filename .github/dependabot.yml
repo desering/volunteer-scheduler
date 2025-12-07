@@ -1,7 +1,34 @@
 # https://docs.github.com/en/code-security/dependabot/working-with-dependabot/dependabot-options-reference
 ---
 version: 2
+
+multi-ecosystem-groups:
+  bun-patch:
+    schedule:
+      interval: "weekly"
+
 updates:
+  # bun itself
+  - package-ecosystem: "bun"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      bun-patch:
+        patterns: [ "@types/bun" ]
+        update-types: "patch"
+    multi-ecosystem-group: "bun-patch"
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      bun-patch:
+        patterns: [ "oven/bun" ]
+        update-types: "patch"
+    multi-ecosystem-group: "bun-patch"
+
+  # project dependencies
 #  - package-ecosystem: "bun"
 #    directory: "/"
 #    schedule:
@@ -12,6 +39,8 @@ updates:
 #        patterns:
 #          - "payload"
 #          - "@payloadcms/*"
+
+  # GitHub Actions
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
