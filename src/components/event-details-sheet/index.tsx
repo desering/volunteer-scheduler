@@ -45,6 +45,8 @@ export const EventDetailsDrawer = (props: Props) => {
       return await res.json();
     },
     enabled: !!props.eventId,
+    refetchInterval: 1000 * 60, // refetch every minute
+    refetchOnWindowFocus: "always",
   });
 
   const [selectedRoleId, setSelectedRoleId] = useState<string>();
