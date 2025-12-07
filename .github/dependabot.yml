@@ -16,7 +16,7 @@ updates:
     groups:
       bun-patch:
         patterns: [ "@types/bun" ]
-        update-types: "patch"
+        update-types: ["patch"]
     multi-ecosystem-group: "bun-patch"
   - package-ecosystem: "docker"
     directory: "/"
@@ -25,7 +25,7 @@ updates:
     groups:
       bun-patch:
         patterns: [ "oven/bun" ]
-        update-types: "patch"
+        update-types: ["patch"]
     multi-ecosystem-group: "bun-patch"
 
   # project dependencies
