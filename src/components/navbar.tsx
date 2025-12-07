@@ -2,6 +2,7 @@ import {
   CalendarDaysIcon,
   CalendarSyncIcon,
   CircleUserRoundIcon,
+  History,
   LogOutIcon,
   MenuIcon,
 } from "lucide-react";
@@ -53,6 +54,14 @@ export const NavBar = async () => {
                         <HStack gap="2">
                           <CalendarDaysIcon />
                           My Shifts
+                        </HStack>
+                      </Link>
+                    </Menu.Item>
+                    <Menu.Item asChild value="past-shifts">
+                      <Link href="/account/past-events">
+                        <HStack gap="2">
+                          <History />
+                          Past Shifts
                         </HStack>
                       </Link>
                     </Menu.Item>
