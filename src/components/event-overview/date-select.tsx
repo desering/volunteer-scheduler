@@ -1,5 +1,3 @@
-"use client";
-
 import { format, startOfDay } from "date-fns";
 import { useEffect, useRef } from "react";
 import { Flex } from "styled-system/jsx";

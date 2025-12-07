@@ -2,16 +2,16 @@
 ---
 version: 2
 updates:
-  - package-ecosystem: "bun"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-    open-pull-requests-limit: 10
-    groups:
-      payload-monorepo:
-        patterns:
-          - "payload"
-          - "@payloadcms/*"
+#  - package-ecosystem: "bun"
+#    directory: "/"
+#    schedule:
+#      interval: "weekly"
+#    open-pull-requests-limit: 10
+#    groups:
+#      payload-monorepo:
+#        patterns:
+#          - "payload"
+#          - "@payloadcms/*"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:

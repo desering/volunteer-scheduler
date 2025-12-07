@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Source_Sans_3 } from "next/font/google";
 import { cx } from "styled-system/css";
 import { panda } from "styled-system/jsx";
@@ -29,7 +30,7 @@ export const generateViewport = async () => {
   };
 };
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Volunteering Schedule",
   description: "Discover and sign up for volunteering shifts at De Sering!",
   other: {

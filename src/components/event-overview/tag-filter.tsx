@@ -1,5 +1,3 @@
-"use client";
-
 import { useQuery } from "@tanstack/react-query";
 import { Check, X } from "lucide-react";
 import { Box, Flex, HStack } from "styled-system/jsx";
