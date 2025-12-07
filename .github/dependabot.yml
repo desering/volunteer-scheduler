@@ -13,6 +13,7 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    patterns: [ "@types/bun" ]
     groups:
       bun-patch:
         patterns: [ "@types/bun" ]
@@ -22,6 +23,7 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    patterns: [ "@types/bun" ]
     groups:
       bun-patch:
         patterns: [ "oven/bun" ]
