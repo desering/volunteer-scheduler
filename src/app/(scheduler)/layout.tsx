@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Source_Sans_3 } from "next/font/google";
 import { cx } from "styled-system/css";
 import { panda } from "styled-system/jsx";
+import { LayoutFooter } from "@/components/layout-footer";
 import { NavBar } from "@/components/navbar";
 import { themeColors } from "@/constants/theme-colors";
 import { getThemeFromCookie } from "@/lib/services/get-theme-from-cookie";
@@ -82,6 +83,8 @@ export default async function RootLayout({ children }: Props) {
             </panda.main>
           </ClientProviders>
         </ServerProviders>
+
+        <LayoutFooter />
       </panda.body>
     </html>
   );
