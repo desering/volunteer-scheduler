@@ -46,7 +46,6 @@ export const EventDetailsDrawer = (props: Props) => {
     },
     enabled: !!props.eventId,
     refetchInterval: 1000 * 60, // refetch every minute
-    refetchIntervalInBackground: true,
     refetchOnWindowFocus: "always",
   });
 
