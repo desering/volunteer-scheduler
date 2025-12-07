@@ -45,6 +45,8 @@ export const EventDetailsDrawer = (props: Props) => {
       return await res.json();
     },
     enabled: !!props.eventId,
+    refetchInterval: 1000 * 60, // refetch every minute
+    refetchOnWindowFocus: "always",
   });
 
   const [selectedRoleId, setSelectedRoleId] = useState<string>();
@@ -249,6 +251,12 @@ export const EventDetailsDrawer = (props: Props) => {
                       <panda.h3 fontSize="lg" fontWeight="medium" marginTop="4">
                         {section.title}
                       </panda.h3>
+
+                      {section?.description && (
+                        <Sheet.Description>
+                          <RichText data={section.description} />
+                        </Sheet.Description>
+                      )}
 
                       <RoleRadioItems
                         details={details}
