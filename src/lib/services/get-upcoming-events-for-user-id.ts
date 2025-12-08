@@ -5,7 +5,7 @@ import { startOfDay } from "date-fns";
 import { getPayload } from "payload";
 import type { Event } from "@/payload-types";
 
-export type UpcomingEventsForUserId = Awaited<
+export type EventsForUserId = Awaited<
   ReturnType<typeof getUpcomingEventsForUserId>
 >;
 
