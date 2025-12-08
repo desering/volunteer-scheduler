@@ -35,8 +35,10 @@ export default async function Page() {
       >
         My past shifts
       </panda.h1>
-      <UserEventsList initialData={events} refetchUrl={`/api/events/users/past`} />
-
+      <UserEventsList
+        initialData={events}
+        refetchUrl={`/api/events/users/past`}
+      />
     </Container>
   );
 }

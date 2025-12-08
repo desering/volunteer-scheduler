@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import type { Event, Role, Signup } from "@payload-types";
 import { RichText } from "@payloadcms/richtext-lexical/react";
@@ -14,7 +14,7 @@ import { EventDetailsDrawer } from "@/components/event-details-sheet";
 import type { EventsForUserId } from "@/lib/services/get-upcoming-events-for-user-id";
 
 type UserEventsListProps = {
-  initialData?: EventsForUserId,
+  initialData?: EventsForUserId;
   refetchUrl: string;
 };
 
@@ -116,4 +116,4 @@ export const UserEventsList = (props: UserEventsListProps) => {
       />
     </>
   );
-}
+};
