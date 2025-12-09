@@ -5,7 +5,7 @@ import { headers as getHeaders } from "next/headers";
 import { redirect } from "next/navigation";
 import { getPayload } from "payload";
 import { Container, panda } from "styled-system/jsx";
-import { UserEventsList } from "@/components/user-events-list";
+import { UserEventsList } from "@/components/user-events/user-events-list";
 import { getUpcomingEventsForUserId } from "@/lib/services/get-upcoming-events-for-user-id";
 
 export default async function Page() {
