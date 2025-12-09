@@ -32,9 +32,6 @@ export default async function Page() {
       width="full"
       marginTop={{ base: 4, md: 10, xl: 20 }}
     >
-      <panda.h1 fontSize="xl" fontWeight="medium" textAlign="center">
-        Stats
-      </panda.h1>
       <PastEventStats eventDates={eventDates} />
       <panda.h1
         fontSize="xl"
