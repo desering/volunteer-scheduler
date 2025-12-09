@@ -15,8 +15,8 @@ const WEEK_DAYS: number[] = [0, 1, 2, 3, 4, 5, 6];
 const MONTH_WEEKS: number[] = [0, 1, 2, 3, 4, 5];
 const TILE_COLORS = {
   missing: {
-    base: "colorPalette.1/20",
-    _dark: "colorPalette.4/20",
+    base: "colorPalette.1/5",
+    _dark: "colorPalette.4/5",
   },
   innactive: {
     base: "colorPalette.1",
