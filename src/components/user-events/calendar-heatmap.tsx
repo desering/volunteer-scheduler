@@ -38,7 +38,7 @@ const getDayColor = (day: Date, lastDate: Date, activeDates: Date[]) => {
   const isDateActive =
     activeDates.find((activeDate) => {
       return isSameDay(day, activeDate);
-  }) !== undefined;
+    }) !== undefined;
   const isInMonth =
     isBefore(day, endOfDay(lastDate)) && isSameMonth(day, lastDate);
   if (isInMonth) {
@@ -52,9 +52,7 @@ const getDayColor = (day: Date, lastDate: Date, activeDates: Date[]) => {
   }
 };
 
-
 export const CalendarHeatmap = (props: CalendarHeatmapProps) => {
-
   const firstMonday: Date = previousMonday(startOfMonth(props.lastDate));
 
   const weeks = MONTH_WEEKS.map((w) => {
