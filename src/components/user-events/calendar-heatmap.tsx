@@ -35,20 +35,23 @@ type CalendarHeatmapProps = {
 };
 
 const getDayColor = (day: Date, lastDate: Date, activeDates: Date[]) => {
-  const isDateActive = activeDates.find( (activeDate) => {
-    return isSameDay(day, activeDate);
-  } ) !== undefined;
-  const isInMonth = isBefore(day, endOfDay(lastDate)) && isSameMonth(day, lastDate);
+  const isDateActive =
+    activeDates.find((activeDate) => {
+      return isSameDay(day, activeDate);
+  }) !== undefined;
+  const isInMonth =
+    isBefore(day, endOfDay(lastDate)) && isSameMonth(day, lastDate);
   if (isInMonth) {
     if (isDateActive) {
-      return (TILE_COLORS.active);
+      return TILE_COLORS.active;
     } else {
-      return (TILE_COLORS.inactive);
+      return TILE_COLORS.inactive;
     }
   } else {
-    return (TILE_COLORS.missing);
+    return TILE_COLORS.missing;
   }
-}
+};
+
 
 export const CalendarHeatmap = (props: CalendarHeatmapProps) => {
 
