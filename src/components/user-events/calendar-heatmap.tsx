@@ -5,13 +5,11 @@ import {
   addWeeks,
   endOfDay,
   isBefore,
-  isDate,
   isSameDay,
   isSameMonth,
   previousMonday,
   startOfMonth,
 } from "date-fns";
-import dynamic from "next/dynamic";
 import { Box, HStack, VStack } from "styled-system/jsx";
 
 const WEEK_DAYS: number[] = [0, 1, 2, 3, 4, 5, 6];
@@ -38,7 +36,7 @@ type CalendarHeatmapProps = {
 
 const getDayColor = (day: Date, lastDate: Date, activeDates: Date[]) => {
   const isDateActive = activeDates.find( (activeDate) => {
-    isSameDay(day, activeDate);
+    return isSameDay(day, activeDate);
   } ) !== undefined;
   const isInMonth = isBefore(day, endOfDay(lastDate)) && isSameMonth(day, lastDate);
   if (isInMonth) {
