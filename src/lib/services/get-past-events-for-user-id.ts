@@ -6,10 +6,10 @@ import { getPayload } from "payload";
 import type { Event } from "@/payload-types";
 
 export type EventsForUserId = Awaited<
-  ReturnType<typeof getUpcomingEventsForUserId>
+  ReturnType<typeof getPastEventsForUserId>
 >;
 
-export const getUpcomingEventsForUserId = async (userId: number) => {
+export const getPastEventsForUserId = async (userId: number) => {
   const payload = await getPayload({ config });
 
   const signups = await payload.find({
@@ -18,7 +18,7 @@ export const getUpcomingEventsForUserId = async (userId: number) => {
 
     where: {
       user: { equals: userId },
-      "event.start_date": { greater_than_equal: startOfDay(Date.now()) },
+      "event.start_date": { less_than_equal: startOfDay(Date.now()) },
     },
 
     sort: "event.start_date",
