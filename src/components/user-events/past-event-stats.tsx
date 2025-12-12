@@ -7,7 +7,7 @@ import {
   isSameMonth,
   lastDayOfMonth,
 } from "date-fns";
-import { Flex, HStack, panda, VStack } from "styled-system/jsx";
+import { Flex, panda, VStack } from "styled-system/jsx";
 import { CalendarHeatmap } from "@/components/user-events/calendar-heatmap";
 
 type PastEventStatsProps = {
@@ -21,8 +21,8 @@ export const PastEventStats = (props: PastEventStatsProps) => {
   }).length;
 
   return (
-    <HStack alignSelf="center" margin="12pt" height="200">
-      <VStack marginEnd="10">
+    <Flex direction="row" alignSelf="center" margin="12pt" gap="2">
+      <VStack marginEnd="8">
         <Flex
           direction="column"
           borderRadius="13"
@@ -33,14 +33,16 @@ export const PastEventStats = (props: PastEventStatsProps) => {
           }}
           borderStyle="solid"
           height="100%"
-          minWidth="160"
-          padding="8pt"
+          width="100%"
+          paddingX="8pt"
+          paddingY="4pt"
         >
           <panda.p>Total shifts:</panda.p>
           <panda.b display="flex" justifyContent="end" fontSize="24pt">
             {totalShifts}
           </panda.b>
         </Flex>
+
         <Flex
           direction="column"
           borderRadius="13"
@@ -51,8 +53,9 @@ export const PastEventStats = (props: PastEventStatsProps) => {
           }}
           borderStyle="solid"
           height="100%"
-          minWidth="160"
-          padding="8pt"
+          width="100%"
+          paddingX="8pt"
+          paddingY="4pt"
         >
           <panda.h1>Shifts this month:</panda.h1>
           <panda.b display="flex" justifyContent="end" fontSize="24pt">
@@ -61,7 +64,7 @@ export const PastEventStats = (props: PastEventStatsProps) => {
         </Flex>
       </VStack>
 
-      <VStack>
+      <VStack display={{ base: "none", md: "flex" }}>
         <panda.h2>{format(addMonths(endOfToday(), -2), "LLLL")}</panda.h2>
         <CalendarHeatmap
           lastDate={lastDayOfMonth(addMonths(endOfToday(), -2))}
@@ -69,7 +72,7 @@ export const PastEventStats = (props: PastEventStatsProps) => {
         />
       </VStack>
 
-      <VStack>
+      <VStack display={{ base: "none", md: "flex" }}>
         <panda.h2>{format(addMonths(endOfToday(), -1), "LLLL")}</panda.h2>
         <CalendarHeatmap
           lastDate={lastDayOfMonth(addMonths(endOfToday(), -1))}
@@ -84,6 +87,6 @@ export const PastEventStats = (props: PastEventStatsProps) => {
           activeDates={props.eventDates}
         />
       </VStack>
-    </HStack>
+    </Flex>
   );
 };
