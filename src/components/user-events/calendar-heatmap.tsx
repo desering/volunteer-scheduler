@@ -10,23 +10,22 @@ import {
   previousMonday,
   startOfMonth,
 } from "date-fns";
+import { css } from "styled-system/css";
 import { Box, HStack, VStack } from "styled-system/jsx";
 
 const WEEK_DAYS: number[] = [0, 1, 2, 3, 4, 5, 6];
 const MONTH_WEEKS: number[] = [0, 1, 2, 3, 4, 5];
-const TILE_COLORS = {
-  missing: {
-    base: "colorPalette.1/5",
-    _dark: "colorPalette.4/5",
-  },
-  inactive: {
-    base: "colorPalette.1",
-    _dark: "colorPalette.6",
-  },
-  active: {
-    base: "colorPalette.7",
-    _dark: "colorPalette.10",
-  },
+
+const tileStyles = {
+  missing: css({
+    bg: { base: "colorPalette.1/20", _dark: "colorPalette.4/20" },
+  }),
+  inactive: css({
+    bg: { base: "colorPalette.1", _dark: "colorPalette.6" },
+  }),
+  active: css({
+    bg: { base: "colorPalette.7", _dark: "colorPalette.10" },
+  }),
 };
 
 type CalendarHeatmapProps = {
@@ -41,15 +40,13 @@ const getDayColor = (day: Date, lastDate: Date, activeDates: Date[]) => {
     }) !== undefined;
   const isInMonth =
     isBefore(day, endOfDay(lastDate)) && isSameMonth(day, lastDate);
-  if (!isSameMonth(day, lastDate)) {
-    return TILE_COLORS.missing;
+  if (!isInMonth) {
+    return tileStyles.missing;
   }
-
   if (isDateActive) {
-    return TILE_COLORS.active;
+    return tileStyles.active;
   }
-
-  return TILE_COLORS.inactive;
+  return tileStyles.inactive;
 };
 
 export const CalendarHeatmap = (props: CalendarHeatmapProps) => {
@@ -66,7 +63,7 @@ export const CalendarHeatmap = (props: CalendarHeatmapProps) => {
           width="10pt"
           height="10pt"
           borderRadius="2pt"
-          backgroundColor={getDayColor(day, props.lastDate, props.activeDates)}
+          className={getDayColor(day, props.lastDate, props.activeDates)}
         />
       );
     });
