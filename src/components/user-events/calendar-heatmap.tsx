@@ -41,15 +41,15 @@ const getDayColor = (day: Date, lastDate: Date, activeDates: Date[]) => {
     }) !== undefined;
   const isInMonth =
     isBefore(day, endOfDay(lastDate)) && isSameMonth(day, lastDate);
-  if (isInMonth) {
-    if (isDateActive) {
-      return TILE_COLORS.active;
-    } else {
-      return TILE_COLORS.inactive;
-    }
-  } else {
+  if (!isSameMonth(day, lastDate)) {
     return TILE_COLORS.missing;
   }
+
+  if (isDateActive) {
+    return TILE_COLORS.active;
+  }
+
+  return TILE_COLORS.inactive;
 };
 
 export const CalendarHeatmap = (props: CalendarHeatmapProps) => {
