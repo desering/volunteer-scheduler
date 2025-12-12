@@ -41,7 +41,7 @@ const getDayColor = (day: Date, lastDate: Date, activeDates: Date[]) => {
     }) !== undefined;
   const isInMonth =
     isBefore(day, endOfDay(lastDate)) && isSameMonth(day, lastDate);
-  if (!isSameMonth(day, lastDate)) {
+  if (!isInMonth) {
     return TILE_COLORS.missing;
   }
 
