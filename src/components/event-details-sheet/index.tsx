@@ -1,6 +1,5 @@
 import { Portal } from "@ark-ui/react";
 import { RichText } from "@payloadcms/richtext-lexical/react";
-import { useQuery } from "@tanstack/react-query";
 import confetti from "canvas-confetti";
 import { SquarePenIcon, XIcon } from "lucide-react";
 import Link from "next/link";
@@ -22,7 +21,7 @@ import { Button } from "@/components/ui/button";
 import { IconButton } from "@/components/ui/icon-button";
 import { RadioButtonGroup } from "@/components/ui/radio-button-group";
 import { Sheet } from "@/components/ui/sheet";
-import type { getEventDetails } from "@/lib/services/get-event-details";
+import { useEventDetailsQuery } from "@/features/events/queries";
 import { useAuth } from "@/providers/auth";
 import { format } from "@/utils/tz-format";
 import { RoleRadioItems } from "./role-radio-items";
@@ -38,16 +37,7 @@ type Props = {
 export const EventDetailsDrawer = (props: Props) => {
   const { user } = useAuth();
 
-  const { data: details, refetch } = useQuery({
-    queryKey: ["events", props.eventId],
-    queryFn: async (): ReturnType<typeof getEventDetails> => {
-      const res = await fetch(`/api/events/${props.eventId}`);
-      return await res.json();
-    },
-    enabled: !!props.eventId,
-    refetchInterval: 1000 * 60, // refetch every minute
-    refetchOnWindowFocus: "always",
-  });
+  const { data: details, refetch } = useEventDetailsQuery(props.eventId);
 
   const [selectedRoleId, setSelectedRoleId] = useState<string>();
 
