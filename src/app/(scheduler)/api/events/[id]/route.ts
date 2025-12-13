@@ -1,7 +1,10 @@
 import type { NextRequest } from "next/server";
 import { getEventDetails } from "@/lib/services/get-event-details";
+import { ApiRequest } from "@/utils/http";
 
-export const GET = async (
+const apiRequest = ApiRequest.getInstance();
+
+const handler = async (
   _req: NextRequest,
   ctx: RouteContext<"/api/events/[id]">,
 ) => {
@@ -12,6 +15,7 @@ export const GET = async (
   if (Number.isNaN(parsedId)) {
     return Response.json({ error: "Invalid ID" }, { status: 400 });
   }
-
   return Response.json(await getEventDetails(parsedId));
 };
+
+export const GET = apiRequest.run("/api/events/[id]", handler);
