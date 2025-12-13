@@ -80,6 +80,7 @@ const DateButton = ({
           gridRow="1"
           left="0"
           paddingInline="4"
+          marginBlockEnd="4"
           position="sticky"
           zIndex="1"
           maskImage={`linear-gradient(to right, transparent 0px, ${token("colors.bg.canvas")} 16px)`}
