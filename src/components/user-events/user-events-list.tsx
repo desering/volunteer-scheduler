@@ -16,7 +16,7 @@ type Props = {
   refetchUrl: string;
 };
 
-export const UpcomingEventsList = (props: Props) => {
+export const UserEventsList = (props: Props) => {
   const { data } = useQuery<EventsForUserId>({
     queryKey: ["events", "users", "upcoming", props.initialData?.events],
     queryFn: async () =>

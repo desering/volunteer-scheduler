@@ -204,15 +204,7 @@ export const EventDetailsDrawer = (props: Props) => {
                     <RichText data={details.description} />
                   )}
                 </Sheet.Description>
-                <Sheet.CloseTrigger
-                  position="absolute"
-                  top={{
-                    base: "3",
-                    md: "4",
-                  }}
-                  right={{ base: "2", md: "4" }}
-                  asChild
-                >
+                <Sheet.CloseTrigger asChild>
                   <IconButton variant="ghost" size="lg">
                     <XIcon />
                   </IconButton>

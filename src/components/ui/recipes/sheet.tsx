@@ -84,6 +84,11 @@ export const sheet = defineSlotRecipe({
       color: "fg.muted",
       textStyle: "sm",
     },
+    closeTrigger: {
+      position: "absolute",
+      top: { base: "3", md: "4" },
+      right: { base: "2", md: "4" },
+    },
   },
   defaultVariants: {
     variant: "right",
