@@ -1,9 +1,7 @@
-import { OTLPLogExporter } from "@opentelemetry/exporter-logs-otlp-http";
 import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-http";
 import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
 import { HttpInstrumentation } from "@opentelemetry/instrumentation-http";
 import { resourceFromAttributes } from "@opentelemetry/resources";
-import { BatchLogRecordProcessor } from "@opentelemetry/sdk-logs";
 import { PeriodicExportingMetricReader } from "@opentelemetry/sdk-metrics";
 import { NodeSDK } from "@opentelemetry/sdk-node";
 import { SimpleSpanProcessor } from "@opentelemetry/sdk-trace-base";
@@ -21,14 +19,12 @@ const traceExporter = new OTLPTraceExporter({ url: TRACE_URL });
 const metricsExporter = new OTLPMetricExporter({
   url: METRICS_URL,
 });
-const logsExporter = new OTLPLogExporter({ url: TRACE_URL });
 
 const sdk = new NodeSDK({
   resource: resourceFromAttributes({
     [ATTR_SERVICE_NAME]: "volunteer-scheduler",
   }),
   spanProcessors: [new SimpleSpanProcessor(traceExporter)],
-  logRecordProcessors: [new BatchLogRecordProcessor(logsExporter)],
   metricReader: new PeriodicExportingMetricReader({
     exporter: metricsExporter,
   }),
@@ -37,6 +33,6 @@ const sdk = new NodeSDK({
 
 sdk.start();
 
-process.on("SIGTERM", () => {
-  sdk.shutdown().finally(() => process.exit(0));
+process.on("SIGTERM", async () => {
+  await sdk.shutdown();
 });
