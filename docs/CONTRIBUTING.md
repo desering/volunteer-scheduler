@@ -77,7 +77,9 @@ to inspect and test your changes in a "live" environment.
 Requirements:
 
 1. All automated checks must pass.
-2. Your PR needs to be reviewed and approved by one of the project maintainers.
+2. If your code change affects the UI or UX of the application, then it must be
+   tested on mobile.
+3. Your PR needs to be reviewed and approved by one of the project maintainers.
 
 Currently, maintainers are:
 
