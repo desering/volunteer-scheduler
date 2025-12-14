@@ -1,16 +1,17 @@
 "use server";
 
 import config from "@payload-config";
+import { revalidatePath } from "next/cache";
+import { headers as getHeaders } from "next/headers";
 import { getPayload } from "payload";
 import { z } from "zod";
-import { headers as getHeaders } from "next/headers";
-import { revalidatePath } from "next/cache";
 
 const schema = z.object({
-  id: z.string().min(1, "Missing user id"),
   preferredName: z.string().min(1, "Preferred name is required"),
-  email: z.string().email("Invalid email"),
-  phoneNumber: z.string().min(1, "Phone number is required"),
+  email: z.email({ error: "Invalid email" }),
+  phoneNumber: z
+    .e164({ error: "Invalid phone number e.g +31612345678" })
+    .min(1, "Phone number is required"),
 });
 
 export type UpdateUserData = z.infer<typeof schema>;
@@ -27,9 +28,10 @@ export type UpdateFailure = {
 
 export type UpdateUserResult = UpdateSuccess | UpdateFailure;
 
-export const updateUser = async (formData: FormData): Promise<UpdateUserResult> => {
+export const updateUser = async (
+  formData: FormData,
+): Promise<UpdateUserResult> => {
   const parse = schema.safeParse({
-    id: formData.get("id"),
     preferredName: formData.get("preferred-name"),
     email: formData.get("email"),
     phoneNumber: formData.get("phone-number"),
@@ -49,7 +51,7 @@ export const updateUser = async (formData: FormData): Promise<UpdateUserResult> 
   const headers = await getHeaders();
   const auth = await payload.auth({ headers });
 
-  if (!auth.user || String(auth.user.id) !== data.id) {
+  if (!auth.user) {
     return {
       success: false,
       errors: {
@@ -79,7 +81,7 @@ export const updateUser = async (formData: FormData): Promise<UpdateUserResult> 
 
     await payload.update({
       collection: "users",
-      id: data.id,
+      id: auth.user.id,
       data: {
         preferredName: data.preferredName,
         email: data.email,
