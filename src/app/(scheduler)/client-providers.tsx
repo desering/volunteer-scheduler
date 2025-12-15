@@ -5,6 +5,7 @@ import {
   QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query";
+import { Toaster } from "@/components/ui/toast";
 
 function makeQueryClient() {
   return new QueryClient({
@@ -36,6 +37,9 @@ export const ClientProviders = ({
   const queryClient = getQueryClient();
 
   return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    <>
+      <Toaster />
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    </>
   );
 };
