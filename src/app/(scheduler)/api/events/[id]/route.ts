@@ -1,19 +1,18 @@
 import type { NextRequest } from "next/server";
 import { getEventDetails } from "@/lib/services/get-event-details";
-import { runRequest } from "@/utils/http";
+import { route } from "@/utils/http";
 
-const handler = async (
-  _req: NextRequest,
-  ctx: RouteContext<"/api/events/[id]">,
-) => {
-  const { id } = await ctx.params;
+export const GET = route(
+  "/api/events/[id]",
+  async (_req: NextRequest, ctx: RouteContext<"/api/events/[id]">) => {
+    const { id } = await ctx.params;
 
-  const parsedId = Number(id);
+    const parsedId = Number(id);
 
-  if (Number.isNaN(parsedId)) {
-    return Response.json({ error: "Invalid ID" }, { status: 400 });
-  }
-  return Response.json(await getEventDetails(parsedId));
-};
+    if (Number.isNaN(parsedId)) {
+      return Response.json({ error: "Invalid ID" }, { status: 400 });
+    }
 
-export const GET = runRequest("/api/events/[id]", handler);
+    return Response.json(await getEventDetails(parsedId));
+  },
+);
