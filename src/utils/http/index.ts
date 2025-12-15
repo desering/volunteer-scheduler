@@ -1,4 +1,4 @@
-import { trackRequest } from "@/utils/otel";
+import { OtelMeter } from "@/utils/otel";
 
 /**
  * Wraps a Next.js API handler to
@@ -18,7 +18,7 @@ export function runRequest<T extends any[], R extends Promise<any>>(
       const res: any = await handler(...args);
       const durationSeconds = (Date.now() - start) / 1000;
 
-      trackRequest({
+      OtelMeter.trackRequest({
         route,
         method: req?.method ?? "GET",
         statusCode: res?.status ?? 200,
@@ -29,7 +29,7 @@ export function runRequest<T extends any[], R extends Promise<any>>(
     } catch (err) {
       const durationSeconds = (Date.now() - start) / 1000;
 
-      trackRequest({
+      OtelMeter.trackRequest({
         route,
         method: req?.method ?? "GET",
         statusCode: 500,

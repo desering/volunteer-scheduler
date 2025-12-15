@@ -1,1 +1,1 @@
-export * from "./meter";
+export * as OtelMeter from "./meter";
