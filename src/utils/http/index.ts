@@ -1,4 +1,4 @@
-import { OtelMetrics } from "../otel";
+import { OtelMetrics } from "@/utils/otel";
 
 export class ApiRequest {
   private static instance: ApiRequest;
