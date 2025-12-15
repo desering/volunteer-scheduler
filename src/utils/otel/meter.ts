@@ -8,68 +8,47 @@ interface TrackRequest {
   durationSeconds?: number; // measured request duration
 }
 
-class Metrics {
-  private static instance: Metrics;
-  private meter: Meter;
+/**
+ * Meter (created once per process)
+ */
+const meter: Meter = metrics.getMeter("volunteer-scheduler");
 
-  // Metrics
-  private requestCounter: ReturnType<Meter["createCounter"]>;
-  private requestDuration: ReturnType<Meter["createHistogram"]>;
+/**
+ * Instruments (created once)
+ */
+const requestCounter = meter.createCounter("http_requests_total", {
+  description: "Total HTTP requests",
+});
 
-  private constructor() {
-    this.meter = metrics.getMeter("volunteer-scheduler");
+const requestDuration = meter.createHistogram("http_request_duration_seconds", {
+  description: "Duration of HTTP requests in seconds",
+  unit: "s",
+});
 
-    // Counter for total HTTP requests
-    this.requestCounter = this.meter.createCounter("http_requests_total", {
-      description: "Total HTTP requests",
-    });
-
-    // Histogram for request durations
-    this.requestDuration = this.meter.createHistogram(
-      "http_request_duration_seconds",
-      {
-        description: "Duration of HTTP requests in seconds",
-        unit: "s",
-      },
-    );
-  }
-
-  public static getInstance(): Metrics {
-    if (!Metrics.instance) {
-      Metrics.instance = new Metrics();
-    }
-    return Metrics.instance;
-  }
-
-  /**
-   * Tracks an HTTP request.
-   * @param params.route Normalized route like /api/events/[id]
-   * @param params.method HTTP method (GET, POST, etc.)
-   * @param params.statusCode Response status
-   * @param params.durationSeconds Optional request duration in seconds
-   */
-  public trackRequest({
+/**
+ * Tracks an HTTP request.
+ * @param params.route Normalized route like /api/events/[id]
+ * @param params.method HTTP method (GET, POST, etc.)
+ * @param params.statusCode Response status
+ * @param params.durationSeconds Optional request duration in seconds
+ */
+export function trackRequest({
+  route,
+  method,
+  statusCode,
+  durationSeconds,
+}: TrackRequest): void {
+  const attributes = {
     route,
     method,
-    statusCode,
-    durationSeconds,
-  }: TrackRequest) {
-    // Increment request count
-    this.requestCounter.add(1, {
-      route,
-      method,
-      status_code: String(statusCode),
-    });
+    status_code: String(statusCode),
+  };
 
-    // Record duration if provided
-    if (durationSeconds !== undefined) {
-      this.requestDuration.record(durationSeconds, {
-        route,
-        method,
-        status_code: String(statusCode),
-      });
-    }
+  // Increment request count
+  requestCounter.add(1, attributes);
+
+  // Record duration if provided
+  if (durationSeconds !== undefined) {
+    requestDuration.record(durationSeconds, attributes);
   }
 }
-
-export const OtelMetrics = Metrics.getInstance();

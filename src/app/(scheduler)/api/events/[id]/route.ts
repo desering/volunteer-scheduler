@@ -1,8 +1,6 @@
 import type { NextRequest } from "next/server";
 import { getEventDetails } from "@/lib/services/get-event-details";
-import { ApiRequest } from "@/utils/http";
-
-const apiRequest = ApiRequest.getInstance();
+import { runRequest } from "@/utils/http";
 
 const handler = async (
   _req: NextRequest,
@@ -18,4 +16,4 @@ const handler = async (
   return Response.json(await getEventDetails(parsedId));
 };
 
-export const GET = apiRequest.run("/api/events/[id]", handler);
+export const GET = runRequest("/api/events/[id]", handler);
