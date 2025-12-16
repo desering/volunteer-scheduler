@@ -28,11 +28,15 @@ export const sendConfirmationEmail: CollectionAfterChangeHook<Signup> = async ({
       ? await payload.findByID({ collection: "roles", id: doc.role })
       : doc.role;
 
+  const user =
+    typeof doc.user === "number"
+      ? await payload.findByID({ collection: "users", id: doc.user })
+      : doc.user;
+
   if (!event) {
     return doc;
   }
-  const name =
-    typeof doc.user === "object" ? doc.user.preferredName : "Volunteer";
+  const name = user.preferredName ? user.preferredName : "Volunteer";
   const eventSummary = event.title ?? "Volunteer Shift";
   const description = event.description ?? undefined;
   const start = new Date(event.start_date);
@@ -70,8 +74,8 @@ export const sendConfirmationEmail: CollectionAfterChangeHook<Signup> = async ({
     location,
   }).toString();
 
-  return await sendEmail({
-    to: typeof doc.user === "object" && doc.user.email,
+  await sendEmail({
+    to: user.email,
     subject: `${eventSummary} — Signup Confirmation`,
     text: plainEmail,
     html: htmlEmail,
@@ -82,4 +86,6 @@ export const sendConfirmationEmail: CollectionAfterChangeHook<Signup> = async ({
       },
     ],
   });
+
+  return doc;
 };

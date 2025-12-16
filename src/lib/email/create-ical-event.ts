@@ -17,22 +17,18 @@ export const createIcalEvent = (
   params: CreateIcalEventParams,
 ): ICalCalendar => {
   const calendar = ical({
-    name: `${process.env.ORG_NAME}·Calendar` || "Event·Calendar",
+    name: process.env.ORG_NAME
+      ? `${process.env.ORG_NAME} Calendar`
+      : "Event Calendar",
     method: ICalCalendarMethod.REQUEST,
   });
 
   let startDate: Date;
   let endDate: Date;
 
-  try {
-    startDate =
-      typeof params.start === "string" ? new Date(params.start) : params.start;
-    endDate =
-      typeof params.end === "string" ? new Date(params.end) : params.end;
-  } catch (error) {
-    console.error("Could not parse event date", error);
-    return calendar;
-  }
+  startDate =
+    typeof params.start === "string" ? new Date(params.start) : params.start;
+  endDate = typeof params.end === "string" ? new Date(params.end) : params.end;
 
   calendar.createEvent({
     id: params.id,
