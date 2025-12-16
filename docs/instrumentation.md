@@ -14,7 +14,7 @@ For configuration details and usage guidelines, see [Logging](./Logging.md).
 
 Metrics are collected using [OpenTelemetry Metrics](https://github.com/open-telemetry/opentelemetry-js/blob/main/doc/metrics.md#add-manual-instrumentation).
 
-Custom metrics should be recorded via the `Meter` abstraction, exposed through the `OtelMetrics` utility. This utility wraps the OpenTelemetry `metrics.getMeter` API and provides a consistent interface for recording application metrics.
+Custom metrics should be recorded via the `trackRequest` function, exposed as the `OtelMetrics` inside `utils/otel`. This utility wraps the OpenTelemetry `metrics.getMeter` API and provides a consistent interface for recording application metrics.
 
 The metrics export destination can be configured via the `OTEL_EXPORTER_OTLP_METRICS_ENDPOINT` variable in the `.env` file.
 
@@ -46,20 +46,18 @@ For most API routes, a shared HTTP wrapper is available that automatically recor
 This ensures consistent metric collection across all API endpoints.
 
 ```ts
-import { ApiRequest } from "@/utils/http";
+import { apiFunctionCall } from "@/lib/services/api-function-call"
+import { route } from "@/utils/http";
 
-const apiRequest = ApiRequest.getInstance();
-
-const handler = async (
-  _req: NextRequest,
-  ctx: RouteContext,
-) => {
-  // Replace `getRequest()` with the actual API implementation
-  return Response.json(await getRequest());
-};
-
-// Replace `/api/route` with the actual API path
-export const GET = apiRequest.run("/api/route", handler);
+// replace `/path/of/api` with your actual api route
+export const GET = route(
+  "/path/of/api",
+  async (_req: NextRequest, ctx: RouteContext<"/path/of/api">) => {
+    
+    // replace `apiFunctionCall` with your api call
+    return Response.json(await apiFunctionCall());
+  },
+);
 ```
 
 
