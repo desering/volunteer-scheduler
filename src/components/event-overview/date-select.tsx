@@ -61,6 +61,10 @@ const DateButton = ({
   const isFirstItem = itemIndex === 0;
   const showMonthLabel = isFirstOfMonth || isFirstItem;
 
+  // compute the left offset needed to align the sticky month with a centered max-width container
+  // (viewport − minimum(viewport, containerMaxWidth)) / numberOfMarginAuto − paddingInline
+  const monthLabelLeftAlignment = `((100vw - min(100vw, ${token("sizes.8xl")})) / 2) - ${token("spacing.4")}`;
+
   useEffect(() => {
     if (selected && ref.current) {
       ref.current.scrollIntoView({
@@ -78,7 +82,12 @@ const DateButton = ({
           background={{ base: "gray.4", _dark: "gray.2" }}
           colSpan={4}
           gridRow="1"
-          left="0"
+          left={{
+            // add container responsive padding
+            base: `calc(${monthLabelLeftAlignment} + ${token("spacing.4")})`,
+            md: `calc(${monthLabelLeftAlignment} + ${token("spacing.6")})`,
+            lg: `calc(${monthLabelLeftAlignment} + ${token("spacing.8")})`,
+          }}
           paddingInline="4"
           position="sticky"
           zIndex="1"
