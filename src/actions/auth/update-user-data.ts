@@ -12,6 +12,7 @@ const schema = z.object({
   phoneNumber: z
     .e164({ error: "Invalid phone number e.g +31612345678" })
     .min(1, "Phone number is required"),
+  unsubscribeFromEmails: z.string().optional(),
 });
 
 export type UpdateUserData = z.infer<typeof schema>;
@@ -31,10 +32,13 @@ export type UpdateUserResult = UpdateSuccess | UpdateFailure;
 export const updateUser = async (
   formData: FormData,
 ): Promise<UpdateUserResult> => {
+  const unsubscribeValue = formData.get("unsubscribe-from-emails");
   const parse = schema.safeParse({
     preferredName: formData.get("preferred-name"),
     email: formData.get("email"),
     phoneNumber: formData.get("phone-number"),
+    unsubscribeFromEmails:
+      unsubscribeValue === null ? undefined : unsubscribeValue,
   });
 
   if (!parse.success) {
@@ -86,6 +90,7 @@ export const updateUser = async (
         preferredName: data.preferredName,
         email: data.email,
         phoneNumber: data.phoneNumber,
+        unsubscribeFromEmails: data.unsubscribeFromEmails === "on",
       },
     });
 

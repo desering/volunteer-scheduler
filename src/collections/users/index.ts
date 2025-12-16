@@ -38,5 +38,11 @@ export const Users: CollectionConfig = {
       type: "select",
       options: ["admin", "editor", "volunteer"],
     },
+    {
+      name: "unsubscribeFromEmails",
+      type: "checkbox",
+      label: "Unsubscribe from emails",
+      defaultValue: false,
+    },
   ],
 };

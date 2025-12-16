@@ -97,6 +97,7 @@ export interface User {
   preferredName: string;
   phoneNumber?: string | null;
   roles?: ('admin' | 'editor' | 'volunteer') | null;
+  unsubscribeFromEmails?: boolean | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -437,6 +438,7 @@ export interface UsersSelect<T extends boolean = true> {
   preferredName?: T;
   phoneNumber?: T;
   roles?: T;
+  unsubscribeFromEmails?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;

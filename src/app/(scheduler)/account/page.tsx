@@ -20,6 +20,9 @@ export default async function Page() {
         <p>Name: {user.preferredName}</p>
         <p>Email: {user.email}</p>
         <p>Phone Number: {user.phoneNumber}</p>
+        <p>
+          Unsubscribed from Emails: {user.unsubscribeFromEmails ? "Yes" : "No"}
+        </p>
       </VStack>
 
       <EditUserInfoButton user={user} />

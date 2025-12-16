@@ -98,6 +98,17 @@ export function EditUserInfoButton({ user }: Props) {
                 />
                 <Field.ErrorText>{errors?.phoneNumber}</Field.ErrorText>
               </Field.Root>
+
+              <Field.Root>
+                <label>
+                  <input
+                    type="checkbox"
+                    defaultChecked={user?.unsubscribeFromEmails || false}
+                    name="unsubscribe-from-emails"
+                  />
+                  <span>Unsubscribe from emails</span>
+                </label>
+              </Field.Root>
             </Dialog.Body>
 
             <Dialog.Footer>

@@ -14,6 +14,7 @@ import {
   foreignKey,
   serial,
   varchar,
+  boolean,
   timestamp,
   integer,
   jsonb,
@@ -33,6 +34,7 @@ export const users = pgTable(
     preferredName: varchar('preferred_name').notNull(),
     phoneNumber: varchar('phone_number'),
     roles: enum_users_roles('roles'),
+    unsubscribeFromEmails: boolean('unsubscribe_from_emails').default(false),
     updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
       .defaultNow()
       .notNull(),
