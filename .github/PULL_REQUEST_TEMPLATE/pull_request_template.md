@@ -7,5 +7,5 @@ This PR is related to issue: #???
 
 **UI/UX-related changes**
 
-* [ ] I have tested my changes on screens with 320px width
-* [ ] I have attached screenshots that show my changes
+* [ ] My changes are following the [frontend guidelines](/docs/Frontend%20guidelines.md) document
+* [ ] I have attached screenshots that show my changes to the PR
