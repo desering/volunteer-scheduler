@@ -103,17 +103,9 @@ If your PR is complete, we are going to merge it.
 
 **UI/UX-related changes**
 
-If you are submitting changes to the UI/UX (`*.tsx` files), please:
-
-1. Test your change on screens with 320px width.
-   * Use the window resizing feature of the developer tools in your browser to
-     test this.
-
-2. Request a review from the `desering/frontend-reviewers` group.
-   * We consider a review and approval from anyone in that group to be
-     sufficient to accept your PR.
-   * If you would like to be added as a frontend reviewer, please create a new
-     issue or reach out on Mattermost.
+If you are submitting changes to the UI/UX (`*.tsx` files), please also consult
+our [Frontend guidelines](Frontend%20guidelines.md) document and then request a
+review from the `desering/frontend-reviewers` group.
 
 After your PR is merged, a new version of the `volunteer-scheduler` including
 your changes will automatically be built and deployed to
