@@ -74,9 +74,13 @@ Opening a non-draft pull-request or marking a pull request as "Ready for review"
 automatically requests reviews from maintainers, so please be careful with using
 that until you are sure.
 
-If your PR is related to an issue you picked up on our project board, then link
-the issue in your PR description. You can use "Fixes #123", "Closes #45" or
-"Resolves #222" to automatically close the issue after your PR is merged.
+Always link the issue your PR is related to in your PR description. If you
+submit a PR that is not based on an issue in our project board, we might not be
+able to accept your contribution - creating an issue beforehand to confirm
+requirements and implementation details with us beforehand is a good way to
+ensure that your time and effort is not wasted. You can use "Fixes #123",
+"Closes #45" or "Resolves #222" to automatically close the issue after your PR
+is merged.
 
 Each PR is automatically deployed to a preview environment - watch out for a
 comment on your PR mentioning `volunteer-scheduler-preview`. Use this deployment
