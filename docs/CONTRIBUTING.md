@@ -92,7 +92,11 @@ to inspect and test your changes in a "live" environment.
 
 1. All automated checks must pass.
 
-2. Your PR needs to be reviewed and approved by one of the project maintainers.
+2. If you are submitting changes to the UI/UX (`*.tsx` files), please also
+   consult our [Frontend guidelines](Frontend%20guidelines.md) document and then
+   request a review from the `desering/frontend-reviewers` group.
+
+3. Your PR needs to be reviewed and approved by one of the project maintainers.
 
 Currently, maintainers are:
 
@@ -103,13 +107,11 @@ Currently, maintainers are:
     * Focus: backend, automation, deployments
     * Expect a review within a few days
 
-If your PR is complete, we are going to merge it.
+The final decision about accepting a contribution lies with the maintainers, and
+fulfilling all requirements does not guarantee that your change will be merged.
 
-**UI/UX-related changes**
-
-If you are submitting changes to the UI/UX (`*.tsx` files), please also consult
-our [Frontend guidelines](Frontend%20guidelines.md) document and then request a
-review from the `desering/frontend-reviewers` group.
+That said, if your PR is complete, we are probably going to accept it (we're not
+monsters :)).
 
 After your PR is merged, a new version of the `volunteer-scheduler` including
 your changes will automatically be built and deployed to
