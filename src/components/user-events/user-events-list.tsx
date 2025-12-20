@@ -11,20 +11,21 @@ import { Box, HStack, panda } from "styled-system/jsx";
 import { Flex } from "styled-system/jsx/flex";
 import { EventButton } from "@/components/event-button";
 import { EventDetailsDrawer } from "@/components/event-details-sheet";
-import type { UpcomingEventsForUserId } from "@/lib/services/get-upcoming-events-for-user-id";
+import type { EventsForUserId } from "@/lib/services/get-upcoming-events-for-user-id";
 
-type Props = {
-  initialData?: UpcomingEventsForUserId;
+type UserEventsListProps = {
+  initialData?: EventsForUserId;
+  refetchUrl: string;
 };
 
-export const UpcomingEventsList = (props: Props) => {
+export const UserEventsList = (props: UserEventsListProps) => {
   const [selectedEvent, setSelectedEvent] = useState<Event>();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
-  const { data, refetch } = useQuery<UpcomingEventsForUserId>({
+  const { data, refetch } = useQuery<EventsForUserId>({
     queryKey: ["events", "users", "upcoming", props.initialData?.events],
     queryFn: async () =>
-      await fetch(`/api/events/users/upcoming`).then((res) => res.json()),
+      await fetch(props.refetchUrl).then((res) => res.json()),
     initialData: props.initialData,
     staleTime: 1000 * 60 * 5, // 5 minutes
     refetchOnWindowFocus: true,
@@ -96,7 +97,7 @@ export const UpcomingEventsList = (props: Props) => {
           eventsList
         ) : (
           <panda.p textAlign="center">
-            You currently have no upcoming shifts. Go to{" "}
+            There are no shifts in your account. Go to{" "}
             <Link href={"/"} className={css({ textDecoration: "underline" })}>
               Shifts
             </Link>{" "}

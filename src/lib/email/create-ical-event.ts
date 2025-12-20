@@ -8,8 +8,8 @@ type CreateIcalEventParams = {
   id?: string;
   summary: string;
   description?: string;
-  start: Date;
-  end: Date;
+  start: string | Date;
+  end: string | Date;
   location?: string;
 };
 
@@ -17,9 +17,18 @@ export const createIcalEvent = (
   params: CreateIcalEventParams,
 ): ICalCalendar => {
   const calendar = ical({
-    name: "De Sering", // todo: don't hardcode our name anywhere
+    name: process.env.ORG_NAME
+      ? `${process.env.ORG_NAME} Calendar`
+      : "Event Calendar",
     method: ICalCalendarMethod.REQUEST,
   });
+
+  let startDate: Date;
+  let endDate: Date;
+
+  startDate =
+    typeof params.start === "string" ? new Date(params.start) : params.start;
+  endDate = typeof params.end === "string" ? new Date(params.end) : params.end;
 
   calendar.createEvent({
     id: params.id,
@@ -27,8 +36,8 @@ export const createIcalEvent = (
     description: {
       plain: params.description,
     },
-    start: params.start,
-    end: params.end,
+    start: startDate,
+    end: endDate,
     location: params.location,
   } as ICalEventData);
 

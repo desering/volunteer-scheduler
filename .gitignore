@@ -6,6 +6,12 @@
 .pnp.js
 .yarn/install-state.gz
 
+# non-bun lockfiles
+.package-lock.json
+pnpm-lock.yaml
+yarn.lock
+deno.lock
+
 .idea
 .vscode
 

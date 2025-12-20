@@ -12,6 +12,7 @@ import { Roles } from "./collections/roles";
 import { Sections } from "./collections/sections";
 import { Signups } from "./collections/signups";
 import { Tags } from "./collections/tags";
+import { UserNotificationPreferences } from "./collections/user-notification-preferences";
 import { Users } from "./collections/users";
 import { logger } from "./lib/logger";
 import { migrations } from "./migrations";
@@ -93,7 +94,16 @@ export default buildConfig({
   cors: [process.env.NEXT_PUBLIC_SERVER_URL ?? ""].filter(Boolean),
   csrf: [process.env.NEXT_PUBLIC_SERVER_URL ?? ""].filter(Boolean),
 
-  collections: [Users, EventTemplates, Events, Sections, Roles, Signups, Tags],
+  collections: [
+    Users,
+    EventTemplates,
+    Events,
+    Sections,
+    Roles,
+    Signups,
+    Tags,
+    UserNotificationPreferences,
+  ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET ?? "",
   typescript: {

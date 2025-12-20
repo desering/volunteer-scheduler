@@ -1,7 +1,6 @@
 "use client";
 
 import { useMutation } from "@tanstack/react-query";
-import { AlertCircleIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { css } from "styled-system/css";
 import { Grid } from "styled-system/jsx";
@@ -48,9 +47,7 @@ export const SignInForm = () => {
     >
       {error && (
         <Alert.Root borderColor="red.500">
-          <Alert.Icon asChild>
-            <AlertCircleIcon />
-          </Alert.Icon>
+          <Alert.Indicator />
           <Alert.Content>
             <Alert.Title>We couldn't sign you in :/</Alert.Title>
             <Alert.Description>
