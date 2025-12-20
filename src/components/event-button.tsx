@@ -56,7 +56,13 @@ const EventButtonTitle = (props: EventButtonTitleProps) => (
 );
 
 const EventButtonDescription = (props: BoxProps) => (
-  <panda.div>{props.children}</panda.div>
+  <panda.div
+    maxHeight={{ base: "100px", md: "78px" }}
+    overflow="hidden"
+    textOverflow="ellipsis"
+    lineClamp={{ base: "4", md: "2" }}
+    {...props}
+  />
 );
 
 export const EventButton = {

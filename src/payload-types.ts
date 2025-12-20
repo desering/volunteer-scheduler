@@ -27,6 +27,7 @@ export interface Config {
     roles: Role;
     signups: Signup;
     tags: Tag;
+    'user-notification-preferences': UserNotificationPreference;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -52,6 +53,7 @@ export interface Config {
     roles: RolesSelect<false> | RolesSelect<true>;
     signups: SignupsSelect<false> | SignupsSelect<true>;
     tags: TagsSelect<false> | TagsSelect<true>;
+    'user-notification-preferences': UserNotificationPreferencesSelect<false> | UserNotificationPreferencesSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -354,6 +356,19 @@ export interface Signup {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "user-notification-preferences".
+ */
+export interface UserNotificationPreference {
+  id: number;
+  user: number | User;
+  type: string;
+  channel: string;
+  preference: boolean;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -386,6 +401,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'tags';
         value: number | Tag;
+      } | null)
+    | ({
+        relationTo: 'user-notification-preferences';
+        value: number | UserNotificationPreference;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -554,6 +573,18 @@ export interface SignupsSelect<T extends boolean = true> {
  */
 export interface TagsSelect<T extends boolean = true> {
   text?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "user-notification-preferences_select".
+ */
+export interface UserNotificationPreferencesSelect<T extends boolean = true> {
+  user?: T;
+  type?: T;
+  channel?: T;
+  preference?: T;
   updatedAt?: T;
   createdAt?: T;
 }

@@ -1,7 +1,6 @@
 "use client";
 
 import { useMutation } from "@tanstack/react-query";
-import { AlertCircleIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Divider } from "styled-system/jsx";
 import { vstack } from "styled-system/patterns";
@@ -48,9 +47,7 @@ export function RegisterForm() {
     >
       {(error?.errors?.formErrors.length ?? 0) > 0 && (
         <Alert.Root>
-          <Alert.Icon asChild>
-            <AlertCircleIcon />
-          </Alert.Icon>
+          <Alert.Indicator />
           <Alert.Content>
             <Alert.Title>Oh.. something went wrong :/</Alert.Title>
             <Alert.Description>

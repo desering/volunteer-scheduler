@@ -5,7 +5,7 @@ import { headers as getHeaders } from "next/headers";
 import { redirect } from "next/navigation";
 import { getPayload } from "payload";
 import { Container, panda } from "styled-system/jsx";
-import { UpcomingEventsList } from "@/components/upcoming-events-list";
+import { UserEventsList } from "@/components/user-events/user-events-list";
 import { getUpcomingEventsForUserId } from "@/lib/services/get-upcoming-events-for-user-id";
 
 export default async function Page() {
@@ -35,7 +35,10 @@ export default async function Page() {
       >
         My upcoming shifts
       </panda.h1>
-      <UpcomingEventsList initialData={events} />
+      <UserEventsList
+        initialData={events}
+        refetchUrl={`/api/events/users/upcoming`}
+      />
     </Container>
   );
 }
