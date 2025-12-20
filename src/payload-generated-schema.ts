@@ -18,6 +18,7 @@ import {
   integer,
   jsonb,
   numeric,
+  boolean,
   pgEnum,
 } from '@payloadcms/db-postgres/drizzle/pg-core'
 import { sql, relations } from '@payloadcms/db-postgres/drizzle'
@@ -352,6 +353,33 @@ export const tags = pgTable(
   ],
 )
 
+export const user_notification_preferences = pgTable(
+  'user_notification_preferences',
+  {
+    id: serial('id').primaryKey(),
+    user: integer('user_id')
+      .notNull()
+      .references(() => users.id, {
+        onDelete: 'set null',
+      }),
+    type: varchar('type').notNull(),
+    channel: varchar('channel').notNull(),
+    preference: boolean('preference').notNull().default(false),
+    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index('user_notification_preferences_user_idx').on(columns.user),
+    index('user_notification_preferences_updated_at_idx').on(columns.updatedAt),
+    index('user_notification_preferences_created_at_idx').on(columns.createdAt),
+    uniqueIndex('user_type_channel_idx').on(columns.user, columns.type, columns.channel),
+  ],
+)
+
 export const payload_locked_documents = pgTable(
   'payload_locked_documents',
   {
@@ -385,6 +413,7 @@ export const payload_locked_documents_rels = pgTable(
     rolesID: integer('roles_id'),
     signupsID: integer('signups_id'),
     tagsID: integer('tags_id'),
+    'user-notification-preferencesID': integer('user_notification_preferences_id'),
   },
   (columns) => [
     index('payload_locked_documents_rels_order_idx').on(columns.order),
@@ -397,6 +426,9 @@ export const payload_locked_documents_rels = pgTable(
     index('payload_locked_documents_rels_roles_id_idx').on(columns.rolesID),
     index('payload_locked_documents_rels_signups_id_idx').on(columns.signupsID),
     index('payload_locked_documents_rels_tags_id_idx').on(columns.tagsID),
+    index('payload_locked_documents_rels_user_notification_preferen_idx').on(
+      columns['user-notification-preferencesID'],
+    ),
     foreignKey({
       columns: [columns['parent']],
       foreignColumns: [payload_locked_documents.id],
@@ -436,6 +468,11 @@ export const payload_locked_documents_rels = pgTable(
       columns: [columns['tagsID']],
       foreignColumns: [tags.id],
       name: 'payload_locked_documents_rels_tags_fk',
+    }).onDelete('cascade'),
+    foreignKey({
+      columns: [columns['user-notification-preferencesID']],
+      foreignColumns: [user_notification_preferences.id],
+      name: 'payload_locked_documents_rels_user_notification_preferenc_fk',
     }).onDelete('cascade'),
   ],
 )
@@ -638,6 +675,16 @@ export const relations_signups = relations(signups, ({ one }) => ({
   }),
 }))
 export const relations_tags = relations(tags, () => ({}))
+export const relations_user_notification_preferences = relations(
+  user_notification_preferences,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [user_notification_preferences.user],
+      references: [users.id],
+      relationName: 'user',
+    }),
+  }),
+)
 export const relations_payload_locked_documents_rels = relations(
   payload_locked_documents_rels,
   ({ one }) => ({
@@ -680,6 +727,11 @@ export const relations_payload_locked_documents_rels = relations(
       fields: [payload_locked_documents_rels.tagsID],
       references: [tags.id],
       relationName: 'tags',
+    }),
+    'user-notification-preferencesID': one(user_notification_preferences, {
+      fields: [payload_locked_documents_rels['user-notification-preferencesID']],
+      references: [user_notification_preferences.id],
+      relationName: 'user-notification-preferences',
     }),
   }),
 )
@@ -729,6 +781,7 @@ type DatabaseSchema = {
   roles: typeof roles
   signups: typeof signups
   tags: typeof tags
+  user_notification_preferences: typeof user_notification_preferences
   payload_locked_documents: typeof payload_locked_documents
   payload_locked_documents_rels: typeof payload_locked_documents_rels
   payload_preferences: typeof payload_preferences
@@ -747,6 +800,7 @@ type DatabaseSchema = {
   relations_roles: typeof relations_roles
   relations_signups: typeof relations_signups
   relations_tags: typeof relations_tags
+  relations_user_notification_preferences: typeof relations_user_notification_preferences
   relations_payload_locked_documents_rels: typeof relations_payload_locked_documents_rels
   relations_payload_locked_documents: typeof relations_payload_locked_documents
   relations_payload_preferences_rels: typeof relations_payload_preferences_rels
