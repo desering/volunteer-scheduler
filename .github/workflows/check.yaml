@@ -7,7 +7,7 @@ permissions:
   contents: read
 
 jobs:
-  format:
+  biome:
     runs-on: [ ubuntu-24.04 ]
     steps:
       - uses: actions/checkout@v6
@@ -15,7 +15,7 @@ jobs:
         with:
           bun-version-file: ".bun-version"
       - run: bun install
-      - run: bun format:check
+      - run: bun biome ci
 
   types:
     runs-on: [ ubuntu-24.04 ]
