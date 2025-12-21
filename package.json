@@ -2,7 +2,7 @@
   "name": "@desering/volunteer-scheduler",
   "version": "1.0.0",
   "description": "",
-  "license": "MIT",
+  "license": "AGPL-3.0-only",
   "type": "module",
   "scripts": {
     "dev": "panda codegen && next dev --port 3000 --turbopack",
