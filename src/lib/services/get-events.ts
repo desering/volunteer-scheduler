@@ -8,6 +8,7 @@ import { getPayload, type WhereField } from "payload";
 type GetEventsOptions = {
   minDate?: Date;
   maxDate?: Date;
+  tagIds?: number[];
 };
 
 export const getEvents = async (params?: GetEventsOptions) => {
@@ -21,10 +22,18 @@ export const getEvents = async (params?: GetEventsOptions) => {
     ...(maxDate && { less_than_equal: maxDate.toISOString() }),
   };
 
+  const where: Record<string, any> = { start_date: startDateFilter };
+
+  if (params?.tagIds && params.tagIds.length > 0) {
+    where.tags = {
+      in: params.tagIds,
+    };
+  }
+
   const events = await payload.find({
     collection: "events",
 
-    where: { start_date: startDateFilter },
+    where,
 
     joins: {
       roles: false,
