@@ -11,8 +11,11 @@ already exists:
 
 If not, then you're welcome to create a new issue in the leftmost "New" column.
 
-We regularly check for new issues, to plan and prioritise upcoming work. If your
-issue is particularly important, please feel free to give us a poke on
+## How issues are refined and prioritised
+
+We regularly look through the column of new issues, to plan and prioritise
+upcoming work. If your issue is particularly important, please feel free to give
+us a poke on
 [WhatsApp/Tech Circle](https://chat.whatsapp.com/Itp0i2AWFxGEOLg0N83cHZ) or
 [Mattermost/Tech Circle](https://mattermost.desering.org/de-sering/channels/tech-circle).
 
