@@ -23,12 +23,10 @@ export const createIcalEvent = (
     method: ICalCalendarMethod.REQUEST,
   });
 
-  let startDate: Date;
-  let endDate: Date;
-
-  startDate =
+  const startDate: Date =
     typeof params.start === "string" ? new Date(params.start) : params.start;
-  endDate = typeof params.end === "string" ? new Date(params.end) : params.end;
+  const endDate: Date =
+    typeof params.end === "string" ? new Date(params.end) : params.end;
 
   calendar.createEvent({
     id: params.id,

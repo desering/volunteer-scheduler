@@ -8,7 +8,7 @@
     "dev": "panda codegen && next dev --port 3000 --turbopack",
     "devsafe": "rm -rf .next && next dev --turbopack",
     "build": "panda codegen && next build --turbopack",
-    "lint": "biome lint",
+    "check": "biome check",
     "test": "vitest",
     "coverage": "vitest run --coverage",
     "payload": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts payload",
