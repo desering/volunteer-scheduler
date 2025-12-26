@@ -1,0 +1,42 @@
+{
+  "service": "app",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "forwardPorts": [3000, "maildev:1080"],
+  "portsAttributes": {
+    "3000": {
+      "label": "App UI",
+      "onAutoForward": "notify"
+    },
+    "maildev:1080": {
+      "label": "MailDev UI",
+      "onAutoForward": "openBrowser"
+    }
+  },
+  "dockerComposeFile": ["docker-compose.yml", "../docker-compose.dev.yml"],
+  "shutdownAction": "stopCompose",
+
+  "waitFor": "onCreateCommand",
+  "postCreateCommand": "bun install && bun generate:env",
+  "postAttachCommand": "bun dev",
+
+  "customizations": {
+    "codespaces": {
+      "openFiles": ["pages/index.js"]
+    },
+    "vscode": {
+      "extensions": ["biomejs.biome", "ms-vsliveshare.vsliveshare"],
+      "settings": {
+        "editor.formatOnSave": true,
+        "[json]": {
+          "editor.defaultFormatter": "biomejs.biome"
+        },
+        "[typescriptreact]": {
+          "editor.defaultFormatter": "biomejs.biome"
+        },
+        "[typescript]": {
+          "editor.defaultFormatter": "biomejs.biome"
+        }
+      }
+    }
+  }
+}
