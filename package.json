@@ -14,6 +14,7 @@
     "payload": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts payload",
     "start": "next start",
     "generate": "bun run generate:importmap && bun run generate:types && bun run generate:panda",
+    "generate:env": "bun run ./scripts/generate-env.ts",
     "generate:panda": "panda codegen",
     "generate:importmap": "payload generate:importmap",
     "generate:types": "payload generate:types",
