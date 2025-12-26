@@ -15,4 +15,4 @@ services:
 
 networks:
   shared:
-    name: shared-net
+    name: desering-volunteer-scheduler
