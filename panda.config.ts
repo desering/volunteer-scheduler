@@ -3,8 +3,11 @@ import { createPreset } from "@park-ui/panda-preset";
 import olive from "@park-ui/panda-preset/colors/olive";
 import sand from "@park-ui/panda-preset/colors/sand";
 import tomato from "@park-ui/panda-preset/colors/tomato";
-
+import { alert } from "@/components/ui/recipes/alert";
+import { dialog } from "@/components/ui/recipes/dialog";
+import { icon } from "@/components/ui/recipes/icon";
 import { sheet } from "@/components/ui/recipes/sheet";
+import { toast } from "@/components/ui/recipes/toast";
 
 const globalCss = defineGlobalStyles({
   // reset park ui conflicting global style against payload
@@ -66,8 +69,12 @@ export default defineConfig({
           tomato: tomato.semanticTokens,
         },
       },
+      recipes: { icon },
       slotRecipes: {
+        alert,
         sheet,
+        toast,
+        dialog,
         radioButtonGroup: {
           variants: {
             direction: {
