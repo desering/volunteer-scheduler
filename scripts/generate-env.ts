@@ -31,7 +31,9 @@ if (import.meta.main) {
   const envExamplePath = join(process.cwd(), ".env.example");
 
   if (existsSync(envPath)) {
-    console.log("⚠️ Error: .env file already exists. Aborting to prevent overwrite.");
+    console.log(
+      "⚠️ Error: .env file already exists. Aborting to prevent overwrite.",
+    );
     process.exit(1);
   }
 
