@@ -2,6 +2,11 @@
 
 Repo for the Volunteer Scheduler project.
 
+To understand why this project exists and how it differs from existing
+solutions, start with
+[Vision](explanation/Vision,%20Strategy%20and%20Roadmap.md) and
+[Purpose](explanation/Purpose.md).
+
 ## Tech Stack
 
 The `volunteer-scheduler` is a [Next.js](https://nextjs.org/) and
