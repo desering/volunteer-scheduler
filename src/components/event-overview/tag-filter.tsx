@@ -30,6 +30,10 @@ export const TagFilter = ({
     },
   });
 
+  if (tags.length === 0) {
+    return null;
+  }
+
   const handleToggleTag = (tagId: number) => {
     if (selectedTags.includes(tagId)) {
       onTagsChange(selectedTags.filter((id) => id !== tagId));
