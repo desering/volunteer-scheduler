@@ -59,9 +59,10 @@ Containers, follow the instructions below.
    * With macOS Homebrew: `brew install --cask docker-desktop` or `brew install --cask rancher, brew install docker-compose`
 2. The [Bun Javascript Runtime](https://bun.com/)
    * macOS Homebrew: `brew tap oven-sh/bun; brew install bun`
+   * We use `bun` as our package manager and runtime.
 3. The [Node.js Javascript Runtime](https://nodejs.org/en/download)
-   * macOS Homebrew: `brew install node`
    * The Payload CLI depends on `node` for development, see https://github.com/payloadcms/payload/issues/15015 for details.
+   * macOS Homebrew: `brew install node`
 
 ### Setup
 
