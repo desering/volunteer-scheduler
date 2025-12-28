@@ -2,23 +2,7 @@ import { randomBytes } from "node:crypto";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
-const generateEnvFile = () => {
-  const envPath = join(process.cwd(), ".env");
-  const envExamplePath = join(process.cwd(), ".env.example");
-
-  if (existsSync(envPath)) {
-    console.log("⚠️  .env file already exists. Aborting to prevent overwrite.");
-    return;
-  }
-
-  if (!existsSync(envExamplePath)) {
-    console.error("Error: .env.example file not found.");
-    process.exit(1);
-  }
-
-  // Read the template
-  let envContent = readFileSync(envExamplePath, "utf-8");
-
+export const generateEnvFile = (envContent: string): string => {
   // Generate a random base64 secret (32 bytes = 256 bits)
   const secret = randomBytes(32).toString("base64");
 
@@ -33,16 +17,32 @@ const generateEnvFile = () => {
   if (isDevContainer) {
     envContent = envContent
       .replace("@localhost:5432", "@postgres:5432")
-      .replace("SMTP_HOST=127.0.0.1", "SMTP_HOST=maildev");
+      .replace("SMTP_HOST=localhost", "SMTP_HOST=maildev");
     console.log(
       "✓ Detected devcontainer environment, using Docker service names",
     );
   }
 
-  // Write the .env file
-  writeFileSync(envPath, envContent);
-
-  console.log("✅ .env file generated successfully!");
+  return envContent;
 };
 
-generateEnvFile();
+if (import.meta.main) {
+  const envPath = join(process.cwd(), ".env");
+  const envExamplePath = join(process.cwd(), ".env.example");
+
+  if (existsSync(envPath)) {
+    console.log("⚠️ .env file already exists. Aborting to prevent overwrite.");
+    process.exit(1);
+  }
+
+  if (!existsSync(envExamplePath)) {
+    console.error("⚠️ Error: .env.example file not found.");
+    process.exit(1);
+  }
+
+  const envContent = readFileSync(envExamplePath, "utf-8");
+
+  writeFileSync(envPath, generateEnvFile(envContent));
+
+  console.log("✅ .env file generated successfully!");
+}
