@@ -3,6 +3,8 @@ import type { SerializedEditorState } from "@payloadcms/richtext-lexical/lexical
 import { convertLexicalToPlaintext } from "@payloadcms/richtext-lexical/plaintext";
 import { pretty, render, toPlainText } from "@react-email/render";
 import type { CollectionAfterChangeHook } from "payload";
+import { notificationChannels } from "@/constants/notification-channels";
+import { notificationTypes } from "@/constants/notification-types";
 import { SignupConfirmation } from "@/email/templates/signup-confirmation";
 import { createIcalEvent } from "@/lib/email/create-ical-event";
 import { sendEmail } from "@/lib/email/send-email";
@@ -33,9 +35,23 @@ export const sendConfirmationEmail: CollectionAfterChangeHook<Signup> = async ({
       ? await payload.findByID({ collection: "users", id: doc.user })
       : doc.user;
 
-  if (!event) {
+  const eventSignupEmailPreference = await payload.find({
+    collection: "user-notification-preferences",
+    where: {
+      user: { equals: user.id },
+      type: { equals: notificationTypes.EVENT_SIGNUP },
+      channel: { equals: notificationChannels.EMAIL },
+    },
+  });
+
+  if (
+    !event ||
+    (eventSignupEmailPreference &&
+      eventSignupEmailPreference.docs[0].preference !== true)
+  ) {
     return doc;
   }
+
   const name = user.preferredName ? user.preferredName : "Volunteer";
   const eventSummary = event.title ?? "Volunteer Shift";
   const description = event.description ?? undefined;
