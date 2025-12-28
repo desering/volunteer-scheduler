@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { EditUserInfoButton } from "src/components/edit-user-info-button";
 import { Container, panda, VStack } from "styled-system/jsx";
+import { EditUserNotificationPreferences } from "@/components/edit-user-notifications-preference-button";
 import { getUser } from "@/lib/services/get-user";
 
 export default async function Page() {
@@ -23,6 +24,7 @@ export default async function Page() {
       </VStack>
 
       <EditUserInfoButton user={user} />
+      <EditUserNotificationPreferences user={user} />
     </Container>
   );
 }

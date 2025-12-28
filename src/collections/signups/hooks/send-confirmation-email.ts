@@ -39,7 +39,7 @@ export const sendConfirmationEmail: CollectionAfterChangeHook<Signup> = async ({
     collection: "user-notification-preferences",
     where: {
       user: { equals: user.id },
-      type: { equals: notificationTypes.EVENT_SIGNUP },
+      type: { equals: notificationTypes.EVENT_SIGNUP.key },
       channel: { equals: notificationChannels.EMAIL },
       preference: { equals: false },
     },
