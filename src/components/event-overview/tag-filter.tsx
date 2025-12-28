@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { Check, X } from "lucide-react";
-import { Box, Flex, HStack } from "styled-system/jsx";
+import { Check, ChevronDown } from "lucide-react";
+import { Box, Flex } from "styled-system/jsx";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Menu } from "@/components/ui/menu";
@@ -47,16 +47,25 @@ export const TagFilter = ({
       ? tags.filter((t) => onlyTagIds.includes(t.id))
       : tags;
 
-  const selectedTagObjects = visibleTags.filter((tag) =>
-    selectedTags.includes(tag.id),
-  );
+  const getButtonLabel = () => {
+    if (selectedTags.length === 0) {
+      return "Filter by tags";
+    }
+    if (selectedTags.length === 1) {
+      return "1 tag selected";
+    }
+    return `${selectedTags.length} tags selected`;
+  };
 
   return (
     <Box>
       <Flex alignItems="center" gap="2" marginBottom="4" position="relative">
         <Menu.Root closeOnSelect={false}>
           <Menu.Trigger asChild data-menu-trigger>
-            <Button variant="outline">Filter by Tags</Button>
+            <Button variant="outline">
+              {getButtonLabel()}
+              <ChevronDown size={16} />
+            </Button>
           </Menu.Trigger>
           <Menu.Content
             maxWidth="64"
@@ -95,29 +104,6 @@ export const TagFilter = ({
           </Menu.Content>
         </Menu.Root>
       </Flex>
-
-      {selectedTagObjects.length > 0 && (
-        <HStack gap="2" marginBottom="4">
-          {selectedTagObjects.map((tag) => (
-            <Badge
-              key={tag.id}
-              display="flex"
-              alignItems="center"
-              gap="1"
-              paddingRight="1"
-            >
-              {tag.text}
-              <button
-                type="reset"
-                onClick={() => handleToggleTag(tag.id)}
-                className="ml-1 hover:opacity-70"
-              >
-                <X size={14} />
-              </button>
-            </Badge>
-          ))}
-        </HStack>
-      )}
     </Box>
   );
 };

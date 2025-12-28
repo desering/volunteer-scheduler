@@ -16,7 +16,7 @@ export const GET = async (req: NextRequest) => {
   const tagIds = searchParams
     .getAll("where[tags][in][]")
     .map((id) => parseInt(id, 10))
-    .filter((id) => !isNaN(id));
+    .filter((id) => !Number.isNaN(id));
 
   const data = {
     minDate: searchParams.get("min_date") ?? undefined,

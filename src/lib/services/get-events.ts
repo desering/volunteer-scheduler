@@ -11,6 +11,13 @@ type GetEventsOptions = {
   tagIds?: number[];
 };
 
+type EventsWhereClause = {
+  start_date: WhereField;
+  tags?: {
+    in: number[];
+  };
+};
+
 export const getEvents = async (params?: GetEventsOptions) => {
   const payload = await getPayload({ config });
 
@@ -22,7 +29,7 @@ export const getEvents = async (params?: GetEventsOptions) => {
     ...(maxDate && { less_than_equal: maxDate.toISOString() }),
   };
 
-  const where: Record<string, any> = { start_date: startDateFilter };
+  const where: EventsWhereClause = { start_date: startDateFilter };
 
   if (params?.tagIds && params.tagIds.length > 0) {
     where.tags = {
