@@ -19,8 +19,12 @@ export const Users: CollectionConfig = {
   auth: {
     loginWithUsername: false,
     maxLoginAttempts: 0,
-    tokenExpiration: 7 * 24 * 60 * 60, // 7 days in seconds
-    useSessions: false,
+    tokenExpiration: 30 * 24 * 60 * 60, // 30 days in seconds (jwt or cookie expiry)
+    useSessions: true,
+    cookies: {
+      sameSite: "Lax",
+      secure: process.env.NODE_ENV === "production",
+    },
   },
   fields: [
     {
