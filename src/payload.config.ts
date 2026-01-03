@@ -63,6 +63,7 @@ export default buildConfig({
 
   admin: {
     user: Users.slug,
+    autoRefresh: true,
     importMap: {
       baseDir: path.resolve(dirname),
     },
