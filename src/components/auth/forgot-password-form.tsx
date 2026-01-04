@@ -1,7 +1,6 @@
 "use client";
 
 import { useMutation } from "@tanstack/react-query";
-import { AlertCircleIcon } from "lucide-react";
 import { vstack } from "styled-system/patterns";
 import type {
   ForgotPasswordFailure,
@@ -41,9 +40,7 @@ export function ForgotPasswordForm() {
       {/* Error alert */}
       {error && (
         <Alert.Root>
-          <Alert.Icon asChild>
-            <AlertCircleIcon />
-          </Alert.Icon>
+          <Alert.Indicator />
           <Alert.Content>
             <Alert.Title>Oh.. something went wrong :/</Alert.Title>
             <Alert.Description>
