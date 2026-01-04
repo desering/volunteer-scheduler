@@ -1,7 +1,7 @@
 "use server";
 
-import { getPayload } from "payload";
 import config from "@payload-config";
+import { getPayload } from "payload";
 import { z } from "zod";
 
 const schema = z
@@ -29,10 +29,16 @@ export type ResetPasswordFailure = {
 
 export type ResetPasswordResult = ResetPasswordSuccess | ResetPasswordFailure;
 
-export const resetPassword = async (formData: FormData): Promise<ResetPasswordResult> => {
+export const resetPassword = async (
+  formData: FormData,
+): Promise<ResetPasswordResult> => {
   const token = formData.get("token") as string;
   const password = formData.get("password") as string;
   const confirmPassword = formData.get("confirmPassword") as string;
+
+  console.log("token", token);
+  console.log("password", password);
+  console.log("confirmPassword", confirmPassword);
 
   const parse = schema.safeParse({ token, password, confirmPassword });
 
@@ -52,13 +58,15 @@ export const resetPassword = async (formData: FormData): Promise<ResetPasswordRe
         token,
         password,
       },
-      overrideAccess: true
+      overrideAccess: true,
     });
   } catch (error) {
     return {
       success: false,
       errors: {
-        formErrors: [`Failed to reset password: ${error instanceof Error ? error.message : "Unknown error"}`],
+        formErrors: [
+          `Failed to reset password: ${error instanceof Error ? error.message : "Unknown error"}`,
+        ],
         fieldErrors: {},
       },
     };

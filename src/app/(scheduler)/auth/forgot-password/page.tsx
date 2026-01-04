@@ -1,9 +1,9 @@
-import { Box, Container, Grid, panda, VStack } from "styled-system/jsx";
-import { getUser } from "@/lib/services/get-user";
-import { redirect } from "next/navigation";
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { Box, Container, Grid, panda, VStack } from "styled-system/jsx";
 import { link } from "styled-system/recipes";
 import { ForgotPasswordForm } from "@/components/auth/forgot-password-form";
+import { getUser } from "@/lib/services/get-user";
 
 export default async function Page() {
   const { user } = await getUser();

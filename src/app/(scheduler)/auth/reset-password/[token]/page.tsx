@@ -1,4 +1,5 @@
-import { Container } from "styled-system/jsx";
+import { Box, Container, Grid, panda } from "styled-system/jsx";
+import { ResetPasswordForm } from "@/components/auth/reset-password-form";
 
 type Args = {
   params: Promise<{
@@ -7,18 +8,36 @@ type Args = {
 };
 
 export default async function Page({ params }: Args) {
-  let { token } = await params;
+  const { token } = await params;
 
-  // https://payloadcms.com/docs/local-api/overview#reset-password
   return (
-    <Container>
-      <h1>Reset Password</h1>
-      <p>Form that asks for new password here!</p>
-      <p>
-        form calls an action that does the actual reset, i.e.
-        resetPassword("password", "token")
-      </p>
-      <p>token: {token}</p>
-    </Container>
+    <Box
+      display="flex"
+      width="screen"
+      flexGrow="1"
+      justifyContent="center"
+      alignItems="center"
+    >
+      <Container width={{ base: "full", sm: "450px" }}>
+        <Grid
+          background={{ base: "bg.default", _dark: "bg.subtle" }}
+          padding="8"
+          borderRadius="3xl"
+          boxShadow={{ base: "lg", _dark: "unset" }}
+          gap="4"
+        >
+          <div>
+            <panda.h1 fontSize="2xl" textAlign="center">
+              Reset Password
+            </panda.h1>
+            <Box textAlign="center" color="fg.muted">
+              Please enter your new password.
+            </Box>
+          </div>
+
+          <ResetPasswordForm token={token} />
+        </Grid>
+      </Container>
+    </Box>
   );
 }
