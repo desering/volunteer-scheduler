@@ -5,24 +5,19 @@ import { RichText } from "@payloadcms/richtext-lexical/react";
 import { useQuery } from "@tanstack/react-query";
 import { Clock, PersonStanding } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
 import { css } from "styled-system/css";
 import { Box, HStack, panda } from "styled-system/jsx";
 import { Flex } from "styled-system/jsx/flex";
 import { EventButton } from "@/components/event-button";
-import { EventDetailsDrawer } from "@/components/event-details-sheet";
 import type { EventsForUserId } from "@/lib/services/get-upcoming-events-for-user-id";
 
-type UserEventsListProps = {
+type Props = {
   initialData?: EventsForUserId;
   refetchUrl: string;
 };
 
-export const UserEventsList = (props: UserEventsListProps) => {
-  const [selectedEvent, setSelectedEvent] = useState<Event>();
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
-  const { data, refetch } = useQuery<EventsForUserId>({
+export const UserEventsList = (props: Props) => {
+  const { data } = useQuery<EventsForUserId>({
     queryKey: ["events", "users", "upcoming", props.initialData?.events],
     queryFn: async () =>
       await fetch(props.refetchUrl).then((res) => res.json()),
@@ -41,15 +36,14 @@ export const UserEventsList = (props: UserEventsListProps) => {
     return (
       <EventButton.Root
         key={event.id}
-        onClick={() => {
-          setIsDrawerOpen(true);
-          setSelectedEvent(event);
-        }}
-        display="flex"
-        flexDirection="column"
-        gap="3"
-        border="1px solid"
-        borderColor={{ base: "transparent", _hover: "border.default" }}
+        href={`/events/${event.id}`}
+        className={css({
+          display: "flex",
+          flexDirection: "column",
+          gap: "3",
+          border: "1px solid",
+          borderColor: { base: "transparent", _hover: "border.default" },
+        })}
       >
         <EventButton.Title>{event.title}</EventButton.Title>
 
@@ -91,29 +85,18 @@ export const UserEventsList = (props: UserEventsListProps) => {
   });
 
   return (
-    <>
-      <Flex flexDirection="column" gap="4">
-        {eventsList && eventsList.length > 0 ? (
-          eventsList
-        ) : (
-          <panda.p textAlign="center">
-            There are no shifts in your account. Go to{" "}
-            <Link href={"/"} className={css({ textDecoration: "underline" })}>
-              Shifts
-            </Link>{" "}
-            and check out what's available!
-          </panda.p>
-        )}
-      </Flex>
-      <EventDetailsDrawer
-        open={isDrawerOpen}
-        eventId={selectedEvent?.id}
-        onClose={() => {
-          setIsDrawerOpen(false);
-          refetch();
-        }}
-        onExitComplete={() => setSelectedEvent(undefined)}
-      />
-    </>
+    <Flex flexDirection="column" gap="4">
+      {eventsList && eventsList.length > 0 ? (
+        eventsList
+      ) : (
+        <panda.p textAlign="center">
+          There are no shifts in your account. Go to{" "}
+          <Link href={"/"} className={css({ textDecoration: "underline" })}>
+            Shifts
+          </Link>{" "}
+          and check out what's available!
+        </panda.p>
+      )}
+    </Flex>
   );
 };
