@@ -1,9 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import { Check, ChevronDown } from "lucide-react";
 import { Box, Flex } from "styled-system/jsx";
-import { Text } from "@/components/ui/text";
 import { Button } from "@/components/ui/button";
 import { Menu } from "@/components/ui/menu";
+import { Text } from "@/components/ui/text";
 
 type Tag = {
   id: number;
@@ -11,15 +11,15 @@ type Tag = {
 };
 
 type TagFilterProps = {
-  selectedTags: number[];
-  onTagsChange: (tagIds: number[]) => void;
-  onlyTagIds?: number[];
+  selectedTags: string[];
+  onTagsChange: (tags: string[]) => void;
+  onlyTags?: string[];
 };
 
 export const TagFilter = ({
   selectedTags,
   onTagsChange,
-  onlyTagIds,
+  onlyTags,
 }: TagFilterProps) => {
   const { data: tags = [] } = useQuery<Tag[]>({
     queryKey: ["tags"],
@@ -34,11 +34,11 @@ export const TagFilter = ({
     return null;
   }
 
-  const handleToggleTag = (tagId: number) => {
-    if (selectedTags.includes(tagId)) {
-      onTagsChange(selectedTags.filter((id) => id !== tagId));
+  const handleToggleTag = (tag: string) => {
+    if (selectedTags.includes(tag)) {
+      onTagsChange(selectedTags.filter((t) => t !== tag));
     } else {
-      onTagsChange([...selectedTags, tagId]);
+      onTagsChange([...selectedTags, tag]);
     }
   };
 
@@ -47,8 +47,8 @@ export const TagFilter = ({
   };
 
   const visibleTags =
-    onlyTagIds && onlyTagIds.length > 0
-      ? tags.filter((t) => onlyTagIds.includes(t.id))
+    onlyTags && onlyTags.length > 0
+      ? tags.filter((t) => onlyTags.includes(t.text))
       : tags;
 
   const getButtonLabel = () => {
@@ -81,10 +81,10 @@ export const TagFilter = ({
           >
             {visibleTags.map((tag) => (
               <Menu.CheckboxItem
-                key={tag.id}
-                value={tag.id.toString()}
-                checked={selectedTags.includes(tag.id)}
-                onCheckedChange={() => handleToggleTag(tag.id)}
+                key={tag.text}
+                value={tag.text}
+                checked={selectedTags.includes(tag.text)}
+                onCheckedChange={() => handleToggleTag(tag.text)}
               >
                 <Box
                   display="flex"
@@ -93,7 +93,7 @@ export const TagFilter = ({
                   width="100%"
                 >
                   <Text>{tag.text}</Text>
-                  {selectedTags.includes(tag.id) && <Check size={16} />}
+                  {selectedTags.includes(tag.text) && <Check size={16} />}
                 </Box>
               </Menu.CheckboxItem>
             ))}

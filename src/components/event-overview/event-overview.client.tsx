@@ -36,7 +36,7 @@ export const EventOverviewClient = ({
 }: Props & BoxProps) => {
   const [selectedDate, setSelectedDate] = useState(startOfDay(new Date()));
   const [selectedEventId, setSelectedEventId] = useState<number>();
-  const [selectedTags, setSelectedTags] = useState<number[]>([]);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   // separation of selectedEvent and isDrawerOpen, otherwise breaks exitAnim
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -57,8 +57,8 @@ export const EventOverviewClient = ({
       });
 
       if (selectedTags.length > 0) {
-        selectedTags.forEach((tagId) => {
-          searchParams.append("where[tags][in][]", tagId.toString());
+        selectedTags.forEach((tag) => {
+          searchParams.append("tags[]", tag);
         });
       }
 
