@@ -28,6 +28,7 @@ export interface Config {
     signups: Signup;
     tags: Tag;
     'user-notification-preferences': UserNotificationPreference;
+    announcements: Announcement;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -54,6 +55,7 @@ export interface Config {
     signups: SignupsSelect<false> | SignupsSelect<true>;
     tags: TagsSelect<false> | TagsSelect<true>;
     'user-notification-preferences': UserNotificationPreferencesSelect<false> | UserNotificationPreferencesSelect<true>;
+    announcements: AnnouncementsSelect<false> | AnnouncementsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -369,6 +371,31 @@ export interface UserNotificationPreference {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "announcements".
+ */
+export interface Announcement {
+  id: number;
+  title: string;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -405,6 +432,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'user-notification-preferences';
         value: number | UserNotificationPreference;
+      } | null)
+    | ({
+        relationTo: 'announcements';
+        value: number | Announcement;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -585,6 +616,16 @@ export interface UserNotificationPreferencesSelect<T extends boolean = true> {
   type?: T;
   channel?: T;
   preference?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "announcements_select".
+ */
+export interface AnnouncementsSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
   updatedAt?: T;
   createdAt?: T;
 }

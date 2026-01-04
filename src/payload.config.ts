@@ -6,6 +6,7 @@ import { nodemailerAdapter } from "@payloadcms/email-nodemailer";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { buildConfig, inMemoryKVAdapter } from "payload";
 import sharp from "sharp";
+import { Announcements } from "./collections/announcements";
 import { EventTemplates } from "./collections/event-templates";
 import { Events } from "./collections/events";
 import { Roles } from "./collections/roles";
@@ -103,6 +104,7 @@ export default buildConfig({
     Signups,
     Tags,
     UserNotificationPreferences,
+    Announcements,
   ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET ?? "",
