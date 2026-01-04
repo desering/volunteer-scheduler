@@ -1,0 +1,17 @@
+echo "Running pre-commit checks..."
+
+if ! bun check; then
+    echo ""
+    echo "X ERROR: Biome check failed!"
+    echo ""
+    echo "To fix the issues, run:"
+    echo "  bun lint:staged"
+    echo ""
+    echo "Then stage your changes and commit again:"
+    echo "  git add ."
+    echo "  git commit"
+    echo ""
+    exit 1
+fi
+
+echo "✓ All pre-commit checks passed."
