@@ -36,10 +36,6 @@ export const resetPassword = async (
   const password = formData.get("password") as string;
   const confirmPassword = formData.get("confirmPassword") as string;
 
-  console.log("token", token);
-  console.log("password", password);
-  console.log("confirmPassword", confirmPassword);
-
   const parse = schema.safeParse({ token, password, confirmPassword });
 
   if (!parse.success) {
