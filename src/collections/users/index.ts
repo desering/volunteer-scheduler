@@ -35,6 +35,7 @@ export const Users: CollectionConfig = {
           ResetPasswordEmail({ username: user.preferredName, token: token }),
         );
       },
+      generateEmailSubject: () => "Reset your password",
     },
   },
   fields: [
