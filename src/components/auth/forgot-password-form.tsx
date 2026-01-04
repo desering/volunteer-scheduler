@@ -1,16 +1,16 @@
 "use client";
 
-import { Field } from "../ui/field";
-import { vstack } from "styled-system/patterns";
-import { Alert } from "../ui/alert";
-import { AlertCircleIcon } from "lucide-react";
-import { Button } from "../ui/button";
-import { forgotPassword } from "../../actions/auth/forgot-password";
 import { useMutation } from "@tanstack/react-query";
+import { AlertCircleIcon } from "lucide-react";
+import { vstack } from "styled-system/patterns";
 import type {
-  ForgotPasswordSuccess,
   ForgotPasswordFailure,
+  ForgotPasswordSuccess,
 } from "../../actions/auth/forgot-password";
+import { forgotPassword } from "../../actions/auth/forgot-password";
+import { Alert } from "../ui/alert";
+import { Button } from "../ui/button";
+import { Field } from "../ui/field";
 
 export function ForgotPasswordForm() {
   const { mutate, isPending, error, data } = useMutation<
