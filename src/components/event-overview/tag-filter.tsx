@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { Check, ChevronDown } from "lucide-react";
 import { Box, Flex } from "styled-system/jsx";
-import { Badge } from "@/components/ui/badge";
+import { Text } from "@/components/ui/text";
 import { Button } from "@/components/ui/button";
 import { Menu } from "@/components/ui/menu";
 
@@ -92,7 +92,7 @@ export const TagFilter = ({
                   justifyContent="space-between"
                   width="100%"
                 >
-                  <Badge>{tag.text}</Badge>
+                  <Text>{tag.text}</Text>
                   {selectedTags.includes(tag.id) && <Check size={16} />}
                 </Box>
               </Menu.CheckboxItem>
