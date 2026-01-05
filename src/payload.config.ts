@@ -12,6 +12,7 @@ import { Roles } from "./collections/roles";
 import { Sections } from "./collections/sections";
 import { Signups } from "./collections/signups";
 import { Tags } from "./collections/tags";
+import { Locations } from "./collections/locations";
 import { UserNotificationPreferences } from "./collections/user-notification-preferences";
 import { Users } from "./collections/users";
 import { logger } from "./lib/logger";
@@ -102,6 +103,7 @@ export default buildConfig({
     Roles,
     Signups,
     Tags,
+    Locations,
     UserNotificationPreferences,
   ],
   editor: lexicalEditor(),
