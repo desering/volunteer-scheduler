@@ -465,6 +465,33 @@ export const user_notification_preferences = pgTable(
   ],
 );
 
+export const announcements = pgTable(
+  "announcements",
+  {
+    id: serial("id").primaryKey(),
+    title: varchar("title").notNull(),
+    description: jsonb("description"),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index("announcements_updated_at_idx").on(columns.updatedAt),
+    index("announcements_created_at_idx").on(columns.createdAt),
+  ],
+);
+
 export const payload_locked_documents = pgTable(
   "payload_locked_documents",
   {
@@ -509,6 +536,7 @@ export const payload_locked_documents_rels = pgTable(
     "user-notification-preferencesID": integer(
       "user_notification_preferences_id",
     ),
+    announcementsID: integer("announcements_id"),
   },
   (columns) => [
     index("payload_locked_documents_rels_order_idx").on(columns.order),
@@ -527,6 +555,9 @@ export const payload_locked_documents_rels = pgTable(
     index("payload_locked_documents_rels_tags_id_idx").on(columns.tagsID),
     index("payload_locked_documents_rels_user_notification_preferen_idx").on(
       columns["user-notification-preferencesID"],
+    ),
+    index("payload_locked_documents_rels_announcements_id_idx").on(
+      columns.announcementsID,
     ),
     foreignKey({
       columns: [columns["parent"]],
@@ -572,6 +603,11 @@ export const payload_locked_documents_rels = pgTable(
       columns: [columns["user-notification-preferencesID"]],
       foreignColumns: [user_notification_preferences.id],
       name: "payload_locked_documents_rels_user_notification_preferenc_fk",
+    }).onDelete("cascade"),
+    foreignKey({
+      columns: [columns["announcementsID"]],
+      foreignColumns: [announcements.id],
+      name: "payload_locked_documents_rels_announcements_fk",
     }).onDelete("cascade"),
   ],
 );
@@ -803,6 +839,7 @@ export const relations_user_notification_preferences = relations(
     }),
   }),
 );
+export const relations_announcements = relations(announcements, () => ({}));
 export const relations_payload_locked_documents_rels = relations(
   payload_locked_documents_rels,
   ({ one }) => ({
@@ -852,6 +889,11 @@ export const relations_payload_locked_documents_rels = relations(
       ],
       references: [user_notification_preferences.id],
       relationName: "user-notification-preferences",
+    }),
+    announcementsID: one(announcements, {
+      fields: [payload_locked_documents_rels.announcementsID],
+      references: [announcements.id],
+      relationName: "announcements",
     }),
   }),
 );
@@ -908,6 +950,7 @@ type DatabaseSchema = {
   signups: typeof signups;
   tags: typeof tags;
   user_notification_preferences: typeof user_notification_preferences;
+  announcements: typeof announcements;
   payload_locked_documents: typeof payload_locked_documents;
   payload_locked_documents_rels: typeof payload_locked_documents_rels;
   payload_preferences: typeof payload_preferences;
@@ -927,6 +970,7 @@ type DatabaseSchema = {
   relations_signups: typeof relations_signups;
   relations_tags: typeof relations_tags;
   relations_user_notification_preferences: typeof relations_user_notification_preferences;
+  relations_announcements: typeof relations_announcements;
   relations_payload_locked_documents_rels: typeof relations_payload_locked_documents_rels;
   relations_payload_locked_documents: typeof relations_payload_locked_documents;
   relations_payload_preferences_rels: typeof relations_payload_preferences_rels;

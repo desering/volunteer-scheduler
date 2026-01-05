@@ -4,6 +4,7 @@ import * as migration_20250402_113720_timezones_in_event_template from './202504
 import * as migration_20251027_155038_payload_version_migration from './20251027_155038_payload_version_migration';
 import * as migration_20251116_184923_add_tags_collection from './20251116_184923_add_tags_collection';
 import * as migration_20251220_014719_add_user_notification_preferences_collection from './20251220_014719_add_user_notification_preferences_collection';
+import * as migration_20260105_132536 from './20260105_132536';
 
 export const migrations = [
   {
@@ -35,5 +36,10 @@ export const migrations = [
     up: migration_20251220_014719_add_user_notification_preferences_collection.up,
     down: migration_20251220_014719_add_user_notification_preferences_collection.down,
     name: '20251220_014719_add_user_notification_preferences_collection',
+  },
+  {
+    up: migration_20260105_132536.up,
+    down: migration_20260105_132536.down,
+    name: '20260105_132536'
   },
 ];

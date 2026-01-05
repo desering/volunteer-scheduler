@@ -1,7 +1,7 @@
 "use server";
 
-import { unstable_noStore as noStore } from "next/cache";
 import config from "@payload-config";
+import { unstable_noStore as noStore } from "next/cache";
 import { getPayload } from "payload";
 
 export const getActiveAnnouncement = async () => {

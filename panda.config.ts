@@ -1,12 +1,12 @@
 import { defineConfig, defineGlobalStyles } from "@pandacss/dev";
 import { createPreset } from "@park-ui/panda-preset";
-import olive from "@park-ui/panda-preset/colors/olive";
-import sand from "@park-ui/panda-preset/colors/sand";
-import tomato from "@park-ui/panda-preset/colors/tomato";
 import blue from "@park-ui/panda-preset/colors/blue";
 import green from "@park-ui/panda-preset/colors/green";
+import olive from "@park-ui/panda-preset/colors/olive";
 import orange from "@park-ui/panda-preset/colors/orange";
 import red from "@park-ui/panda-preset/colors/red";
+import sand from "@park-ui/panda-preset/colors/sand";
+import tomato from "@park-ui/panda-preset/colors/tomato";
 import { alert } from "@/components/ui/recipes/alert";
 import { dialog } from "@/components/ui/recipes/dialog";
 import { icon } from "@/components/ui/recipes/icon";

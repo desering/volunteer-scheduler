@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode } from "react";
+import type { ReactNode } from "react";
 import * as Alert from "@/components/ui/styled/alert";
 import { CloseButton } from "@/components/ui/styled/close-button";
 
