@@ -1,4 +1,5 @@
 import { RichText } from "@payloadcms/richtext-lexical/react";
+import { css } from "styled-system/css";
 import * as Alert from "@/components/ui/styled/alert";
 import type { getActiveAnnouncement } from "@/lib/services/get-active-announcement";
 
@@ -24,7 +25,13 @@ export const AnnouncementBannerContent = ({
         {announcement.title}
       </Alert.Title>
       {announcement.description && (
-        <Alert.Description>
+        <Alert.Description
+          className={css({
+            "& a": {
+              textDecoration: "underline",
+            },
+          })}
+        >
           <RichText data={announcement.description} />
         </Alert.Description>
       )}
