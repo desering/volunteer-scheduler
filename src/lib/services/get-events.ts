@@ -3,7 +3,7 @@
 import { utc } from "@date-fns/utc";
 import config from "@payload-config";
 import { startOfDay } from "date-fns";
-import { getPayload, type WhereField } from "payload";
+import { getPayload, type Where, type WhereField } from "payload";
 
 type GetEventsOptions = {
   minDate?: Date;
