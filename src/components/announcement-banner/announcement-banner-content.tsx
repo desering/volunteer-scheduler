@@ -1,5 +1,5 @@
 import { RichText } from "@payloadcms/richtext-lexical/react";
-import { Alert } from "@/components/ui";
+import * as Alert from "@/components/ui/styled/alert";
 import type { getActiveAnnouncement } from "@/lib/services/get-active-announcement";
 
 type AnnouncementBannerContentProps = {
@@ -15,12 +15,14 @@ export const AnnouncementBannerContent = ({
 
   return (
     <>
-    {/* <Alert.Title>{announcement.title}</Alert.Title> <-- revert to OG Park UI styling */}
-
-    <Alert.Title fontSize="xl" fontWeight="bold" lineHeight="short" marginBottom="2">
-      {announcement.title}
-    </Alert.Title>
-
+      <Alert.Title
+        fontSize="xl"
+        fontWeight="bold"
+        lineHeight="short"
+        marginBottom="2"
+      >
+        {announcement.title}
+      </Alert.Title>
       {announcement.description && (
         <Alert.Description>
           <RichText data={announcement.description} />

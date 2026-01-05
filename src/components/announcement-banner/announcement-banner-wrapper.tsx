@@ -1,7 +1,8 @@
 "use client";
 
 import { type ReactNode } from "react";
-import { Alert, CloseButton } from "@/components/ui";
+import * as Alert from "@/components/ui/styled/alert";
+import { CloseButton } from "@/components/ui/styled/close-button";
 
 type AlertStatus = "neutral" | "info" | "warning" | "error" | "success";
 
