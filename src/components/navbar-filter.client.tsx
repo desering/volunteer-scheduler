@@ -34,14 +34,18 @@ export const NavbarFilterClient = () => {
     const locations = searchParams.getAll("locations[]");
     if (tags.length > 0) setSelectedTags(tags);
     if (locations.length > 0) setSelectedLocations(locations);
-  }, []);
+  }, [searchParams.getAll]);
 
   // Update URL when selections change
   const updateURL = useCallback(
     (tags: string[], locations: string[]) => {
       const params = new URLSearchParams();
-      tags.forEach((tag) => params.append("tags[]", tag));
-      locations.forEach((loc) => params.append("locations[]", loc));
+      for (const tag of tags) {
+        params.append("tags[]", tag);
+      }
+      for (const loc of locations) {
+        params.append("locations[]", loc);
+      }
       router.push(`${pathname}?${params.toString()}`, { scroll: false });
     },
     [pathname, router],
@@ -104,7 +108,10 @@ export const NavbarFilterClient = () => {
   }
 
   return (
-    <Menu.Root closeOnSelect={false} positioning={{ placement: "bottom-start" }}>
+    <Menu.Root
+      closeOnSelect={false}
+      positioning={{ placement: "bottom-start" }}
+    >
       <Menu.Trigger asChild data-menu-trigger>
         <Button variant="outline">
           <HStack gap="2">
@@ -117,69 +124,67 @@ export const NavbarFilterClient = () => {
         <Menu.Positioner>
           <Menu.Content minWidth="64" maxWidth="250px" zIndex="9999">
             {tags.length > 0 && (
-              <>
-                <Menu.ItemGroup>
-                  <Menu.ItemGroupLabel fontWeight="bold">
-                    <HStack gap="2">
-                      <TagIcon size={16} style={{ color: '#9ca3af' }} />
-                      Tags
-                    </HStack>
-                  </Menu.ItemGroupLabel>
-                  {tags.map((tag) => (
-                    <Menu.CheckboxItem
-                      key={tag.text}
-                      value={tag.text}
-                      checked={selectedTags.includes(tag.text)}
-                      onCheckedChange={() => handleToggleTag(tag.text)}
+              <Menu.ItemGroup>
+                <Menu.ItemGroupLabel fontWeight="bold">
+                  <HStack gap="2">
+                    <TagIcon size={16} style={{ color: "#9ca3af" }} />
+                    Tags
+                  </HStack>
+                </Menu.ItemGroupLabel>
+                {tags.map((tag) => (
+                  <Menu.CheckboxItem
+                    key={tag.text}
+                    value={tag.text}
+                    checked={selectedTags.includes(tag.text)}
+                    onCheckedChange={() => handleToggleTag(tag.text)}
+                  >
+                    <Box
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="space-between"
+                      width="100%"
                     >
-                      <Box
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="space-between"
-                        width="100%"
-                      >
-                        <Text>{tag.text}</Text>
-                        {selectedTags.includes(tag.text) && <Check size={16} />}
-                      </Box>
-                    </Menu.CheckboxItem>
-                  ))}
-                </Menu.ItemGroup>
-              </>
+                      <Text>{tag.text}</Text>
+                      {selectedTags.includes(tag.text) && <Check size={16} />}
+                    </Box>
+                  </Menu.CheckboxItem>
+                ))}
+              </Menu.ItemGroup>
             )}
 
-            {tags.length > 0 && locations.length > 0 && <Menu.Separator borderColor="border.default" />}
+            {tags.length > 0 && locations.length > 0 && (
+              <Menu.Separator borderColor="border.default" />
+            )}
 
             {locations.length > 0 && (
-              <>
-                <Menu.ItemGroup>
-                  <Menu.ItemGroupLabel fontWeight="bold">
-                    <HStack gap="2">
-                      <MapPinIcon size={16} style={{ color: '#9ca3af' }} />
-                      Locations
-                    </HStack>
-                  </Menu.ItemGroupLabel>
-                  {locations.map((location) => (
-                    <Menu.CheckboxItem
-                      key={location.text}
-                      value={location.text}
-                      checked={selectedLocations.includes(location.text)}
-                      onCheckedChange={() => handleToggleLocation(location.text)}
+              <Menu.ItemGroup>
+                <Menu.ItemGroupLabel fontWeight="bold">
+                  <HStack gap="2">
+                    <MapPinIcon size={16} style={{ color: "#9ca3af" }} />
+                    Locations
+                  </HStack>
+                </Menu.ItemGroupLabel>
+                {locations.map((location) => (
+                  <Menu.CheckboxItem
+                    key={location.text}
+                    value={location.text}
+                    checked={selectedLocations.includes(location.text)}
+                    onCheckedChange={() => handleToggleLocation(location.text)}
+                  >
+                    <Box
+                      display="flex"
+                      alignItems="center"
+                      justifyContent="space-between"
+                      width="100%"
                     >
-                      <Box
-                        display="flex"
-                        alignItems="center"
-                        justifyContent="space-between"
-                        width="100%"
-                      >
-                        <Text>{location.text}</Text>
-                        {selectedLocations.includes(location.text) && (
-                          <Check size={16} />
-                        )}
-                      </Box>
-                    </Menu.CheckboxItem>
-                  ))}
-                </Menu.ItemGroup>
-              </>
+                      <Text>{location.text}</Text>
+                      {selectedLocations.includes(location.text) && (
+                        <Check size={16} />
+                      )}
+                    </Box>
+                  </Menu.CheckboxItem>
+                ))}
+              </Menu.ItemGroup>
             )}
 
             <Menu.Separator borderColor="border.default" />

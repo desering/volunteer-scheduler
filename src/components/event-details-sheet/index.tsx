@@ -197,8 +197,12 @@ export const EventDetailsDrawer = (props: Props) => {
                   <Badge>{timeRange}</Badge>
                 </Sheet.Description>
                 <Sheet.Description>
-                  {((details?.tags && Array.isArray(details.tags) && details.tags.length > 0) ||
-                    (details?.locations && Array.isArray(details.locations) && details.locations.length > 0)) && (
+                  {((details?.tags &&
+                    Array.isArray(details.tags) &&
+                    details.tags.length > 0) ||
+                    (details?.locations &&
+                      Array.isArray(details.locations) &&
+                      details.locations.length > 0)) && (
                     <HStack gap="2" marginY="2" flexWrap="wrap">
                       {details?.tags?.map((tag) =>
                         typeof tag === "object" && tag !== null ? (

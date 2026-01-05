@@ -148,8 +148,12 @@ export const EventOverviewClient = ({
                   endDate={event.end_date}
                 />
                 <EventButton.Title>{event.title}</EventButton.Title>
-                {((event.tags && Array.isArray(event.tags) && event.tags.length > 0) ||
-                  (event.locations && Array.isArray(event.locations) && event.locations.length > 0)) && (
+                {((event.tags &&
+                  Array.isArray(event.tags) &&
+                  event.tags.length > 0) ||
+                  (event.locations &&
+                    Array.isArray(event.locations) &&
+                    event.locations.length > 0)) && (
                   <Box display="flex" gap="2" marginY="2" flexWrap="wrap">
                     {event.tags?.map((tag) =>
                       typeof tag === "object" && tag !== null ? (

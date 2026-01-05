@@ -23,8 +23,8 @@ export const getEvents = async (params?: GetEventsOptions) => {
     ...(maxDate && { less_than_equal: maxDate.toISOString() }),
   };
 
-  const where: any = { start_date: startDateFilter };
-  const andConditions: any[] = [];
+  const where: Where = { start_date: startDateFilter };
+  const andConditions: Where[] = [];
 
   // Process tags filter
   if (params?.tags && params.tags.length > 0) {

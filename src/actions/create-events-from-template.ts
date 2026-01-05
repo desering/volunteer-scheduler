@@ -118,7 +118,9 @@ const eventTemplateToEvent = (template: EventTemplate, day: UTCDate) => {
     : undefined;
 
   const locationIds = template.locations
-    ? template.locations.map((location) => (typeof location === "object" ? location.id : location))
+    ? template.locations.map((location) =>
+        typeof location === "object" ? location.id : location,
+      )
     : undefined;
 
   return {
