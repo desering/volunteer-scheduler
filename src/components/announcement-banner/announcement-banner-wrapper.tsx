@@ -1,6 +1,6 @@
 "use client";
 
-import { type ReactNode, useState } from "react";
+import { type ReactNode } from "react";
 import { Alert, CloseButton } from "@/components/ui";
 
 type AlertStatus = "neutral" | "info" | "warning" | "error" | "success";
@@ -8,6 +8,7 @@ type AlertStatus = "neutral" | "info" | "warning" | "error" | "success";
 type AnnouncementBannerWrapperProps = {
   children: ReactNode;
   status?: AlertStatus;
+  onDismiss: () => void;
 };
 
 const statusToColorPalette: Record<AlertStatus, string> = {
@@ -21,13 +22,8 @@ const statusToColorPalette: Record<AlertStatus, string> = {
 export const AnnouncementBannerWrapper = ({
   children,
   status = "warning",
+  onDismiss,
 }: AnnouncementBannerWrapperProps) => {
-  const [isDismissed, setIsDismissed] = useState(false);
-
-  if (isDismissed) {
-    return null;
-  }
-
   const colorPalette = statusToColorPalette[status];
 
   return (
@@ -36,11 +32,11 @@ export const AnnouncementBannerWrapper = ({
       <Alert.Content>{children}</Alert.Content>
       <CloseButton
         pos="relative"
-        top="-2"
-        insetEnd="-2"
+        top="1"
+        insetEnd="1"
         colorPalette={colorPalette}
         size="sm"
-        onClick={() => setIsDismissed(true)}
+        onClick={onDismiss}
         aria-label="Dismiss announcement"
       />
     </Alert.Root>

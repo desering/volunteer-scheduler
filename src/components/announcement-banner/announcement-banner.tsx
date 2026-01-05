@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import { Container } from "styled-system/jsx";
 import type { getActiveAnnouncement } from "@/lib/services/get-active-announcement";
 import { AnnouncementBannerContent } from "./announcement-banner-content";
@@ -10,13 +13,15 @@ type AnnouncementBannerProps = {
 export const AnnouncementBanner = ({
   announcement,
 }: AnnouncementBannerProps) => {
-  if (!announcement) {
+  const [isDismissed, setIsDismissed] = useState(false);
+
+  if (!announcement || isDismissed) {
     return null;
   }
 
   return (
     <Container width="100%" marginTop="4">
-      <AnnouncementBannerWrapper>
+      <AnnouncementBannerWrapper onDismiss={() => setIsDismissed(true)}>
         <AnnouncementBannerContent announcement={announcement} />
       </AnnouncementBannerWrapper>
     </Container>
