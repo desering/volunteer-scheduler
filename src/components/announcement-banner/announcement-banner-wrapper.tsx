@@ -17,7 +17,7 @@ export const AnnouncementBannerWrapper = ({
   }
 
   return (
-    <Alert.Root status="neutral" variant="subtle">
+    <Alert.Root status="error" variant="subtle">
       <Alert.Indicator />
       <Alert.Content>{children}</Alert.Content>
       <CloseButton
