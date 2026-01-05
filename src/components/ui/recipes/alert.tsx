@@ -10,6 +10,7 @@ export const alert = defineSlotRecipe({
       display: "flex",
       position: "relative",
       width: "full",
+      borderWidth: "0",
     },
     content: {
       display: "flex",
@@ -19,15 +20,18 @@ export const alert = defineSlotRecipe({
     },
     description: {
       display: "inline",
+      color: "colorPalette.text",
     },
     indicator: {
       display: "inline-flex",
       alignItems: "center",
       justifyContent: "center",
       flexShrink: "0",
+      color: "colorPalette.text",
     },
     title: {
       fontWeight: "semibold",
+      color: "colorPalette.text",
     },
   },
   defaultVariants: {
@@ -67,29 +71,29 @@ export const alert = defineSlotRecipe({
     variant: {
       solid: {
         root: {
-          bg: "colorPalette.solid.bg",
-          color: "colorPalette.solid.fg",
+          bg: "colorPalette.default",
+          color: "white",
         },
       },
       surface: {
         root: {
-          bg: "colorPalette.surface.bg",
+          bg: "colorPalette.a3",
           borderWidth: "1px",
-          borderColor: "colorPalette.surface.border",
-          color: "colorPalette.surface.fg",
+          borderColor: "colorPalette.a6",
+          color: "colorPalette.text",
         },
       },
       subtle: {
         root: {
-          bg: "colorPalette.subtle.bg",
-          color: "colorPalette.subtle.fg",
+          bg: "colorPalette.a3",
+          color: "colorPalette.text",
         },
       },
       outline: {
         root: {
           borderWidth: "1px",
-          borderColor: "colorPalette.outline.border",
-          color: "colorPalette.outline.fg",
+          borderColor: "colorPalette.a6",
+          color: "colorPalette.text",
         },
       },
     },
@@ -106,7 +110,9 @@ export const alert = defineSlotRecipe({
       error: {
         root: { colorPalette: "red" },
       },
-      neutral: {},
+      neutral: {
+        root: { colorPalette: "gray" },
+      },
     },
   },
 });

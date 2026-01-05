@@ -1,7 +1,5 @@
 import { RichText } from "@payloadcms/richtext-lexical/react";
-import { css } from "styled-system/css";
-import { Box } from "styled-system/jsx";
-import { Alert } from "@/components/ui/alert";
+import { Alert } from "@/components/ui";
 import type { getActiveAnnouncement } from "@/lib/services/get-active-announcement";
 
 type AnnouncementBannerContentProps = {
@@ -16,31 +14,18 @@ export const AnnouncementBannerContent = ({
   }
 
   return (
-    <Box flex="1">
-      <Alert.Title
-        className={css({
-          fontSize: "xl",
-          fontWeight: "bold",
-        })}
-      >
-        {announcement.title}
-      </Alert.Title>
+    <>
+    {/* <Alert.Title>{announcement.title}</Alert.Title> <-- revert to OG Park UI styling */}
+
+    <Alert.Title fontSize="xl" fontWeight="bold" lineHeight="short" marginBottom="2">
+      {announcement.title}
+    </Alert.Title>
+
       {announcement.description && (
-        <Alert.Description
-          className={css({
-            "& a": {
-              textDecoration: "underline",
-              color: "colorPalette.text",
-              fontWeight: "medium",
-              _hover: {
-                color: "colorPalette.emphasized",
-              },
-            },
-          })}
-        >
+        <Alert.Description>
           <RichText data={announcement.description} />
         </Alert.Description>
       )}
-    </Box>
+    </>
   );
 };

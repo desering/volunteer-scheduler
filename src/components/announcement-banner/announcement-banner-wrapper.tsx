@@ -1,9 +1,7 @@
 "use client";
 
 import { type ReactNode, useState } from "react";
-import { HStack } from "styled-system/jsx";
-import { Alert } from "@/components/ui/alert";
-import { CloseButton } from "@/components/ui/styled/close-button";
+import { Alert, CloseButton } from "@/components/ui";
 
 type AnnouncementBannerWrapperProps = {
   children: ReactNode;
@@ -19,18 +17,17 @@ export const AnnouncementBannerWrapper = ({
   }
 
   return (
-    <Alert.Root status="info" variant="subtle">
-      <Alert.Content>
-        <HStack gap="2" alignItems="flex-start">
-          <span style={{ fontSize: "1.5rem" }}>📌</span>
-          {children}
-          <CloseButton
-            size="sm"
-            onClick={() => setIsDismissed(true)}
-            aria-label="Dismiss announcement"
-          />
-        </HStack>
-      </Alert.Content>
+    <Alert.Root status="neutral" variant="subtle">
+      <Alert.Indicator />
+      <Alert.Content>{children}</Alert.Content>
+      <CloseButton
+        pos="relative"
+        top="-2"
+        insetEnd="-2"
+        size="sm"
+        onClick={() => setIsDismissed(true)}
+        aria-label="Dismiss announcement"
+      />
     </Alert.Root>
   );
 };
