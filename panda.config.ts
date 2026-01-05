@@ -3,6 +3,10 @@ import { createPreset } from "@park-ui/panda-preset";
 import olive from "@park-ui/panda-preset/colors/olive";
 import sand from "@park-ui/panda-preset/colors/sand";
 import tomato from "@park-ui/panda-preset/colors/tomato";
+import blue from "@park-ui/panda-preset/colors/blue";
+import green from "@park-ui/panda-preset/colors/green";
+import orange from "@park-ui/panda-preset/colors/orange";
+import red from "@park-ui/panda-preset/colors/red";
 import { alert } from "@/components/ui/recipes/alert";
 import { dialog } from "@/components/ui/recipes/dialog";
 import { icon } from "@/components/ui/recipes/icon";
@@ -62,11 +66,19 @@ export default defineConfig({
         },
         colors: {
           tomato: tomato.tokens,
+          blue: blue.tokens,
+          green: green.tokens,
+          orange: orange.tokens,
+          red: red.tokens,
         },
       },
       semanticTokens: {
         colors: {
           tomato: tomato.semanticTokens,
+          blue: blue.semanticTokens,
+          green: green.semanticTokens,
+          orange: orange.semanticTokens,
+          red: red.semanticTokens,
         },
       },
       recipes: { icon },

@@ -1,9 +1,12 @@
 "use server";
 
+import { unstable_noStore as noStore } from "next/cache";
 import config from "@payload-config";
 import { getPayload } from "payload";
 
 export const getActiveAnnouncement = async () => {
+  noStore(); // Disable caching for this function
+
   const payload = await getPayload({ config });
 
   const result = await payload.find({
