@@ -1,6 +1,6 @@
 echo "Running pre-commit checks..."
 
-if ! bun check; then
+if ! bun check:staged; then
     echo ""
     echo "X ERROR: Biome check failed!"
     echo ""
