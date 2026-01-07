@@ -60,7 +60,6 @@ export function ResetPasswordForm({ token }: ResetPasswordFormProps) {
       className={vstack({ alignItems: "stretch", gap: "4" })}
       onSubmit={handleSubmit}
     >
-      {/* Error alert -> only show for payload/server errors (formErrors) */}
       {error && error.errors.formErrors?.length > 0 && (
         <Alert.Root>
           <Alert.Content>

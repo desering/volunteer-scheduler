@@ -37,7 +37,6 @@ export function ForgotPasswordForm() {
       className={vstack({ alignItems: "stretch", gap: "4" })}
       onSubmit={handleSubmit}
     >
-      {/* Error alert */}
       {error && (
         <Alert.Root>
           <Alert.Indicator />
@@ -52,7 +51,6 @@ export function ForgotPasswordForm() {
         </Alert.Root>
       )}
 
-      {/* Success alert */}
       {data && (
         <Alert.Root>
           <Alert.Content>
