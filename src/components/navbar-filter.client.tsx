@@ -97,10 +97,9 @@ export const NavbarFilterClient = () => {
     if (totalSelected === 0) {
       return "Filter";
     }
-    if (totalSelected === 1) {
-      return "1 filter";
-    }
-    return `${totalSelected} filters`;
+    const pluralRules = new Intl.PluralRules("en-US");
+    const rule = pluralRules.select(totalSelected);
+    return `${totalSelected} filter${rule === "one" ? "" : "s"}`;
   };
 
   if (tags.length === 0 && locations.length === 0) {

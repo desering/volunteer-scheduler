@@ -7,6 +7,10 @@ export const GET = async () => {
   const locations = await payload.find({
     collection: "locations",
     pagination: false,
+    select: {
+      id: true,
+      text: true,
+    },
   });
 
   return Response.json(locations);
