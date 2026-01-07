@@ -39,14 +39,12 @@ export default async function Page() {
 
           <SignInForm />
 
-          <panda.div textAlign="center" marginY="10px">
-            <VStack gap={0}>
-              Don't have an account yet?
-              <Link href="/auth/register" className={link()}>
-                Become a volunteer
-              </Link>
-            </VStack>
-          </panda.div>
+          <VStack textAlign="center" marginY="10px" gap={0}>
+            Don't have an account yet?
+            <Link href="/auth/register" className={link()}>
+              Become a volunteer
+            </Link>
+          </VStack>
         </Grid>
       </Container>
     </Box>
