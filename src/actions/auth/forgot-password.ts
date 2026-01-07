@@ -3,6 +3,7 @@
 import config from "@payload-config";
 import { getPayload } from "payload";
 import { z } from "zod";
+import { logger } from "@/lib/logger";
 
 const schema = z.object({
   email: z.email(),
@@ -46,12 +47,11 @@ export const forgotPassword = async (
       data,
     });
   } catch (error) {
+    logger.error({ error }, "Error sending reset password email");
     return {
       success: false,
       errors: {
-        formErrors: [
-          `Failed to send reset password email: ${error instanceof Error ? error.message : "Unknown error"}`,
-        ],
+        formErrors: [`Failed to send reset password email`],
         fieldErrors: {},
       },
     };
