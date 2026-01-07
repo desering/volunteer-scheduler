@@ -66,7 +66,7 @@ export function ForgotPasswordForm() {
       </Field.Root>
 
       <Button type="submit" variant="solid" loading={isPending}>
-        {isPending ? "Sending reset link..." : "Send reset link"}
+        {isPending ? "Sending reset link..." : "Reset password"}
       </Button>
     </form>
   );
