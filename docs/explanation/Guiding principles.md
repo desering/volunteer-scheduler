@@ -2,7 +2,7 @@
 
 ## Social
 
-1. Enabling De Sering and community growth
+1. Enabling growth of the community around De Sering
 2. Enabling contributions of community members to this project
 
 ## Technical
