@@ -35,20 +35,17 @@ export const sendConfirmationEmail: CollectionAfterChangeHook<Signup> = async ({
       ? await payload.findByID({ collection: "users", id: doc.user })
       : doc.user;
 
-  const eventSignupEmailPreference = await payload.find({
+  const eventSignupEmailPreference = await payload.count({
     collection: "user-notification-preferences",
     where: {
       user: { equals: user.id },
       type: { equals: notificationTypes.EVENT_SIGNUP },
       channel: { equals: notificationChannels.EMAIL },
+      preference: { equals: true },
     },
   });
 
-  if (
-    !event ||
-    eventSignupEmailPreference.docs.length === 0 ||
-    eventSignupEmailPreference.docs[0].preference !== true
-  ) {
+  if (!event || eventSignupEmailPreference.totalDocs === 0) {
     return doc;
   }
 
