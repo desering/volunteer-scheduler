@@ -46,8 +46,8 @@ export const sendConfirmationEmail: CollectionAfterChangeHook<Signup> = async ({
 
   if (
     !event ||
-    (eventSignupEmailPreference.docs.length > 0 &&
-      eventSignupEmailPreference.docs[0].preference !== true)
+    eventSignupEmailPreference.docs.length == 0 ||
+    eventSignupEmailPreference.docs[0].preference !== true
   ) {
     return doc;
   }
