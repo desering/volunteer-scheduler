@@ -23,4 +23,6 @@ https://sosmediterranee.giveety.org/fr
 
 https://www.teamup.com/
 
+Teamup trial for De Sering: https://teamup.com/ksh32rdsnubdz79sf3
+
 ## ???
