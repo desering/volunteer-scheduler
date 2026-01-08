@@ -14,31 +14,30 @@ import {
   foreignKey,
   serial,
   varchar,
+  jsonb,
   timestamp,
   integer,
-  jsonb,
   numeric,
   boolean,
   pgEnum,
 } from "@payloadcms/db-postgres/drizzle/pg-core";
 import { sql, relations } from "@payloadcms/db-postgres/drizzle";
+export const enum_event_templates_start_time_tz = pgEnum(
+  "enum_event_templates_start_time_tz",
+  ["Europe/Amsterdam"],
+);
 export const enum_users_roles = pgEnum("enum_users_roles", [
   "admin",
   "editor",
   "volunteer",
 ]);
-export const enum_event_templates_start_time_tz = pgEnum(
-  "enum_event_templates_start_time_tz",
-  ["Europe/Amsterdam"],
-);
 
-export const users = pgTable(
-  "users",
+export const announcements = pgTable(
+  "announcements",
   {
     id: serial("id").primaryKey(),
-    preferredName: varchar("preferred_name").notNull(),
-    phoneNumber: varchar("phone_number"),
-    roles: enum_users_roles("roles"),
+    title: varchar("title").notNull(),
+    description: jsonb("description"),
     updatedAt: timestamp("updated_at", {
       mode: "string",
       withTimezone: true,
@@ -53,20 +52,10 @@ export const users = pgTable(
     })
       .defaultNow()
       .notNull(),
-    email: varchar("email").notNull(),
-    resetPasswordToken: varchar("reset_password_token"),
-    resetPasswordExpiration: timestamp("reset_password_expiration", {
-      mode: "string",
-      withTimezone: true,
-      precision: 3,
-    }),
-    salt: varchar("salt"),
-    hash: varchar("hash"),
   },
   (columns) => [
-    index("users_updated_at_idx").on(columns.updatedAt),
-    index("users_created_at_idx").on(columns.createdAt),
-    uniqueIndex("users_email_idx").on(columns.email),
+    index("announcements_updated_at_idx").on(columns.updatedAt),
+    index("announcements_created_at_idx").on(columns.createdAt),
   ],
 );
 
@@ -289,39 +278,6 @@ export const events_rels = pgTable(
   ],
 );
 
-export const sections = pgTable(
-  "sections",
-  {
-    id: serial("id").primaryKey(),
-    event: integer("event_id")
-      .notNull()
-      .references(() => events.id, {
-        onDelete: "set null",
-      }),
-    title: varchar("title").notNull(),
-    description: jsonb("description"),
-    updatedAt: timestamp("updated_at", {
-      mode: "string",
-      withTimezone: true,
-      precision: 3,
-    })
-      .defaultNow()
-      .notNull(),
-    createdAt: timestamp("created_at", {
-      mode: "string",
-      withTimezone: true,
-      precision: 3,
-    })
-      .defaultNow()
-      .notNull(),
-  },
-  (columns) => [
-    index("sections_event_idx").on(columns.event),
-    index("sections_updated_at_idx").on(columns.updatedAt),
-    index("sections_created_at_idx").on(columns.createdAt),
-  ],
-);
-
 export const roles = pgTable(
   "roles",
   {
@@ -355,6 +311,39 @@ export const roles = pgTable(
     index("roles_section_idx").on(columns.section),
     index("roles_updated_at_idx").on(columns.updatedAt),
     index("roles_created_at_idx").on(columns.createdAt),
+  ],
+);
+
+export const sections = pgTable(
+  "sections",
+  {
+    id: serial("id").primaryKey(),
+    event: integer("event_id")
+      .notNull()
+      .references(() => events.id, {
+        onDelete: "set null",
+      }),
+    title: varchar("title").notNull(),
+    description: jsonb("description"),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index("sections_event_idx").on(columns.event),
+    index("sections_updated_at_idx").on(columns.updatedAt),
+    index("sections_created_at_idx").on(columns.createdAt),
   ],
 );
 
@@ -465,12 +454,13 @@ export const user_notification_preferences = pgTable(
   ],
 );
 
-export const announcements = pgTable(
-  "announcements",
+export const users = pgTable(
+  "users",
   {
     id: serial("id").primaryKey(),
-    title: varchar("title").notNull(),
-    description: jsonb("description"),
+    preferredName: varchar("preferred_name").notNull(),
+    phoneNumber: varchar("phone_number"),
+    roles: enum_users_roles("roles"),
     updatedAt: timestamp("updated_at", {
       mode: "string",
       withTimezone: true,
@@ -485,10 +475,20 @@ export const announcements = pgTable(
     })
       .defaultNow()
       .notNull(),
+    email: varchar("email").notNull(),
+    resetPasswordToken: varchar("reset_password_token"),
+    resetPasswordExpiration: timestamp("reset_password_expiration", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    }),
+    salt: varchar("salt"),
+    hash: varchar("hash"),
   },
   (columns) => [
-    index("announcements_updated_at_idx").on(columns.updatedAt),
-    index("announcements_created_at_idx").on(columns.createdAt),
+    index("users_updated_at_idx").on(columns.updatedAt),
+    index("users_created_at_idx").on(columns.createdAt),
+    uniqueIndex("users_email_idx").on(columns.email),
   ],
 );
 
@@ -526,48 +526,48 @@ export const payload_locked_documents_rels = pgTable(
     order: integer("order"),
     parent: integer("parent_id").notNull(),
     path: varchar("path").notNull(),
-    usersID: integer("users_id"),
+    announcementsID: integer("announcements_id"),
     "event-templatesID": integer("event_templates_id"),
     eventsID: integer("events_id"),
-    sectionsID: integer("sections_id"),
     rolesID: integer("roles_id"),
+    sectionsID: integer("sections_id"),
     signupsID: integer("signups_id"),
     tagsID: integer("tags_id"),
     "user-notification-preferencesID": integer(
       "user_notification_preferences_id",
     ),
-    announcementsID: integer("announcements_id"),
+    usersID: integer("users_id"),
   },
   (columns) => [
     index("payload_locked_documents_rels_order_idx").on(columns.order),
     index("payload_locked_documents_rels_parent_idx").on(columns.parent),
     index("payload_locked_documents_rels_path_idx").on(columns.path),
-    index("payload_locked_documents_rels_users_id_idx").on(columns.usersID),
+    index("payload_locked_documents_rels_announcements_id_idx").on(
+      columns.announcementsID,
+    ),
     index("payload_locked_documents_rels_event_templates_id_idx").on(
       columns["event-templatesID"],
     ),
     index("payload_locked_documents_rels_events_id_idx").on(columns.eventsID),
+    index("payload_locked_documents_rels_roles_id_idx").on(columns.rolesID),
     index("payload_locked_documents_rels_sections_id_idx").on(
       columns.sectionsID,
     ),
-    index("payload_locked_documents_rels_roles_id_idx").on(columns.rolesID),
     index("payload_locked_documents_rels_signups_id_idx").on(columns.signupsID),
     index("payload_locked_documents_rels_tags_id_idx").on(columns.tagsID),
     index("payload_locked_documents_rels_user_notification_preferen_idx").on(
       columns["user-notification-preferencesID"],
     ),
-    index("payload_locked_documents_rels_announcements_id_idx").on(
-      columns.announcementsID,
-    ),
+    index("payload_locked_documents_rels_users_id_idx").on(columns.usersID),
     foreignKey({
       columns: [columns["parent"]],
       foreignColumns: [payload_locked_documents.id],
       name: "payload_locked_documents_rels_parent_fk",
     }).onDelete("cascade"),
     foreignKey({
-      columns: [columns["usersID"]],
-      foreignColumns: [users.id],
-      name: "payload_locked_documents_rels_users_fk",
+      columns: [columns["announcementsID"]],
+      foreignColumns: [announcements.id],
+      name: "payload_locked_documents_rels_announcements_fk",
     }).onDelete("cascade"),
     foreignKey({
       columns: [columns["event-templatesID"]],
@@ -580,14 +580,14 @@ export const payload_locked_documents_rels = pgTable(
       name: "payload_locked_documents_rels_events_fk",
     }).onDelete("cascade"),
     foreignKey({
-      columns: [columns["sectionsID"]],
-      foreignColumns: [sections.id],
-      name: "payload_locked_documents_rels_sections_fk",
-    }).onDelete("cascade"),
-    foreignKey({
       columns: [columns["rolesID"]],
       foreignColumns: [roles.id],
       name: "payload_locked_documents_rels_roles_fk",
+    }).onDelete("cascade"),
+    foreignKey({
+      columns: [columns["sectionsID"]],
+      foreignColumns: [sections.id],
+      name: "payload_locked_documents_rels_sections_fk",
     }).onDelete("cascade"),
     foreignKey({
       columns: [columns["signupsID"]],
@@ -605,9 +605,9 @@ export const payload_locked_documents_rels = pgTable(
       name: "payload_locked_documents_rels_user_notification_preferenc_fk",
     }).onDelete("cascade"),
     foreignKey({
-      columns: [columns["announcementsID"]],
-      foreignColumns: [announcements.id],
-      name: "payload_locked_documents_rels_announcements_fk",
+      columns: [columns["usersID"]],
+      foreignColumns: [users.id],
+      name: "payload_locked_documents_rels_users_fk",
     }).onDelete("cascade"),
   ],
 );
@@ -694,7 +694,7 @@ export const payload_migrations = pgTable(
   ],
 );
 
-export const relations_users = relations(users, () => ({}));
+export const relations_announcements = relations(announcements, () => ({}));
 export const relations_event_templates_sections_roles_signups = relations(
   event_templates_sections_roles_signups,
   ({ one }) => ({
@@ -792,13 +792,6 @@ export const relations_events = relations(events, ({ many }) => ({
     relationName: "_rels",
   }),
 }));
-export const relations_sections = relations(sections, ({ one }) => ({
-  event: one(events, {
-    fields: [sections.event],
-    references: [events.id],
-    relationName: "event",
-  }),
-}));
 export const relations_roles = relations(roles, ({ one }) => ({
   event: one(events, {
     fields: [roles.event],
@@ -809,6 +802,13 @@ export const relations_roles = relations(roles, ({ one }) => ({
     fields: [roles.section],
     references: [sections.id],
     relationName: "section",
+  }),
+}));
+export const relations_sections = relations(sections, ({ one }) => ({
+  event: one(events, {
+    fields: [sections.event],
+    references: [events.id],
+    relationName: "event",
   }),
 }));
 export const relations_signups = relations(signups, ({ one }) => ({
@@ -839,7 +839,7 @@ export const relations_user_notification_preferences = relations(
     }),
   }),
 );
-export const relations_announcements = relations(announcements, () => ({}));
+export const relations_users = relations(users, () => ({}));
 export const relations_payload_locked_documents_rels = relations(
   payload_locked_documents_rels,
   ({ one }) => ({
@@ -848,10 +848,10 @@ export const relations_payload_locked_documents_rels = relations(
       references: [payload_locked_documents.id],
       relationName: "_rels",
     }),
-    usersID: one(users, {
-      fields: [payload_locked_documents_rels.usersID],
-      references: [users.id],
-      relationName: "users",
+    announcementsID: one(announcements, {
+      fields: [payload_locked_documents_rels.announcementsID],
+      references: [announcements.id],
+      relationName: "announcements",
     }),
     "event-templatesID": one(event_templates, {
       fields: [payload_locked_documents_rels["event-templatesID"]],
@@ -863,15 +863,15 @@ export const relations_payload_locked_documents_rels = relations(
       references: [events.id],
       relationName: "events",
     }),
-    sectionsID: one(sections, {
-      fields: [payload_locked_documents_rels.sectionsID],
-      references: [sections.id],
-      relationName: "sections",
-    }),
     rolesID: one(roles, {
       fields: [payload_locked_documents_rels.rolesID],
       references: [roles.id],
       relationName: "roles",
+    }),
+    sectionsID: one(sections, {
+      fields: [payload_locked_documents_rels.sectionsID],
+      references: [sections.id],
+      relationName: "sections",
     }),
     signupsID: one(signups, {
       fields: [payload_locked_documents_rels.signupsID],
@@ -890,10 +890,10 @@ export const relations_payload_locked_documents_rels = relations(
       references: [user_notification_preferences.id],
       relationName: "user-notification-preferences",
     }),
-    announcementsID: one(announcements, {
-      fields: [payload_locked_documents_rels.announcementsID],
-      references: [announcements.id],
-      relationName: "announcements",
+    usersID: one(users, {
+      fields: [payload_locked_documents_rels.usersID],
+      references: [users.id],
+      relationName: "users",
     }),
   }),
 );
@@ -934,9 +934,9 @@ export const relations_payload_migrations = relations(
 );
 
 type DatabaseSchema = {
-  enum_users_roles: typeof enum_users_roles;
   enum_event_templates_start_time_tz: typeof enum_event_templates_start_time_tz;
-  users: typeof users;
+  enum_users_roles: typeof enum_users_roles;
+  announcements: typeof announcements;
   event_templates_sections_roles_signups: typeof event_templates_sections_roles_signups;
   event_templates_sections_roles: typeof event_templates_sections_roles;
   event_templates_sections: typeof event_templates_sections;
@@ -945,18 +945,18 @@ type DatabaseSchema = {
   event_templates: typeof event_templates;
   events: typeof events;
   events_rels: typeof events_rels;
-  sections: typeof sections;
   roles: typeof roles;
+  sections: typeof sections;
   signups: typeof signups;
   tags: typeof tags;
   user_notification_preferences: typeof user_notification_preferences;
-  announcements: typeof announcements;
+  users: typeof users;
   payload_locked_documents: typeof payload_locked_documents;
   payload_locked_documents_rels: typeof payload_locked_documents_rels;
   payload_preferences: typeof payload_preferences;
   payload_preferences_rels: typeof payload_preferences_rels;
   payload_migrations: typeof payload_migrations;
-  relations_users: typeof relations_users;
+  relations_announcements: typeof relations_announcements;
   relations_event_templates_sections_roles_signups: typeof relations_event_templates_sections_roles_signups;
   relations_event_templates_sections_roles: typeof relations_event_templates_sections_roles;
   relations_event_templates_sections: typeof relations_event_templates_sections;
@@ -965,12 +965,12 @@ type DatabaseSchema = {
   relations_event_templates: typeof relations_event_templates;
   relations_events_rels: typeof relations_events_rels;
   relations_events: typeof relations_events;
-  relations_sections: typeof relations_sections;
   relations_roles: typeof relations_roles;
+  relations_sections: typeof relations_sections;
   relations_signups: typeof relations_signups;
   relations_tags: typeof relations_tags;
   relations_user_notification_preferences: typeof relations_user_notification_preferences;
-  relations_announcements: typeof relations_announcements;
+  relations_users: typeof relations_users;
   relations_payload_locked_documents_rels: typeof relations_payload_locked_documents_rels;
   relations_payload_locked_documents: typeof relations_payload_locked_documents;
   relations_payload_preferences_rels: typeof relations_payload_preferences_rels;
