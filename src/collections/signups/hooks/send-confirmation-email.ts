@@ -41,11 +41,11 @@ export const sendConfirmationEmail: CollectionAfterChangeHook<Signup> = async ({
       user: { equals: user.id },
       type: { equals: notificationTypes.EVENT_SIGNUP },
       channel: { equals: notificationChannels.EMAIL },
-      preference: { equals: true },
+      preference: { equals: false },
     },
   });
 
-  if (!event || eventSignupEmailPreference.totalDocs === 0) {
+  if (!event || eventSignupEmailPreference.totalDocs === 1) {
     return doc;
   }
 
