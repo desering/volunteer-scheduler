@@ -96,15 +96,15 @@ export default buildConfig({
   csrf: [process.env.NEXT_PUBLIC_SERVER_URL ?? ""].filter(Boolean),
 
   collections: [
-    Users,
+    Announcements,
     EventTemplates,
     Events,
-    Sections,
     Roles,
+    Sections,
     Signups,
     Tags,
     UserNotificationPreferences,
-    Announcements,
+    Users,
   ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET ?? "",

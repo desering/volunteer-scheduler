@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import { Container } from "styled-system/jsx";
-import type { getActiveAnnouncement } from "@/lib/services/get-active-announcement";
+import type { getMostRecentAnnouncement } from "@/lib/services/get-most-recent-announcement";
 import { AnnouncementBannerContent } from "./announcement-banner-content";
 import { AnnouncementBannerWrapper } from "./announcement-banner-wrapper";
 
 type AnnouncementBannerProps = {
-  announcement: Awaited<ReturnType<typeof getActiveAnnouncement>>;
+  announcement: Awaited<ReturnType<typeof getMostRecentAnnouncement>>;
 };
 
 export const AnnouncementBanner = ({

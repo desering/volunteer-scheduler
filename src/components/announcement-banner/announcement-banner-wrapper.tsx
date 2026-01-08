@@ -28,8 +28,14 @@ export const AnnouncementBannerWrapper = ({
   const colorPalette = statusToColorPalette[status];
 
   return (
-    <Alert.Root status={status} variant="subtle">
-      <Alert.Indicator />
+    <Alert.Root
+      status={status}
+      variant="subtle"
+      borderWidth="0"
+      bg={`${colorPalette}.a3`}
+      color={`${colorPalette}.text`}
+    >
+      <Alert.Indicator color={`${colorPalette}.text`} />
       <Alert.Content>{children}</Alert.Content>
       <CloseButton
         pos="relative"

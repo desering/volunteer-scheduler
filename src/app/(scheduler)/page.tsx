@@ -3,10 +3,10 @@
 import { css } from "styled-system/css";
 import { AnnouncementBanner } from "@/components/announcement-banner";
 import { EventOverview } from "@/components/event-overview";
-import { getActiveAnnouncement } from "@/lib/services/get-active-announcement";
+import { getMostRecentAnnouncement } from "@/lib/services/get-most-recent-announcement";
 
 export default async function Page() {
-  const announcement = await getActiveAnnouncement();
+  const announcement = await getMostRecentAnnouncement();
 
   return (
     <>

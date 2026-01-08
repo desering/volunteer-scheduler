@@ -1,11 +1,11 @@
 "use server";
 
 import config from "@payload-config";
-import { unstable_noStore as noStore } from "next/cache";
+import { connection } from "next/server";
 import { getPayload } from "payload";
 
-export const getActiveAnnouncement = async () => {
-  noStore(); // Disable caching for this function
+export const getMostRecentAnnouncement = async () => {
+  await connection(); // Disable caching for this function
 
   const payload = await getPayload({ config });
 
