@@ -8,5 +8,5 @@
 ## Technical
 
 1. https://12factor.net/ for modern, clean, portable, scalable web application
-   development patterns
-2. https://diataxis.fr/ for documentation
+   development patterns.
+2. https://diataxis.fr/ for a systematic approach to technical documentation.
