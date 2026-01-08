@@ -11,9 +11,9 @@ already exists:
 
 If not, then you're welcome to create a new issue in the leftmost "New" column.
 
-## How issues are refined and prioritised
+## How issues are refined and prioritized
 
-We regularly look through the column of new issues, to plan and prioritise
+We regularly look through the column of new issues, to plan and prioritize
 upcoming work. If your issue is particularly important, please feel free to give
 us a poke on
 [WhatsApp/Tech Circle](https://chat.whatsapp.com/Itp0i2AWFxGEOLg0N83cHZ) or
@@ -47,17 +47,15 @@ worked out.
 
 **Branch names**
 
-Since trunk-based development uses short-lived feature-branches, branch names
-are not that important - we do not use it to inform any of our workflows or
-automations. Simply make use of branch names to make your life as a developer
-easier:
-
+Use branch names to make your life as a developer easier:
 * Include the number of the issue you are working on. GitHub can then suggest
   linking related issues when you submit a PR.
 * Include a short description of the work done.
 
 Here are some example branch names: `123-past-events`, `69-instrumentation`,
 `420-email-templates`, `999-fix-calendar-render-bug`
+
+We do not use branch names in any of our workflows or automations.
 
 **Conventional commits**
 
