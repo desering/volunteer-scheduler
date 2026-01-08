@@ -45,18 +45,6 @@ one. This way, a feature can be done quicker, and you can celebrate a success
 for one thing without having to wait for the other thing to be done and fully
 worked out.
 
-**Branch names**
-
-Use branch names to make your life as a developer easier:
-* Include the number of the issue you are working on. GitHub can then suggest
-  linking related issues when you submit a PR.
-* Include a short description of the work done.
-
-Here are some example branch names: `123-past-events`, `69-instrumentation`,
-`420-email-templates`, `999-fix-calendar-render-bug`
-
-We do not use branch names in any of our workflows or automations.
-
 **Conventional commits**
 
 If your PR contains a clean commit history following
