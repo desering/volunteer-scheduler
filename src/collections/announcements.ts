@@ -8,7 +8,7 @@ export const Announcements: CollectionConfig = {
     group: "Admin",
   },
   access: {
-    read: admins,
+    read: anyone,
     create: admins,
     update: admins,
     delete: admins,
