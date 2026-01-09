@@ -48,6 +48,11 @@ jobs:
           push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
           tags: ${{ env.IMAGE_TAGS }}
 
+      - uses: aquasecurity/trivy-action@0.33.1
+        with:
+          trivy-config: trivy.yaml
+          image-ref: '${{ env.DOCKER_REPO }}/${{ github.event.repository.name }}:${{ github.sha }}'
+
   deploy-to-coolify:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: [ docker ]
