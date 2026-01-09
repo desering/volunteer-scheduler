@@ -12,10 +12,10 @@ import {
   index,
   uniqueIndex,
   foreignKey,
-  serial,
+  integer,
   varchar,
   timestamp,
-  integer,
+  serial,
   jsonb,
   numeric,
   boolean,
@@ -30,6 +30,34 @@ export const enum_users_roles = pgEnum("enum_users_roles", [
 export const enum_event_templates_start_time_tz = pgEnum(
   "enum_event_templates_start_time_tz",
   ["Europe/Amsterdam"],
+);
+
+export const users_sessions = pgTable(
+  "users_sessions",
+  {
+    _order: integer("_order").notNull(),
+    _parentID: integer("_parent_id").notNull(),
+    id: varchar("id").primaryKey(),
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    }),
+    expiresAt: timestamp("expires_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    }).notNull(),
+  },
+  (columns) => [
+    index("users_sessions_order_idx").on(columns._order),
+    index("users_sessions_parent_id_idx").on(columns._parentID),
+    foreignKey({
+      columns: [columns["_parentID"]],
+      foreignColumns: [users.id],
+      name: "users_sessions_parent_id_fk",
+    }).onDelete("cascade"),
+  ],
 );
 
 export const users = pgTable(
@@ -658,7 +686,21 @@ export const payload_migrations = pgTable(
   ],
 );
 
-export const relations_users = relations(users, () => ({}));
+export const relations_users_sessions = relations(
+  users_sessions,
+  ({ one }) => ({
+    _parentID: one(users, {
+      fields: [users_sessions._parentID],
+      references: [users.id],
+      relationName: "sessions",
+    }),
+  }),
+);
+export const relations_users = relations(users, ({ many }) => ({
+  sessions: many(users_sessions, {
+    relationName: "sessions",
+  }),
+}));
 export const relations_event_templates_sections_roles_signups = relations(
   event_templates_sections_roles_signups,
   ({ one }) => ({
@@ -894,6 +936,7 @@ export const relations_payload_migrations = relations(
 type DatabaseSchema = {
   enum_users_roles: typeof enum_users_roles;
   enum_event_templates_start_time_tz: typeof enum_event_templates_start_time_tz;
+  users_sessions: typeof users_sessions;
   users: typeof users;
   event_templates_sections_roles_signups: typeof event_templates_sections_roles_signups;
   event_templates_sections_roles: typeof event_templates_sections_roles;
@@ -913,6 +956,7 @@ type DatabaseSchema = {
   payload_preferences: typeof payload_preferences;
   payload_preferences_rels: typeof payload_preferences_rels;
   payload_migrations: typeof payload_migrations;
+  relations_users_sessions: typeof relations_users_sessions;
   relations_users: typeof relations_users;
   relations_event_templates_sections_roles_signups: typeof relations_event_templates_sections_roles_signups;
   relations_event_templates_sections_roles: typeof relations_event_templates_sections_roles;
