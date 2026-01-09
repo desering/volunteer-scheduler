@@ -48,16 +48,6 @@ jobs:
           push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
           tags: ${{ env.IMAGE_TAGS }}
 
-  trivy:
-    needs: [ docker ]
-    runs-on: [ ubuntu-24.04 ]
-    steps:
-      - uses: actions/checkout@v6
-      - uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
       - uses: aquasecurity/trivy-action@0.33.1
         with:
           trivy-config: trivy.yaml
