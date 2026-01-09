@@ -1,27 +1,21 @@
 # https://trivy.dev/docs/latest/references/configuration/config-file/
 
-# https://trivy.dev/docs/latest/target/container_image/
-
 scanners:
   - vuln
   - secret
   - misconfig
 
+# https://trivy.dev/docs/latest/target/container_image/
 image:
-  # trivy connects to the local docker socket to retrieve the given image to scan.
-  # use docker.host to override the docker socket location.
   image-config-scanners: ["secret", "misconfig"]
 
-format: table # table, json, ...
+format: table
 table-mode:
   - summary
   - detailed
 
-# Use exit-code to fail ci if a vulnerability is found:
-# trivy image --exit-code 0 --severity MEDIUM,HIGH ruby:2.4.0
-# exit-code: 1
-# severity: CRITICAL
-# severity: 'CRITICAL,HIGH'
+exit-code: 1
+severity: HIGH,CRITICAL
 
 # custom config for secret scanning:
 # https://trivy.dev/docs/latest/scanner/secret/
