@@ -13,6 +13,7 @@ import {
   subMonths,
 } from "date-fns";
 import { useEffect, useMemo, useState } from "react";
+import { css } from "styled-system/css";
 import { Box, type BoxProps, Container, Grid } from "styled-system/jsx";
 import { EventButton } from "@/components/event-button";
 import { EventDetailsDrawer } from "@/components/event-details-sheet";
@@ -111,6 +112,13 @@ export const EventOverviewClient = ({
     return eventsByDate;
   }, [events, selectedDate]);
 
+  const descriptionDetailCss = css({
+    "& a": {
+      textDecoration: "underline",
+      pointerEvents: "none",
+    },
+  });
+
   if (error) {
     return `Something went wrong, please try again later. ${error.message}`;
   }
@@ -154,7 +162,11 @@ export const EventOverviewClient = ({
                     </Box>
                   )}
                 <EventButton.Description>
-                  {event.description && <RichText data={event.description} />}
+                  {event.description && (
+                    <div className={descriptionDetailCss}>
+                      <RichText data={event.description} />
+                    </div>
+                  )}
                 </EventButton.Description>
 
                 <Box marginTop="4">
