@@ -47,9 +47,6 @@ export const AnnouncementBannerClient = ({
             <div
               className={css({
                 color: "orange.text",
-                "& a": {
-                  textDecoration: "underline",
-                },
               })}
             >
               <RichText data={announcement.description} />

@@ -3,10 +3,10 @@ import process from "node:process";
 import { fileURLToPath } from "node:url";
 import { postgresAdapter } from "@payloadcms/db-postgres";
 import { nodemailerAdapter } from "@payloadcms/email-nodemailer";
-import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { buildConfig, inMemoryKVAdapter } from "payload";
 import sharp from "sharp";
 import { Announcements } from "./collections/announcements";
+import { editor } from "./editor.config";
 import { EventTemplates } from "./collections/event-templates";
 import { Events } from "./collections/events";
 import { Roles } from "./collections/roles";
@@ -106,7 +106,7 @@ export default buildConfig({
     UserNotificationPreferences,
     Users,
   ],
-  editor: lexicalEditor(),
+  editor,
   secret: process.env.PAYLOAD_SECRET ?? "",
   typescript: {
     outputFile: path.resolve(dirname, "payload-types.ts"),
