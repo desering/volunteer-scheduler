@@ -3,12 +3,14 @@ import {
   CalendarSyncIcon,
   CircleUserRoundIcon,
   History,
+  HomeIcon,
   LogOutIcon,
   MenuIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { Container, HStack, panda } from "styled-system/jsx";
 import { signOut } from "@/actions/auth/sign-out";
+import { NavbarFilterClient } from "@/components/navbar-filter.client";
 import { ThemeSwitchButton } from "@/components/theme-switch-button";
 import { getUser } from "@/lib/services/get-user";
 import { Button } from "./ui/button";
@@ -22,8 +24,14 @@ export const NavBar = async () => {
       <panda.nav display="flex" justifyContent="space-between">
         <panda.div display="flex" gap="4">
           <Button asChild variant="outline">
-            <Link href="/">Shifts</Link>
+            <Link href="/">
+              <HStack gap="2">
+                <HomeIcon />
+                <panda.span hideBelow="sm">Home</panda.span>
+              </HStack>
+            </Link>
           </Button>
+          <NavbarFilterClient />
         </panda.div>
 
         <panda.div display="flex" gap="4">
@@ -34,7 +42,7 @@ export const NavBar = async () => {
                 <Button asChild variant="solid">
                   <HStack gap="2">
                     <MenuIcon />
-                    {user.preferredName}
+                    <panda.span hideBelow="sm">{user.preferredName}</panda.span>
                   </HStack>
                 </Button>
               </Menu.Trigger>
@@ -87,12 +95,33 @@ export const NavBar = async () => {
             </Menu.Root>
           ) : (
             <>
-              <Button asChild variant="outline">
+              <Button asChild variant="outline" hideBelow="sm">
                 <Link href="/auth/sign-in">Sign in</Link>
               </Button>
-              <Button asChild variant="solid">
+              <Button asChild variant="solid" hideBelow="sm">
                 <Link href="/auth/register">Become a volunteer</Link>
               </Button>
+              <panda.div hideFrom="sm">
+                <Menu.Root>
+                  <Menu.Trigger asChild>
+                    <Button variant="solid">
+                      <MenuIcon />
+                    </Button>
+                  </Menu.Trigger>
+                  <Menu.Positioner>
+                    <Menu.Content>
+                      <Menu.ItemGroup>
+                        <Menu.Item asChild value="sign-in">
+                          <Link href="/auth/sign-in">Sign in</Link>
+                        </Menu.Item>
+                        <Menu.Item asChild value="register">
+                          <Link href="/auth/register">Become a volunteer</Link>
+                        </Menu.Item>
+                      </Menu.ItemGroup>
+                    </Menu.Content>
+                  </Menu.Positioner>
+                </Menu.Root>
+              </panda.div>
             </>
           )}
         </panda.div>

@@ -8,6 +8,7 @@ import { buildConfig, inMemoryKVAdapter } from "payload";
 import sharp from "sharp";
 import { EventTemplates } from "./collections/event-templates";
 import { Events } from "./collections/events";
+import { Locations } from "./collections/locations";
 import { Roles } from "./collections/roles";
 import { Sections } from "./collections/sections";
 import { Signups } from "./collections/signups";
@@ -102,6 +103,7 @@ export default buildConfig({
     Roles,
     Signups,
     Tags,
+    Locations,
     UserNotificationPreferences,
   ],
   editor: lexicalEditor(),
