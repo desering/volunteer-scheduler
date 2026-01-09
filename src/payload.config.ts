@@ -6,7 +6,6 @@ import { nodemailerAdapter } from "@payloadcms/email-nodemailer";
 import { buildConfig, inMemoryKVAdapter } from "payload";
 import sharp from "sharp";
 import { Announcements } from "./collections/announcements";
-import { editor } from "./editor.config";
 import { EventTemplates } from "./collections/event-templates";
 import { Events } from "./collections/events";
 import { Roles } from "./collections/roles";
@@ -15,6 +14,7 @@ import { Signups } from "./collections/signups";
 import { Tags } from "./collections/tags";
 import { UserNotificationPreferences } from "./collections/user-notification-preferences";
 import { Users } from "./collections/users";
+import { editor } from "./editor.config";
 import { logger } from "./lib/logger";
 import { migrations } from "./migrations";
 
