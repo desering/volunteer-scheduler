@@ -106,7 +106,21 @@ export default buildConfig({
     UserNotificationPreferences,
     Users,
   ],
-  editor: lexicalEditor(),
+  editor: lexicalEditor({
+    features: ({ defaultFeatures }) =>
+      defaultFeatures.map((feature) => {
+        if (feature.key === "link") {
+          return {
+            ...feature,
+            props: {
+              ...feature.props,
+              Component: "@/components/lexical/link#CustomLinkComponent",
+            },
+          };
+        }
+        return feature;
+      }),
+  }),
   secret: process.env.PAYLOAD_SECRET ?? "",
   typescript: {
     outputFile: path.resolve(dirname, "payload-types.ts"),
