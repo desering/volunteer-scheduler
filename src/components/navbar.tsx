@@ -101,6 +101,27 @@ export const NavBar = async () => {
               <Button asChild variant="solid" hideBelow="sm">
                 <Link href="/auth/register">Become a volunteer</Link>
               </Button>
+              <panda.div hideFrom="sm">
+                <Menu.Root>
+                  <Menu.Trigger asChild>
+                    <Button variant="solid">
+                      <MenuIcon />
+                    </Button>
+                  </Menu.Trigger>
+                  <Menu.Positioner>
+                    <Menu.Content>
+                      <Menu.ItemGroup>
+                        <Menu.Item asChild value="sign-in">
+                          <Link href="/auth/sign-in">Sign in</Link>
+                        </Menu.Item>
+                        <Menu.Item asChild value="register">
+                          <Link href="/auth/register">Become a volunteer</Link>
+                        </Menu.Item>
+                      </Menu.ItemGroup>
+                    </Menu.Content>
+                  </Menu.Positioner>
+                </Menu.Root>
+              </panda.div>
             </>
           )}
         </panda.div>

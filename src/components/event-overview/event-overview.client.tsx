@@ -135,6 +135,11 @@ export const EventOverviewClient = ({
         <Grid gap="4">
           {eventsOnSelectedDate?.map((event) => {
             const signups = event.signups?.docs?.length;
+            const hasTags = Array.isArray(event.tags) && event.tags.length > 0;
+            const hasLocations =
+              Array.isArray(event.locations) && event.locations.length > 0;
+            const shouldShowBadges = hasTags || hasLocations;
+
             return (
               <EventButton.Root
                 key={event.id}
@@ -148,12 +153,7 @@ export const EventOverviewClient = ({
                   endDate={event.end_date}
                 />
                 <EventButton.Title>{event.title}</EventButton.Title>
-                {((event.tags &&
-                  Array.isArray(event.tags) &&
-                  event.tags.length > 0) ||
-                  (event.locations &&
-                    Array.isArray(event.locations) &&
-                    event.locations.length > 0)) && (
+                {shouldShowBadges && (
                   <Box display="flex" gap="2" marginY="2" flexWrap="wrap">
                     {event.tags?.map((tag) =>
                       typeof tag === "object" && tag !== null ? (

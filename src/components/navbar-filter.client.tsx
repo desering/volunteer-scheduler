@@ -69,6 +69,11 @@ export const NavbarFilterClient = () => {
     },
   });
 
+  // Only show filter on homepage
+  if (pathname !== "/") {
+    return null;
+  }
+
   const handleToggleTag = (tag: string) => {
     const newTags = selectedTags.includes(tag)
       ? selectedTags.filter((t) => t !== tag)
