@@ -1,3 +1,4 @@
+import { startOfDay } from "date-fns";
 import { APIError, type CollectionConfig } from "payload";
 import { sendConfirmationEmail } from "@/collections/signups/hooks/send-confirmation-email";
 
@@ -124,6 +125,30 @@ export const Signups: CollectionConfig = {
             });
 
             return user.preferredName;
+          },
+        ],
+      },
+    },
+    {
+      name: "totalShifts",
+      type: "number",
+      virtual: true,
+      hooks: {
+        afterRead: [
+          async ({ data, req }) => {
+            if (!data?.user) return 0;
+
+            const result = await req.payload.count({
+              collection: "signups",
+              where: {
+                user: { equals: data.user },
+                "event.start_date": {
+                  less_than_equal: startOfDay(new Date()),
+                },
+              },
+            });
+
+            return result.totalDocs;
           },
         ],
       },
