@@ -58,6 +58,13 @@ export async function createSignup(
     },
   });
 
+  if (existingSignups.docs.find((signup) => signup.user === user.id)) {
+    return {
+      success: false,
+      message: "User has already signed up for this role in the event",
+    };
+  }
+
   const role = await payload.findByID({
     collection: "roles",
     id: data.roleId,

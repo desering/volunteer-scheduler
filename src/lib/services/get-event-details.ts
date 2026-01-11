@@ -2,6 +2,22 @@
 
 import config from "@payload-config";
 import { getPayload } from "payload";
+import type { Event, Role, Section, Signup, Tag } from "@/payload-types";
+
+export type EventDetailsRole = Omit<Role, "signups"> & {
+  signups: Signup[];
+};
+
+export type EventDetails = Omit<
+  Event,
+  "sections" | "roles" | "signups" | "tags"
+> & {
+  sections: (Section & {
+    roles: EventDetailsRole[];
+  })[];
+  roles: EventDetailsRole[];
+  tags: Tag[];
+};
 
 export const getEventDetails = async (id: number) => {
   const payload = await getPayload({ config });
@@ -23,60 +39,39 @@ export const getEventDetails = async (id: number) => {
   // Signups are added to the relevant roles
   return {
     ...event,
-    id: forceNumber(event.id),
-    sections: {
-      ...event.sections,
-      docs: mapObjects(event.sections?.docs, (section) => ({
-        ...section,
-        roles: {
-          ...section.roles,
-
-          docs: mapObjects(
-            event.roles?.docs,
-            (role) => ({
-              ...role,
-              signups: {
-                ...role.signups,
-                docs: mapObjects(
-                  event.signups?.docs,
-                  (signup) => signup,
-                  (signup) => signup.role === role.id,
-                ),
-              },
-            }),
-            (role) => role.section === section.id,
-          ),
-        },
-      })),
-    },
-    roles: {
-      ...event.roles,
-      docs: mapObjects(
+    id: event.id,
+    sections: mapObjects(event.sections?.docs, (section) => ({
+      ...section,
+      roles: mapObjects(
         event.roles?.docs,
         (role) => ({
           ...role,
-          section: forceNumber(role.section),
-          signups: {
-            ...role.signups,
-            docs: mapObjects(
-              event.signups?.docs,
-              (signup) => signup,
-              (signup) => signup.role === role.id,
-            ),
-          },
+          signups: mapObjects(
+            event.signups?.docs,
+            (signup) => signup,
+            (signup) => signup.role === role.id,
+          ),
         }),
-        (role) => !role.section,
+        (role) => role.section === section.id,
       ),
-    },
-    signups: {
-      ...event.signups,
-      docs: mapObjects(event.signups?.docs, (signup) => ({
-        ...signup,
-        user: forceNumber(signup.user),
-        role: forceNumber(signup.role),
-      })),
-    },
-  };
+    })),
+
+    roles: mapObjects(
+      event.roles?.docs,
+      (role) => ({
+        ...role,
+        section: forceNumber(role.section),
+        signups: mapObjects(
+          event.signups?.docs,
+          (signup) => signup,
+          (signup) => signup.role === role.id,
+        ),
+      }),
+      (role) => !role.section,
+    ),
+
+    tags: mapObjects(event.tags, (tag) => tag),
+  } satisfies EventDetails;
 };
 
 const forceNumber = (value: unknown) =>
@@ -97,7 +92,7 @@ const mapObject = <T, S>(
  * @param filter - Optional predicate function to filter the mapped results
  * @returns A new array containing the mapped and filtered elements, or an empty array if input is null/undefined
  */
-const mapObjects = <T, S>(
+const mapObjects = <S, T>(
   values: T[] | null | undefined,
   map: (value: (T & object) | (T & null)) => S,
   filter?: (value: S) => boolean,
@@ -105,5 +100,3 @@ const mapObjects = <T, S>(
   (values
     ?.map((value) => mapObject(value, map))
     .filter((value) => !!value && (!filter || filter?.(value))) as S[]) ?? [];
-
-export type EventDetails = Awaited<ReturnType<typeof getEventDetails>>;

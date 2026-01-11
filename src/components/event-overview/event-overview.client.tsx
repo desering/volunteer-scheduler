@@ -24,6 +24,7 @@ import {
 import type { Event } from "@/payload-types";
 import { DateSelect } from "./date-select";
 import { TagFilter } from "./tag-filter";
+import { useEventsQuery } from "@/features/events/hooks/use-events-query";
 
 type Props = {
   placeholder?: EventsGroupedByDay;
@@ -36,25 +37,12 @@ export const EventOverviewClient = ({
   const [selectedDate, setSelectedDate] = useState(startOfDay(new Date()));
   const [selectedTags, setSelectedTags] = useState<number[]>([]);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: on purpose to reset tags only when date changes
   useEffect(() => {
     setSelectedTags([]);
   }, [selectedDate]);
 
-  const { data: events, error } = useQuery<EventsGroupedByDay>({
-    queryKey: ["eventsByDay", initialEvents],
-    queryFn: async () => {
-      const url = "/api/events?";
-      const searchParams = new URLSearchParams({
-        min_date: startOfDay(new Date(), { in: utc }).toISOString(),
-      });
-
-      const res = await fetch(url + searchParams);
-      const events = (await res.json()) as unknown as Event[];
-
-      return groupEventsByDate(events);
-    },
-    placeholderData: initialEvents,
-  });
+  const { data: events, error } = useEventsQuery(initialEvents);
 
   const completeDateRange = useMemo(() => {
     if (!events) return [];
