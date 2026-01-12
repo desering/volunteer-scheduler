@@ -22,6 +22,13 @@ import {
   pgEnum,
 } from "@payloadcms/db-postgres/drizzle/pg-core";
 import { sql, relations } from "@payloadcms/db-postgres/drizzle";
+export const enum_announcements_status = pgEnum("enum_announcements_status", [
+  "neutral",
+  "info",
+  "warning",
+  "error",
+  "success",
+]);
 export const enum_event_templates_start_time_tz = pgEnum(
   "enum_event_templates_start_time_tz",
   ["Europe/Amsterdam"],
@@ -38,6 +45,7 @@ export const announcements = pgTable(
     id: serial("id").primaryKey(),
     title: varchar("title").notNull(),
     description: jsonb("description"),
+    status: enum_announcements_status("status").default("info"),
     updatedAt: timestamp("updated_at", {
       mode: "string",
       withTimezone: true,
@@ -934,6 +942,7 @@ export const relations_payload_migrations = relations(
 );
 
 type DatabaseSchema = {
+  enum_announcements_status: typeof enum_announcements_status;
   enum_event_templates_start_time_tz: typeof enum_event_templates_start_time_tz;
   enum_users_roles: typeof enum_users_roles;
   announcements: typeof announcements;
