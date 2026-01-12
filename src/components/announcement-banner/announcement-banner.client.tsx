@@ -23,7 +23,11 @@ export const AnnouncementBannerClient = ({
 
   return (
     <Container width="100%" marginTop="4">
-      <Alert.Root status={announcement.status ?? "info"} variant="subtle" borderWidth="0">
+      <Alert.Root
+        status={announcement.status ?? "info"}
+        variant="subtle"
+        borderWidth="0"
+      >
         <Alert.Indicator />
         <Alert.Content>
           <div
