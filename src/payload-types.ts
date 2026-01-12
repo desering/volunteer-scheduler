@@ -114,6 +114,7 @@ export interface Announcement {
     };
     [k: string]: unknown;
   } | null;
+  status?: ('neutral' | 'info' | 'warning' | 'error' | 'success') | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -486,6 +487,7 @@ export interface PayloadMigration {
 export interface AnnouncementsSelect<T extends boolean = true> {
   title?: T;
   description?: T;
+  status?: T;
   updatedAt?: T;
   createdAt?: T;
 }

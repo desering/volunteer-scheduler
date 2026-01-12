@@ -81,8 +81,8 @@ export const alert = defineSlotRecipe({
       },
       subtle: {
         root: {
-          bg: "colorPalette.subtle.bg",
-          color: "colorPalette.subtle.fg",
+          bg: "colorPalette.a3",
+          color: "colorPalette.text",
         },
       },
       outline: {

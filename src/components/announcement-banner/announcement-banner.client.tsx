@@ -23,14 +23,8 @@ export const AnnouncementBannerClient = ({
 
   return (
     <Container width="100%" marginTop="4">
-      <Alert.Root
-        status="warning"
-        variant="subtle"
-        borderWidth="0"
-        bg="orange.a3"
-        color="orange.text"
-      >
-        <Alert.Indicator color="orange.text" />
+      <Alert.Root status={announcement.status ?? "info"} variant="subtle" borderWidth="0">
+        <Alert.Indicator />
         <Alert.Content>
           <div
             className={css({
@@ -38,27 +32,20 @@ export const AnnouncementBannerClient = ({
               fontWeight: "bold",
               lineHeight: "short",
               marginBottom: "2",
-              color: "orange.text",
             })}
           >
             {announcement.title}
           </div>
           {announcement.description && (
-            <div
-              className={css({
-                color: "orange.text",
-              })}
-            >
-              <RichText data={announcement.description} />
-            </div>
+            <RichText data={announcement.description} />
           )}
         </Alert.Content>
         <CloseButton
           pos="relative"
           top="1"
           insetEnd="1"
-          colorPalette="orange"
           size="sm"
+          className={css({ color: "inherit" })}
           onClick={() => setIsDismissed(true)}
           aria-label="Dismiss announcement"
         />

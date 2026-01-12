@@ -26,5 +26,6 @@ export const getMostRecentAnnouncement = async () => {
     id: announcement.id,
     title: announcement.title,
     description: announcement.description,
+    status: announcement.status,
   };
 };

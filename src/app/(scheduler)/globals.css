@@ -1,6 +1,1 @@
 @layer reset, base, tokens, recipes, utilities;
-
-/* Global styling for links in rich text content */
-a {
-  text-decoration: underline;
-}

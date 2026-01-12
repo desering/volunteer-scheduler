@@ -26,5 +26,18 @@ export const Announcements: CollectionConfig = {
       type: "richText",
       label: "Description",
     },
+    {
+      name: "status",
+      type: "select",
+      label: "Banner Color",
+      defaultValue: "info",
+      options: [
+        { label: "Gray", value: "neutral" },
+        { label: "Blue", value: "info" },
+        { label: "Orange", value: "warning" },
+        { label: "Red", value: "error" },
+        { label: "Green", value: "success" },
+      ],
+    },
   ],
 };
