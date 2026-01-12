@@ -4,6 +4,7 @@ import { RichText } from "@payloadcms/richtext-lexical/react";
 import { useState } from "react";
 import { css } from "styled-system/css";
 import { Container } from "styled-system/jsx";
+import { linkConverters } from "@/components/lexical/link";
 import * as Alert from "@/components/ui/styled/alert";
 import { CloseButton } from "@/components/ui/styled/close-button";
 import type { getMostRecentAnnouncement } from "@/lib/services/get-most-recent-announcement";
@@ -41,7 +42,10 @@ export const AnnouncementBannerClient = ({
             {announcement.title}
           </div>
           {announcement.description && (
-            <RichText data={announcement.description} />
+            <RichText
+              data={announcement.description}
+              converters={linkConverters}
+            />
           )}
         </Alert.Content>
         <CloseButton

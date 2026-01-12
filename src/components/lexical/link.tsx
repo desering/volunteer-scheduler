@@ -1,51 +1,68 @@
-import type { LinkFields } from "@payloadcms/richtext-lexical";
+import type { DefaultNodeTypes } from "@payloadcms/richtext-lexical";
+import type { JSXConvertersFunction } from "@payloadcms/richtext-lexical/react";
 import NextLink from "next/link";
-import type { ReactNode } from "react";
 import { css } from "styled-system/css";
 
-type CustomLinkComponentProps = {
-  children: ReactNode;
-  fields: LinkFields;
-};
+const linkClassName = css({
+  textDecoration: "underline",
+});
 
-export const CustomLinkComponent = ({
-  children,
-  fields,
-}: CustomLinkComponentProps) => {
-  const href = fields.linkType === "custom" ? fields.url : fields.doc?.value;
+export const linkConverters: JSXConvertersFunction<DefaultNodeTypes> = ({
+  defaultConverters,
+}) => ({
+  ...defaultConverters,
+  link: ({ node, nodesToJSX }) => {
+    const fields = node.fields;
+    const children = nodesToJSX({ nodes: node.children });
 
-  if (!href) {
-    return <>{children}</>;
-  }
+    const getHref = (): string | undefined => {
+      if (fields.linkType === "custom") {
+        return fields.url ?? undefined;
+      }
+      const docValue = fields.doc?.value;
+      if (typeof docValue === "string") {
+        return docValue;
+      }
+      if (typeof docValue === "number") {
+        return String(docValue);
+      }
+      if (docValue && typeof docValue === "object" && "slug" in docValue) {
+        return String(docValue.slug);
+      }
+      return undefined;
+    };
 
-  const isExternal =
-    fields.linkType === "custom" &&
-    (fields.url?.startsWith("http://") || fields.url?.startsWith("https://"));
+    const href = getHref();
 
-  const linkClassName = css({
-    textDecoration: "underline",
-  });
+    if (!href) {
+      return <>{children}</>;
+    }
 
-  if (isExternal) {
+    const isExternal =
+      fields.linkType === "custom" &&
+      (fields.url?.startsWith("http://") || fields.url?.startsWith("https://"));
+
+    if (isExternal) {
+      return (
+        <a
+          href={href}
+          className={linkClassName}
+          target={fields.newTab ? "_blank" : undefined}
+          rel={fields.newTab ? "noopener noreferrer" : undefined}
+        >
+          {children}
+        </a>
+      );
+    }
+
     return (
-      <a
+      <NextLink
         href={href}
         className={linkClassName}
         target={fields.newTab ? "_blank" : undefined}
-        rel={fields.newTab ? "noopener noreferrer" : undefined}
       >
         {children}
-      </a>
+      </NextLink>
     );
-  }
-
-  return (
-    <NextLink
-      href={href as string}
-      className={linkClassName}
-      target={fields.newTab ? "_blank" : undefined}
-    >
-      {children}
-    </NextLink>
-  );
-};
+  },
+});
