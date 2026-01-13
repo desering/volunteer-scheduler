@@ -161,12 +161,8 @@ export const EventOverviewClient = ({
                       )}
                     </Box>
                   )}
-                <EventButton.Description>
-                  {event.description && (
-                    <div className={descriptionDetailCss}>
-                      <RichText data={event.description} />
-                    </div>
-                  )}
+                <EventButton.Description className={descriptionDetailCss}>
+                  {event.description && (<RichText data={event.description} />)}
                 </EventButton.Description>
 
                 <Box marginTop="4">

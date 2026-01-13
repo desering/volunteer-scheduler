@@ -219,12 +219,8 @@ export const EventDetailsDrawer = (props: Props) => {
                       </HStack>
                     )}
                 </Sheet.Description>
-                <Sheet.Description>
-                  {details?.description && (
-                    <div className={descriptionDetailCss}>
-                      <RichText data={details.description} />
-                    </div>
-                  )}
+                <Sheet.Description className={descriptionDetailCss}>
+                  {details?.description && (<RichText data={details.description} />)}
                 </Sheet.Description>
                 <Sheet.CloseTrigger
                   position="absolute"
