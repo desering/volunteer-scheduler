@@ -1,5 +1,6 @@
 import { defineConfig, defineGlobalStyles } from "@pandacss/dev";
 import { createPreset } from "@park-ui/panda-preset";
+import blue from "@park-ui/panda-preset/colors/blue";
 import olive from "@park-ui/panda-preset/colors/olive";
 import sand from "@park-ui/panda-preset/colors/sand";
 import tomato from "@park-ui/panda-preset/colors/tomato";
@@ -62,6 +63,7 @@ export default defineConfig({
         },
         colors: {
           tomato: tomato.tokens,
+          blue: blue.tokens,
         },
       },
       semanticTokens: {
