@@ -28,8 +28,7 @@ export const Users: CollectionConfig = {
       type: "text",
       required: true,
 
-      validate: (value, { hasMany }) => {
-        // value is: string | string[] | null | undefined
+      validate: (value: string | string[] | null | undefined) => {
         // Treat empty/undefined/null as invalid (required: true handles this too)
         if (value == null || value === '') {
           return 'Preferred name is required';
