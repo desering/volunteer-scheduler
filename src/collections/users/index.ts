@@ -27,7 +27,7 @@ export const Users: CollectionConfig = {
       name: "preferredName",
       type: "text",
       required: true,
-      validate: (value: string) => {
+      validate: (value) => {
         const r = preferredNameSchema.safeParse(value);
         return r.success
           ? true
