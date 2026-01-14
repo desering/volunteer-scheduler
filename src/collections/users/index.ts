@@ -27,7 +27,19 @@ export const Users: CollectionConfig = {
       name: "preferredName",
       type: "text",
       required: true,
-      validate: (value) => {
+
+      validate: (value, { hasMany }) => {
+        // value is: string | string[] | null | undefined
+        // Treat empty/undefined/null as invalid (required: true handles this too)
+        if (value == null || value === '') {
+          return 'Preferred name is required';
+        }
+
+        // If someone ever sets hasMany: true on this field, reject arrays explicitly
+        if (Array.isArray(value)) {
+          return 'Preferred name must be a single value';
+        }
+
         const r = preferredNameSchema.safeParse(value);
         return r.success
           ? true
