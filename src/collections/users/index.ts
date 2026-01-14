@@ -42,7 +42,7 @@ export const Users: CollectionConfig = {
         const r = preferredNameSchema.safeParse(value);
         return r.success
           ? true
-          : (r.error.errors[0]?.message ?? "Invalid preferred name");
+          : (r.error.issues[0]?.message ?? 'Invalid preferred name');
       },
     },
     {
