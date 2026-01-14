@@ -175,18 +175,6 @@ export const EventOverviewClient = ({
                     )}
                   </Box>
                 )}
-                <EventButton.Description>
-                {event.tags &&
-                  Array.isArray(event.tags) &&
-                  event.tags.length > 0 && (
-                    <Box display="flex" gap="2" marginY="2">
-                      {event.tags.map((tag) =>
-                        typeof tag === "object" && tag !== null ? (
-                          <Badge key={tag.id}>{tag.text}</Badge>
-                        ) : null,
-                      )}
-                    </Box>
-                  )}
                 <EventButton.Description className={descriptionDetailCss}>
                   {event.description && <RichText data={event.description} />}
                 </EventButton.Description>
