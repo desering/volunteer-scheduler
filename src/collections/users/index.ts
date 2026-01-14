@@ -27,10 +27,12 @@ export const Users: CollectionConfig = {
       name: "preferredName",
       type: "text",
       required: true,
-        validate: (value: string) => {
-          const r = preferredNameSchema.safeParse(value);
-          return r.success ? true : (r.error.errors[0]?.message ?? "Invalid preferred name");
-	}
+      validate: (value: string) => {
+        const r = preferredNameSchema.safeParse(value);
+        return r.success
+          ? true
+          : (r.error.errors[0]?.message ?? "Invalid preferred name");
+      },
     },
     {
       name: "phoneNumber",
