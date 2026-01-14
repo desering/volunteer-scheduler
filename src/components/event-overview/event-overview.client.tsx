@@ -198,7 +198,12 @@ export const EventOverviewClient = ({
                 </Box>
               </EventButton.Root>
             );
-          }) ?? <NoEventsMessage tagsSelected={selectedTags.length > 0} />}
+          }) ?? (
+            <NoEventsMessage
+              tagsSelected={selectedTags.length > 0}
+              locationsSelected={selectedLocations.length > 0}
+            />
+          )}
         </Grid>
       </Container>
       <EventDetailsDrawer
