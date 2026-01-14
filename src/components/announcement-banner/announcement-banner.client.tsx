@@ -28,6 +28,8 @@ export const AnnouncementBannerClient = ({
         status={announcement.status ?? "info"}
         variant="subtle"
         borderWidth="0"
+        bg="colorPalette.a3"
+        color="colorPalette.text"
       >
         <Alert.Indicator />
         <Alert.Content>
