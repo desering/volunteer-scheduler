@@ -27,13 +27,13 @@ export const Users: CollectionConfig = {
       name: "preferredName",
       type: "text",
       required: true,
-      validate: (value) => {
-        const result = preferredNameSchema.safeParse(value);
-        if (!result.success) {
-          return result.error.errors[0]?.message || "Invalid preferred name";
-        }
-        return true;
-      },
+        const preferredNameSchema = z.string().min(1, "Preferred name is required").refine((v) => !v.includes(","), {
+          message: "Preferred name cannot contain commas"});
+
+        validate: (value: string) => {
+          const r = preferredNameSchema.safeParse(value);
+          return r.success ? true : (r.error.errors[0]?.message ?? "Invalid preferred name");
+	}
     },
     {
       name: "phoneNumber",
