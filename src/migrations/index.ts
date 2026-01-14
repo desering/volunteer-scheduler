@@ -42,7 +42,9 @@ export const migrations = [
   {
     up: migration_20260105_141535_add_locations_collection.up,
     down: migration_20260105_141535_add_locations_collection.down,
-    name: '20260105_141535_add_locations_collection'
+    name: '20260105_141535_add_locations_collection',
+  },
+  {
     up: migration_20260105_132536_add_announcements_collection.up,
     down: migration_20260105_132536_add_announcements_collection.down,
     name: '20260105_132536_add_announcements_collection',
