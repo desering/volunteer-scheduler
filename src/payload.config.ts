@@ -3,9 +3,9 @@ import process from "node:process";
 import { fileURLToPath } from "node:url";
 import { postgresAdapter } from "@payloadcms/db-postgres";
 import { nodemailerAdapter } from "@payloadcms/email-nodemailer";
-import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { buildConfig, inMemoryKVAdapter } from "payload";
 import sharp from "sharp";
+import { Announcements } from "./collections/announcements";
 import { EventTemplates } from "./collections/event-templates";
 import { Events } from "./collections/events";
 import { Locations } from "./collections/locations";
@@ -15,6 +15,7 @@ import { Signups } from "./collections/signups";
 import { Tags } from "./collections/tags";
 import { UserNotificationPreferences } from "./collections/user-notification-preferences";
 import { Users } from "./collections/users";
+import { editor } from "./editor.config";
 import { logger } from "./lib/logger";
 import { migrations } from "./migrations";
 
@@ -96,17 +97,18 @@ export default buildConfig({
   csrf: [process.env.NEXT_PUBLIC_SERVER_URL ?? ""].filter(Boolean),
 
   collections: [
-    Users,
+    Announcements,
     EventTemplates,
     Events,
-    Sections,
     Roles,
+    Sections,
     Signups,
     Tags,
     Locations,
     UserNotificationPreferences,
+    Users,
   ],
-  editor: lexicalEditor(),
+  editor,
   secret: process.env.PAYLOAD_SECRET ?? "",
   typescript: {
     outputFile: path.resolve(dirname, "payload-types.ts"),
