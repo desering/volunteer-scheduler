@@ -14,6 +14,7 @@ import {
 } from "date-fns";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import { css } from "styled-system/css";
 import { Box, type BoxProps, Container, Grid } from "styled-system/jsx";
 import { EventButton } from "@/components/event-button";
 import { EventDetailsDrawer } from "@/components/event-details-sheet";
@@ -120,6 +121,13 @@ export const EventOverviewClient = ({
     return eventsByDate;
   }, [events, selectedDate]);
 
+  const descriptionDetailCss = css({
+    "& a": {
+      textDecoration: "underline",
+      pointerEvents: "none",
+    },
+  });
+
   if (error) {
     return `Something went wrong, please try again later. ${error.message}`;
   }
@@ -168,6 +176,18 @@ export const EventOverviewClient = ({
                   </Box>
                 )}
                 <EventButton.Description>
+                {event.tags &&
+                  Array.isArray(event.tags) &&
+                  event.tags.length > 0 && (
+                    <Box display="flex" gap="2" marginY="2">
+                      {event.tags.map((tag) =>
+                        typeof tag === "object" && tag !== null ? (
+                          <Badge key={tag.id}>{tag.text}</Badge>
+                        ) : null,
+                      )}
+                    </Box>
+                  )}
+                <EventButton.Description className={descriptionDetailCss}>
                   {event.description && <RichText data={event.description} />}
                 </EventButton.Description>
 

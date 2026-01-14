@@ -149,6 +149,16 @@ export const EventDetailsDrawer = (props: Props) => {
     createSignup(id, _selectedRole);
   };
 
+  const descriptionDetailCss = css({
+    "& a": {
+      color: "blue.light.7",
+      "&:hover": {
+        cursor: "pointer",
+        textDecoration: "underline",
+      },
+    },
+  });
+
   return (
     <Sheet.Root
       open={props.open}
@@ -217,7 +227,7 @@ export const EventDetailsDrawer = (props: Props) => {
                     </HStack>
                   )}
                 </Sheet.Description>
-                <Sheet.Description>
+                <Sheet.Description className={descriptionDetailCss}>
                   {details?.description && (
                     <RichText data={details.description} />
                   )}
