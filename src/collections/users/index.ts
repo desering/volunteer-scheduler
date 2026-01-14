@@ -1,9 +1,8 @@
 import type { CollectionConfig } from "payload";
+import { preferredNameSchema } from "../../lib/schemas/preferred-name";
 import { admins } from "../access/admins";
 import { anyone } from "../access/anyone";
 import { adminAndThemselves } from "./access/admin-and-themselves";
-import { preferredNameSchema } from "../../lib/schemas/preferred-name";
-
 export const Users: CollectionConfig = {
   slug: "users",
   access: {
