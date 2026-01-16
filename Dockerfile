@@ -50,6 +50,6 @@ HEALTHCHECK \
   --start-period=5s \
   --start-interval=5s \
   --retries=3 \
-  CMD wget -q -O- http://0.0.0.0:3000/health/ready || exit 1
+  CMD wget -q -O- "http://0.0.0.0:${PORT}/health/ready" || exit 1
 
 CMD ["bun", "./server.js"]
