@@ -10,7 +10,6 @@ export const CloseButton = forwardRef<HTMLButtonElement, CloseButtonProps>(
       <IconButton
         // variant="plain" new var
         variant="ghost"
-        colorPalette="gray"
         aria-label="Close"
         ref={ref}
         {...props}

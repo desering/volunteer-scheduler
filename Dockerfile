@@ -19,6 +19,13 @@ RUN bun run build
 
 FROM base AS run
 
+LABEL org.opencontainers.image.title="volunteer-scheduler" \
+      org.opencontainers.image.description="Discover and sign up for events and volunteering opportunities in our community space" \
+      org.opencontainers.image.authors="De Sering Tech Circle" \
+      org.opencontainers.image.url="https://github.com/desering/volunteer-scheduler/" \
+      org.opencontainers.image.source="https://github.com/desering/volunteer-scheduler/" \
+      org.opencontainers.image.licenses="AGPL-3.0-only"
+
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 ENV PORT=3000
