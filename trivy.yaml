@@ -16,6 +16,7 @@ table-mode:
 
 exit-code: 1
 severity: HIGH,CRITICAL
+output: trivy-output.txt
 
 # custom config for secret scanning:
 # https://trivy.dev/docs/latest/scanner/secret/
