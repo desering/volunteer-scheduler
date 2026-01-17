@@ -53,6 +53,28 @@ jobs:
           trivy-config: trivy.yaml
           image-ref: '${{ env.DOCKER_REPO }}/${{ github.event.repository.name }}:${{ github.sha }}'
 
+      - uses: actions/github-script@v8
+        if: github.event_name == 'pull_request'
+        with:
+          script: |
+            const fs = require('fs');
+
+            let trivyOutput = fs.readFileSync('./trivy-output.txt', 'utf8');
+            
+            const body = `<details>
+            <summary>**Trivy image scan results**</summary>
+            \`\`\`
+            ${trivyOutput}
+            \`\`\`
+            </details>`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body,
+            })
+
   deploy-to-coolify:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: [ docker ]
