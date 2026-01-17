@@ -44,4 +44,12 @@ USER nextjs
 
 EXPOSE 3000
 
+HEALTHCHECK \
+  --interval=10s \
+  --timeout=1s \
+  --start-period=5s \
+  --start-interval=5s \
+  --retries=3 \
+  CMD wget -q -O- "http://0.0.0.0:${PORT}/health/ready" || exit 1
+
 CMD ["bun", "./server.js"]
