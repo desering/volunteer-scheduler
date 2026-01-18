@@ -3,19 +3,13 @@
 import { utc } from "@date-fns/utc";
 import config from "@payload-config";
 import { startOfDay } from "date-fns";
-import { getPayload, type WhereField } from "payload";
+import { getPayload, type Where, type WhereField } from "payload";
 
 type GetEventsOptions = {
   minDate?: Date;
   maxDate?: Date;
   tags?: string[];
-};
-
-type EventsWhereClause = {
-  start_date: WhereField;
-  tags?: {
-    in: number[];
-  };
+  locations?: string[];
 };
 
 export const getEvents = async (params?: GetEventsOptions) => {
@@ -29,8 +23,10 @@ export const getEvents = async (params?: GetEventsOptions) => {
     ...(maxDate && { less_than_equal: maxDate.toISOString() }),
   };
 
-  const where: EventsWhereClause = { start_date: startDateFilter };
+  const where: Where = { start_date: startDateFilter };
+  const andConditions: Where[] = [];
 
+  // Process tags filter
   if (params?.tags && params.tags.length > 0) {
     const tags = await payload.find({
       collection: "tags",
@@ -44,10 +40,39 @@ export const getEvents = async (params?: GetEventsOptions) => {
     const tagIds = tags.docs.map((tag) => tag.id);
 
     if (tagIds.length > 0) {
-      where.tags = {
-        in: tagIds,
-      };
+      andConditions.push({
+        tags: {
+          in: tagIds,
+        },
+      });
     }
+  }
+
+  // Process locations filter
+  if (params?.locations && params.locations.length > 0) {
+    const locations = await payload.find({
+      collection: "locations",
+      where: {
+        title: {
+          in: params.locations,
+        },
+      },
+    });
+
+    const locationIds = locations.docs.map((location) => location.id);
+
+    if (locationIds.length > 0) {
+      andConditions.push({
+        locations: {
+          in: locationIds,
+        },
+      });
+    }
+  }
+
+  // Apply AND logic if we have multiple conditions
+  if (andConditions.length > 0) {
+    where.and = andConditions;
   }
 
   const events = await payload.find({
