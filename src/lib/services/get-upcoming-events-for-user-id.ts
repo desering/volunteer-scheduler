@@ -9,7 +9,12 @@ export type EventsForUserId = Awaited<
   ReturnType<typeof getUpcomingEventsForUserId>
 >;
 
-export const getUpcomingEventsForUserId = async (userId: number) => {
+export const getUpcomingEventsForUserId = async (
+  userId: number,
+  filterOptions?: {
+    sort?: string[];
+  },
+) => {
   const payload = await getPayload({ config });
 
   const signups = await payload.find({
@@ -21,7 +26,7 @@ export const getUpcomingEventsForUserId = async (userId: number) => {
       "event.start_date": { greater_than_equal: startOfDay(Date.now()) },
     },
 
-    sort: "event.start_date",
+    sort: filterOptions?.sort,
     pagination: false,
   });
 
