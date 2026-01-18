@@ -118,8 +118,8 @@ export const UserEventsList = (props: UserEventsListProps) => {
           }
         >
           {sortOrder?.[0] === "event.start_date"
-            ? "Ascending order"
-            : "Descending order"}
+            ? "Sort Descending"
+            : "Sort Ascending"}
         </Button>
       </HStack>
 
