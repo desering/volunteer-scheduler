@@ -23,6 +23,7 @@ export interface Config {
     announcements: Announcement;
     'event-templates': EventTemplate;
     events: Event;
+    locations: Location;
     roles: Role;
     sections: Section;
     signups: Signup;
@@ -50,6 +51,7 @@ export interface Config {
     announcements: AnnouncementsSelect<false> | AnnouncementsSelect<true>;
     'event-templates': EventTemplatesSelect<false> | EventTemplatesSelect<true>;
     events: EventsSelect<false> | EventsSelect<true>;
+    locations: LocationsSelect<false> | LocationsSelect<true>;
     roles: RolesSelect<false> | RolesSelect<true>;
     sections: SectionsSelect<false> | SectionsSelect<true>;
     signups: SignupsSelect<false> | SignupsSelect<true>;
@@ -274,6 +276,7 @@ export interface Event {
     [k: string]: unknown;
   } | null;
   tags?: (number | Tag)[] | null;
+  locations?: (number | Location)[] | null;
   sections?: {
     docs?: (number | Section)[];
     hasNextPage?: boolean;
@@ -299,6 +302,17 @@ export interface Event {
 export interface Tag {
   id: number;
   text: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "locations".
+ */
+export interface Location {
+  id: number;
+  title: string;
+  address: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -413,6 +427,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'events';
         value: number | Event;
+      } | null)
+    | ({
+        relationTo: 'locations';
+        value: number | Location;
       } | null)
     | ({
         relationTo: 'roles';
@@ -550,9 +568,20 @@ export interface EventsSelect<T extends boolean = true> {
   end_date?: T;
   description?: T;
   tags?: T;
+  locations?: T;
   sections?: T;
   roles?: T;
   signups?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "locations_select".
+ */
+export interface LocationsSelect<T extends boolean = true> {
+  title?: T;
+  address?: T;
   updatedAt?: T;
   createdAt?: T;
 }
