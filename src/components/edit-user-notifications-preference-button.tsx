@@ -109,7 +109,7 @@ export function EditUserNotificationPreferences({ user }: Props) {
       <Dialog.Trigger asChild>
         <Button variant="outline">
           <Bell />
-          Edit Notifications
+          Notifications Settings
         </Button>
       </Dialog.Trigger>
 

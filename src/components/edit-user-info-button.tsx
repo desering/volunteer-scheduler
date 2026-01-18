@@ -10,6 +10,8 @@ import { Dialog } from "./ui/dialog";
 import { Field } from "./ui/field";
 import { Input } from "./ui/styled/field";
 import { toaster } from "./ui/toast";
+import { PenIcon } from "lucide-react";
+import { IconButton } from "./ui/icon-button";
 
 type Props = {
   user: User;
@@ -52,7 +54,9 @@ export function EditUserInfoButton({ user }: Props) {
       }}
     >
       <Dialog.Trigger asChild>
-        <Button variant="outline">Edit</Button>
+        <IconButton variant="outline">
+          <PenIcon />
+        </IconButton>
       </Dialog.Trigger>
 
       <Dialog.Backdrop />
