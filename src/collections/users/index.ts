@@ -21,6 +21,10 @@ export const Users: CollectionConfig = {
     maxLoginAttempts: 0,
     tokenExpiration: 31 * 24 * 60 * 60, // 31 days in seconds
     useSessions: false,
+    cookies: {
+      sameSite: "Lax",
+      secure: process.env.NODE_ENV === "production",
+    },
   },
   fields: [
     {
