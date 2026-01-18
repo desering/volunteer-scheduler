@@ -19,7 +19,7 @@ export const Users: CollectionConfig = {
   auth: {
     loginWithUsername: false,
     maxLoginAttempts: 0,
-    tokenExpiration: 7 * 24 * 60 * 60, // 7 days in seconds
+    tokenExpiration: 31 * 24 * 60 * 60, // 31 days in seconds
     useSessions: false,
   },
   fields: [
