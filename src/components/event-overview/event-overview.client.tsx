@@ -10,6 +10,7 @@ import {
   startOfDay,
   subMonths,
 } from "date-fns";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { css } from "styled-system/css";
 import { Box, type BoxProps, Container, Grid } from "styled-system/jsx";
@@ -23,7 +24,6 @@ import {
 } from "@/lib/mappers/group-events-by-date";
 import type { Event, Location, Tag } from "@/payload-types";
 import { DateSelect } from "./date-select";
-import { TagFilter } from "./tag-filter";
 
 type Props = {
   placeholder?: EventsGroupedByDay;
@@ -33,9 +33,12 @@ export const EventOverviewClient = ({
   placeholder: initialEvents,
   ...cssProps
 }: Props & BoxProps) => {
+  const searchParams = useSearchParams();
+  const selectedTags = searchParams.getAll("tags[]");
+  const selectedLocations = searchParams.getAll("locations[]");
+
   const [selectedDate, setSelectedDate] = useState(startOfDay(new Date()));
   const [selectedEventId, setSelectedEventId] = useState<number>();
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   // separation of selectedEvent and isDrawerOpen, otherwise breaks exitAnim
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -52,7 +55,7 @@ export const EventOverviewClient = ({
     refetch,
     error,
   } = useQuery<EventsGroupedByDay>({
-    queryKey: ["eventsByDay", initialEvents, selectedTags],
+    queryKey: ["eventsByDay", initialEvents, selectedTags, selectedLocations],
     queryFn: async () => {
       const url = "/api/events?";
       const searchParams = new URLSearchParams({
@@ -62,6 +65,12 @@ export const EventOverviewClient = ({
       if (selectedTags.length > 0) {
         selectedTags.forEach((tag) => {
           searchParams.append("tags[]", tag);
+        });
+      }
+
+      if (selectedLocations.length > 0) {
+        selectedLocations.forEach((location) => {
+          searchParams.append("locations[]", location);
         });
       }
 
@@ -112,9 +121,6 @@ export const EventOverviewClient = ({
 
   return (
     <Box {...(cssProps as BoxProps)}>
-      <Container gap="4">
-        <TagFilter selectedTags={selectedTags} onTagsChange={setSelectedTags} />
-      </Container>
       <DateSelect
         selectedDate={selectedDate}
         items={completeDateRange}
@@ -175,7 +181,12 @@ export const EventOverviewClient = ({
                 </Box>
               </EventButton.Root>
             );
-          }) ?? <NoEventsMessage tagsSelected={selectedTags.length > 0} />}
+          }) ?? (
+            <NoEventsMessage
+              tagsSelected={selectedTags.length > 0}
+              locationsSelected={selectedLocations.length > 0}
+            />
+          )}
         </Grid>
       </Container>
       <EventDetailsDrawer
