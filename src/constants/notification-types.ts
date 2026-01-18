@@ -1,3 +1,6 @@
 export const notificationTypes = {
-  EVENT_SIGNUP: "event_signup",
+  EVENT_SIGNUP: {
+    key: "event_signup",
+    displayName: "Event Signup Confirmation",
+  },
 };
