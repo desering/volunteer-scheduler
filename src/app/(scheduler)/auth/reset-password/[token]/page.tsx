@@ -1,14 +1,10 @@
 import { Box, Container, Grid, panda } from "styled-system/jsx";
 import { ResetPasswordForm } from "@/components/auth/reset-password-form";
 
-type Args = {
-  params: Promise<{
-    token: string;
-  }>;
-};
-
-export default async function Page({ params }: Args) {
-  const { token } = await params;
+export default async function Page(
+  props: PageProps<"/auth/reset-password/[token]">,
+) {
+  const { token } = await props.params;
 
   return (
     <Box
