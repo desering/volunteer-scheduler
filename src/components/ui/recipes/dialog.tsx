@@ -53,7 +53,7 @@ export const dialog = defineSlotRecipe({
     content: {
       "--dialog-z-index": "zIndex.modal",
       // bg: "gray.surface.bg", new var
-      bg: "bg.canvas",
+      bg: "bg.subtle",
       borderRadius: "l3",
       boxShadow: "lg",
       display: "flex",

@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { EditUserInfoButton } from "src/components/edit-user-info-button";
-import { Container, panda, VStack } from "styled-system/jsx";
+import { Container, HStack, panda, VStack } from "styled-system/jsx";
+import { EditUserNotificationPreferences } from "@/components/edit-user-notifications-preference-button";
 import { getUser } from "@/lib/services/get-user";
 
 export default async function Page() {
@@ -12,9 +13,16 @@ export default async function Page() {
 
   return (
     <Container marginTop={{ base: 4, xl: 20 }} marginBottom="4">
-      <panda.h1 fontSize="xl" fontWeight="medium" marginBottom="8">
-        My account details
-      </panda.h1>
+      <HStack
+        alignItems="baseline"
+        justifyContent="space-between"
+        marginBottom="8"
+      >
+        <panda.h1 fontSize="xl" fontWeight="medium" marginBottom="8">
+          My account details
+        </panda.h1>
+        <EditUserInfoButton user={user} />
+      </HStack>
 
       <VStack marginBottom="8" gap="1" alignItems="start">
         <p>Name: {user.preferredName}</p>
@@ -22,7 +30,7 @@ export default async function Page() {
         <p>Phone Number: {user.phoneNumber}</p>
       </VStack>
 
-      <EditUserInfoButton user={user} />
+      <EditUserNotificationPreferences user={user} />
     </Container>
   );
 }

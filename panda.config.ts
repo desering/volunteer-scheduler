@@ -11,6 +11,7 @@ import { alert } from "@/components/ui/recipes/alert";
 import { dialog } from "@/components/ui/recipes/dialog";
 import { icon } from "@/components/ui/recipes/icon";
 import { sheet } from "@/components/ui/recipes/sheet";
+import { switchRecipe } from "@/components/ui/recipes/switch";
 import { toast } from "@/components/ui/recipes/toast";
 
 const globalCss = defineGlobalStyles({
@@ -87,6 +88,7 @@ export default defineConfig({
         sheet,
         toast,
         dialog,
+        switchStyled: switchRecipe,
         radioButtonGroup: {
           variants: {
             direction: {
