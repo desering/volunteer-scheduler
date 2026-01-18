@@ -1,6 +1,7 @@
 "use client";
 
 import { useMutation } from "@tanstack/react-query";
+import { PenIcon } from "lucide-react";
 import { useState } from "react";
 import type { User } from "@/payload-types";
 import { updateUser } from "../actions/auth/update-user-data";
@@ -8,10 +9,9 @@ import { Alert } from "./ui/alert";
 import { Button } from "./ui/button";
 import { Dialog } from "./ui/dialog";
 import { Field } from "./ui/field";
+import { IconButton } from "./ui/icon-button";
 import { Input } from "./ui/styled/field";
 import { toaster } from "./ui/toast";
-import { PenIcon } from "lucide-react";
-import { IconButton } from "./ui/icon-button";
 
 type Props = {
   user: User;

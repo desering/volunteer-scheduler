@@ -28,7 +28,6 @@ export function EditUserNotificationPreferences({ user }: Props) {
     queryFn: async () => {
       const res = await fetch("/api/users/me/notification-preferences");
       const data = (await res.json()) as { data: UserNotificationPreference[] };
-      console.log("Fetched notification preferences:", data.data);
       return data.data;
     },
   });
@@ -128,16 +127,16 @@ export function EditUserNotificationPreferences({ user }: Props) {
 
           <Dialog.Body gap="4" alignItems="stretch">
             {Object.values(notificationTypes).map((type) => (
-              <div key={type.key} className="flex items-center justify-between">
+              <div key={type.key}>
                 <Text size="sm" fontWeight="medium" marginBottom="2">
                   {type.displayName}
                 </Text>
-                <HStack alignItems="start" gap="8">
+                <HStack gap="4">
                   {Object.values(notificationChannels).map((channel) => (
-                    <Switch
+                    <Switch.Root
                       key={channel}
                       checked={getPreferenceValue(type.key, channel)}
-                      label={channel}
+                      disabled={isPending}
                       onCheckedChange={(checked) =>
                         handlePreferenceChange(
                           type.key,
@@ -145,8 +144,13 @@ export function EditUserNotificationPreferences({ user }: Props) {
                           checked.checked,
                         )
                       }
-                      disabled={isPending}
-                    />
+                    >
+                      <Switch.HiddenInput />
+                      <Switch.Control>
+                        <Switch.Thumb />
+                      </Switch.Control>
+                      <Switch.Label>{channel}</Switch.Label>
+                    </Switch.Root>
                   ))}
                 </HStack>
               </div>

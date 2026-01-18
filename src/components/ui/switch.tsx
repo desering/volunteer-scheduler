@@ -1,1 +1,1 @@
-export { Switch } from "./styled/switch";
+export * as Switch from "./styled/switch";

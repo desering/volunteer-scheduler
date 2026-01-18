@@ -13,7 +13,11 @@ export default async function Page() {
 
   return (
     <Container marginTop={{ base: 4, xl: 20 }} marginBottom="4">
-      <HStack alignItems="baseline" justifyContent="space-between" marginBottom="8">
+      <HStack
+        alignItems="baseline"
+        justifyContent="space-between"
+        marginBottom="8"
+      >
         <panda.h1 fontSize="xl" fontWeight="medium" marginBottom="8">
           My account details
         </panda.h1>
