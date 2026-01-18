@@ -27,6 +27,7 @@ export interface Config {
     sections: Section;
     signups: Signup;
     tags: Tag;
+    locations: Location;
     'user-notification-preferences': UserNotificationPreference;
     users: User;
     'payload-locked-documents': PayloadLockedDocument;
@@ -54,6 +55,7 @@ export interface Config {
     sections: SectionsSelect<false> | SectionsSelect<true>;
     signups: SignupsSelect<false> | SignupsSelect<true>;
     tags: TagsSelect<false> | TagsSelect<true>;
+    locations: LocationsSelect<false> | LocationsSelect<true>;
     'user-notification-preferences': UserNotificationPreferencesSelect<false> | UserNotificationPreferencesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -144,6 +146,8 @@ export interface EventTemplate {
     };
     [k: string]: unknown;
   } | null;
+  tags?: (number | Tag)[] | null;
+  locations?: (number | Location)[] | null;
   sections?:
     | {
         title: string;
@@ -233,6 +237,26 @@ export interface EventTemplate {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags".
+ */
+export interface Tag {
+  id: number;
+  text: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "locations".
+ */
+export interface Location {
+  id: number;
+  text: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
@@ -274,6 +298,7 @@ export interface Event {
     [k: string]: unknown;
   } | null;
   tags?: (number | Tag)[] | null;
+  locations?: (number | Location)[] | null;
   sections?: {
     docs?: (number | Section)[];
     hasNextPage?: boolean;
@@ -289,16 +314,6 @@ export interface Event {
     hasNextPage?: boolean;
     totalDocs?: number;
   };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "tags".
- */
-export interface Tag {
-  id: number;
-  text: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -431,6 +446,10 @@ export interface PayloadLockedDocument {
         value: number | Tag;
       } | null)
     | ({
+        relationTo: 'locations';
+        value: number | Location;
+      } | null)
+    | ({
         relationTo: 'user-notification-preferences';
         value: number | UserNotificationPreference;
       } | null)
@@ -502,6 +521,8 @@ export interface EventTemplatesSelect<T extends boolean = true> {
   start_time_tz?: T;
   end_time?: T;
   description?: T;
+  tags?: T;
+  locations?: T;
   sections?:
     | T
     | {
@@ -550,6 +571,7 @@ export interface EventsSelect<T extends boolean = true> {
   end_date?: T;
   description?: T;
   tags?: T;
+  locations?: T;
   sections?: T;
   roles?: T;
   signups?: T;
@@ -599,6 +621,15 @@ export interface SignupsSelect<T extends boolean = true> {
  * via the `definition` "tags_select".
  */
 export interface TagsSelect<T extends boolean = true> {
+  text?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "locations_select".
+ */
+export interface LocationsSelect<T extends boolean = true> {
   text?: T;
   updatedAt?: T;
   createdAt?: T;

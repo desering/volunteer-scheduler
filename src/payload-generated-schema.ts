@@ -222,6 +222,40 @@ export const event_templates = pgTable(
   ],
 );
 
+export const event_templates_rels = pgTable(
+  "event_templates_rels",
+  {
+    id: serial("id").primaryKey(),
+    order: integer("order"),
+    parent: integer("parent_id").notNull(),
+    path: varchar("path").notNull(),
+    tagsID: integer("tags_id"),
+    locationsID: integer("locations_id"),
+  },
+  (columns) => [
+    index("event_templates_rels_order_idx").on(columns.order),
+    index("event_templates_rels_parent_idx").on(columns.parent),
+    index("event_templates_rels_path_idx").on(columns.path),
+    index("event_templates_rels_tags_id_idx").on(columns.tagsID),
+    index("event_templates_rels_locations_id_idx").on(columns.locationsID),
+    foreignKey({
+      columns: [columns["parent"]],
+      foreignColumns: [event_templates.id],
+      name: "event_templates_rels_parent_fk",
+    }).onDelete("cascade"),
+    foreignKey({
+      columns: [columns["tagsID"]],
+      foreignColumns: [tags.id],
+      name: "event_templates_rels_tags_fk",
+    }).onDelete("cascade"),
+    foreignKey({
+      columns: [columns["locationsID"]],
+      foreignColumns: [locations.id],
+      name: "event_templates_rels_locations_fk",
+    }).onDelete("cascade"),
+  ],
+);
+
 export const events = pgTable(
   "events",
   {
@@ -267,12 +301,14 @@ export const events_rels = pgTable(
     parent: integer("parent_id").notNull(),
     path: varchar("path").notNull(),
     tagsID: integer("tags_id"),
+    locationsID: integer("locations_id"),
   },
   (columns) => [
     index("events_rels_order_idx").on(columns.order),
     index("events_rels_parent_idx").on(columns.parent),
     index("events_rels_path_idx").on(columns.path),
     index("events_rels_tags_id_idx").on(columns.tagsID),
+    index("events_rels_locations_id_idx").on(columns.locationsID),
     foreignKey({
       columns: [columns["parent"]],
       foreignColumns: [events.id],
@@ -282,6 +318,11 @@ export const events_rels = pgTable(
       columns: [columns["tagsID"]],
       foreignColumns: [tags.id],
       name: "events_rels_tags_fk",
+    }).onDelete("cascade"),
+    foreignKey({
+      columns: [columns["locationsID"]],
+      foreignColumns: [locations.id],
+      name: "events_rels_locations_fk",
     }).onDelete("cascade"),
   ],
 );
@@ -423,6 +464,32 @@ export const tags = pgTable(
   ],
 );
 
+export const locations = pgTable(
+  "locations",
+  {
+    id: serial("id").primaryKey(),
+    text: varchar("text").notNull(),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index("locations_updated_at_idx").on(columns.updatedAt),
+    index("locations_created_at_idx").on(columns.createdAt),
+  ],
+);
+
 export const user_notification_preferences = pgTable(
   "user_notification_preferences",
   {
@@ -541,6 +608,7 @@ export const payload_locked_documents_rels = pgTable(
     sectionsID: integer("sections_id"),
     signupsID: integer("signups_id"),
     tagsID: integer("tags_id"),
+    locationsID: integer("locations_id"),
     "user-notification-preferencesID": integer(
       "user_notification_preferences_id",
     ),
@@ -563,6 +631,9 @@ export const payload_locked_documents_rels = pgTable(
     ),
     index("payload_locked_documents_rels_signups_id_idx").on(columns.signupsID),
     index("payload_locked_documents_rels_tags_id_idx").on(columns.tagsID),
+    index("payload_locked_documents_rels_locations_id_idx").on(
+      columns.locationsID,
+    ),
     index("payload_locked_documents_rels_user_notification_preferen_idx").on(
       columns["user-notification-preferencesID"],
     ),
@@ -606,6 +677,11 @@ export const payload_locked_documents_rels = pgTable(
       columns: [columns["tagsID"]],
       foreignColumns: [tags.id],
       name: "payload_locked_documents_rels_tags_fk",
+    }).onDelete("cascade"),
+    foreignKey({
+      columns: [columns["locationsID"]],
+      foreignColumns: [locations.id],
+      name: "payload_locked_documents_rels_locations_fk",
     }).onDelete("cascade"),
     foreignKey({
       columns: [columns["user-notification-preferencesID"]],
@@ -772,6 +848,26 @@ export const relations_event_templates_roles = relations(
     }),
   }),
 );
+export const relations_event_templates_rels = relations(
+  event_templates_rels,
+  ({ one }) => ({
+    parent: one(event_templates, {
+      fields: [event_templates_rels.parent],
+      references: [event_templates.id],
+      relationName: "_rels",
+    }),
+    tagsID: one(tags, {
+      fields: [event_templates_rels.tagsID],
+      references: [tags.id],
+      relationName: "tags",
+    }),
+    locationsID: one(locations, {
+      fields: [event_templates_rels.locationsID],
+      references: [locations.id],
+      relationName: "locations",
+    }),
+  }),
+);
 export const relations_event_templates = relations(
   event_templates,
   ({ many }) => ({
@@ -780,6 +876,9 @@ export const relations_event_templates = relations(
     }),
     roles: many(event_templates_roles, {
       relationName: "roles",
+    }),
+    _rels: many(event_templates_rels, {
+      relationName: "_rels",
     }),
   }),
 );
@@ -793,6 +892,11 @@ export const relations_events_rels = relations(events_rels, ({ one }) => ({
     fields: [events_rels.tagsID],
     references: [tags.id],
     relationName: "tags",
+  }),
+  locationsID: one(locations, {
+    fields: [events_rels.locationsID],
+    references: [locations.id],
+    relationName: "locations",
   }),
 }));
 export const relations_events = relations(events, ({ many }) => ({
@@ -837,6 +941,7 @@ export const relations_signups = relations(signups, ({ one }) => ({
   }),
 }));
 export const relations_tags = relations(tags, () => ({}));
+export const relations_locations = relations(locations, () => ({}));
 export const relations_user_notification_preferences = relations(
   user_notification_preferences,
   ({ one }) => ({
@@ -890,6 +995,11 @@ export const relations_payload_locked_documents_rels = relations(
       fields: [payload_locked_documents_rels.tagsID],
       references: [tags.id],
       relationName: "tags",
+    }),
+    locationsID: one(locations, {
+      fields: [payload_locked_documents_rels.locationsID],
+      references: [locations.id],
+      relationName: "locations",
     }),
     "user-notification-preferencesID": one(user_notification_preferences, {
       fields: [
@@ -952,12 +1062,14 @@ type DatabaseSchema = {
   event_templates_roles_signups: typeof event_templates_roles_signups;
   event_templates_roles: typeof event_templates_roles;
   event_templates: typeof event_templates;
+  event_templates_rels: typeof event_templates_rels;
   events: typeof events;
   events_rels: typeof events_rels;
   roles: typeof roles;
   sections: typeof sections;
   signups: typeof signups;
   tags: typeof tags;
+  locations: typeof locations;
   user_notification_preferences: typeof user_notification_preferences;
   users: typeof users;
   payload_locked_documents: typeof payload_locked_documents;
@@ -971,6 +1083,7 @@ type DatabaseSchema = {
   relations_event_templates_sections: typeof relations_event_templates_sections;
   relations_event_templates_roles_signups: typeof relations_event_templates_roles_signups;
   relations_event_templates_roles: typeof relations_event_templates_roles;
+  relations_event_templates_rels: typeof relations_event_templates_rels;
   relations_event_templates: typeof relations_event_templates;
   relations_events_rels: typeof relations_events_rels;
   relations_events: typeof relations_events;
@@ -978,6 +1091,7 @@ type DatabaseSchema = {
   relations_sections: typeof relations_sections;
   relations_signups: typeof relations_signups;
   relations_tags: typeof relations_tags;
+  relations_locations: typeof relations_locations;
   relations_user_notification_preferences: typeof relations_user_notification_preferences;
   relations_users: typeof relations_users;
   relations_payload_locked_documents_rels: typeof relations_payload_locked_documents_rels;
