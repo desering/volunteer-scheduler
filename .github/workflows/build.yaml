@@ -48,6 +48,55 @@ jobs:
           push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
           tags: ${{ env.IMAGE_TAGS }}
 
+      - uses: aquasecurity/trivy-action@0.33.1
+        with:
+          trivy-config: trivy.yaml
+          image-ref: '${{ env.DOCKER_REPO }}/${{ github.event.repository.name }}:${{ github.sha }}'
+
+      - uses: actions/github-script@v8
+        if: github.event_name == 'pull_request'
+        with:
+          script: |
+            const fs = require('fs');
+
+            let trivyOutput = fs.readFileSync('./trivy-output.txt', 'utf8');
+            
+            const body = `<details>
+            <summary><strong>Trivy image scan results</strong></summary>
+
+            \`\`\`
+            ${trivyOutput}
+            \`\`\`
+            </details>`;
+
+            // 1. Retrieve existing comments for the PR
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            // 2. Find the most recent comment that contains a trivy scan result
+            comments.sort((a, b) => Date.parse(a.updated_at) - Date.parse(b.updated_at));
+            const botComment = comments.findLast(comment => {
+              return comment.user.type === 'Bot' && comment.body.includes('Trivy image scan results');
+            });
+            // 3. If we have a comment, update it, otherwise create a new one
+            if (botComment) {
+              github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: body,
+              });
+            } else {
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: body,
+              });
+            }
+
   deploy-to-coolify:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: [ docker ]
