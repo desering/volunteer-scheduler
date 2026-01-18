@@ -12,23 +12,35 @@ import { Flex } from "styled-system/jsx/flex";
 import { EventButton } from "@/components/event-button";
 import { EventDetailsDrawer } from "@/components/event-details-sheet";
 import type { EventsForUserId } from "@/lib/services/get-upcoming-events-for-user-id";
+import { Button } from "../ui/styled/button";
 
 type UserEventsListProps = {
   initialData?: EventsForUserId;
   refetchUrl: string;
+  filterOptions?: { sort?: string[] };
 };
 
 export const UserEventsList = (props: UserEventsListProps) => {
   const [selectedEvent, setSelectedEvent] = useState<Event>();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [sortOrder, setSortOrder] = useState(props.filterOptions?.sort);
 
   const { data, refetch } = useQuery<EventsForUserId>({
-    queryKey: ["events", "users", "upcoming", props.initialData?.events],
-    queryFn: async () =>
-      await fetch(props.refetchUrl).then((res) => res.json()),
+    queryKey: [
+      "events",
+      "users",
+      "upcoming",
+      props.initialData?.events,
+      sortOrder,
+    ],
+    queryFn: async () => {
+      return await fetch(`${props.refetchUrl}?sort=${sortOrder}`).then((res) =>
+        res.json(),
+      );
+    },
     initialData: props.initialData,
-    staleTime: 1000 * 60 * 5, // 5 minutes
     refetchOnWindowFocus: true,
+    staleTime: 0,
   });
 
   const eventsList = data?.events?.map((event) => {
@@ -92,6 +104,24 @@ export const UserEventsList = (props: UserEventsListProps) => {
 
   return (
     <>
+      <HStack justify="flex-end" marginBottom="2">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() =>
+            setSortOrder(() =>
+              sortOrder?.[0] === "event.start_date"
+                ? ["-event.start_date"]
+                : ["event.start_date"],
+            )
+          }
+        >
+          {sortOrder?.[0] === "event.start_date"
+            ? "Sort Descending"
+            : "Sort Ascending"}
+        </Button>
+      </HStack>
+
       <Flex flexDirection="column" gap="4">
         {eventsList && eventsList.length > 0 ? (
           eventsList

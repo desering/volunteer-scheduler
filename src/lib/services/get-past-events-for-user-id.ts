@@ -9,7 +9,12 @@ export type EventsForUserId = Awaited<
   ReturnType<typeof getPastEventsForUserId>
 >;
 
-export const getPastEventsForUserId = async (userId: number) => {
+export const getPastEventsForUserId = async (
+  userId: number,
+  filterOptions?: {
+    sort?: string[];
+  },
+) => {
   const payload = await getPayload({ config });
 
   const signups = await payload.find({
@@ -21,7 +26,7 @@ export const getPastEventsForUserId = async (userId: number) => {
       "event.start_date": { less_than_equal: startOfDay(Date.now()) },
     },
 
-    sort: "event.start_date",
+    sort: filterOptions?.sort,
     pagination: false,
   });
 
