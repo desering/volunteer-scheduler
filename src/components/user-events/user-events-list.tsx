@@ -34,7 +34,6 @@ export const UserEventsList = (props: UserEventsListProps) => {
       sortOrder,
     ],
     queryFn: async () => {
-      console.log("Refetching events with sort order:", sortOrder);
       return await fetch(`${props.refetchUrl}?sort=${sortOrder}`).then((res) =>
         res.json(),
       );
