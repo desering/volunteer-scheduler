@@ -1,3 +1,5 @@
+"use client";
+
 import {
   createContext,
   type ReactNode,
@@ -5,7 +7,10 @@ import {
   useEffect,
   useState,
 } from "react";
-import type { EventDetailsRole } from "@/lib/services/get-event-details";
+import type {
+  EventDetails,
+  EventDetailsRole,
+} from "@/lib/local-models/event-details";
 import type { Event, Role, Signup } from "@/payload-types";
 import { useAuth } from "@/providers/auth";
 import { useCreateSignupMutation } from "../hooks/use-create-signup-mutation";
@@ -30,14 +35,16 @@ const EventDetailsContext = createContext<EventDetailsContextType | undefined>(
 );
 
 export const EventDetailsProvider = ({
-  eventId,
+  id: eventId,
   children,
+  initialData,
 }: {
-  eventId: Event["id"];
+  id: Event["id"];
   children: ReactNode;
+  initialData?: EventDetails;
 }) => {
   const { user } = useAuth();
-  const { data, isFetching } = useEventDetailsQuery(eventId);
+  const { data, isFetching } = useEventDetailsQuery(eventId, initialData);
   const { mutate: createSignup, isPending: isCreating } =
     useCreateSignupMutation(eventId);
   const { mutate: deleteSignup, isPending: isDeleting } =

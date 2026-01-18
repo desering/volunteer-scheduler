@@ -1,3 +1,5 @@
+"use client";
+
 import { HStack, panda } from "styled-system/jsx";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/components/ui/link";

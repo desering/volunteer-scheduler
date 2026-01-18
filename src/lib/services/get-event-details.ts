@@ -2,24 +2,9 @@
 
 import config from "@payload-config";
 import { getPayload } from "payload";
-import type { Event, Role, Section, Signup, Tag } from "@/payload-types";
+import type { EventDetails } from "../local-models/event-details";
 
-export type EventDetailsRole = Omit<Role, "signups"> & {
-  signups: Signup[];
-};
-
-export type EventDetails = Omit<
-  Event,
-  "sections" | "roles" | "signups" | "tags"
-> & {
-  sections: (Section & {
-    roles: EventDetailsRole[];
-  })[];
-  roles: EventDetailsRole[];
-  tags: Tag[];
-};
-
-export const getEventDetails = async (id: number) => {
+export const getEventDetails = async (id: number): Promise<EventDetails> => {
   const payload = await getPayload({ config });
 
   const event = await payload.findByID({
@@ -71,7 +56,7 @@ export const getEventDetails = async (id: number) => {
     ),
 
     tags: mapObjects(event.tags, (tag) => tag),
-  } satisfies EventDetails;
+  };
 };
 
 const forceNumber = (value: unknown) =>

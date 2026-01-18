@@ -1,9 +1,11 @@
+"use client";
+
 import { css } from "styled-system/css";
 import { Flex, panda } from "styled-system/jsx";
 import { Alert } from "@/components/ui/alert";
 import { RadioButtonGroup } from "@/components/ui/radio-button-group";
 import { Text } from "@/components/ui/text";
-import type { EventDetails } from "@/lib/services/get-event-details";
+import type { EventDetails } from "@/lib/local-models/event-details";
 import { useAuth } from "@/providers/auth";
 import { useEventDetailsQuery } from "../../hooks/use-event-details-query";
 import { useEventDetails } from "../event-details.context";

@@ -11,13 +11,12 @@ import { use, useEffect, useMemo, useState } from "react";
 import { Flex, HStack } from "styled-system/jsx";
 import { hstack } from "styled-system/patterns";
 import { Badge } from "@/components/ui/badge";
+import { IconButton } from "@/components/ui/icon-button";
 import { Link } from "@/components/ui/link";
 import { Sheet } from "@/components/ui/sheet";
 import { EventDetails } from "@/features/events";
 import { useEventDetailsQuery } from "@/features/events/hooks/use-event-details-query";
 import { eventsQueryConfig } from "@/features/events/hooks/use-events-query";
-import { useEventDetails } from "@/features/events/components";
-import { IconButton } from "@/components/ui/icon-button";
 
 export default function Page({ params }: PageProps<"/events/[id]">) {
   const { id } = use(params);
@@ -27,7 +26,7 @@ export default function Page({ params }: PageProps<"/events/[id]">) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(true);
 
   const { user } = useAuth();
-  const { data } = useEventDetailsQuery(Number(id));
+  const { data, isLoading } = useEventDetailsQuery(Number(id));
 
   const timeRange = useMemo(() => {
     const start = data?.start_date;
@@ -57,7 +56,7 @@ export default function Page({ params }: PageProps<"/events/[id]">) {
   }, [queryClient.invalidateQueries, isDrawerOpen]);
 
   return (
-    <EventDetails.Root eventId={Number(id)}>
+    <EventDetails.Root id={Number(id)}>
       <Sheet.Root
         open={isDrawerOpen}
         onExitComplete={() => router.back()}
@@ -73,11 +72,14 @@ export default function Page({ params }: PageProps<"/events/[id]">) {
         <Portal>
           <Sheet.Backdrop />
           <Sheet.Positioner>
-            <ReadySheetContent
+            <Sheet.Content
               maxHeight={{ base: "80vh", md: "100vh" }}
               overflowY="auto"
               display="flex"
               flexDirection="column"
+              style={{
+                display: isLoading ? "none" : undefined,
+              }}
             >
               <Sheet.Header flexGrow="1">
                 <Flex gap="2" alignItems="flex-end">
@@ -130,24 +132,10 @@ export default function Page({ params }: PageProps<"/events/[id]">) {
               <Sheet.Footer justifyContent="center">
                 <EventDetails.Actions />
               </Sheet.Footer>
-            </ReadySheetContent>
+            </Sheet.Content>
           </Sheet.Positioner>
         </Portal>
       </Sheet.Root>
     </EventDetails.Root>
   );
 }
-
-const ReadySheetContent = (props: Sheet.ContentProps) => {
-  const { eventId } = useEventDetails();
-  const { isLoading } = useEventDetailsQuery(eventId);
-
-  return (
-    <Sheet.Content
-      {...props}
-      style={{
-        display: isLoading ? "none" : undefined,
-      }}
-    />
-  );
-};

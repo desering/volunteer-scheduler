@@ -8,6 +8,7 @@ import { dialog } from "@/components/ui/recipes/dialog";
 import { icon } from "@/components/ui/recipes/icon";
 import { sheet } from "@/components/ui/recipes/sheet";
 import { toast } from "@/components/ui/recipes/toast";
+import { card } from "@/components/ui/recipes/card";
 
 const globalCss = defineGlobalStyles({
   // reset park ui conflicting global style against payload
@@ -72,6 +73,7 @@ export default defineConfig({
       recipes: { icon },
       slotRecipes: {
         alert,
+        card,
         sheet,
         toast,
         dialog,
