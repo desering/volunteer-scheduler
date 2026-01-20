@@ -462,6 +462,34 @@ export const user_notification_preferences = pgTable(
   ],
 );
 
+export const users_sessions = pgTable(
+  "users_sessions",
+  {
+    _order: integer("_order").notNull(),
+    _parentID: integer("_parent_id").notNull(),
+    id: varchar("id").primaryKey(),
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    }),
+    expiresAt: timestamp("expires_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    }).notNull(),
+  },
+  (columns) => [
+    index("users_sessions_order_idx").on(columns._order),
+    index("users_sessions_parent_id_idx").on(columns._parentID),
+    foreignKey({
+      columns: [columns["_parentID"]],
+      foreignColumns: [users.id],
+      name: "users_sessions_parent_id_fk",
+    }).onDelete("cascade"),
+  ],
+);
+
 export const users = pgTable(
   "users",
   {
@@ -847,7 +875,21 @@ export const relations_user_notification_preferences = relations(
     }),
   }),
 );
-export const relations_users = relations(users, () => ({}));
+export const relations_users_sessions = relations(
+  users_sessions,
+  ({ one }) => ({
+    _parentID: one(users, {
+      fields: [users_sessions._parentID],
+      references: [users.id],
+      relationName: "sessions",
+    }),
+  }),
+);
+export const relations_users = relations(users, ({ many }) => ({
+  sessions: many(users_sessions, {
+    relationName: "sessions",
+  }),
+}));
 export const relations_payload_locked_documents_rels = relations(
   payload_locked_documents_rels,
   ({ one }) => ({
@@ -959,6 +1001,7 @@ type DatabaseSchema = {
   signups: typeof signups;
   tags: typeof tags;
   user_notification_preferences: typeof user_notification_preferences;
+  users_sessions: typeof users_sessions;
   users: typeof users;
   payload_locked_documents: typeof payload_locked_documents;
   payload_locked_documents_rels: typeof payload_locked_documents_rels;
@@ -979,6 +1022,7 @@ type DatabaseSchema = {
   relations_signups: typeof relations_signups;
   relations_tags: typeof relations_tags;
   relations_user_notification_preferences: typeof relations_user_notification_preferences;
+  relations_users_sessions: typeof relations_users_sessions;
   relations_users: typeof relations_users;
   relations_payload_locked_documents_rels: typeof relations_payload_locked_documents_rels;
   relations_payload_locked_documents: typeof relations_payload_locked_documents;

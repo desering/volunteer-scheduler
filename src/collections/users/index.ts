@@ -22,7 +22,7 @@ export const Users: CollectionConfig = {
     loginWithUsername: false,
     maxLoginAttempts: 0,
     tokenExpiration: 31 * 24 * 60 * 60, // 31 days in seconds
-    useSessions: false,
+    useSessions: true,
     forgotPassword: {
       generateEmailHTML: (args) => {
         const { token, user } = args || {};
