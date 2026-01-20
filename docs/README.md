@@ -2,6 +2,11 @@
 
 Repo for the Volunteer Scheduler project.
 
+To understand why this project exists and how it differs from existing
+solutions, start with
+[Vision](explanation/vision-strategy-and-roadmap.md) and
+[Purpose](explanation/purpose.md).
+
 ## Tech Stack
 
 The `volunteer-scheduler` is a [Next.js](https://nextjs.org/) and
@@ -31,6 +36,7 @@ Install the following prerequisites:
    * macOS Homebrew: `brew tap oven-sh/bun; brew install bun`
 3. The [Node.js Javascript Runtime](https://nodejs.org/en/download)
    * macOS Homebrew: `brew install node`
+   * Node.js is required for payload development, see https://github.com/payloadcms/payload/issues/15015
 
 ### Run the project locally
 

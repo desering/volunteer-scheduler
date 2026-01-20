@@ -3,9 +3,9 @@ import process from "node:process";
 import { fileURLToPath } from "node:url";
 import { postgresAdapter } from "@payloadcms/db-postgres";
 import { nodemailerAdapter } from "@payloadcms/email-nodemailer";
-import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { buildConfig, inMemoryKVAdapter } from "payload";
 import sharp from "sharp";
+import { Announcements } from "./collections/announcements";
 import { EventTemplates } from "./collections/event-templates";
 import { Events } from "./collections/events";
 import { Roles } from "./collections/roles";
@@ -14,6 +14,7 @@ import { Signups } from "./collections/signups";
 import { Tags } from "./collections/tags";
 import { UserNotificationPreferences } from "./collections/user-notification-preferences";
 import { Users } from "./collections/users";
+import { editor } from "./editor.config";
 import { logger } from "./lib/logger";
 import { migrations } from "./migrations";
 
@@ -59,8 +60,6 @@ const getConnectionString = () => {
 };
 
 export default buildConfig({
-  serverURL: process.env.PAYLOAD_PUBLIC_SERVER_URL,
-
   admin: {
     user: Users.slug,
     autoRefresh: true,
@@ -94,20 +93,22 @@ export default buildConfig({
     api: "/payload-api",
   },
 
-  cors: [process.env.NEXT_PUBLIC_SERVER_URL ?? ""].filter(Boolean),
-  csrf: [process.env.NEXT_PUBLIC_SERVER_URL ?? ""].filter(Boolean),
+  serverURL: process.env.SERVER_URL,
+  cors: [process.env.SERVER_URL ?? ""].filter(Boolean),
+  csrf: [process.env.SERVER_URL ?? ""].filter(Boolean),
 
   collections: [
-    Users,
+    Announcements,
     EventTemplates,
     Events,
-    Sections,
     Roles,
+    Sections,
     Signups,
     Tags,
     UserNotificationPreferences,
+    Users,
   ],
-  editor: lexicalEditor(),
+  editor,
   secret: process.env.PAYLOAD_SECRET ?? "",
   typescript: {
     outputFile: path.resolve(dirname, "payload-types.ts"),

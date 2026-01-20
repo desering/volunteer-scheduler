@@ -1,6 +1,10 @@
 import { panda } from "styled-system/jsx";
 
-export const NoEventsMessage = () => (
+type NoEventsMessageProps = {
+  tagsSelected: boolean;
+};
+
+export const NoEventsMessage = ({ tagsSelected }: NoEventsMessageProps) => (
   <panda.div
     backgroundColor={{
       base: "colorPalette.1",
@@ -16,6 +20,8 @@ export const NoEventsMessage = () => (
       marginBottom={3}
     >
       There are no shifts yet, have a look at other days.
+      {tagsSelected &&
+        " Consider clearing the tag filter to see all available shifts."}
     </panda.h5>
   </panda.div>
 );

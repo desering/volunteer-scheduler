@@ -4,7 +4,9 @@ import * as migration_20250402_113720_timezones_in_event_template from './202504
 import * as migration_20251027_155038_payload_version_migration from './20251027_155038_payload_version_migration';
 import * as migration_20251116_184923_add_tags_collection from './20251116_184923_add_tags_collection';
 import * as migration_20251220_014719_add_user_notification_preferences_collection from './20251220_014719_add_user_notification_preferences_collection';
-import * as migration_20260102_233046_add_users_sessions_collection from './20260102_233046_add_users_sessions_collection';
+import * as migration_20260105_132536_add_announcements_collection from './20260105_132536_add_announcements_collection';
+import * as migration_20260112_112028_add_announcements_status from './20260112_112028_add_announcements_status';
+import * as migration_20260120_233046_add_users_sessions_collection from './20260120_233046_add_users_sessions_collection';
 
 export const migrations = [
   {
@@ -38,8 +40,18 @@ export const migrations = [
     name: '20251220_014719_add_user_notification_preferences_collection',
   },
   {
-    up: migration_20260102_233046_add_users_sessions_collection.up,
-    down: migration_20260102_233046_add_users_sessions_collection.down,
-    name: '20260102_233046_add_users_sessions_collection',
+    up: migration_20260105_132536_add_announcements_collection.up,
+    down: migration_20260105_132536_add_announcements_collection.down,
+    name: '20260105_132536_add_announcements_collection',
+  },
+  {
+    up: migration_20260112_112028_add_announcements_status.up,
+    down: migration_20260112_112028_add_announcements_status.down,
+    name: '20260112_112028_add_announcements_status',
+  },
+  {
+    up: migration_20260120_233046_add_users_sessions_collection.up,
+    down: migration_20260120_233046_add_users_sessions_collection.down,
+    name: '20260120_233046_add_users_sessions_collection',
   },
 ];
