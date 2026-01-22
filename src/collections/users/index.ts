@@ -4,6 +4,7 @@ import { ResetPasswordEmail } from "@/email/templates/reset-password";
 import { admins } from "../access/admins";
 import { anyone } from "../access/anyone";
 import { adminAndThemselves } from "./access/admin-and-themselves";
+import { preferredNameSchema } from "../../lib/schemas/preferred-name";
 
 export const Users: CollectionConfig = {
   slug: "users",
@@ -47,6 +48,13 @@ export const Users: CollectionConfig = {
       name: "preferredName",
       type: "text",
       required: true,
+      validate: (value: unknown) => {
+        const result = preferredNameSchema.safeParse(value);
+        if (!result.success) {
+          return result.error.errors[0]?.message || "Invalid preferred name";
+        }
+        return true;
+      },
     },
     {
       name: "phoneNumber",
