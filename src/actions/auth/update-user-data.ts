@@ -5,9 +5,10 @@ import { revalidatePath } from "next/cache";
 import { headers as getHeaders } from "next/headers";
 import { getPayload } from "payload";
 import { z } from "zod";
+import { preferredNameSchema } from "@/lib/schemas/preferred-name";
 
 const schema = z.object({
-  preferredName: z.string().min(1, "Preferred name is required"),
+  preferredName: preferredNameSchema,
   email: z.email({ error: "Invalid email" }),
   phoneNumber: z
     .e164({ error: "Invalid phone number e.g +31612345678" })
