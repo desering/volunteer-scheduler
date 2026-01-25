@@ -93,9 +93,9 @@ export default buildConfig({
     api: "/payload-api",
   },
 
-  serverURL: process.env.NEXT_PUBLIC_SERVER_URL,
-  cors: [process.env.NEXT_PUBLIC_SERVER_URL ?? ""].filter(Boolean),
-  csrf: [process.env.NEXT_PUBLIC_SERVER_URL ?? ""].filter(Boolean),
+  serverURL: process.env.SERVER_URL,
+  cors: [process.env.SERVER_URL ?? ""].filter(Boolean),
+  csrf: [process.env.SERVER_URL ?? ""].filter(Boolean),
 
   collections: [
     Announcements,
