@@ -1,4 +1,3 @@
-import { startOfDay } from "date-fns";
 import { APIError, type CollectionConfig } from "payload";
 import { sendConfirmationEmail } from "@/collections/signups/hooks/send-confirmation-email";
 
@@ -143,7 +142,7 @@ export const Signups: CollectionConfig = {
               where: {
                 user: { equals: data.user },
                 "event.start_date": {
-                  less_than_equal: startOfDay(new Date()),
+                  less_than_equal: Date.now(),
                 },
               },
             });
