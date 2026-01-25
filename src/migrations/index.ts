@@ -7,6 +7,7 @@ import * as migration_20251220_014719_add_user_notification_preferences_collecti
 import * as migration_20260105_132536_add_announcements_collection from './20260105_132536_add_announcements_collection';
 import * as migration_20260112_112028_add_announcements_status from './20260112_112028_add_announcements_status';
 import * as migration_20260120_173332_add_locations_collection from './20260120_173332_add_locations_collection';
+import * as migration_20260125_145020 from './20260125_145020';
 
 export const migrations = [
   {
@@ -53,5 +54,10 @@ export const migrations = [
     up: migration_20260120_173332_add_locations_collection.up,
     down: migration_20260120_173332_add_locations_collection.down,
     name: '20260120_173332_add_locations_collection',
+  },
+  {
+    up: migration_20260125_145020.up,
+    down: migration_20260125_145020.down,
+    name: '20260125_145020'
   },
 ];

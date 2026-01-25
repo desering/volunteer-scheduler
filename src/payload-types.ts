@@ -312,7 +312,7 @@ export interface Tag {
 export interface Location {
   id: number;
   title: string;
-  address: string;
+  address?: string | null;
   updatedAt: string;
   createdAt: string;
 }

@@ -298,7 +298,7 @@ export const locations = pgTable(
   {
     id: serial("id").primaryKey(),
     title: varchar("title").notNull(),
-    address: varchar("address").notNull(),
+    address: varchar("address"),
     updatedAt: timestamp("updated_at", {
       mode: "string",
       withTimezone: true,
