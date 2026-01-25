@@ -13,13 +13,13 @@
     "lint:staged": "biome check --error-on-warnings --staged --no-errors-on-unmatched --write",
     "test": "vitest",
     "coverage": "vitest run --coverage",
-    "payload": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts payload",
+    "payload": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts payload --disable-transpile",
     "start": "next start",
     "generate": "bun run generate:importmap && bun run generate:types && bun run generate:panda",
     "generate:panda": "panda codegen",
-    "generate:importmap": "payload generate:importmap",
-    "generate:types": "payload generate:types",
-    "generate:db-schema": "payload generate:db-schema",
+    "generate:importmap": "bun run payload generate:importmap",
+    "generate:types": "bun run payload generate:types",
+    "generate:db-schema": "bun run payload generate:db-schema",
     "prepare": "husky"
   },
   "dependencies": {
