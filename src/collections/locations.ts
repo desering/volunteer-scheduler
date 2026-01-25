@@ -18,7 +18,6 @@ export const Locations: CollectionConfig = {
     {
       name: "address",
       type: "text",
-      required: true,
     },
   ],
 };
