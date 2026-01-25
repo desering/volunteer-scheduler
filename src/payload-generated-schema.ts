@@ -267,12 +267,14 @@ export const events_rels = pgTable(
     parent: integer("parent_id").notNull(),
     path: varchar("path").notNull(),
     tagsID: integer("tags_id"),
+    locationsID: integer("locations_id"),
   },
   (columns) => [
     index("events_rels_order_idx").on(columns.order),
     index("events_rels_parent_idx").on(columns.parent),
     index("events_rels_path_idx").on(columns.path),
     index("events_rels_tags_id_idx").on(columns.tagsID),
+    index("events_rels_locations_id_idx").on(columns.locationsID),
     foreignKey({
       columns: [columns["parent"]],
       foreignColumns: [events.id],
@@ -283,6 +285,38 @@ export const events_rels = pgTable(
       foreignColumns: [tags.id],
       name: "events_rels_tags_fk",
     }).onDelete("cascade"),
+    foreignKey({
+      columns: [columns["locationsID"]],
+      foreignColumns: [locations.id],
+      name: "events_rels_locations_fk",
+    }).onDelete("cascade"),
+  ],
+);
+
+export const locations = pgTable(
+  "locations",
+  {
+    id: serial("id").primaryKey(),
+    title: varchar("title").notNull(),
+    address: varchar("address"),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index("locations_updated_at_idx").on(columns.updatedAt),
+    index("locations_created_at_idx").on(columns.createdAt),
   ],
 );
 
@@ -537,6 +571,7 @@ export const payload_locked_documents_rels = pgTable(
     announcementsID: integer("announcements_id"),
     "event-templatesID": integer("event_templates_id"),
     eventsID: integer("events_id"),
+    locationsID: integer("locations_id"),
     rolesID: integer("roles_id"),
     sectionsID: integer("sections_id"),
     signupsID: integer("signups_id"),
@@ -557,6 +592,9 @@ export const payload_locked_documents_rels = pgTable(
       columns["event-templatesID"],
     ),
     index("payload_locked_documents_rels_events_id_idx").on(columns.eventsID),
+    index("payload_locked_documents_rels_locations_id_idx").on(
+      columns.locationsID,
+    ),
     index("payload_locked_documents_rels_roles_id_idx").on(columns.rolesID),
     index("payload_locked_documents_rels_sections_id_idx").on(
       columns.sectionsID,
@@ -586,6 +624,11 @@ export const payload_locked_documents_rels = pgTable(
       columns: [columns["eventsID"]],
       foreignColumns: [events.id],
       name: "payload_locked_documents_rels_events_fk",
+    }).onDelete("cascade"),
+    foreignKey({
+      columns: [columns["locationsID"]],
+      foreignColumns: [locations.id],
+      name: "payload_locked_documents_rels_locations_fk",
     }).onDelete("cascade"),
     foreignKey({
       columns: [columns["rolesID"]],
@@ -794,12 +837,18 @@ export const relations_events_rels = relations(events_rels, ({ one }) => ({
     references: [tags.id],
     relationName: "tags",
   }),
+  locationsID: one(locations, {
+    fields: [events_rels.locationsID],
+    references: [locations.id],
+    relationName: "locations",
+  }),
 }));
 export const relations_events = relations(events, ({ many }) => ({
   _rels: many(events_rels, {
     relationName: "_rels",
   }),
 }));
+export const relations_locations = relations(locations, () => ({}));
 export const relations_roles = relations(roles, ({ one }) => ({
   event: one(events, {
     fields: [roles.event],
@@ -870,6 +919,11 @@ export const relations_payload_locked_documents_rels = relations(
       fields: [payload_locked_documents_rels.eventsID],
       references: [events.id],
       relationName: "events",
+    }),
+    locationsID: one(locations, {
+      fields: [payload_locked_documents_rels.locationsID],
+      references: [locations.id],
+      relationName: "locations",
     }),
     rolesID: one(roles, {
       fields: [payload_locked_documents_rels.rolesID],
@@ -954,6 +1008,7 @@ type DatabaseSchema = {
   event_templates: typeof event_templates;
   events: typeof events;
   events_rels: typeof events_rels;
+  locations: typeof locations;
   roles: typeof roles;
   sections: typeof sections;
   signups: typeof signups;
@@ -974,6 +1029,7 @@ type DatabaseSchema = {
   relations_event_templates: typeof relations_event_templates;
   relations_events_rels: typeof relations_events_rels;
   relations_events: typeof relations_events;
+  relations_locations: typeof relations_locations;
   relations_roles: typeof relations_roles;
   relations_sections: typeof relations_sections;
   relations_signups: typeof relations_signups;
