@@ -6,7 +6,7 @@ export const Signups: CollectionConfig = {
   slug: "signups",
   admin: {
     useAsTitle: "title",
-    defaultColumns: ["role", "user"],
+    defaultColumns: ["role", "user", "totalShifts"],
     group: false,
   },
   hooks: {
