@@ -15,11 +15,11 @@
     "coverage": "vitest run --coverage",
     "payload": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts payload --disable-transpile",
     "start": "next start",
-    "generate": "bun run generate:importmap && bun run generate:types && bun run generate:panda",
+    "generate": "bun run --bun generate:importmap && bun run --bun generate:types && bun run --bun generate:panda",
     "generate:panda": "panda codegen",
-    "generate:importmap": "bun run payload generate:importmap",
-    "generate:types": "bun run payload generate:types",
-    "generate:db-schema": "bun run payload generate:db-schema",
+    "generate:importmap": "bun run --bun payload generate:importmap",
+    "generate:types": "bun run --bun payload generate:types",
+    "generate:db-schema": "bun run --bun payload generate:db-schema",
     "prepare": "husky"
   },
   "dependencies": {
