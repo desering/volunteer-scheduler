@@ -137,6 +137,11 @@ export const EventOverviewClient = ({
         <Grid gap="4">
           {eventsOnSelectedDate?.map((event) => {
             const signups = event.signups?.docs?.length;
+            const hasTags = Array.isArray(event.tags) && event.tags.length > 0;
+            const hasLocations =
+              Array.isArray(event.locations) && event.locations.length > 0;
+            const shouldShowBadges = hasTags || hasLocations;
+
             return (
               <EventButton.Root
                 key={event.id}
@@ -150,17 +155,20 @@ export const EventOverviewClient = ({
                   endDate={event.end_date}
                 />
                 <EventButton.Title>{event.title}</EventButton.Title>
-                {event.tags &&
-                  Array.isArray(event.tags) &&
-                  event.tags.length > 0 && (
-                    <Box display="flex" gap="2" marginY="2">
-                      {event.tags.map((tag) =>
-                        typeof tag === "object" && tag !== null ? (
-                          <Badge key={tag.id}>{tag.text}</Badge>
-                        ) : null,
-                      )}
-                    </Box>
-                  )}
+                {shouldShowBadges && (
+                  <Box display="flex" gap="2" marginY="2" flexWrap="wrap">
+                    {event.tags?.map((tag) =>
+                      typeof tag === "object" && tag !== null ? (
+                        <Badge key={tag.id}>{tag.text}</Badge>
+                      ) : null,
+                    )}
+                    {event.locations?.map((location) =>
+                      typeof location === "object" && location !== null ? (
+                        <Badge key={location.id}>{location.title}</Badge>
+                      ) : null,
+                    )}
+                  </Box>
+                )}
                 <EventButton.Description className={descriptionDetailCss}>
                   {event.description && <RichText data={event.description} />}
                 </EventButton.Description>
