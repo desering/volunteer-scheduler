@@ -85,6 +85,12 @@ export const Events: CollectionConfig = {
               relationTo: "tags",
               hasMany: true,
             },
+            {
+              name: "locations",
+              type: "relationship",
+              relationTo: "locations",
+              hasMany: true,
+            },
           ],
         },
         {
