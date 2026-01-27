@@ -576,9 +576,6 @@ export const payload_locked_documents_rels = pgTable(
     sectionsID: integer("sections_id"),
     signupsID: integer("signups_id"),
     tagsID: integer("tags_id"),
-    "user-notification-preferencesID": integer(
-      "user_notification_preferences_id",
-    ),
     usersID: integer("users_id"),
   },
   (columns) => [
@@ -601,9 +598,6 @@ export const payload_locked_documents_rels = pgTable(
     ),
     index("payload_locked_documents_rels_signups_id_idx").on(columns.signupsID),
     index("payload_locked_documents_rels_tags_id_idx").on(columns.tagsID),
-    index("payload_locked_documents_rels_user_notification_preferen_idx").on(
-      columns["user-notification-preferencesID"],
-    ),
     index("payload_locked_documents_rels_users_id_idx").on(columns.usersID),
     foreignKey({
       columns: [columns["parent"]],
@@ -649,11 +643,6 @@ export const payload_locked_documents_rels = pgTable(
       columns: [columns["tagsID"]],
       foreignColumns: [tags.id],
       name: "payload_locked_documents_rels_tags_fk",
-    }).onDelete("cascade"),
-    foreignKey({
-      columns: [columns["user-notification-preferencesID"]],
-      foreignColumns: [user_notification_preferences.id],
-      name: "payload_locked_documents_rels_user_notification_preferenc_fk",
     }).onDelete("cascade"),
     foreignKey({
       columns: [columns["usersID"]],
@@ -944,13 +933,6 @@ export const relations_payload_locked_documents_rels = relations(
       fields: [payload_locked_documents_rels.tagsID],
       references: [tags.id],
       relationName: "tags",
-    }),
-    "user-notification-preferencesID": one(user_notification_preferences, {
-      fields: [
-        payload_locked_documents_rels["user-notification-preferencesID"],
-      ],
-      references: [user_notification_preferences.id],
-      relationName: "user-notification-preferences",
     }),
     usersID: one(users, {
       fields: [payload_locked_documents_rels.usersID],
