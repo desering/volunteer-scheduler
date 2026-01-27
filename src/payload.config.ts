@@ -8,6 +8,7 @@ import sharp from "sharp";
 import { Announcements } from "./collections/announcements";
 import { EventTemplates } from "./collections/event-templates";
 import { Events } from "./collections/events";
+import { Locations } from "./collections/locations";
 import { Roles } from "./collections/roles";
 import { Sections } from "./collections/sections";
 import { Signups } from "./collections/signups";
@@ -100,6 +101,7 @@ export default buildConfig({
     Announcements,
     EventTemplates,
     Events,
+    Locations,
     Roles,
     Sections,
     Signups,
