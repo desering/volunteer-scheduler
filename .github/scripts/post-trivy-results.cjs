@@ -7,7 +7,7 @@ module.exports = async ({ github, context }) => {
 
   const total = trivyOutput
     .matchAll(/Total: (?<total>\d)/gm)
-    .map((match) => parseInt(match.groups.total, 10))
+    .map((match) => Number(match.groups.total))
     .reduce((acc, cur) => acc + cur);
 
   const icon = total > 0 ? ":red_circle:" : ":green_circle:";
@@ -27,13 +27,16 @@ ${trivyOutput}
     repo: context.repo.repo,
     issue_number: context.issue.number,
   });
+
   // 2. Find the most recent comment that contains a trivy scan result
-  comments.sort((a, b) => Date.parse(a.updated_at) - Date.parse(b.updated_at));
-  const botComment = comments.findLast((comment) => {
-    return (
-      comment.user.type === "Bot" && comment.body.includes(COMMENT_IDENTIFIER)
+  const botComment = comments
+    .sort((a, b) => Date.parse(a.updated_at) - Date.parse(b.updated_at))
+    .findLast(
+      (comment) =>
+        comment.user.type === "Bot" &&
+        comment.body.includes(COMMENT_IDENTIFIER),
     );
-  });
+
   // 3. If we have a comment, update it, otherwise create a new one
   if (botComment) {
     github.rest.issues.updateComment({
