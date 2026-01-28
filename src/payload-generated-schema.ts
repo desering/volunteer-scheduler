@@ -222,6 +222,40 @@ export const event_templates = pgTable(
   ],
 );
 
+export const event_templates_rels = pgTable(
+  "event_templates_rels",
+  {
+    id: serial("id").primaryKey(),
+    order: integer("order"),
+    parent: integer("parent_id").notNull(),
+    path: varchar("path").notNull(),
+    tagsID: integer("tags_id"),
+    locationsID: integer("locations_id"),
+  },
+  (columns) => [
+    index("event_templates_rels_order_idx").on(columns.order),
+    index("event_templates_rels_parent_idx").on(columns.parent),
+    index("event_templates_rels_path_idx").on(columns.path),
+    index("event_templates_rels_tags_id_idx").on(columns.tagsID),
+    index("event_templates_rels_locations_id_idx").on(columns.locationsID),
+    foreignKey({
+      columns: [columns["parent"]],
+      foreignColumns: [event_templates.id],
+      name: "event_templates_rels_parent_fk",
+    }).onDelete("cascade"),
+    foreignKey({
+      columns: [columns["tagsID"]],
+      foreignColumns: [tags.id],
+      name: "event_templates_rels_tags_fk",
+    }).onDelete("cascade"),
+    foreignKey({
+      columns: [columns["locationsID"]],
+      foreignColumns: [locations.id],
+      name: "event_templates_rels_locations_fk",
+    }).onDelete("cascade"),
+  ],
+);
+
 export const events = pgTable(
   "events",
   {
@@ -815,6 +849,26 @@ export const relations_event_templates_roles = relations(
     }),
   }),
 );
+export const relations_event_templates_rels = relations(
+  event_templates_rels,
+  ({ one }) => ({
+    parent: one(event_templates, {
+      fields: [event_templates_rels.parent],
+      references: [event_templates.id],
+      relationName: "_rels",
+    }),
+    tagsID: one(tags, {
+      fields: [event_templates_rels.tagsID],
+      references: [tags.id],
+      relationName: "tags",
+    }),
+    locationsID: one(locations, {
+      fields: [event_templates_rels.locationsID],
+      references: [locations.id],
+      relationName: "locations",
+    }),
+  }),
+);
 export const relations_event_templates = relations(
   event_templates,
   ({ many }) => ({
@@ -823,6 +877,9 @@ export const relations_event_templates = relations(
     }),
     roles: many(event_templates_roles, {
       relationName: "roles",
+    }),
+    _rels: many(event_templates_rels, {
+      relationName: "_rels",
     }),
   }),
 );
@@ -1006,6 +1063,7 @@ type DatabaseSchema = {
   event_templates_roles_signups: typeof event_templates_roles_signups;
   event_templates_roles: typeof event_templates_roles;
   event_templates: typeof event_templates;
+  event_templates_rels: typeof event_templates_rels;
   events: typeof events;
   events_rels: typeof events_rels;
   locations: typeof locations;
@@ -1026,6 +1084,7 @@ type DatabaseSchema = {
   relations_event_templates_sections: typeof relations_event_templates_sections;
   relations_event_templates_roles_signups: typeof relations_event_templates_roles_signups;
   relations_event_templates_roles: typeof relations_event_templates_roles;
+  relations_event_templates_rels: typeof relations_event_templates_rels;
   relations_event_templates: typeof relations_event_templates;
   relations_events_rels: typeof relations_events_rels;
   relations_events: typeof relations_events;
