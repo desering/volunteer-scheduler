@@ -34,9 +34,17 @@ Install the following prerequisites:
    * macOS Homebrew: `brew install --cask docker-desktop` or `brew install --cask rancher`
 2. The [Bun Javascript Runtime](https://bun.com/)
    * macOS Homebrew: `brew tap oven-sh/bun; brew install bun`
-3. The [Node.js Javascript Runtime](https://nodejs.org/en/download)
-   * macOS Homebrew: `brew install node`
-   * Node.js is required for payload development, see https://github.com/payloadcms/payload/issues/15015
+
+**Payload compatibility with the Bun runtime**
+
+Payload only officially supports the Node.js runtime. However, the Payload
+CLI seems to work with Bun without issues when using the `--disable-transpile`
+option as documented in
+[using alternative runtimes with Payload](https://payloadcms.com/docs/local-api/outside-nextjs#option-2-use-an-alternative-runtime-like-bun).
+
+This is only relevant for the use of the `payload` cli during development and
+not for the build process. See
+[this issue](https://github.com/payloadcms/payload/issues/15015) for details.
 
 ### Run the project locally
 

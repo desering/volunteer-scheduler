@@ -15,7 +15,7 @@ COPY . .
 
 ENV NEXT_TELEMETRY_DISABLED=1
 
-RUN bun run build
+RUN bun run --bun build
 
 FROM base AS run
 
