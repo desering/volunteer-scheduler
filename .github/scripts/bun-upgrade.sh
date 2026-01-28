@@ -12,7 +12,6 @@ sedi () {
     esac
 }
 
-
 echo "Updating Bun version in .bun-version"
 echo "$BUN_VERSION" > .bun-version
 echo
