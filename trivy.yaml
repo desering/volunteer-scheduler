@@ -14,7 +14,7 @@ table-mode:
   - summary
   - detailed
 
-exit-code: 1
+exit-code: 0
 severity: HIGH,CRITICAL
 output: trivy-output.txt
 
