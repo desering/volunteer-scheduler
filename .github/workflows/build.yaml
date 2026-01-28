@@ -46,20 +46,26 @@ jobs:
       - uses: docker/build-push-action@v6
         with:
           file: Dockerfile
-          push: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+          push: true
           tags: ${{ env.IMAGE_TAGS }}
 
-      - name: Trivy - generate report
+  trivy:
+    needs: [ docker ]
+    runs-on: [ ubuntu-24.04 ]
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: "Trivy: generate report"
         uses: aquasecurity/trivy-action@0.33.1
         with:
           trivy-config: trivy.yaml
           image-ref: '${{ env.DOCKER_REPO }}/${{ github.event.repository.name }}:${{ github.sha }}'
           version: 'v0.68.2'
 
-      - name: Trivy - render results as table
+      - name: "Trivy: render results as table"
         run: trivy convert --scanners vuln,misconfig,secret,license --format table --table-mode detailed --output trivy-detail-table.txt trivy-result.json
 
-      - name: Trivy - post results to PR
+      - name: "Trivy: post results to PR"
         uses: actions/github-script@v8
         if: github.event_name == 'pull_request'
         with:
@@ -67,7 +73,7 @@ jobs:
             const script = require('./.github/scripts/post-trivy-results.cjs');
             await script({github, context});
 
-      - name: Trivy - fail if vulnerabilities are found
+      - name: "Trivy: fail if vulnerabilities are found"
         run: trivy convert --exit-code 1 trivy-result.json
 
   deploy-to-coolify:
