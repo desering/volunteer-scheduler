@@ -64,7 +64,7 @@ jobs:
         if: github.event_name == 'pull_request'
         with:
           script: |
-            const script = require('./.github/scripts/post-trivy-results.js');
+            const script = require('./.github/scripts/post-trivy-results.cjs');
             await script({github, context});
 
       - name: Trivy - fail if vulnerabilities are found
