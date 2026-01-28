@@ -3,11 +3,12 @@
 import config from "@payload-config";
 import { getPayload } from "payload";
 import { z } from "zod";
+import { preferredNameSchema } from "@/lib/schemas/preferred-name";
 import { signIn } from "./sign-in";
 
 const schema = z
   .object({
-    preferredName: z.string(),
+    preferredName: preferredNameSchema,
     email: z.email(),
     phoneNumber: z.e164(),
     password: z.string().min(8),
