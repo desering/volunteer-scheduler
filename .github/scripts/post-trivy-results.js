@@ -28,10 +28,7 @@ module.exports = async ({ github, context }) => {
   // 2. Find the most recent comment that contains a trivy scan result
   comments.sort((a, b) => Date.parse(a.updated_at) - Date.parse(b.updated_at));
   const botComment = comments.findLast((comment) => {
-    return (
-      comment.user.type === "Bot" &&
-      comment.body.includes("Trivy image scan results")
-    );
+    return comment.user.type === "Bot" && comment.body.includes("Scan results");
   });
   // 3. If we have a comment, update it, otherwise create a new one
   if (botComment) {
