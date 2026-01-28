@@ -11,13 +11,13 @@ module.exports = async ({ github, context }) => {
   const icon = total > 0 ? ":red_circle:" : ":green_circle:";
 
   const body = `${icon} Trivy found ${total} vulnerabilities.
-            <details>
-            <summary><strong>Scan results</strong></summary>
+<details>
+<summary><strong>Scan results</strong></summary>
 
-            \`\`\`
-            ${trivyOutput}
-            \`\`\`
-            </details>`;
+\`\`\`
+${trivyOutput}
+\`\`\`
+</details>`;
 
   // 1. Retrieve existing comments for the PR
   const { data: comments } = await github.rest.issues.listComments({
