@@ -1,3 +1,5 @@
+const COMMENT_IDENTIFIER = "<!--trivy-scan-results-->";
+
 module.exports = async ({ github, context }) => {
   const fs = require("node:fs");
 
@@ -10,9 +12,9 @@ module.exports = async ({ github, context }) => {
 
   const icon = total > 0 ? ":red_circle:" : ":green_circle:";
 
-  const body = `${icon} Trivy found ${total} vulnerabilities.
+  const body = `${COMMENT_IDENTIFIER}
 <details>
-<summary><strong>Scan results</strong></summary>
+<summary><strong>${icon} Trivy found ${total} vulnerabilities</strong></summary>
 
 \`\`\`
 ${trivyOutput}
@@ -28,7 +30,9 @@ ${trivyOutput}
   // 2. Find the most recent comment that contains a trivy scan result
   comments.sort((a, b) => Date.parse(a.updated_at) - Date.parse(b.updated_at));
   const botComment = comments.findLast((comment) => {
-    return comment.user.type === "Bot" && comment.body.includes("Scan results");
+    return (
+      comment.user.type === "Bot" && comment.body.includes(COMMENT_IDENTIFIER)
+    );
   });
   // 3. If we have a comment, update it, otherwise create a new one
   if (botComment) {
