@@ -12,6 +12,7 @@ import { Locations } from "./collections/locations";
 import { Roles } from "./collections/roles";
 import { Sections } from "./collections/sections";
 import { Signups } from "./collections/signups";
+import { Skills } from "./collections/skills";
 import { Tags } from "./collections/tags";
 import { UserNotificationPreferences } from "./collections/user-notification-preferences";
 import { Users } from "./collections/users";
@@ -105,6 +106,7 @@ export default buildConfig({
     Roles,
     Sections,
     Signups,
+    Skills,
     Tags,
     UserNotificationPreferences,
     Users,
