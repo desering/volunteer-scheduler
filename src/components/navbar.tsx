@@ -4,6 +4,7 @@ import {
   CircleUserRoundIcon,
   History,
   LogOutIcon,
+  MedalIcon,
   MenuIcon,
 } from "lucide-react";
 import Link from "next/link";
@@ -54,6 +55,14 @@ export const NavBar = async () => {
                         <HStack gap="2">
                           <CalendarDaysIcon />
                           Upcoming Shifts
+                        </HStack>
+                      </Link>
+                    </Menu.Item>
+                    <Menu.Item asChild value="skills">
+                      <Link href="/account/skills">
+                        <HStack gap="2">
+                          <MedalIcon />
+                          Skills
                         </HStack>
                       </Link>
                     </Menu.Item>
