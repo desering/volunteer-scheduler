@@ -52,6 +52,7 @@ jobs:
         with:
           trivy-config: trivy.yaml
           image-ref: '${{ env.DOCKER_REPO }}/${{ github.event.repository.name }}:${{ github.sha }}'
+          version: 'v0.68.2'
 
       - uses: actions/github-script@v8
         if: github.event_name == 'pull_request'
