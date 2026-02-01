@@ -20,7 +20,7 @@ export const Skills: CollectionConfig = {
       type: "richText",
     },
     {
-      name: "badge",
+      name: "badgeImage",
       type: "text",
       admin: {
         description: "Badge image identifier for the skill",
