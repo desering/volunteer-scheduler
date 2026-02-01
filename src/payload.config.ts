@@ -16,6 +16,7 @@ import { Skills } from "./collections/skills";
 import { Tags } from "./collections/tags";
 import { UserNotificationPreferences } from "./collections/user-notification-preferences";
 import { Users } from "./collections/users";
+import { UsersSkills } from "./collections/users-skills";
 import { editor } from "./editor.config";
 import { logger } from "./lib/logger";
 import { migrations } from "./migrations";
@@ -110,6 +111,7 @@ export default buildConfig({
     Tags,
     UserNotificationPreferences,
     Users,
+    UsersSkills,
   ],
   editor,
   secret: process.env.PAYLOAD_SECRET ?? "",

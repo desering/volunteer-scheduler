@@ -596,6 +596,44 @@ export const users = pgTable(
   ],
 );
 
+export const users_skills = pgTable(
+  "users_skills",
+  {
+    id: serial("id").primaryKey(),
+    user: integer("user_id")
+      .notNull()
+      .references(() => users.id, {
+        onDelete: "set null",
+      }),
+    skill: integer("skill_id")
+      .notNull()
+      .references(() => skills.id, {
+        onDelete: "set null",
+      }),
+    learnt: boolean("learnt").default(false),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index("users_skills_user_idx").on(columns.user),
+    index("users_skills_skill_idx").on(columns.skill),
+    index("users_skills_updated_at_idx").on(columns.updatedAt),
+    index("users_skills_created_at_idx").on(columns.createdAt),
+  ],
+);
+
 export const payload_locked_documents = pgTable(
   "payload_locked_documents",
   {
@@ -643,6 +681,7 @@ export const payload_locked_documents_rels = pgTable(
       "user_notification_preferences_id",
     ),
     usersID: integer("users_id"),
+    "users-skillsID": integer("users_skills_id"),
   },
   (columns) => [
     index("payload_locked_documents_rels_order_idx").on(columns.order),
@@ -669,6 +708,9 @@ export const payload_locked_documents_rels = pgTable(
       columns["user-notification-preferencesID"],
     ),
     index("payload_locked_documents_rels_users_id_idx").on(columns.usersID),
+    index("payload_locked_documents_rels_users_skills_id_idx").on(
+      columns["users-skillsID"],
+    ),
     foreignKey({
       columns: [columns["parent"]],
       foreignColumns: [payload_locked_documents.id],
@@ -728,6 +770,11 @@ export const payload_locked_documents_rels = pgTable(
       columns: [columns["usersID"]],
       foreignColumns: [users.id],
       name: "payload_locked_documents_rels_users_fk",
+    }).onDelete("cascade"),
+    foreignKey({
+      columns: [columns["users-skillsID"]],
+      foreignColumns: [users_skills.id],
+      name: "payload_locked_documents_rels_users_skills_fk",
     }).onDelete("cascade"),
   ],
 );
@@ -990,6 +1037,18 @@ export const relations_user_notification_preferences = relations(
   }),
 );
 export const relations_users = relations(users, () => ({}));
+export const relations_users_skills = relations(users_skills, ({ one }) => ({
+  user: one(users, {
+    fields: [users_skills.user],
+    references: [users.id],
+    relationName: "user",
+  }),
+  skill: one(skills, {
+    fields: [users_skills.skill],
+    references: [skills.id],
+    relationName: "skill",
+  }),
+}));
 export const relations_payload_locked_documents_rels = relations(
   payload_locked_documents_rels,
   ({ one }) => ({
@@ -1055,6 +1114,11 @@ export const relations_payload_locked_documents_rels = relations(
       references: [users.id],
       relationName: "users",
     }),
+    "users-skillsID": one(users_skills, {
+      fields: [payload_locked_documents_rels["users-skillsID"]],
+      references: [users_skills.id],
+      relationName: "users-skills",
+    }),
   }),
 );
 export const relations_payload_locked_documents = relations(
@@ -1115,6 +1179,7 @@ type DatabaseSchema = {
   tags: typeof tags;
   user_notification_preferences: typeof user_notification_preferences;
   users: typeof users;
+  users_skills: typeof users_skills;
   payload_locked_documents: typeof payload_locked_documents;
   payload_locked_documents_rels: typeof payload_locked_documents_rels;
   payload_preferences: typeof payload_preferences;
@@ -1138,6 +1203,7 @@ type DatabaseSchema = {
   relations_tags: typeof relations_tags;
   relations_user_notification_preferences: typeof relations_user_notification_preferences;
   relations_users: typeof relations_users;
+  relations_users_skills: typeof relations_users_skills;
   relations_payload_locked_documents_rels: typeof relations_payload_locked_documents_rels;
   relations_payload_locked_documents: typeof relations_payload_locked_documents;
   relations_payload_preferences_rels: typeof relations_payload_preferences_rels;

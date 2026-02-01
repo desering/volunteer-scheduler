@@ -31,6 +31,7 @@ export interface Config {
     tags: Tag;
     'user-notification-preferences': UserNotificationPreference;
     users: User;
+    'users-skills': UsersSkill;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -60,6 +61,7 @@ export interface Config {
     tags: TagsSelect<false> | TagsSelect<true>;
     'user-notification-preferences': UserNotificationPreferencesSelect<false> | UserNotificationPreferencesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
+    'users-skills': UsersSkillsSelect<false> | UsersSkillsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -444,6 +446,27 @@ export interface UserNotificationPreference {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users-skills".
+ */
+export interface UsersSkill {
+  id: number;
+  /**
+   * The user who has this skill
+   */
+  user: number | User;
+  /**
+   * The skill the user has
+   */
+  skill: number | Skill;
+  /**
+   * Whether the user has learnt this skill
+   */
+  learnt?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -492,6 +515,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'users';
         value: number | User;
+      } | null)
+    | ({
+        relationTo: 'users-skills';
+        value: number | UsersSkill;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -709,6 +736,17 @@ export interface UsersSelect<T extends boolean = true> {
   resetPasswordExpiration?: T;
   salt?: T;
   hash?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users-skills_select".
+ */
+export interface UsersSkillsSelect<T extends boolean = true> {
+  user?: T;
+  skill?: T;
+  learnt?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
