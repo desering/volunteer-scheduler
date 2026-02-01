@@ -286,7 +286,7 @@ export interface Skill {
   /**
    * Badge image identifier for the skill
    */
-  badge?: string | null;
+  badgeImage?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -681,7 +681,7 @@ export interface SignupsSelect<T extends boolean = true> {
 export interface SkillsSelect<T extends boolean = true> {
   title?: T;
   description?: T;
-  badge?: T;
+  badgeImage?: T;
   updatedAt?: T;
   createdAt?: T;
 }

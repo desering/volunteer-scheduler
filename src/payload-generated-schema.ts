@@ -485,7 +485,7 @@ export const skills = pgTable(
     id: serial("id").primaryKey(),
     title: varchar("title").notNull(),
     description: jsonb("description"),
-    badge: varchar("badge"),
+    badgeImage: varchar("badge_image"),
     updatedAt: timestamp("updated_at", {
       mode: "string",
       withTimezone: true,
