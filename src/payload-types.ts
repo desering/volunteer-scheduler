@@ -27,6 +27,7 @@ export interface Config {
     roles: Role;
     sections: Section;
     signups: Signup;
+    skills: Skill;
     tags: Tag;
     'user-notification-preferences': UserNotificationPreference;
     users: User;
@@ -55,6 +56,7 @@ export interface Config {
     roles: RolesSelect<false> | RolesSelect<true>;
     sections: SectionsSelect<false> | SectionsSelect<true>;
     signups: SignupsSelect<false> | SignupsSelect<true>;
+    skills: SkillsSelect<false> | SkillsSelect<true>;
     tags: TagsSelect<false> | TagsSelect<true>;
     'user-notification-preferences': UserNotificationPreferencesSelect<false> | UserNotificationPreferencesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
@@ -146,6 +148,7 @@ export interface EventTemplate {
     };
     [k: string]: unknown;
   } | null;
+  skills?: (number | Skill)[] | null;
   sections?:
     | {
         title: string;
@@ -235,6 +238,35 @@ export interface EventTemplate {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "skills".
+ */
+export interface Skill {
+  id: number;
+  title: string;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Badge image identifier for the skill
+   */
+  badge?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
@@ -276,6 +308,7 @@ export interface Event {
     [k: string]: unknown;
   } | null;
   tags?: (number | Tag)[] | null;
+  skills?: (number | Skill)[] | null;
   locations?: (number | Location)[] | null;
   sections?: {
     docs?: (number | Section)[];
@@ -445,6 +478,10 @@ export interface PayloadLockedDocument {
         value: number | Signup;
       } | null)
     | ({
+        relationTo: 'skills';
+        value: number | Skill;
+      } | null)
+    | ({
         relationTo: 'tags';
         value: number | Tag;
       } | null)
@@ -520,6 +557,7 @@ export interface EventTemplatesSelect<T extends boolean = true> {
   start_time_tz?: T;
   end_time?: T;
   description?: T;
+  skills?: T;
   sections?:
     | T
     | {
@@ -568,6 +606,7 @@ export interface EventsSelect<T extends boolean = true> {
   end_date?: T;
   description?: T;
   tags?: T;
+  skills?: T;
   locations?: T;
   sections?: T;
   roles?: T;
@@ -620,6 +659,17 @@ export interface SignupsSelect<T extends boolean = true> {
   role?: T;
   user?: T;
   title?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "skills_select".
+ */
+export interface SkillsSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  badge?: T;
   updatedAt?: T;
   createdAt?: T;
 }
