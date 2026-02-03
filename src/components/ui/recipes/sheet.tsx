@@ -8,7 +8,7 @@ export const sheet = defineSlotRecipe({
   slots: anatomy.keys(),
   base: {
     backdrop: {
-      backdropFilter: "blur(4px)",
+      backdropFilter: "blur(10px)",
       background: {
         _light: "black.a7",
         _dark: "black.a7",
@@ -19,8 +19,11 @@ export const sheet = defineSlotRecipe({
       height: "100vh",
       width: "100vw",
       zIndex: "overlay",
+
       _open: {
         animation: "backdrop-in",
+        animationTimingFunction: "ease-out",
+        backdropFilter: "blur(10px)",
       },
       _closed: {
         animation: "backdrop-out",
@@ -50,6 +53,16 @@ export const sheet = defineSlotRecipe({
       width: "full",
       _hidden: {
         display: "none",
+      },
+
+      filter: "blur(10px)",
+      _open: {
+        filter: "blur(0px)",
+        transition: "filter 0.5s ease-out",
+      },
+      _closed: {
+        filter: "blur(10px)",
+        transition: "filter 0.5s ease-in",
       },
     },
     header: {

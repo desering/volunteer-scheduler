@@ -17,7 +17,7 @@ export const ToggleGroup = () => {
   const { data } = useEventDetailsQuery(eventId);
 
   return (
-    <>
+    <div>
       <panda.h2 fontSize="xl" fontWeight="semibold" marginBottom="2">
         Select a role
       </panda.h2>
@@ -59,7 +59,7 @@ export const ToggleGroup = () => {
           </Alert.Content>
         </Alert.Root>
       )}
-    </>
+    </div>
   );
 };
 

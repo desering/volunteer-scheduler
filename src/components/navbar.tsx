@@ -18,7 +18,7 @@ export const NavBar = async () => {
   const { user } = await getUser();
 
   return (
-    <Container marginTop="4" width="100%">
+    <Container marginBlock="4" width="100%">
       <panda.nav display="flex" justifyContent="space-between">
         <panda.div display="flex" gap="4">
           <Button asChild variant="outline">

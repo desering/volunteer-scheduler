@@ -1,5 +1,5 @@
 import { RichText } from "@payloadcms/richtext-lexical/react";
-import { Box, Container } from "styled-system/jsx";
+import { Box, Container, Flex } from "styled-system/jsx";
 import { Card } from "@/components/ui/card";
 import { EventDetails } from "@/features/events/components";
 import { getEventDetails } from "@/lib/services/get-event-details";
@@ -13,26 +13,21 @@ export default async function Page({ params }: PageProps<"/events/[id]">) {
     <Container width="full">
       <EventDetails.Root id={Number(id)} initialData={data}>
         <Card.Root
-          variant="elevated"
-          display="grid"
-          gridTemplateColumns={{ base: "1fr", md: "1fr auto" }}
+          variant="subtle"
+          direction={{ base: "vertical", md: "horizontal" }}
         >
-          <Card.Header>
+          <Box flex="1">
             <Card.Title fontSize="2xl">{data?.title}</Card.Title>
             {data?.description && (
               <Card.Description>
                 <RichText data={data?.description} />
               </Card.Description>
             )}
-          </Card.Header>
-          <Box>
-            <Card.Body>
-              <EventDetails.ToggleGroup />
-            </Card.Body>
-            <Card.Footer>
-              <EventDetails.Actions />
-            </Card.Footer>
           </Box>
+          <Flex flexDirection="column" gap="4">
+            <EventDetails.ToggleGroup />
+            <EventDetails.Actions />
+          </Flex>
         </Card.Root>
       </EventDetails.Root>
     </Container>

@@ -37,20 +37,19 @@ export default function Page({ params }: PageProps<"/events/[id]">) {
     return `${format(start, "iiii dd MMMM")}, ${format(start, "HH:mm")} - ${format(end, "HH:mm")}`;
   }, [data]);
 
-  // Invalidate events both when the drawer is closed normally or when navigating back
   useEffect(() => {
+    // Invalidate events when the drawer is closed via the close button or backdrop
     if (!isDrawerOpen) {
-      queryClient.invalidateQueries({
-        ...eventsQueryConfig(),
-      });
+      queryClient.invalidateQueries(eventsQueryConfig());
     }
 
+    // Inavlidate events on unmount e.g. when navigating away via browser controls
     return () => {
       if (isDrawerOpen) return;
 
       queryClient.invalidateQueries({
         ...eventsQueryConfig(),
-        stale: false,
+        stale: false, // don't refetch if we already have fresh data
       });
     };
   }, [queryClient.invalidateQueries, isDrawerOpen]);

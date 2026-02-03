@@ -7,30 +7,25 @@ export const card = defineSlotRecipe({
     root: {
       borderRadius: "l3",
       display: "flex",
-      flexDirection: "column",
       overflow: "hidden",
       position: "relative",
+      gap: "6",
+      padding: "6",
     },
     header: {
       display: "flex",
       flexDirection: "column",
       gap: "1",
-      p: "6",
     },
     body: {
       display: "flex",
       flex: "1",
       flexDirection: "column",
-      pb: "6",
-      px: "6",
     },
     footer: {
       display: "flex",
       justifyContent: "flex-end",
       gap: "3",
-      pb: "6",
-      pt: "2",
-      px: "6",
     },
     title: {
       textStyle: "lg",
@@ -43,6 +38,7 @@ export const card = defineSlotRecipe({
   },
   defaultVariants: {
     variant: "outline",
+    direction: "vertical",
   },
   variants: {
     variant: {
@@ -61,6 +57,18 @@ export const card = defineSlotRecipe({
       subtle: {
         root: {
           bg: "gray.subtle.bg",
+        },
+      },
+    },
+    direction: {
+      horizontal: {
+        root: {
+          flexDirection: "row",
+        },
+      },
+      vertical: {
+        root: {
+          flexDirection: "column",
         },
       },
     },

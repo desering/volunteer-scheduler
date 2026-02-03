@@ -1,6 +1,6 @@
 "use client";
 
-import { HStack, panda } from "styled-system/jsx";
+import { Box, HStack, panda } from "styled-system/jsx";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/components/ui/link";
 import { useAuth } from "@/providers/auth";
@@ -19,16 +19,22 @@ export const Actions = () => {
   return (
     <>
       {!user && (
-        <HStack>
-          Want to help out?{" "}
+        <Box
+          display="flex"
+          flexDirection="row"
+          gap="2"
+          alignItems="center"
+          justifyContent="end"
+        >
+          Want to help out?
           <Button asChild>
             <Link href="/auth/sign-in">Sign in</Link>
-          </Button>{" "}
-          or{" "}
+          </Button>
+          or
           <Button asChild>
             <Link href="/auth/register">Register</Link>
           </Button>
-        </HStack>
+        </Box>
       )}
       {user && (
         <Button
