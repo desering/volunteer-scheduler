@@ -141,8 +141,8 @@ export const Signups: CollectionConfig = {
               collection: "signups",
               where: {
                 user: { equals: data.user },
-                "event.start_date": {
-                  less_than_equal: Date.now(),
+                "event.end_date": {
+                  less_than_equal: new Date().toISOString(),
                 },
               },
             });
