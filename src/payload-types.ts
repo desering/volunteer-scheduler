@@ -394,6 +394,7 @@ export interface Signup {
   role: number | Role;
   user: number | User;
   title?: string | null;
+  totalShifts?: number | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -617,6 +618,7 @@ export interface SignupsSelect<T extends boolean = true> {
   role?: T;
   user?: T;
   title?: T;
+  totalShifts?: T;
   updatedAt?: T;
   createdAt?: T;
 }
