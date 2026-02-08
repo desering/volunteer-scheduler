@@ -67,7 +67,9 @@ jobs:
       - run: bun install
       - run: bun run --bun payload migrate:create
       # exits with 1 if there are changes, 0 if there are no differences.
-      - run: git diff --exit-code "src/migrations" || (echo 'WARNING - run `bun run --bun payload migrate:create` to add missing migrations' && exit 1)
+      - run: git diff --exit-code "src/migrations" || (echo 'WARNING - run `bun run --bun payload migrate:create <name-here>` to add missing migrations' && exit 1)
+      # exits with 1 if there are unnamed migrations
+      - run: bun run --bun .github/scripts/migrations-without-name.ts || (echo 'WARNING - delete your migrations and run `bun payload migrate:create <name-here>` to recreate your migrations with a name' && exit 1)
 
   vitest:
     runs-on: [ ubuntu-24.04 ]
