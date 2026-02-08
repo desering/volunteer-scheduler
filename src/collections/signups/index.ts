@@ -5,7 +5,7 @@ export const Signups: CollectionConfig = {
   slug: "signups",
   admin: {
     useAsTitle: "title",
-    defaultColumns: ["role", "user"],
+    defaultColumns: ["role", "user", "totalShifts"],
     group: false,
   },
   hooks: {
@@ -124,6 +124,30 @@ export const Signups: CollectionConfig = {
             });
 
             return user.preferredName;
+          },
+        ],
+      },
+    },
+    {
+      name: "totalShifts",
+      type: "number",
+      virtual: true,
+      hooks: {
+        afterRead: [
+          async ({ data, req }) => {
+            if (!data?.user) return 0;
+
+            const result = await req.payload.count({
+              collection: "signups",
+              where: {
+                user: { equals: data.user },
+                "event.end_date": {
+                  less_than_equal: new Date().toISOString(),
+                },
+              },
+            });
+
+            return result.totalDocs;
           },
         ],
       },

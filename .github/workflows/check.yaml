@@ -15,7 +15,7 @@ jobs:
         with:
           bun-version-file: ".bun-version"
       - run: bun install
-      - run: bun biome ci --error-on-warnings
+      - run: bun run --bun biome ci --error-on-warnings
 
   types:
     runs-on: [ ubuntu-24.04 ]
@@ -25,9 +25,9 @@ jobs:
         with:
           bun-version-file: ".bun-version"
       - run: bun install
-      - run: bun generate:types
+      - run: bun run --bun generate:types
       # exits with 1 if there are changes, 0 if there are no differences.
-      - run: git diff --exit-code src/payload-types.ts || (echo 'WARNING - run `bun generate:types` to update payload-types.ts' && exit 1)
+      - run: git diff --exit-code src/payload-types.ts || (echo 'WARNING - run `bun run --bun generate:types` to update payload-types.ts' && exit 1)
 
   schema:
     runs-on: [ ubuntu-24.04 ]
@@ -39,9 +39,9 @@ jobs:
         with:
           bun-version-file: ".bun-version"
       - run: bun install
-      - run: bun generate:db-schema
+      - run: bun run --bun generate:db-schema
       # exits with 1 if there are changes, 0 if there are no differences.
-      - run: git diff --exit-code src/payload-generated-schema.ts || (echo 'WARNING - run `bun generate:db-schema` to update payload-generated-schema.ts' && exit 1)
+      - run: git diff --exit-code src/payload-generated-schema.ts || (echo 'WARNING - run `bun run --bun generate:db-schema` to update payload-generated-schema.ts' && exit 1)
 
   importmap:
     runs-on: [ ubuntu-24.04 ]
@@ -51,9 +51,9 @@ jobs:
         with:
           bun-version-file: ".bun-version"
       - run: bun install
-      - run: bun generate:importmap
+      - run: bun run --bun generate:importmap
       # exits with 1 if there are changes, 0 if there are no differences.
-      - run: git diff --exit-code "src/app/(payload)/admin/importMap.js" || (echo 'WARNING - run `bun generate:importmap` to update importMap.js' && exit 1)
+      - run: git diff --exit-code "src/app/(payload)/admin/importMap.js" || (echo 'WARNING - run `bun run --bun generate:importmap` to update importMap.js' && exit 1)
 
   migrations:
     runs-on: [ ubuntu-24.04 ]
@@ -65,9 +65,11 @@ jobs:
         with:
           bun-version-file: ".bun-version"
       - run: bun install
-      - run: bun payload migrate:create
+      - run: bun run --bun payload migrate:create
       # exits with 1 if there are changes, 0 if there are no differences.
-      - run: git diff --exit-code "src/migrations" || (echo 'WARNING - run `bun payload migrate:create` to add missing migrations' && exit 1)
+      - run: git diff --exit-code "src/migrations" || (echo 'WARNING - run `bun run --bun payload migrate:create <name-here>` to add missing migrations' && exit 1)
+      # exits with 1 if there are unnamed migrations
+      - run: bun run --bun .github/scripts/migrations-without-name.ts || (echo 'WARNING - delete your migrations and run `bun payload migrate:create <name-here>` to recreate your migrations with a name' && exit 1)
 
   vitest:
     runs-on: [ ubuntu-24.04 ]
@@ -77,4 +79,4 @@ jobs:
         with:
           bun-version-file: ".bun-version"
       - run: bun install
-      - run: bun run test
+      - run: bun run --bun test
