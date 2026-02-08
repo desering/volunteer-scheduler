@@ -6,9 +6,9 @@ module.exports = async ({ github, context }) => {
   const trivyOutput = fs.readFileSync("./trivy-detail-table.txt", "utf8");
 
   const total = trivyOutput
-    .matchAll(/Total: (?<total>\d)/gm)
+    .matchAll(/Total: (?<total>\d+)/gm)
     .map((match) => Number(match.groups.total))
-    .reduce((acc, cur) => acc + cur);
+    .reduce((acc, cur) => acc + cur, 0);
 
   const icon = total > 0 ? ":red_circle:" : ":green_circle:";
 
