@@ -2,6 +2,12 @@
 
 ```mermaid
 erDiagram
+    ANNOUNCEMENT {
+        string id PK
+        string title
+        richText description
+        string status
+    }
     EVENT {
         string id PK
         string title
@@ -9,11 +15,18 @@ erDiagram
         date end_date
         richText description
     }
-    SECTION {
+    EVENT_TEMPLATE {
         string id PK
-        string event_id FK
-        string title
+        string template_title
+        string event_title
+        date start_time
+        date end_time
         richText description
+    }
+    LOCATION {
+        string id PK
+        string title
+        string address
     }
     ROLE {
         string id PK
@@ -23,35 +36,27 @@ erDiagram
         richText description
         int maxSignups
     }
+    SECTION {
+        string id PK
+        string event_id FK
+        string title
+        richText description
+    }
     SIGNUP {
         string id PK
         string event_id FK
         string role_id FK
         string user_id FK
     }
+    TAG {
+        string id PK
+        string text
+    }
     USER {
         string id PK
         string preferredName
         string phoneNumber
         string roles
-    }
-    TAG {
-        string id PK
-        string text
-    }
-    ANNOUNCEMENT {
-        string id PK
-        string title
-        richText description
-        string status
-    }
-    EVENT_TEMPLATE {
-        string id PK
-        string template_title
-        string event_title
-        date start_time
-        date end_time
-        richText description
     }
     USER_NOTIFICATION_PREFERENCE {
         string id PK
@@ -70,4 +75,6 @@ erDiagram
     USER ||--o{ USER_NOTIFICATION_PREFERENCE : sets
     EVENT }o--o{ TAG : tagged
     EVENT_TEMPLATE }o--o{ USER : template_signups
+    LOCATION ||--o{ EVENT : hosts
+    LOCATION ||--o{ EVENT_TEMPLATE : hosts
 ```
