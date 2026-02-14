@@ -19,9 +19,9 @@ services:
       - "5432:5432"
     environment:
       TZ: UTC
-      POSTGRES_DB: schedule
-      POSTGRES_USER: schedule
-      POSTGRES_PASSWORD: schedule
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
 
 volumes:
   pgdata:
