@@ -86,6 +86,12 @@ export const Events: CollectionConfig = {
               hasMany: true,
             },
             {
+              name: "skills",
+              type: "relationship",
+              relationTo: "skills",
+              hasMany: true,
+            },
+            {
               name: "locations",
               type: "relationship",
               relationTo: "locations",
