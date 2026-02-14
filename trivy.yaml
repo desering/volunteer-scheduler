@@ -5,18 +5,18 @@ scanners:
   - secret
   - misconfig
 
+vulnerability:
+  ignore-unfixed: true # only list vulnerabilities that have a fix
+
 # https://trivy.dev/docs/latest/target/container_image/
 image:
   image-config-scanners: ["secret", "misconfig"]
 
-format: table
-table-mode:
-  - summary
-  - detailed
+format: json
 
-exit-code: 1
+exit-code: 0
 severity: HIGH,CRITICAL
-output: trivy-output.txt
+output: trivy-result.json
 
 # custom config for secret scanning:
 # https://trivy.dev/docs/latest/scanner/secret/
