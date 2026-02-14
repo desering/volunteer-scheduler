@@ -65,6 +65,7 @@ export interface Config {
   db: {
     defaultIDType: number;
   };
+  fallbackLocale: null;
   globals: {};
   globalsSelect: {};
   locale: null;
@@ -448,10 +449,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'tags';
         value: number | Tag;
-      } | null)
-    | ({
-        relationTo: 'user-notification-preferences';
-        value: number | UserNotificationPreference;
       } | null)
     | ({
         relationTo: 'users';
