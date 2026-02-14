@@ -30,11 +30,11 @@ services:
       target: dev
     ports:
       - "3000:3000"
-    # user: 1000:1000 # "bun" inside the container
-    user: 1001:1001 # "nextjs:nodejs" inside the container
+    user: 1000:1000 # "bun" inside the container
+    # user: 1001:1001 # "nextjs:nodejs" inside the container
     volumes:
       - .:/app # bind mount source for live edits
-      - scheduler_next_cache:/app/.next # separate volume for cache
+      - bun_next_cache:/app/.next # separate volume for cache
       - /app/node_modules  # mask container's installed deps (in the image)
     tty: true
     depends_on:
@@ -47,4 +47,4 @@ services:
 
 volumes:
   pgdata:
-  scheduler_next_cache:
+  bun_next_cache:

@@ -12,14 +12,12 @@ RUN bun install
 RUN mkdir .next
 RUN touch next-env.d.ts
 
-RUN addgroup --system --gid 1001 nodejs && \
-    adduser  --system --uid 1001 nextjs -G nodejs
-RUN chown nextjs:nodejs \
+RUN chown bun:bun \
           node_modules \
           .next \
           next-env.d.ts
 
-USER nextjs:nodejs
+USER bun:bun
 EXPOSE 3000
 CMD ["bun", "run", "--bun", "--hot", "dev"]
 
