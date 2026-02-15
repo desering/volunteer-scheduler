@@ -71,7 +71,7 @@ jobs:
       # exits with 1 if there are unnamed migrations
       - run: bun run --bun .github/scripts/migrations-without-name.ts || (echo 'WARNING - delete your migrations and run `bun payload migrate:create <name-here>` to recreate your migrations with a name' && exit 1)
 
-  vitest:
+  test:
     runs-on: [ ubuntu-24.04 ]
     steps:
       - uses: actions/checkout@v6
@@ -79,4 +79,4 @@ jobs:
         with:
           bun-version-file: ".bun-version"
       - run: bun install
-      - run: bun run --bun test
+      - run: bun --bun test

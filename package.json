@@ -11,8 +11,6 @@
     "check": "biome check --error-on-warnings",
     "check:staged": "biome check --error-on-warnings --staged --no-errors-on-unmatched",
     "lint:staged": "biome check --error-on-warnings --staged --no-errors-on-unmatched --write",
-    "test": "vitest",
-    "coverage": "vitest run --coverage",
     "payload": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts payload --disable-transpile",
     "start": "next start",
     "generate": "bun run --bun generate:importmap && bun run --bun generate:types && bun run --bun generate:panda",
@@ -73,8 +71,7 @@
     "cross-env": "^10.1.0",
     "husky": "^9.1.7",
     "pino-pretty": "13.1.2",
-    "typescript": "^5.9.3",
-    "vitest": "^4.0.15"
+    "typescript": "^5.9.3"
   },
   "engines": {
     "node": "^18.20.2 || >=20.9.0"
