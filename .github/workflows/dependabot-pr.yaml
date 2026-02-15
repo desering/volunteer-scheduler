@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   dependabot-only:
-    if: ${{ github.actor == 'dependabot[bot]' }} && ${{ startsWith( github.event.pull_request.title, 'Bump the "bun-patch" group') }}
+    if: ${{ github.actor == 'dependabot[bot]' && startsWith( github.event.pull_request.title, 'Bump the "bun-patch" group') }}
     runs-on: [ ubuntu-24.04 ]
     steps:
       - uses: actions/checkout@v6
