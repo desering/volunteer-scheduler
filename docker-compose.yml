@@ -1,0 +1,50 @@
+services:
+  postgres:
+    restart: always
+    image: postgres:16-alpine
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    environment:
+      TZ: UTC
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 10s
+
+  maildev:
+    image: maildev/maildev:latest
+    container_name: maildev
+    ports:
+      - "1080:1080"  # Web UI
+      - "1025:1025"  # SMTP
+    restart: always
+
+  bun-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev
+    ports:
+      - "3000:3000"
+    user: 1000:1000 # "bun" inside the container
+    # user: 1001:1001 # "nextjs:nodejs" inside the container
+    volumes:
+      - .:/app # bind mount source for live edits
+      - bun_next_cache:/app/.next # separate volume for cache
+      - /app/node_modules  # mask container's installed deps (in the image)
+    tty: true
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: sh -c "bun run --bun dev"
+    restart: always
+    profiles:
+      - bun
+
+volumes:
+  pgdata:
+  bun_next_cache:
