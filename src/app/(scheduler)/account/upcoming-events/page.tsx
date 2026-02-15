@@ -17,7 +17,9 @@ export default async function Page() {
     redirect("/auth/sign-in");
   }
 
-  const events = await getUpcomingEventsForUserId(user.id);
+  const events = await getUpcomingEventsForUserId(user.id, {
+    sort: ["event.start_date"],
+  });
 
   return (
     <Container
@@ -38,6 +40,7 @@ export default async function Page() {
       <UserEventsList
         initialData={events}
         refetchUrl={`/api/events/users/upcoming`}
+        filterOptions={{ sort: ["event.start_date"] }}
       />
     </Container>
   );

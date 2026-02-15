@@ -1,9 +1,9 @@
-import { expect, test, vi } from "vitest";
+import { expect, setSystemTime, test } from "bun:test";
 import { createIcalEvent } from "./create-ical-event";
 
 test("base case TZ UTC", () => {
   const now = new Date("June 15, 2025, 12:34:56 UTC");
-  vi.setSystemTime(now);
+  setSystemTime(now);
 
   const start = new Date("July 17, 2025, 13:00:00 UTC");
   const end = new Date("July 17, 2025, 14:00:00 UTC");
@@ -24,7 +24,7 @@ test("base case TZ UTC", () => {
 
 test("base case TZ +1", () => {
   const now = new Date("June 15, 2025, 12:34:56 +1");
-  vi.setSystemTime(now);
+  setSystemTime(now);
 
   const start = new Date("July 17, 2025, 13:00:00 +1");
   const end = new Date("July 17, 2025, 14:00:00 +1");

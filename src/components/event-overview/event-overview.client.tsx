@@ -4,12 +4,10 @@ import { utc } from "@date-fns/utc";
 import { RichText } from "@payloadcms/richtext-lexical/react";
 import { useQuery } from "@tanstack/react-query";
 import {
-  addDays,
   addMonths,
   eachDayOfInterval,
   isSameDay,
   startOfDay,
-  subDays,
   subMonths,
 } from "date-fns";
 import { useEffect, useMemo, useState } from "react";
@@ -45,6 +43,10 @@ export const EventOverviewClient = ({
   // biome-ignore lint/correctness/useExhaustiveDependencies: reset selected tags on date change
   useEffect(() => {}, [selectedDate]);
 
+  const start = startOfDay(new Date()); // add some disabled buttons
+  const earliestShownDate = subMonths(start, 1);
+  const latestShownDate = addMonths(start, 1);
+
   const {
     data: events,
     refetch,
@@ -54,7 +56,7 @@ export const EventOverviewClient = ({
     queryFn: async () => {
       const url = "/api/events?";
       const searchParams = new URLSearchParams({
-        min_date: startOfDay(new Date(), { in: utc }).toISOString(),
+        min_date: startOfDay(earliestShownDate, { in: utc }).toISOString(),
       });
 
       if (selectedTags.length > 0) {
@@ -75,33 +77,18 @@ export const EventOverviewClient = ({
     if (!events) return [];
 
     const entries = Object.entries(events);
-    const start = startOfDay(new Date()); // add some disabled buttons
-    const end = entries.reduce((max, [date]) => {
-      const d = new Date(date);
-      return d > max ? d : max;
-    }, startOfDay(new Date()));
 
-    return [
-      // fake days
-      ...eachDayOfInterval({
-        start: subMonths(start, 1),
-        end: subDays(start, 1),
-      }).map((date) => ({ date, hasEvents: false, isPublished: false })),
-      // real days
-      ...eachDayOfInterval({ start, end }).map((date) => {
-        const [, events] =
-          entries.find(([d]) => isSameDay(new Date(d), date)) ?? [];
-        const hasEvents = (events ?? []).length > 0;
+    return eachDayOfInterval({
+      start: earliestShownDate,
+      end: latestShownDate,
+    }).map((date) => {
+      const [, events] =
+        entries.find(([d]) => isSameDay(new Date(d), date)) ?? [];
+      const hasEvents = (events ?? []).length > 0;
 
-        return { date, hasEvents, isPublished: true };
-      }),
-      // fake days
-      ...eachDayOfInterval({
-        start: addDays(end, 1),
-        end: addMonths(end, 1),
-      }).map((date) => ({ date, hasEvents: false, isPublished: false })),
-    ];
-  }, [events]);
+      return { date, hasEvents };
+    });
+  }, [events, earliestShownDate, latestShownDate]);
 
   const eventsOnSelectedDate = useMemo(() => {
     if (!events) return;
