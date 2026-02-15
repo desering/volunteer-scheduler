@@ -1,4 +1,4 @@
-import { expect, test } from "vitest";
+import { expect, test } from "bun:test";
 import { startOfMonthUTC } from "./start-of-month";
 
 test("start of of month", () => {
