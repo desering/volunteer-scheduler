@@ -144,6 +144,18 @@ export const EventTemplates: CollectionConfig = {
       type: "richText",
     },
     {
+      name: "tags",
+      type: "relationship",
+      relationTo: "tags",
+      hasMany: true,
+    },
+    {
+      name: "locations",
+      type: "relationship",
+      relationTo: "locations",
+      hasMany: true,
+    },
+    {
       name: "sections",
       label: "Sections",
       type: "array",

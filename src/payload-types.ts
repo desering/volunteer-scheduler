@@ -146,6 +146,8 @@ export interface EventTemplate {
     };
     [k: string]: unknown;
   } | null;
+  tags?: (number | Tag)[] | null;
+  locations?: (number | Location)[] | null;
   sections?:
     | {
         title: string;
@@ -235,6 +237,27 @@ export interface EventTemplate {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags".
+ */
+export interface Tag {
+  id: number;
+  text: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "locations".
+ */
+export interface Location {
+  id: number;
+  title: string;
+  address?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
@@ -292,27 +315,6 @@ export interface Event {
     hasNextPage?: boolean;
     totalDocs?: number;
   };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "tags".
- */
-export interface Tag {
-  id: number;
-  text: string;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "locations".
- */
-export interface Location {
-  id: number;
-  title: string;
-  address?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -521,6 +523,8 @@ export interface EventTemplatesSelect<T extends boolean = true> {
   start_time_tz?: T;
   end_time?: T;
   description?: T;
+  tags?: T;
+  locations?: T;
   sections?:
     | T
     | {
