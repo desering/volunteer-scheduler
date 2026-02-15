@@ -1,4 +1,4 @@
-import { expect, test } from "vitest";
+import { expect, test } from "bun:test";
 import { lastDayOfMonthUTC } from "./last-day-of-month";
 
 test("last day of month", () => {
