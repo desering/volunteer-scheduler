@@ -15,11 +15,14 @@ jobs:
     if: ${{ github.actor == 'dependabot[bot]' && startsWith( github.event.pull_request.title, 'Bump the "bun-patch" group') }}
     runs-on: [ ubuntu-24.04 ]
     steps:
+      - uses: oven-sh/setup-bun@v2
       - uses: actions/checkout@v6
         with:
           ref: ${{ github.event.pull_request.head.ref }}
 
-      - run: bash .github/scripts/bun-upgrade.sh
+      - id: metadata
+        uses: dependabot/fetch-metadata@v2
+      - run: bash .github/scripts/bun-upgrade.sh "${{ steps.metadata.outputs.new-version }}"
 
       - name: Push updated files
         run: |
