@@ -78,12 +78,12 @@ Then choose between:
 
 4. Start development services (database, mail, bun):
    ```shell
-   docker compose -f docker-compose.dev.yml --profile bun up
+   docker compose -f docker-compose.yml --profile bun up
    ```
 
 5. If your dependencies change, rebuild the image:
    ```shell
-   docker compose -f docker-compose.dev.yml --profile bun build
+   docker compose -f docker-compose.yml --profile bun build
    ```
    and restart docker compose
 
@@ -103,7 +103,7 @@ Then choose between:
 
 5. Start additional development services (database, mail):
    ```shell
-   docker compose -f docker-compose.dev.yml up
+   docker compose -f docker-compose.yml up
    ```
 
 6. Start the Next.js development server:
@@ -132,7 +132,7 @@ Now, you can create and publish new events, which will show up in the frontend.
 To connect to the [PostgreSQL](https://www.postgresql.org/) database container of your local development environment:
 
 ```shell
-docker compose -f docker-compose.dev.yml exec postgres psql -U schedule
+docker compose -f docker-compose.yml exec postgres psql -U schedule
 ```
 
 Check out our [PostgreSQL Cheat Sheet](PostgreSQL%20Cheat%20Sheet.md)!
