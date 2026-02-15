@@ -40,7 +40,7 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    command: sh -c "bun run --bun --preload --hot dev"
+    command: sh -c "bun run --bun dev"
     restart: always
     profiles:
       - bun
