@@ -92,7 +92,7 @@ Then choose between:
 </details>
 
 <details>
-<summary>Run project locally using standalone bun</summary>
+<summary>Run the project locally using standalone bun</summary>
 
 ### _using standalone `bun`_
 
