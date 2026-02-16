@@ -62,7 +62,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: "Trivy: generate report"
-        uses: aquasecurity/trivy-action@0.33.1
+        uses: aquasecurity/trivy-action@0.34.0
         with:
           trivy-config: trivy.yaml
           image-ref: '${{ env.DOCKER_REPO }}/${{ github.event.repository.name }}:${{ github.sha }}'
