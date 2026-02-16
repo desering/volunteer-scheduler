@@ -2,12 +2,37 @@ FROM oven/bun:1.3.8-alpine AS base
 
 WORKDIR /app
 
+### Stage: development build, no more stages
+###
+FROM base AS dev
+
+RUN chown -R bun .
+
+COPY package.json bun.lock ./
+RUN bun install
+
+RUN mkdir .next
+RUN touch next-env.d.ts
+
+RUN chown bun:bun \
+          node_modules \
+          .next \
+          next-env.d.ts
+
+USER bun:bun
+EXPOSE 3000
+CMD ["bun", "run", "--bun", "--hot", "dev"]
+
+### Stage: dependencies for deployment server
+###
 FROM base AS deps
 
 COPY package.json bun.lock ./
 
 RUN bun install --no-save --frozen-lockfile
 
+### Stage: prepare deployment server
+###
 FROM base AS build
 
 COPY --from=deps /app/node_modules ./node_modules
@@ -17,6 +42,8 @@ ENV NEXT_TELEMETRY_DISABLED=1
 
 RUN bun run --bun build
 
+### Stage: run deployment server
+###
 FROM base AS run
 
 LABEL org.opencontainers.image.title="volunteer-scheduler" \
