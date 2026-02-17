@@ -1,0 +1,41 @@
+name: dependabot-pr
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+
+permissions:
+  contents: write
+
+jobs:
+  dependabot-only:
+    if: ${{ github.actor == 'dependabot[bot]' && startsWith( github.event.pull_request.title, 'Bump the "bun-patch" group') }}
+    runs-on: [ ubuntu-24.04 ]
+    steps:
+      - uses: oven-sh/setup-bun@v2
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - id: metadata
+        uses: dependabot/fetch-metadata@v2
+        
+      - run: echo "${{ steps.metadata.outputs.new-version }}"
+      - run: echo "${{ steps.metadata.outputs.updated-dependencies-json }}"
+      - run: bash .github/scripts/bun-upgrade.sh "${{ steps.metadata.outputs.dependency-version }}"
+      - run: git --no-pager diff
+
+      - name: Push updated files
+        run: |
+          if git diff --quiet; then
+            echo "No changes to push."
+            exit 0
+          fi
+          git config user.name "dependabot[bot]"
+          git config user.email "49699333+dependabot[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "chore: update bun version everywhere"
+          git push origin "HEAD:${{ github.event.pull_request.head.ref }}"

@@ -1,7 +1,8 @@
 import { Portal } from "@ark-ui/react";
 import { RichText } from "@payloadcms/richtext-lexical/react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import confetti from "canvas-confetti";
+import { isBefore } from "date-fns";
 import { SquarePenIcon, XIcon } from "lucide-react";
 import Link from "next/link";
 import {
@@ -38,7 +39,7 @@ type Props = {
 export const EventDetailsDrawer = (props: Props) => {
   const { user } = useAuth();
 
-  const { data: details, refetch } = useQuery({
+  const { data: details } = useQuery({
     queryKey: ["events", props.eventId],
     queryFn: async (): ReturnType<typeof getEventDetails> => {
       const res = await fetch(`/api/events/${props.eventId}`);
@@ -49,29 +50,31 @@ export const EventDetailsDrawer = (props: Props) => {
     refetchOnWindowFocus: "always",
   });
 
+  const isEventInThePast = details
+    ? isBefore(details.end_date, new Date())
+    : false;
+
   const [selectedRoleId, setSelectedRoleId] = useState<string>();
 
-  // TODO: replace to useMutation
-  const [isDeleting, deleteSignup] = useAsyncFunc(async (id: number) => {
-    await deleteSignupAction({ id });
-    await refetch();
-    setSelectedRoleId(undefined);
+  const queryClient = useQueryClient();
+
+  const { mutate: deleteSignup, isPending: isDeleting } = useMutation({
+    mutationFn: async (id: number) => deleteSignupAction({ id }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["events", props.eventId] });
+      setSelectedRoleId(undefined);
+    },
   });
 
-  // TODO: replace to useMutation
-  const [isCreating, createSignup] = useAsyncFunc(
-    async (eventId: number, roleId: number) => {
-      const response = await createSignupAction({ eventId, roleId });
-      await refetch();
-
-      if (!response.success) {
-        return;
-      }
-
+  const { mutate: createSignup, isPending: isCreating } = useMutation({
+    mutationFn: async (variables: { eventId: number; roleId: number }) =>
+      await createSignupAction(variables),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["events", props.eventId] });
       selectCurrentRole();
       animateFireworks(Date.now() + 1500);
     },
-  );
+  });
 
   const selectedRole = useMemo(() => {
     const roleId = Number(selectedRoleId);
@@ -146,7 +149,7 @@ export const EventDetailsDrawer = (props: Props) => {
       return;
     }
 
-    createSignup(id, _selectedRole);
+    createSignup({ eventId: id, roleId: _selectedRole });
   };
 
   const descriptionDetailCss = css({
@@ -283,22 +286,39 @@ export const EventDetailsDrawer = (props: Props) => {
                     </Fragment>
                   ))}
                 </RadioButtonGroup.Root>
-                {user && (
-                  <Alert.Root
-                    marginBottom="-4"
-                    marginTop="8"
-                    borderColor="border.default"
-                  >
-                    <Alert.Indicator />
-                    <Alert.Content>
-                      <Alert.Title>We are counting on your help</Alert.Title>
-                      <Alert.Description>
-                        Only apply for roles you are sure you can attend. If you
-                        are no longer able to attend, please remove your signup.
-                      </Alert.Description>
-                    </Alert.Content>
-                  </Alert.Root>
-                )}
+                {user &&
+                  (isEventInThePast ? (
+                    <Alert.Root
+                      marginBottom="-4"
+                      marginTop="8"
+                      borderColor="border.default"
+                    >
+                      <Alert.Indicator />
+                      <Alert.Content>
+                        <Alert.Title>This event is in the past</Alert.Title>
+                        <Alert.Description>
+                          You cannot alter your signup for this event, as it has
+                          already happened.
+                        </Alert.Description>
+                      </Alert.Content>
+                    </Alert.Root>
+                  ) : (
+                    <Alert.Root
+                      marginBottom="-4"
+                      marginTop="8"
+                      borderColor="border.default"
+                    >
+                      <Alert.Indicator />
+                      <Alert.Content>
+                        <Alert.Title>We are counting on your help</Alert.Title>
+                        <Alert.Description>
+                          Only apply for roles you are sure you can attend. If
+                          you are no longer able to attend, please remove your
+                          signup.
+                        </Alert.Description>
+                      </Alert.Content>
+                    </Alert.Root>
+                  ))}
               </Sheet.Body>
               <Sheet.Footer justifyContent="center">
                 {!user && (
@@ -318,7 +338,9 @@ export const EventDetailsDrawer = (props: Props) => {
                     width="full"
                     variant="solid"
                     colorPalette={hasUserSignedUp ? "tomato" : "olive"}
-                    disabled={!hasUserSignedUp && !selectedRoleId}
+                    disabled={
+                      isEventInThePast || (!hasUserSignedUp && !selectedRoleId)
+                    }
                     loading={details === undefined || isCreating || isDeleting}
                     onClick={() => onSigningButtonClicked()}
                   >
@@ -366,18 +388,4 @@ const animateFireworks = (end: number) => {
   if (Date.now() < end) {
     setTimeout(() => animateFireworks(end), 100);
   }
-};
-
-const useAsyncFunc = <T, P extends unknown[]>(
-  fn: (...args: P) => Promise<T>,
-) => {
-  const [isRunning, setIsRunning] = useState(false);
-
-  const run = async (...args: P) => {
-    setIsRunning(true);
-    await fn(...args);
-    setIsRunning(false);
-  };
-
-  return [isRunning, run] as const;
 };
