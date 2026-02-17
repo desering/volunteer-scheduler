@@ -2,23 +2,8 @@
 ---
 version: 2
 
-multi-ecosystem-groups:
-  bun-patch:
-    schedule:
-      interval: "weekly"
-
 updates:
   # bun itself
-  - package-ecosystem: "bun"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-    patterns: [ "@types/bun" ]
-    groups:
-      bun-patch:
-        patterns: [ "@types/bun" ]
-        update-types: ["patch"]
-    multi-ecosystem-group: "bun-patch"
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
@@ -28,7 +13,6 @@ updates:
       bun-patch:
         patterns: [ "oven/bun" ]
         update-types: ["patch"]
-    multi-ecosystem-group: "bun-patch"
 
   # project dependencies
 #  - package-ecosystem: "bun"
