@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   dependabot-only:
-    if: ${{ github.actor == 'dependabot[bot]' && startsWith( github.event.pull_request.title, 'bump oven/bun from') }}
+    if: ${{ github.actor == 'dependabot[bot]' && contains( github.event.pull_request.title, 'bump oven/bun from') }}
     runs-on: [ ubuntu-24.04 ]
     steps:
       - uses: oven-sh/setup-bun@v2
