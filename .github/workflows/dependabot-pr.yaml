@@ -17,13 +17,12 @@ jobs:
       - uses: actions/checkout@v6
         with:
           ref: ${{ github.event.pull_request.head.ref }}
+          token: ${{ secrets.DEPENDABOT_BUN_GITHUB_TOKEN }} # custom token is necessary to trigger workflows and jobs required to merge a PR
 
       - name: Synchronize bun version
         run: bash .github/scripts/bun-upgrade.sh
 
       - name: Push changes
-        env:
-          GH_TOKEN: ${{ secrets.DEPENDABOT_BUN_GITHUB_TOKEN }} # custom token is necessary to trigger workflows and jobs required to merge a PR
         run: |
           if git diff --quiet; then
             echo "No changes to push."
