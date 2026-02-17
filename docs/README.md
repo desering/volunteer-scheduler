@@ -96,17 +96,23 @@ Then choose between:
 
 ### _using standalone `bun`_
 
-4. Install all dependencies:
+4. Replace docker container names with localhost
+   ```shell
+   sedi '/^SMTP_HOST=/s|maildev|localhost|' .env
+   sedi '/^DATABASE_URI=/s|@postgres:|@localhost:|' .env
+   ```
+
+5. Install all dependencies:
    ```shell
    bun install
    ```
 
-5. Start additional development services (database, mail):
+6. Start additional development services (database, mail):
    ```shell
    docker compose up
    ```
 
-6. Start the Next.js development server:
+7. Start the Next.js development server:
    ```shell
    bun --bun dev
    ```
