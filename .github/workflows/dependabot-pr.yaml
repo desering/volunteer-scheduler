@@ -12,7 +12,7 @@ permissions:
 
 jobs:
   dependabot-only:
-    if: ${{ github.actor == 'dependabot[bot]' && startsWith( github.event.pull_request.title, 'Bump the "bun-patch" group') }}
+    if: ${{ github.actor == 'dependabot[bot]' && startsWith( github.event.pull_request.title, 'bump oven/bun from') }}
     runs-on: [ ubuntu-24.04 ]
     steps:
       - uses: oven-sh/setup-bun@v2
@@ -22,7 +22,7 @@ jobs:
 
       - id: metadata
         uses: dependabot/fetch-metadata@v2
-        
+
       - run: echo "${{ steps.metadata.outputs.new-version }}"
       - run: echo "${{ steps.metadata.outputs.updated-dependencies-json }}"
       - run: bash .github/scripts/bun-upgrade.sh "${{ steps.metadata.outputs.dependency-version }}"
