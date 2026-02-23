@@ -1,4 +1,4 @@
-import { dialogAnatomy } from "@ark-ui/anatomy";
+import { dialogAnatomy } from "@ark-ui/react/anatomy";
 import { defineSlotRecipe } from "@pandacss/dev";
 
 const anatomy = dialogAnatomy.extendWith("header", "body", "footer");

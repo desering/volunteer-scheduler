@@ -4,6 +4,7 @@ import { format } from "@/utils/tz-format";
 
 type Props = {
   onClick: () => void;
+  disabled?: boolean;
   children?: ReactNode;
 };
 const EventButtonRoot = (props: Props & BoxProps) => {
@@ -16,7 +17,7 @@ const EventButtonRoot = (props: Props & BoxProps) => {
         _dark: "colorPalette.4",
       }}
       padding="6"
-      cursor="pointer"
+      cursor={{ base: "pointer", _disabled: "not-allowed" }}
       textAlign="left"
       borderRadius="l3"
       className="group"

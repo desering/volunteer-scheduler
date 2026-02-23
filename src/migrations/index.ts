@@ -4,6 +4,12 @@ import * as migration_20250402_113720_timezones_in_event_template from './202504
 import * as migration_20251027_155038_payload_version_migration from './20251027_155038_payload_version_migration';
 import * as migration_20251116_184923_add_tags_collection from './20251116_184923_add_tags_collection';
 import * as migration_20251220_014719_add_user_notification_preferences_collection from './20251220_014719_add_user_notification_preferences_collection';
+import * as migration_20260105_132536_add_announcements_collection from './20260105_132536_add_announcements_collection';
+import * as migration_20260112_112028_add_announcements_status from './20260112_112028_add_announcements_status';
+import * as migration_20260120_173332_add_locations_collection from './20260120_173332_add_locations_collection';
+import * as migration_20260125_145020 from './20260125_145020';
+import * as migration_20260215_130411_add_locations_to_templates from './20260215_130411_add_locations_to_templates';
+import * as migration_20260216_081257_revert_locked_documents from './20260216_081257_revert_locked_documents';
 
 export const migrations = [
   {
@@ -35,5 +41,35 @@ export const migrations = [
     up: migration_20251220_014719_add_user_notification_preferences_collection.up,
     down: migration_20251220_014719_add_user_notification_preferences_collection.down,
     name: '20251220_014719_add_user_notification_preferences_collection',
+  },
+  {
+    up: migration_20260105_132536_add_announcements_collection.up,
+    down: migration_20260105_132536_add_announcements_collection.down,
+    name: '20260105_132536_add_announcements_collection',
+  },
+  {
+    up: migration_20260112_112028_add_announcements_status.up,
+    down: migration_20260112_112028_add_announcements_status.down,
+    name: '20260112_112028_add_announcements_status',
+  },
+  {
+    up: migration_20260120_173332_add_locations_collection.up,
+    down: migration_20260120_173332_add_locations_collection.down,
+    name: '20260120_173332_add_locations_collection',
+  },
+  {
+    up: migration_20260125_145020.up,
+    down: migration_20260125_145020.down,
+    name: '20260125_145020',
+  },
+  {
+    up: migration_20260215_130411_add_locations_to_templates.up,
+    down: migration_20260215_130411_add_locations_to_templates.down,
+    name: '20260215_130411_add_locations_to_templates',
+  },
+  {
+    up: migration_20260216_081257_revert_locked_documents.up,
+    down: migration_20260216_081257_revert_locked_documents.down,
+    name: '20260216_081257_revert_locked_documents',
   },
 ];

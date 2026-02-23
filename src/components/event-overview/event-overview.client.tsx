@@ -4,15 +4,14 @@ import { utc } from "@date-fns/utc";
 import { RichText } from "@payloadcms/richtext-lexical/react";
 import { useQuery } from "@tanstack/react-query";
 import {
-  addDays,
   addMonths,
   eachDayOfInterval,
   isSameDay,
   startOfDay,
-  subDays,
   subMonths,
 } from "date-fns";
 import { useEffect, useMemo, useState } from "react";
+import { css } from "styled-system/css";
 import { Box, type BoxProps, Container, Grid } from "styled-system/jsx";
 import { EventButton } from "@/components/event-button";
 import { EventDetailsDrawer } from "@/components/event-details-sheet";
@@ -44,6 +43,10 @@ export const EventOverviewClient = ({
   // biome-ignore lint/correctness/useExhaustiveDependencies: reset selected tags on date change
   useEffect(() => {}, [selectedDate]);
 
+  const start = startOfDay(new Date()); // add some disabled buttons
+  const earliestShownDate = subMonths(start, 1);
+  const latestShownDate = addMonths(start, 1);
+
   const {
     data: events,
     refetch,
@@ -53,7 +56,7 @@ export const EventOverviewClient = ({
     queryFn: async () => {
       const url = "/api/events?";
       const searchParams = new URLSearchParams({
-        min_date: startOfDay(new Date(), { in: utc }).toISOString(),
+        min_date: startOfDay(earliestShownDate, { in: utc }).toISOString(),
       });
 
       if (selectedTags.length > 0) {
@@ -74,33 +77,18 @@ export const EventOverviewClient = ({
     if (!events) return [];
 
     const entries = Object.entries(events);
-    const start = startOfDay(new Date()); // add some disabled buttons
-    const end = entries.reduce((max, [date]) => {
-      const d = new Date(date);
-      return d > max ? d : max;
-    }, startOfDay(new Date()));
 
-    return [
-      // fake days
-      ...eachDayOfInterval({
-        start: subMonths(start, 1),
-        end: subDays(start, 1),
-      }).map((date) => ({ date, hasEvents: false, isPublished: false })),
-      // real days
-      ...eachDayOfInterval({ start, end }).map((date) => {
-        const [, events] =
-          entries.find(([d]) => isSameDay(new Date(d), date)) ?? [];
-        const hasEvents = (events ?? []).length > 0;
+    return eachDayOfInterval({
+      start: earliestShownDate,
+      end: latestShownDate,
+    }).map((date) => {
+      const [, events] =
+        entries.find(([d]) => isSameDay(new Date(d), date)) ?? [];
+      const hasEvents = (events ?? []).length > 0;
 
-        return { date, hasEvents, isPublished: true };
-      }),
-      // fake days
-      ...eachDayOfInterval({
-        start: addDays(end, 1),
-        end: addMonths(end, 1),
-      }).map((date) => ({ date, hasEvents: false, isPublished: false })),
-    ];
-  }, [events]);
+      return { date, hasEvents };
+    });
+  }, [events, earliestShownDate, latestShownDate]);
 
   const eventsOnSelectedDate = useMemo(() => {
     if (!events) return;
@@ -110,6 +98,13 @@ export const EventOverviewClient = ({
 
     return eventsByDate;
   }, [events, selectedDate]);
+
+  const descriptionDetailCss = css({
+    "& a": {
+      textDecoration: "underline",
+      pointerEvents: "none",
+    },
+  });
 
   if (error) {
     return `Something went wrong, please try again later. ${error.message}`;
@@ -129,6 +124,11 @@ export const EventOverviewClient = ({
         <Grid gap="4">
           {eventsOnSelectedDate?.map((event) => {
             const signups = event.signups?.docs?.length;
+            const hasTags = Array.isArray(event.tags) && event.tags.length > 0;
+            const hasLocations =
+              Array.isArray(event.locations) && event.locations.length > 0;
+            const shouldShowBadges = hasTags || hasLocations;
+
             return (
               <EventButton.Root
                 key={event.id}
@@ -142,18 +142,21 @@ export const EventOverviewClient = ({
                   endDate={event.end_date}
                 />
                 <EventButton.Title>{event.title}</EventButton.Title>
-                {event.tags &&
-                  Array.isArray(event.tags) &&
-                  event.tags.length > 0 && (
-                    <Box display="flex" gap="2" marginY="2">
-                      {event.tags.map((tag) =>
-                        typeof tag === "object" && tag !== null ? (
-                          <Badge key={tag.id}>{tag.text}</Badge>
-                        ) : null,
-                      )}
-                    </Box>
-                  )}
-                <EventButton.Description>
+                {shouldShowBadges && (
+                  <Box display="flex" gap="2" marginY="2" flexWrap="wrap">
+                    {event.tags?.map((tag) =>
+                      typeof tag === "object" && tag !== null ? (
+                        <Badge key={tag.id}>{tag.text}</Badge>
+                      ) : null,
+                    )}
+                    {event.locations?.map((location) =>
+                      typeof location === "object" && location !== null ? (
+                        <Badge key={location.id}>{location.title}</Badge>
+                      ) : null,
+                    )}
+                  </Box>
+                )}
+                <EventButton.Description className={descriptionDetailCss}>
                   {event.description && <RichText data={event.description} />}
                 </EventButton.Description>
 

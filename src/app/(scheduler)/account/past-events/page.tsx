@@ -19,7 +19,9 @@ export default async function Page() {
     redirect("/auth/sign-in");
   }
 
-  const events = await getPastEventsForUserId(user.id);
+  const events = await getPastEventsForUserId(user.id, {
+    sort: ["-event.start_date"],
+  });
   const eventDates = events?.events.map((event) => {
     return parseISO(event.start_date);
   });
@@ -44,6 +46,7 @@ export default async function Page() {
       <UserEventsList
         initialData={events}
         refetchUrl={`/api/events/users/past`}
+        filterOptions={{ sort: ["-event.start_date"] }}
       />
     </Container>
   );

@@ -1,0 +1,35 @@
+name: dependabot-pr
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  dependabot-only:
+    if: ${{ github.actor == 'dependabot[bot]' && contains( github.event.pull_request.title, 'bump oven/bun from') }}
+    runs-on: [ ubuntu-24.04 ]
+    steps:
+      - uses: oven-sh/setup-bun@v2
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          token: ${{ secrets.DEPENDABOT_BUN_GITHUB_TOKEN }} # custom token is necessary to trigger workflows and jobs required to merge a PR
+
+      - name: Synchronize bun version
+        run: bash .github/scripts/bun-upgrade.sh
+
+      - name: Push changes
+        run: |
+          if git diff --quiet; then
+            echo "No changes to push."
+            exit 0
+          fi
+          git config user.name "dependabot[bot]"
+          git config user.email "49699333+dependabot[bot]@users.noreply.github.com"
+          git add .bun-version package.json bun.lock
+          git commit -m "chore: update bun version everywhere"
+          git push origin "HEAD:${{ github.event.pull_request.head.ref }}"

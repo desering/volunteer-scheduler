@@ -23,50 +23,96 @@ and interfaces exposed by Payload.
 ## How to get started with development
 
 > [!IMPORTANT]
-> This guide is tested on macOS. If you run into steps that work differently on
-> Windows or Linux, please open a PR to improve it.
+> This guide is tested on macOS & Linux. If you run into steps that work
+> differently on Windows, please open a PR to improve it.
 
 ### Prerequisites
 
 Install the following prerequisites:
 
-1. [Docker Desktop](https://docs.docker.com/desktop/) or [Rancher Desktop](https://rancherdesktop.io/)
-   * macOS Homebrew: `brew install --cask docker-desktop` or `brew install --cask rancher`
-2. The [Bun Javascript Runtime](https://bun.com/)
+1. docker runtime, pick one:
+   * [Docker "Engine"](https://docs.docker.com/engine/)
+   * [Docker Desktop](https://docs.docker.com/desktop/)
+     * macOS tip: `brew install --cask rancher`
+   * [Rancher Desktop](https://rancherdesktop.io/)
+     * macOS tip: `brew install --cask docker-desktop`
+
+2. optionally, get the [Bun Javascript Runtime](https://bun.com/)
    * macOS Homebrew: `brew tap oven-sh/bun; brew install bun`
-3. The [Node.js Javascript Runtime](https://nodejs.org/en/download)
-   * macOS Homebrew: `brew install node`
-   * Node.js is required for payload development, see https://github.com/payloadcms/payload/issues/15015
+
+**Payload compatibility with the Bun Runtime**
+
+Payload only officially supports the Node.js runtime. However, the Payload
+CLI seems to work with Bun without issues when using the `--disable-transpile`
+option as documented in
+[using alternative runtimes with Payload](https://payloadcms.com/docs/local-api/outside-nextjs#option-2-use-an-alternative-runtime-like-bun).
+
+This is only relevant for the use of the `payload` cli during development and
+not for the build process. See
+[this issue](https://github.com/payloadcms/payload/issues/15015) for details.
 
 ### Run the project locally
-
-Then, follow the steps below to start the project:
 
 1. Clone the repository:
    ```shell
    git clone git@github.com:desering/volunteer-scheduler.git
    ```
 
-2. Install all dependencies:
+2. Because of macOS, and its BSD `sed`:
    ```shell
-   bun install
+   source .github/scripts/functions.sh
    ```
 
 3. Create a `.env` file and generate a secret key for Payload:
    ```shell
    cp .env.example .env
-   sed -i '' -e "s/PAYLOAD_SECRET_PLACEHOLDER/$(openssl rand -hex 32)/g" .env
+   sedi -e "s/PAYLOAD_SECRET_PLACEHOLDER/$(openssl rand -hex 32)/g" .env
    ```
 
-4. Start additional development services (database, mail):
+Then choose between:
+
+<details>
+<summary>Run the project locally with docker only</summary>
+
+### _with docker only_
+
+4. Start development services (database, mail, bun):
    ```shell
-   docker compose -f docker-compose.dev.yml up
+   docker compose --profile bun up
    ```
 
-5. Start the Next.js development server:
+5. If your dependencies change, rebuild the image:
+   ```shell
+   docker compose --profile bun build
+   ```
+   and restart docker compose
+
+> This configuration stores your local build cache (`.next`) in a dedicated volume and `node_modules` are in the docker bun image.
+
+</details>
+
+<details>
+<summary>Run project locally using standalone bun</summary>
+
+### _using standalone `bun`_
+
+4. Install all dependencies:
+   ```shell
+   bun install
+   ```
+
+5. Start additional development services (database, mail):
+   ```shell
+   docker compose up
+   ```
+
+6. Start the Next.js development server:
    ```shell
    bun --bun dev
    ```
+
+> This configuration stores your local build cache (`.next`) and `node_modules` in your host filesystem.
+</details>
 
 You should now be able to access your local version of `volunteer-scheduler` at
 http://localhost:3000/.
@@ -83,11 +129,10 @@ Now, you can create and publish new events, which will show up in the frontend.
 
 ### Working with the database
 
-To connect to the [PostgreSQL](https://www.postgresql.org/) database container
-of your local development environment:
+To connect to the [PostgreSQL](https://www.postgresql.org/) database container of your local development environment:
 
 ```shell
-docker exec -it volunteer-scheduler-postgres-1 psql -U schedule
+docker compose exec postgres psql -U schedule
 ```
 
 Check out our [PostgreSQL Cheat Sheet](PostgreSQL%20Cheat%20Sheet.md)!
@@ -98,4 +143,4 @@ Payload requires an external mail server to send emails like password resets or
 shift reminders. To view emails sent from your local development environment,
 use [MailDev](https://maildev.github.io/maildev/):
 
-* http://localhost:1080/#/
+* with above dev docker compose it should be running on http://localhost:1080/#/
