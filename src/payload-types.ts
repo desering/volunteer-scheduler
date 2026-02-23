@@ -20,13 +20,16 @@ export interface Config {
   };
   blocks: {};
   collections: {
-    users: User;
+    announcements: Announcement;
     'event-templates': EventTemplate;
     events: Event;
-    sections: Section;
+    locations: Location;
     roles: Role;
+    sections: Section;
     signups: Signup;
     tags: Tag;
+    'user-notification-preferences': UserNotificationPreference;
+    users: User;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -37,21 +40,24 @@ export interface Config {
       roles: 'roles';
       signups: 'signups';
     };
-    sections: {
-      roles: 'roles';
-    };
     roles: {
       signups: 'signups';
     };
+    sections: {
+      roles: 'roles';
+    };
   };
   collectionsSelect: {
-    users: UsersSelect<false> | UsersSelect<true>;
+    announcements: AnnouncementsSelect<false> | AnnouncementsSelect<true>;
     'event-templates': EventTemplatesSelect<false> | EventTemplatesSelect<true>;
     events: EventsSelect<false> | EventsSelect<true>;
-    sections: SectionsSelect<false> | SectionsSelect<true>;
+    locations: LocationsSelect<false> | LocationsSelect<true>;
     roles: RolesSelect<false> | RolesSelect<true>;
+    sections: SectionsSelect<false> | SectionsSelect<true>;
     signups: SignupsSelect<false> | SignupsSelect<true>;
     tags: TagsSelect<false> | TagsSelect<true>;
+    'user-notification-preferences': UserNotificationPreferencesSelect<false> | UserNotificationPreferencesSelect<true>;
+    users: UsersSelect<false> | UsersSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -59,6 +65,7 @@ export interface Config {
   db: {
     defaultIDType: number;
   };
+  fallbackLocale: null;
   globals: {};
   globalsSelect: {};
   locale: null;
@@ -90,21 +97,29 @@ export interface UserAuthOperations {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users".
+ * via the `definition` "announcements".
  */
-export interface User {
+export interface Announcement {
   id: number;
-  preferredName: string;
-  phoneNumber?: string | null;
-  roles?: ('admin' | 'editor' | 'volunteer') | null;
+  title: string;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  status?: ('neutral' | 'info' | 'warning' | 'error' | 'success') | null;
   updatedAt: string;
   createdAt: string;
-  email: string;
-  resetPasswordToken?: string | null;
-  resetPasswordExpiration?: string | null;
-  salt?: string | null;
-  hash?: string | null;
-  password?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -132,6 +147,8 @@ export interface EventTemplate {
     };
     [k: string]: unknown;
   } | null;
+  tags?: (number | Tag)[] | null;
+  locations?: (number | Location)[] | null;
   sections?:
     | {
         title: string;
@@ -221,6 +238,45 @@ export interface EventTemplate {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags".
+ */
+export interface Tag {
+  id: number;
+  text: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "locations".
+ */
+export interface Location {
+  id: number;
+  title: string;
+  address?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users".
+ */
+export interface User {
+  id: number;
+  preferredName: string;
+  phoneNumber?: string | null;
+  roles?: ('admin' | 'editor' | 'volunteer') | null;
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  password?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "events".
  */
 export interface Event {
@@ -244,6 +300,7 @@ export interface Event {
     [k: string]: unknown;
   } | null;
   tags?: (number | Tag)[] | null;
+  locations?: (number | Location)[] | null;
   sections?: {
     docs?: (number | Section)[];
     hasNextPage?: boolean;
@@ -259,16 +316,6 @@ export interface Event {
     hasNextPage?: boolean;
     totalDocs?: number;
   };
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "tags".
- */
-export interface Tag {
-  id: number;
-  text: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -349,6 +396,20 @@ export interface Signup {
   role: number | Role;
   user: number | User;
   title?: string | null;
+  totalShifts?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "user-notification-preferences".
+ */
+export interface UserNotificationPreference {
+  id: number;
+  user: number | User;
+  type: string;
+  channel: string;
+  preference: boolean;
   updatedAt: string;
   createdAt: string;
 }
@@ -360,8 +421,8 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
-        relationTo: 'users';
-        value: number | User;
+        relationTo: 'announcements';
+        value: number | Announcement;
       } | null)
     | ({
         relationTo: 'event-templates';
@@ -372,12 +433,16 @@ export interface PayloadLockedDocument {
         value: number | Event;
       } | null)
     | ({
-        relationTo: 'sections';
-        value: number | Section;
+        relationTo: 'locations';
+        value: number | Location;
       } | null)
     | ({
         relationTo: 'roles';
         value: number | Role;
+      } | null)
+    | ({
+        relationTo: 'sections';
+        value: number | Section;
       } | null)
     | ({
         relationTo: 'signups';
@@ -386,6 +451,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'tags';
         value: number | Tag;
+      } | null)
+    | ({
+        relationTo: 'users';
+        value: number | User;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -431,19 +500,14 @@ export interface PayloadMigration {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users_select".
+ * via the `definition` "announcements_select".
  */
-export interface UsersSelect<T extends boolean = true> {
-  preferredName?: T;
-  phoneNumber?: T;
-  roles?: T;
+export interface AnnouncementsSelect<T extends boolean = true> {
+  title?: T;
+  description?: T;
+  status?: T;
   updatedAt?: T;
   createdAt?: T;
-  email?: T;
-  resetPasswordToken?: T;
-  resetPasswordExpiration?: T;
-  salt?: T;
-  hash?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -456,6 +520,8 @@ export interface EventTemplatesSelect<T extends boolean = true> {
   start_time_tz?: T;
   end_time?: T;
   description?: T;
+  tags?: T;
+  locations?: T;
   sections?:
     | T
     | {
@@ -504,6 +570,7 @@ export interface EventsSelect<T extends boolean = true> {
   end_date?: T;
   description?: T;
   tags?: T;
+  locations?: T;
   sections?: T;
   roles?: T;
   signups?: T;
@@ -512,13 +579,11 @@ export interface EventsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sections_select".
+ * via the `definition` "locations_select".
  */
-export interface SectionsSelect<T extends boolean = true> {
-  event?: T;
+export interface LocationsSelect<T extends boolean = true> {
   title?: T;
-  description?: T;
-  roles?: T;
+  address?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -538,6 +603,18 @@ export interface RolesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sections_select".
+ */
+export interface SectionsSelect<T extends boolean = true> {
+  event?: T;
+  title?: T;
+  description?: T;
+  roles?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "signups_select".
  */
 export interface SignupsSelect<T extends boolean = true> {
@@ -545,6 +622,7 @@ export interface SignupsSelect<T extends boolean = true> {
   role?: T;
   user?: T;
   title?: T;
+  totalShifts?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -556,6 +634,34 @@ export interface TagsSelect<T extends boolean = true> {
   text?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "user-notification-preferences_select".
+ */
+export interface UserNotificationPreferencesSelect<T extends boolean = true> {
+  user?: T;
+  type?: T;
+  channel?: T;
+  preference?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users_select".
+ */
+export interface UsersSelect<T extends boolean = true> {
+  preferredName?: T;
+  phoneNumber?: T;
+  roles?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

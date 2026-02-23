@@ -7,7 +7,6 @@ import { Text } from "@/components/ui/text";
 
 type DateItem = {
   date: Date;
-  isPublished: boolean;
   hasEvents: boolean;
 };
 
@@ -102,7 +101,6 @@ const DateButton = ({
           key={item.date.getTime()}
           ref={ref}
           variant={selected ? "solid" : item.hasEvents ? "outline" : "ghost"}
-          disabled={!item.isPublished}
           onClick={() => onDateSelect(item.date)}
           display="block"
           height="auto"

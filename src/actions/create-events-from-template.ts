@@ -112,10 +112,20 @@ const eventTemplateToEvent = (template: EventTemplate, day: UTCDate) => {
   const startTime = addMinutes(eventStartTime, -offsetDifference);
   const endTime = addMinutes(eventEndTime, -offsetDifference);
 
+  const tagIds = template.tags?.map((tag) =>
+    typeof tag === "object" ? tag.id : tag,
+  );
+
+  const locationIds = template.locations?.map((location) =>
+    typeof location === "object" ? location.id : location,
+  );
+
   return {
     title: template.event_title,
     description: template.description,
     start_date: startTime.toISOString(),
     end_date: endTime.toISOString(),
+    tags: tagIds,
+    locations: locationIds,
   } satisfies RequiredDataFromCollectionSlug<"events">;
 };

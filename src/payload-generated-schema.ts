@@ -6,7 +6,7 @@
  * and re-run `payload generate:db-schema` to regenerate this file.
  */
 
-import type {} from '@payloadcms/db-postgres'
+import type {} from "@payloadcms/db-postgres";
 import {
   pgTable,
   index,
@@ -14,748 +14,1078 @@ import {
   foreignKey,
   serial,
   varchar,
+  jsonb,
   timestamp,
   integer,
-  jsonb,
   numeric,
+  boolean,
   pgEnum,
-} from '@payloadcms/db-postgres/drizzle/pg-core'
-import { sql, relations } from '@payloadcms/db-postgres/drizzle'
-export const enum_users_roles = pgEnum('enum_users_roles', ['admin', 'editor', 'volunteer'])
-export const enum_event_templates_start_time_tz = pgEnum('enum_event_templates_start_time_tz', [
-  'Europe/Amsterdam',
-])
+} from "@payloadcms/db-postgres/drizzle/pg-core";
+import { sql, relations } from "@payloadcms/db-postgres/drizzle";
+export const enum_announcements_status = pgEnum("enum_announcements_status", [
+  "neutral",
+  "info",
+  "warning",
+  "error",
+  "success",
+]);
+export const enum_event_templates_start_time_tz = pgEnum(
+  "enum_event_templates_start_time_tz",
+  ["Europe/Amsterdam"],
+);
+export const enum_users_roles = pgEnum("enum_users_roles", [
+  "admin",
+  "editor",
+  "volunteer",
+]);
 
-export const users = pgTable(
-  'users',
+export const announcements = pgTable(
+  "announcements",
   {
-    id: serial('id').primaryKey(),
-    preferredName: varchar('preferred_name').notNull(),
-    phoneNumber: varchar('phone_number'),
-    roles: enum_users_roles('roles'),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
-      .defaultNow()
-      .notNull(),
-    email: varchar('email').notNull(),
-    resetPasswordToken: varchar('reset_password_token'),
-    resetPasswordExpiration: timestamp('reset_password_expiration', {
-      mode: 'string',
+    id: serial("id").primaryKey(),
+    title: varchar("title").notNull(),
+    description: jsonb("description"),
+    status: enum_announcements_status("status").default("info"),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
       withTimezone: true,
       precision: 3,
-    }),
-    salt: varchar('salt'),
-    hash: varchar('hash'),
+    })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
   },
   (columns) => [
-    index('users_updated_at_idx').on(columns.updatedAt),
-    index('users_created_at_idx').on(columns.createdAt),
-    uniqueIndex('users_email_idx').on(columns.email),
+    index("announcements_updated_at_idx").on(columns.updatedAt),
+    index("announcements_created_at_idx").on(columns.createdAt),
   ],
-)
+);
 
 export const event_templates_sections_roles_signups = pgTable(
-  'event_templates_sections_roles_signups',
+  "event_templates_sections_roles_signups",
   {
-    _order: integer('_order').notNull(),
-    _parentID: varchar('_parent_id').notNull(),
-    id: varchar('id').primaryKey(),
-    user: integer('user_id')
+    _order: integer("_order").notNull(),
+    _parentID: varchar("_parent_id").notNull(),
+    id: varchar("id").primaryKey(),
+    user: integer("user_id")
       .notNull()
       .references(() => users.id, {
-        onDelete: 'set null',
+        onDelete: "set null",
       }),
   },
   (columns) => [
-    index('event_templates_sections_roles_signups_order_idx').on(columns._order),
-    index('event_templates_sections_roles_signups_parent_id_idx').on(columns._parentID),
-    index('event_templates_sections_roles_signups_user_idx').on(columns.user),
+    index("event_templates_sections_roles_signups_order_idx").on(
+      columns._order,
+    ),
+    index("event_templates_sections_roles_signups_parent_id_idx").on(
+      columns._parentID,
+    ),
+    index("event_templates_sections_roles_signups_user_idx").on(columns.user),
     foreignKey({
-      columns: [columns['_parentID']],
+      columns: [columns["_parentID"]],
       foreignColumns: [event_templates_sections_roles.id],
-      name: 'event_templates_sections_roles_signups_parent_id_fk',
-    }).onDelete('cascade'),
+      name: "event_templates_sections_roles_signups_parent_id_fk",
+    }).onDelete("cascade"),
   ],
-)
+);
 
 export const event_templates_sections_roles = pgTable(
-  'event_templates_sections_roles',
+  "event_templates_sections_roles",
   {
-    _order: integer('_order').notNull(),
-    _parentID: varchar('_parent_id').notNull(),
-    id: varchar('id').primaryKey(),
-    title: varchar('title').notNull(),
-    description: jsonb('description'),
-    maxSignups: numeric('max_signups', { mode: 'number' }).notNull().default(1),
+    _order: integer("_order").notNull(),
+    _parentID: varchar("_parent_id").notNull(),
+    id: varchar("id").primaryKey(),
+    title: varchar("title").notNull(),
+    description: jsonb("description"),
+    maxSignups: numeric("max_signups", { mode: "number" }).notNull().default(1),
   },
   (columns) => [
-    index('event_templates_sections_roles_order_idx').on(columns._order),
-    index('event_templates_sections_roles_parent_id_idx').on(columns._parentID),
+    index("event_templates_sections_roles_order_idx").on(columns._order),
+    index("event_templates_sections_roles_parent_id_idx").on(columns._parentID),
     foreignKey({
-      columns: [columns['_parentID']],
+      columns: [columns["_parentID"]],
       foreignColumns: [event_templates_sections.id],
-      name: 'event_templates_sections_roles_parent_id_fk',
-    }).onDelete('cascade'),
+      name: "event_templates_sections_roles_parent_id_fk",
+    }).onDelete("cascade"),
   ],
-)
+);
 
 export const event_templates_sections = pgTable(
-  'event_templates_sections',
+  "event_templates_sections",
   {
-    _order: integer('_order').notNull(),
-    _parentID: integer('_parent_id').notNull(),
-    id: varchar('id').primaryKey(),
-    title: varchar('title').notNull(),
-    description: jsonb('description'),
+    _order: integer("_order").notNull(),
+    _parentID: integer("_parent_id").notNull(),
+    id: varchar("id").primaryKey(),
+    title: varchar("title").notNull(),
+    description: jsonb("description"),
   },
   (columns) => [
-    index('event_templates_sections_order_idx').on(columns._order),
-    index('event_templates_sections_parent_id_idx').on(columns._parentID),
+    index("event_templates_sections_order_idx").on(columns._order),
+    index("event_templates_sections_parent_id_idx").on(columns._parentID),
     foreignKey({
-      columns: [columns['_parentID']],
+      columns: [columns["_parentID"]],
       foreignColumns: [event_templates.id],
-      name: 'event_templates_sections_parent_id_fk',
-    }).onDelete('cascade'),
+      name: "event_templates_sections_parent_id_fk",
+    }).onDelete("cascade"),
   ],
-)
+);
 
 export const event_templates_roles_signups = pgTable(
-  'event_templates_roles_signups',
+  "event_templates_roles_signups",
   {
-    _order: integer('_order').notNull(),
-    _parentID: varchar('_parent_id').notNull(),
-    id: varchar('id').primaryKey(),
-    user: integer('user_id')
+    _order: integer("_order").notNull(),
+    _parentID: varchar("_parent_id").notNull(),
+    id: varchar("id").primaryKey(),
+    user: integer("user_id")
       .notNull()
       .references(() => users.id, {
-        onDelete: 'set null',
+        onDelete: "set null",
       }),
   },
   (columns) => [
-    index('event_templates_roles_signups_order_idx').on(columns._order),
-    index('event_templates_roles_signups_parent_id_idx').on(columns._parentID),
-    index('event_templates_roles_signups_user_idx').on(columns.user),
+    index("event_templates_roles_signups_order_idx").on(columns._order),
+    index("event_templates_roles_signups_parent_id_idx").on(columns._parentID),
+    index("event_templates_roles_signups_user_idx").on(columns.user),
     foreignKey({
-      columns: [columns['_parentID']],
+      columns: [columns["_parentID"]],
       foreignColumns: [event_templates_roles.id],
-      name: 'event_templates_roles_signups_parent_id_fk',
-    }).onDelete('cascade'),
+      name: "event_templates_roles_signups_parent_id_fk",
+    }).onDelete("cascade"),
   ],
-)
+);
 
 export const event_templates_roles = pgTable(
-  'event_templates_roles',
+  "event_templates_roles",
   {
-    _order: integer('_order').notNull(),
-    _parentID: integer('_parent_id').notNull(),
-    id: varchar('id').primaryKey(),
-    title: varchar('title').notNull(),
-    description: jsonb('description'),
-    maxSignups: numeric('max_signups', { mode: 'number' }).notNull().default(1),
+    _order: integer("_order").notNull(),
+    _parentID: integer("_parent_id").notNull(),
+    id: varchar("id").primaryKey(),
+    title: varchar("title").notNull(),
+    description: jsonb("description"),
+    maxSignups: numeric("max_signups", { mode: "number" }).notNull().default(1),
   },
   (columns) => [
-    index('event_templates_roles_order_idx').on(columns._order),
-    index('event_templates_roles_parent_id_idx').on(columns._parentID),
+    index("event_templates_roles_order_idx").on(columns._order),
+    index("event_templates_roles_parent_id_idx").on(columns._parentID),
     foreignKey({
-      columns: [columns['_parentID']],
+      columns: [columns["_parentID"]],
       foreignColumns: [event_templates.id],
-      name: 'event_templates_roles_parent_id_fk',
-    }).onDelete('cascade'),
+      name: "event_templates_roles_parent_id_fk",
+    }).onDelete("cascade"),
   ],
-)
+);
 
 export const event_templates = pgTable(
-  'event_templates',
+  "event_templates",
   {
-    id: serial('id').primaryKey(),
-    template_title: varchar('template_title').notNull(),
-    event_title: varchar('event_title').notNull(),
-    start_time: timestamp('start_time', {
-      mode: 'string',
+    id: serial("id").primaryKey(),
+    template_title: varchar("template_title").notNull(),
+    event_title: varchar("event_title").notNull(),
+    start_time: timestamp("start_time", {
+      mode: "string",
       withTimezone: true,
       precision: 3,
     }).notNull(),
-    start_time_tz: enum_event_templates_start_time_tz('start_time_tz')
+    start_time_tz: enum_event_templates_start_time_tz("start_time_tz")
       .notNull()
-      .default('Europe/Amsterdam'),
-    end_time: timestamp('end_time', { mode: 'string', withTimezone: true, precision: 3 }).notNull(),
-    description: jsonb('description'),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+      .default("Europe/Amsterdam"),
+    end_time: timestamp("end_time", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    }).notNull(),
+    description: jsonb("description"),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
       .defaultNow()
       .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
       .defaultNow()
       .notNull(),
   },
   (columns) => [
-    index('event_templates_updated_at_idx').on(columns.updatedAt),
-    index('event_templates_created_at_idx').on(columns.createdAt),
+    index("event_templates_updated_at_idx").on(columns.updatedAt),
+    index("event_templates_created_at_idx").on(columns.createdAt),
   ],
-)
+);
+
+export const event_templates_rels = pgTable(
+  "event_templates_rels",
+  {
+    id: serial("id").primaryKey(),
+    order: integer("order"),
+    parent: integer("parent_id").notNull(),
+    path: varchar("path").notNull(),
+    tagsID: integer("tags_id"),
+    locationsID: integer("locations_id"),
+  },
+  (columns) => [
+    index("event_templates_rels_order_idx").on(columns.order),
+    index("event_templates_rels_parent_idx").on(columns.parent),
+    index("event_templates_rels_path_idx").on(columns.path),
+    index("event_templates_rels_tags_id_idx").on(columns.tagsID),
+    index("event_templates_rels_locations_id_idx").on(columns.locationsID),
+    foreignKey({
+      columns: [columns["parent"]],
+      foreignColumns: [event_templates.id],
+      name: "event_templates_rels_parent_fk",
+    }).onDelete("cascade"),
+    foreignKey({
+      columns: [columns["tagsID"]],
+      foreignColumns: [tags.id],
+      name: "event_templates_rels_tags_fk",
+    }).onDelete("cascade"),
+    foreignKey({
+      columns: [columns["locationsID"]],
+      foreignColumns: [locations.id],
+      name: "event_templates_rels_locations_fk",
+    }).onDelete("cascade"),
+  ],
+);
 
 export const events = pgTable(
-  'events',
+  "events",
   {
-    id: serial('id').primaryKey(),
-    title: varchar('title').notNull(),
-    start_date: timestamp('start_date', {
-      mode: 'string',
+    id: serial("id").primaryKey(),
+    title: varchar("title").notNull(),
+    start_date: timestamp("start_date", {
+      mode: "string",
       withTimezone: true,
       precision: 3,
     }).notNull(),
-    end_date: timestamp('end_date', { mode: 'string', withTimezone: true, precision: 3 }).notNull(),
-    description: jsonb('description'),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+    end_date: timestamp("end_date", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    }).notNull(),
+    description: jsonb("description"),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
       .defaultNow()
       .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
       .defaultNow()
       .notNull(),
   },
   (columns) => [
-    index('events_updated_at_idx').on(columns.updatedAt),
-    index('events_created_at_idx').on(columns.createdAt),
+    index("events_updated_at_idx").on(columns.updatedAt),
+    index("events_created_at_idx").on(columns.createdAt),
   ],
-)
+);
 
 export const events_rels = pgTable(
-  'events_rels',
+  "events_rels",
   {
-    id: serial('id').primaryKey(),
-    order: integer('order'),
-    parent: integer('parent_id').notNull(),
-    path: varchar('path').notNull(),
-    tagsID: integer('tags_id'),
+    id: serial("id").primaryKey(),
+    order: integer("order"),
+    parent: integer("parent_id").notNull(),
+    path: varchar("path").notNull(),
+    tagsID: integer("tags_id"),
+    locationsID: integer("locations_id"),
   },
   (columns) => [
-    index('events_rels_order_idx').on(columns.order),
-    index('events_rels_parent_idx').on(columns.parent),
-    index('events_rels_path_idx').on(columns.path),
-    index('events_rels_tags_id_idx').on(columns.tagsID),
+    index("events_rels_order_idx").on(columns.order),
+    index("events_rels_parent_idx").on(columns.parent),
+    index("events_rels_path_idx").on(columns.path),
+    index("events_rels_tags_id_idx").on(columns.tagsID),
+    index("events_rels_locations_id_idx").on(columns.locationsID),
     foreignKey({
-      columns: [columns['parent']],
+      columns: [columns["parent"]],
       foreignColumns: [events.id],
-      name: 'events_rels_parent_fk',
-    }).onDelete('cascade'),
+      name: "events_rels_parent_fk",
+    }).onDelete("cascade"),
     foreignKey({
-      columns: [columns['tagsID']],
+      columns: [columns["tagsID"]],
       foreignColumns: [tags.id],
-      name: 'events_rels_tags_fk',
-    }).onDelete('cascade'),
+      name: "events_rels_tags_fk",
+    }).onDelete("cascade"),
+    foreignKey({
+      columns: [columns["locationsID"]],
+      foreignColumns: [locations.id],
+      name: "events_rels_locations_fk",
+    }).onDelete("cascade"),
   ],
-)
+);
 
-export const sections = pgTable(
-  'sections',
+export const locations = pgTable(
+  "locations",
   {
-    id: serial('id').primaryKey(),
-    event: integer('event_id')
-      .notNull()
-      .references(() => events.id, {
-        onDelete: 'set null',
-      }),
-    title: varchar('title').notNull(),
-    description: jsonb('description'),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+    id: serial("id").primaryKey(),
+    title: varchar("title").notNull(),
+    address: varchar("address"),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
       .defaultNow()
       .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
       .defaultNow()
       .notNull(),
   },
   (columns) => [
-    index('sections_event_idx').on(columns.event),
-    index('sections_updated_at_idx').on(columns.updatedAt),
-    index('sections_created_at_idx').on(columns.createdAt),
+    index("locations_updated_at_idx").on(columns.updatedAt),
+    index("locations_created_at_idx").on(columns.createdAt),
   ],
-)
+);
 
 export const roles = pgTable(
-  'roles',
+  "roles",
   {
-    id: serial('id').primaryKey(),
-    event: integer('event_id').references(() => events.id, {
-      onDelete: 'set null',
+    id: serial("id").primaryKey(),
+    event: integer("event_id").references(() => events.id, {
+      onDelete: "set null",
     }),
-    section: integer('section_id').references(() => sections.id, {
-      onDelete: 'set null',
+    section: integer("section_id").references(() => sections.id, {
+      onDelete: "set null",
     }),
-    title: varchar('title').notNull(),
-    description: jsonb('description'),
-    maxSignups: numeric('max_signups', { mode: 'number' }).notNull().default(1),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+    title: varchar("title").notNull(),
+    description: jsonb("description"),
+    maxSignups: numeric("max_signups", { mode: "number" }).notNull().default(1),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
       .defaultNow()
       .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
       .defaultNow()
       .notNull(),
   },
   (columns) => [
-    index('roles_event_idx').on(columns.event),
-    index('roles_section_idx').on(columns.section),
-    index('roles_updated_at_idx').on(columns.updatedAt),
-    index('roles_created_at_idx').on(columns.createdAt),
+    index("roles_event_idx").on(columns.event),
+    index("roles_section_idx").on(columns.section),
+    index("roles_updated_at_idx").on(columns.updatedAt),
+    index("roles_created_at_idx").on(columns.createdAt),
   ],
-)
+);
+
+export const sections = pgTable(
+  "sections",
+  {
+    id: serial("id").primaryKey(),
+    event: integer("event_id")
+      .notNull()
+      .references(() => events.id, {
+        onDelete: "set null",
+      }),
+    title: varchar("title").notNull(),
+    description: jsonb("description"),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index("sections_event_idx").on(columns.event),
+    index("sections_updated_at_idx").on(columns.updatedAt),
+    index("sections_created_at_idx").on(columns.createdAt),
+  ],
+);
 
 export const signups = pgTable(
-  'signups',
+  "signups",
   {
-    id: serial('id').primaryKey(),
-    event: integer('event_id').references(() => events.id, {
-      onDelete: 'set null',
+    id: serial("id").primaryKey(),
+    event: integer("event_id").references(() => events.id, {
+      onDelete: "set null",
     }),
-    role: integer('role_id')
+    role: integer("role_id")
       .notNull()
       .references(() => roles.id, {
-        onDelete: 'set null',
+        onDelete: "set null",
       }),
-    user: integer('user_id')
+    user: integer("user_id")
       .notNull()
       .references(() => users.id, {
-        onDelete: 'set null',
+        onDelete: "set null",
       }),
-    title: varchar('title'),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+    title: varchar("title"),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
       .defaultNow()
       .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
       .defaultNow()
       .notNull(),
   },
   (columns) => [
-    index('signups_event_idx').on(columns.event),
-    index('signups_role_idx').on(columns.role),
-    index('signups_user_idx').on(columns.user),
-    index('signups_updated_at_idx').on(columns.updatedAt),
-    index('signups_created_at_idx').on(columns.createdAt),
+    index("signups_event_idx").on(columns.event),
+    index("signups_role_idx").on(columns.role),
+    index("signups_user_idx").on(columns.user),
+    index("signups_updated_at_idx").on(columns.updatedAt),
+    index("signups_created_at_idx").on(columns.createdAt),
   ],
-)
+);
 
 export const tags = pgTable(
-  'tags',
+  "tags",
   {
-    id: serial('id').primaryKey(),
-    text: varchar('text').notNull(),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+    id: serial("id").primaryKey(),
+    text: varchar("text").notNull(),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
       .defaultNow()
       .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
       .defaultNow()
       .notNull(),
   },
   (columns) => [
-    index('tags_updated_at_idx').on(columns.updatedAt),
-    index('tags_created_at_idx').on(columns.createdAt),
+    index("tags_updated_at_idx").on(columns.updatedAt),
+    index("tags_created_at_idx").on(columns.createdAt),
   ],
-)
+);
+
+export const user_notification_preferences = pgTable(
+  "user_notification_preferences",
+  {
+    id: serial("id").primaryKey(),
+    user: integer("user_id")
+      .notNull()
+      .references(() => users.id, {
+        onDelete: "set null",
+      }),
+    type: varchar("type").notNull(),
+    channel: varchar("channel").notNull(),
+    preference: boolean("preference").notNull().default(false),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index("user_notification_preferences_user_idx").on(columns.user),
+    index("user_notification_preferences_updated_at_idx").on(columns.updatedAt),
+    index("user_notification_preferences_created_at_idx").on(columns.createdAt),
+    uniqueIndex("user_type_channel_idx").on(
+      columns.user,
+      columns.type,
+      columns.channel,
+    ),
+  ],
+);
+
+export const users = pgTable(
+  "users",
+  {
+    id: serial("id").primaryKey(),
+    preferredName: varchar("preferred_name").notNull(),
+    phoneNumber: varchar("phone_number"),
+    roles: enum_users_roles("roles"),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+    email: varchar("email").notNull(),
+    resetPasswordToken: varchar("reset_password_token"),
+    resetPasswordExpiration: timestamp("reset_password_expiration", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    }),
+    salt: varchar("salt"),
+    hash: varchar("hash"),
+  },
+  (columns) => [
+    index("users_updated_at_idx").on(columns.updatedAt),
+    index("users_created_at_idx").on(columns.createdAt),
+    uniqueIndex("users_email_idx").on(columns.email),
+  ],
+);
 
 export const payload_locked_documents = pgTable(
-  'payload_locked_documents',
+  "payload_locked_documents",
   {
-    id: serial('id').primaryKey(),
-    globalSlug: varchar('global_slug'),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+    id: serial("id").primaryKey(),
+    globalSlug: varchar("global_slug"),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
       .defaultNow()
       .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
       .defaultNow()
       .notNull(),
   },
   (columns) => [
-    index('payload_locked_documents_global_slug_idx').on(columns.globalSlug),
-    index('payload_locked_documents_updated_at_idx').on(columns.updatedAt),
-    index('payload_locked_documents_created_at_idx').on(columns.createdAt),
+    index("payload_locked_documents_global_slug_idx").on(columns.globalSlug),
+    index("payload_locked_documents_updated_at_idx").on(columns.updatedAt),
+    index("payload_locked_documents_created_at_idx").on(columns.createdAt),
   ],
-)
+);
 
 export const payload_locked_documents_rels = pgTable(
-  'payload_locked_documents_rels',
+  "payload_locked_documents_rels",
   {
-    id: serial('id').primaryKey(),
-    order: integer('order'),
-    parent: integer('parent_id').notNull(),
-    path: varchar('path').notNull(),
-    usersID: integer('users_id'),
-    'event-templatesID': integer('event_templates_id'),
-    eventsID: integer('events_id'),
-    sectionsID: integer('sections_id'),
-    rolesID: integer('roles_id'),
-    signupsID: integer('signups_id'),
-    tagsID: integer('tags_id'),
+    id: serial("id").primaryKey(),
+    order: integer("order"),
+    parent: integer("parent_id").notNull(),
+    path: varchar("path").notNull(),
+    announcementsID: integer("announcements_id"),
+    "event-templatesID": integer("event_templates_id"),
+    eventsID: integer("events_id"),
+    locationsID: integer("locations_id"),
+    rolesID: integer("roles_id"),
+    sectionsID: integer("sections_id"),
+    signupsID: integer("signups_id"),
+    tagsID: integer("tags_id"),
+    usersID: integer("users_id"),
   },
   (columns) => [
-    index('payload_locked_documents_rels_order_idx').on(columns.order),
-    index('payload_locked_documents_rels_parent_idx').on(columns.parent),
-    index('payload_locked_documents_rels_path_idx').on(columns.path),
-    index('payload_locked_documents_rels_users_id_idx').on(columns.usersID),
-    index('payload_locked_documents_rels_event_templates_id_idx').on(columns['event-templatesID']),
-    index('payload_locked_documents_rels_events_id_idx').on(columns.eventsID),
-    index('payload_locked_documents_rels_sections_id_idx').on(columns.sectionsID),
-    index('payload_locked_documents_rels_roles_id_idx').on(columns.rolesID),
-    index('payload_locked_documents_rels_signups_id_idx').on(columns.signupsID),
-    index('payload_locked_documents_rels_tags_id_idx').on(columns.tagsID),
+    index("payload_locked_documents_rels_order_idx").on(columns.order),
+    index("payload_locked_documents_rels_parent_idx").on(columns.parent),
+    index("payload_locked_documents_rels_path_idx").on(columns.path),
+    index("payload_locked_documents_rels_announcements_id_idx").on(
+      columns.announcementsID,
+    ),
+    index("payload_locked_documents_rels_event_templates_id_idx").on(
+      columns["event-templatesID"],
+    ),
+    index("payload_locked_documents_rels_events_id_idx").on(columns.eventsID),
+    index("payload_locked_documents_rels_locations_id_idx").on(
+      columns.locationsID,
+    ),
+    index("payload_locked_documents_rels_roles_id_idx").on(columns.rolesID),
+    index("payload_locked_documents_rels_sections_id_idx").on(
+      columns.sectionsID,
+    ),
+    index("payload_locked_documents_rels_signups_id_idx").on(columns.signupsID),
+    index("payload_locked_documents_rels_tags_id_idx").on(columns.tagsID),
+    index("payload_locked_documents_rels_users_id_idx").on(columns.usersID),
     foreignKey({
-      columns: [columns['parent']],
+      columns: [columns["parent"]],
       foreignColumns: [payload_locked_documents.id],
-      name: 'payload_locked_documents_rels_parent_fk',
-    }).onDelete('cascade'),
+      name: "payload_locked_documents_rels_parent_fk",
+    }).onDelete("cascade"),
     foreignKey({
-      columns: [columns['usersID']],
-      foreignColumns: [users.id],
-      name: 'payload_locked_documents_rels_users_fk',
-    }).onDelete('cascade'),
+      columns: [columns["announcementsID"]],
+      foreignColumns: [announcements.id],
+      name: "payload_locked_documents_rels_announcements_fk",
+    }).onDelete("cascade"),
     foreignKey({
-      columns: [columns['event-templatesID']],
+      columns: [columns["event-templatesID"]],
       foreignColumns: [event_templates.id],
-      name: 'payload_locked_documents_rels_event_templates_fk',
-    }).onDelete('cascade'),
+      name: "payload_locked_documents_rels_event_templates_fk",
+    }).onDelete("cascade"),
     foreignKey({
-      columns: [columns['eventsID']],
+      columns: [columns["eventsID"]],
       foreignColumns: [events.id],
-      name: 'payload_locked_documents_rels_events_fk',
-    }).onDelete('cascade'),
+      name: "payload_locked_documents_rels_events_fk",
+    }).onDelete("cascade"),
     foreignKey({
-      columns: [columns['sectionsID']],
-      foreignColumns: [sections.id],
-      name: 'payload_locked_documents_rels_sections_fk',
-    }).onDelete('cascade'),
+      columns: [columns["locationsID"]],
+      foreignColumns: [locations.id],
+      name: "payload_locked_documents_rels_locations_fk",
+    }).onDelete("cascade"),
     foreignKey({
-      columns: [columns['rolesID']],
+      columns: [columns["rolesID"]],
       foreignColumns: [roles.id],
-      name: 'payload_locked_documents_rels_roles_fk',
-    }).onDelete('cascade'),
+      name: "payload_locked_documents_rels_roles_fk",
+    }).onDelete("cascade"),
     foreignKey({
-      columns: [columns['signupsID']],
+      columns: [columns["sectionsID"]],
+      foreignColumns: [sections.id],
+      name: "payload_locked_documents_rels_sections_fk",
+    }).onDelete("cascade"),
+    foreignKey({
+      columns: [columns["signupsID"]],
       foreignColumns: [signups.id],
-      name: 'payload_locked_documents_rels_signups_fk',
-    }).onDelete('cascade'),
+      name: "payload_locked_documents_rels_signups_fk",
+    }).onDelete("cascade"),
     foreignKey({
-      columns: [columns['tagsID']],
+      columns: [columns["tagsID"]],
       foreignColumns: [tags.id],
-      name: 'payload_locked_documents_rels_tags_fk',
-    }).onDelete('cascade'),
+      name: "payload_locked_documents_rels_tags_fk",
+    }).onDelete("cascade"),
+    foreignKey({
+      columns: [columns["usersID"]],
+      foreignColumns: [users.id],
+      name: "payload_locked_documents_rels_users_fk",
+    }).onDelete("cascade"),
   ],
-)
+);
 
 export const payload_preferences = pgTable(
-  'payload_preferences',
+  "payload_preferences",
   {
-    id: serial('id').primaryKey(),
-    key: varchar('key'),
-    value: jsonb('value'),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+    id: serial("id").primaryKey(),
+    key: varchar("key"),
+    value: jsonb("value"),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
       .defaultNow()
       .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
       .defaultNow()
       .notNull(),
   },
   (columns) => [
-    index('payload_preferences_key_idx').on(columns.key),
-    index('payload_preferences_updated_at_idx').on(columns.updatedAt),
-    index('payload_preferences_created_at_idx').on(columns.createdAt),
+    index("payload_preferences_key_idx").on(columns.key),
+    index("payload_preferences_updated_at_idx").on(columns.updatedAt),
+    index("payload_preferences_created_at_idx").on(columns.createdAt),
   ],
-)
+);
 
 export const payload_preferences_rels = pgTable(
-  'payload_preferences_rels',
+  "payload_preferences_rels",
   {
-    id: serial('id').primaryKey(),
-    order: integer('order'),
-    parent: integer('parent_id').notNull(),
-    path: varchar('path').notNull(),
-    usersID: integer('users_id'),
+    id: serial("id").primaryKey(),
+    order: integer("order"),
+    parent: integer("parent_id").notNull(),
+    path: varchar("path").notNull(),
+    usersID: integer("users_id"),
   },
   (columns) => [
-    index('payload_preferences_rels_order_idx').on(columns.order),
-    index('payload_preferences_rels_parent_idx').on(columns.parent),
-    index('payload_preferences_rels_path_idx').on(columns.path),
-    index('payload_preferences_rels_users_id_idx').on(columns.usersID),
+    index("payload_preferences_rels_order_idx").on(columns.order),
+    index("payload_preferences_rels_parent_idx").on(columns.parent),
+    index("payload_preferences_rels_path_idx").on(columns.path),
+    index("payload_preferences_rels_users_id_idx").on(columns.usersID),
     foreignKey({
-      columns: [columns['parent']],
+      columns: [columns["parent"]],
       foreignColumns: [payload_preferences.id],
-      name: 'payload_preferences_rels_parent_fk',
-    }).onDelete('cascade'),
+      name: "payload_preferences_rels_parent_fk",
+    }).onDelete("cascade"),
     foreignKey({
-      columns: [columns['usersID']],
+      columns: [columns["usersID"]],
       foreignColumns: [users.id],
-      name: 'payload_preferences_rels_users_fk',
-    }).onDelete('cascade'),
+      name: "payload_preferences_rels_users_fk",
+    }).onDelete("cascade"),
   ],
-)
+);
 
 export const payload_migrations = pgTable(
-  'payload_migrations',
+  "payload_migrations",
   {
-    id: serial('id').primaryKey(),
-    name: varchar('name'),
-    batch: numeric('batch', { mode: 'number' }),
-    updatedAt: timestamp('updated_at', { mode: 'string', withTimezone: true, precision: 3 })
+    id: serial("id").primaryKey(),
+    name: varchar("name"),
+    batch: numeric("batch", { mode: "number" }),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
       .defaultNow()
       .notNull(),
-    createdAt: timestamp('created_at', { mode: 'string', withTimezone: true, precision: 3 })
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
       .defaultNow()
       .notNull(),
   },
   (columns) => [
-    index('payload_migrations_updated_at_idx').on(columns.updatedAt),
-    index('payload_migrations_created_at_idx').on(columns.createdAt),
+    index("payload_migrations_updated_at_idx").on(columns.updatedAt),
+    index("payload_migrations_created_at_idx").on(columns.createdAt),
   ],
-)
+);
 
-export const relations_users = relations(users, () => ({}))
+export const relations_announcements = relations(announcements, () => ({}));
 export const relations_event_templates_sections_roles_signups = relations(
   event_templates_sections_roles_signups,
   ({ one }) => ({
     _parentID: one(event_templates_sections_roles, {
       fields: [event_templates_sections_roles_signups._parentID],
       references: [event_templates_sections_roles.id],
-      relationName: 'signups',
+      relationName: "signups",
     }),
     user: one(users, {
       fields: [event_templates_sections_roles_signups.user],
       references: [users.id],
-      relationName: 'user',
+      relationName: "user",
     }),
   }),
-)
+);
 export const relations_event_templates_sections_roles = relations(
   event_templates_sections_roles,
   ({ one, many }) => ({
     _parentID: one(event_templates_sections, {
       fields: [event_templates_sections_roles._parentID],
       references: [event_templates_sections.id],
-      relationName: 'roles',
+      relationName: "roles",
     }),
     signups: many(event_templates_sections_roles_signups, {
-      relationName: 'signups',
+      relationName: "signups",
     }),
   }),
-)
+);
 export const relations_event_templates_sections = relations(
   event_templates_sections,
   ({ one, many }) => ({
     _parentID: one(event_templates, {
       fields: [event_templates_sections._parentID],
       references: [event_templates.id],
-      relationName: 'sections',
+      relationName: "sections",
     }),
     roles: many(event_templates_sections_roles, {
-      relationName: 'roles',
+      relationName: "roles",
     }),
   }),
-)
+);
 export const relations_event_templates_roles_signups = relations(
   event_templates_roles_signups,
   ({ one }) => ({
     _parentID: one(event_templates_roles, {
       fields: [event_templates_roles_signups._parentID],
       references: [event_templates_roles.id],
-      relationName: 'signups',
+      relationName: "signups",
     }),
     user: one(users, {
       fields: [event_templates_roles_signups.user],
       references: [users.id],
-      relationName: 'user',
+      relationName: "user",
     }),
   }),
-)
+);
 export const relations_event_templates_roles = relations(
   event_templates_roles,
   ({ one, many }) => ({
     _parentID: one(event_templates, {
       fields: [event_templates_roles._parentID],
       references: [event_templates.id],
-      relationName: 'roles',
+      relationName: "roles",
     }),
     signups: many(event_templates_roles_signups, {
-      relationName: 'signups',
+      relationName: "signups",
     }),
   }),
-)
-export const relations_event_templates = relations(event_templates, ({ many }) => ({
-  sections: many(event_templates_sections, {
-    relationName: 'sections',
+);
+export const relations_event_templates_rels = relations(
+  event_templates_rels,
+  ({ one }) => ({
+    parent: one(event_templates, {
+      fields: [event_templates_rels.parent],
+      references: [event_templates.id],
+      relationName: "_rels",
+    }),
+    tagsID: one(tags, {
+      fields: [event_templates_rels.tagsID],
+      references: [tags.id],
+      relationName: "tags",
+    }),
+    locationsID: one(locations, {
+      fields: [event_templates_rels.locationsID],
+      references: [locations.id],
+      relationName: "locations",
+    }),
   }),
-  roles: many(event_templates_roles, {
-    relationName: 'roles',
+);
+export const relations_event_templates = relations(
+  event_templates,
+  ({ many }) => ({
+    sections: many(event_templates_sections, {
+      relationName: "sections",
+    }),
+    roles: many(event_templates_roles, {
+      relationName: "roles",
+    }),
+    _rels: many(event_templates_rels, {
+      relationName: "_rels",
+    }),
   }),
-}))
+);
 export const relations_events_rels = relations(events_rels, ({ one }) => ({
   parent: one(events, {
     fields: [events_rels.parent],
     references: [events.id],
-    relationName: '_rels',
+    relationName: "_rels",
   }),
   tagsID: one(tags, {
     fields: [events_rels.tagsID],
     references: [tags.id],
-    relationName: 'tags',
+    relationName: "tags",
   }),
-}))
+  locationsID: one(locations, {
+    fields: [events_rels.locationsID],
+    references: [locations.id],
+    relationName: "locations",
+  }),
+}));
 export const relations_events = relations(events, ({ many }) => ({
   _rels: many(events_rels, {
-    relationName: '_rels',
+    relationName: "_rels",
   }),
-}))
-export const relations_sections = relations(sections, ({ one }) => ({
-  event: one(events, {
-    fields: [sections.event],
-    references: [events.id],
-    relationName: 'event',
-  }),
-}))
+}));
+export const relations_locations = relations(locations, () => ({}));
 export const relations_roles = relations(roles, ({ one }) => ({
   event: one(events, {
     fields: [roles.event],
     references: [events.id],
-    relationName: 'event',
+    relationName: "event",
   }),
   section: one(sections, {
     fields: [roles.section],
     references: [sections.id],
-    relationName: 'section',
+    relationName: "section",
   }),
-}))
+}));
+export const relations_sections = relations(sections, ({ one }) => ({
+  event: one(events, {
+    fields: [sections.event],
+    references: [events.id],
+    relationName: "event",
+  }),
+}));
 export const relations_signups = relations(signups, ({ one }) => ({
   event: one(events, {
     fields: [signups.event],
     references: [events.id],
-    relationName: 'event',
+    relationName: "event",
   }),
   role: one(roles, {
     fields: [signups.role],
     references: [roles.id],
-    relationName: 'role',
+    relationName: "role",
   }),
   user: one(users, {
     fields: [signups.user],
     references: [users.id],
-    relationName: 'user',
+    relationName: "user",
   }),
-}))
-export const relations_tags = relations(tags, () => ({}))
+}));
+export const relations_tags = relations(tags, () => ({}));
+export const relations_user_notification_preferences = relations(
+  user_notification_preferences,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [user_notification_preferences.user],
+      references: [users.id],
+      relationName: "user",
+    }),
+  }),
+);
+export const relations_users = relations(users, () => ({}));
 export const relations_payload_locked_documents_rels = relations(
   payload_locked_documents_rels,
   ({ one }) => ({
     parent: one(payload_locked_documents, {
       fields: [payload_locked_documents_rels.parent],
       references: [payload_locked_documents.id],
-      relationName: '_rels',
+      relationName: "_rels",
     }),
-    usersID: one(users, {
-      fields: [payload_locked_documents_rels.usersID],
-      references: [users.id],
-      relationName: 'users',
+    announcementsID: one(announcements, {
+      fields: [payload_locked_documents_rels.announcementsID],
+      references: [announcements.id],
+      relationName: "announcements",
     }),
-    'event-templatesID': one(event_templates, {
-      fields: [payload_locked_documents_rels['event-templatesID']],
+    "event-templatesID": one(event_templates, {
+      fields: [payload_locked_documents_rels["event-templatesID"]],
       references: [event_templates.id],
-      relationName: 'event-templates',
+      relationName: "event-templates",
     }),
     eventsID: one(events, {
       fields: [payload_locked_documents_rels.eventsID],
       references: [events.id],
-      relationName: 'events',
+      relationName: "events",
     }),
-    sectionsID: one(sections, {
-      fields: [payload_locked_documents_rels.sectionsID],
-      references: [sections.id],
-      relationName: 'sections',
+    locationsID: one(locations, {
+      fields: [payload_locked_documents_rels.locationsID],
+      references: [locations.id],
+      relationName: "locations",
     }),
     rolesID: one(roles, {
       fields: [payload_locked_documents_rels.rolesID],
       references: [roles.id],
-      relationName: 'roles',
+      relationName: "roles",
+    }),
+    sectionsID: one(sections, {
+      fields: [payload_locked_documents_rels.sectionsID],
+      references: [sections.id],
+      relationName: "sections",
     }),
     signupsID: one(signups, {
       fields: [payload_locked_documents_rels.signupsID],
       references: [signups.id],
-      relationName: 'signups',
+      relationName: "signups",
     }),
     tagsID: one(tags, {
       fields: [payload_locked_documents_rels.tagsID],
       references: [tags.id],
-      relationName: 'tags',
+      relationName: "tags",
+    }),
+    usersID: one(users, {
+      fields: [payload_locked_documents_rels.usersID],
+      references: [users.id],
+      relationName: "users",
     }),
   }),
-)
+);
 export const relations_payload_locked_documents = relations(
   payload_locked_documents,
   ({ many }) => ({
     _rels: many(payload_locked_documents_rels, {
-      relationName: '_rels',
+      relationName: "_rels",
     }),
   }),
-)
+);
 export const relations_payload_preferences_rels = relations(
   payload_preferences_rels,
   ({ one }) => ({
     parent: one(payload_preferences, {
       fields: [payload_preferences_rels.parent],
       references: [payload_preferences.id],
-      relationName: '_rels',
+      relationName: "_rels",
     }),
     usersID: one(users, {
       fields: [payload_preferences_rels.usersID],
       references: [users.id],
-      relationName: 'users',
+      relationName: "users",
     }),
   }),
-)
-export const relations_payload_preferences = relations(payload_preferences, ({ many }) => ({
-  _rels: many(payload_preferences_rels, {
-    relationName: '_rels',
+);
+export const relations_payload_preferences = relations(
+  payload_preferences,
+  ({ many }) => ({
+    _rels: many(payload_preferences_rels, {
+      relationName: "_rels",
+    }),
   }),
-}))
-export const relations_payload_migrations = relations(payload_migrations, () => ({}))
+);
+export const relations_payload_migrations = relations(
+  payload_migrations,
+  () => ({}),
+);
 
 type DatabaseSchema = {
-  enum_users_roles: typeof enum_users_roles
-  enum_event_templates_start_time_tz: typeof enum_event_templates_start_time_tz
-  users: typeof users
-  event_templates_sections_roles_signups: typeof event_templates_sections_roles_signups
-  event_templates_sections_roles: typeof event_templates_sections_roles
-  event_templates_sections: typeof event_templates_sections
-  event_templates_roles_signups: typeof event_templates_roles_signups
-  event_templates_roles: typeof event_templates_roles
-  event_templates: typeof event_templates
-  events: typeof events
-  events_rels: typeof events_rels
-  sections: typeof sections
-  roles: typeof roles
-  signups: typeof signups
-  tags: typeof tags
-  payload_locked_documents: typeof payload_locked_documents
-  payload_locked_documents_rels: typeof payload_locked_documents_rels
-  payload_preferences: typeof payload_preferences
-  payload_preferences_rels: typeof payload_preferences_rels
-  payload_migrations: typeof payload_migrations
-  relations_users: typeof relations_users
-  relations_event_templates_sections_roles_signups: typeof relations_event_templates_sections_roles_signups
-  relations_event_templates_sections_roles: typeof relations_event_templates_sections_roles
-  relations_event_templates_sections: typeof relations_event_templates_sections
-  relations_event_templates_roles_signups: typeof relations_event_templates_roles_signups
-  relations_event_templates_roles: typeof relations_event_templates_roles
-  relations_event_templates: typeof relations_event_templates
-  relations_events_rels: typeof relations_events_rels
-  relations_events: typeof relations_events
-  relations_sections: typeof relations_sections
-  relations_roles: typeof relations_roles
-  relations_signups: typeof relations_signups
-  relations_tags: typeof relations_tags
-  relations_payload_locked_documents_rels: typeof relations_payload_locked_documents_rels
-  relations_payload_locked_documents: typeof relations_payload_locked_documents
-  relations_payload_preferences_rels: typeof relations_payload_preferences_rels
-  relations_payload_preferences: typeof relations_payload_preferences
-  relations_payload_migrations: typeof relations_payload_migrations
-}
+  enum_announcements_status: typeof enum_announcements_status;
+  enum_event_templates_start_time_tz: typeof enum_event_templates_start_time_tz;
+  enum_users_roles: typeof enum_users_roles;
+  announcements: typeof announcements;
+  event_templates_sections_roles_signups: typeof event_templates_sections_roles_signups;
+  event_templates_sections_roles: typeof event_templates_sections_roles;
+  event_templates_sections: typeof event_templates_sections;
+  event_templates_roles_signups: typeof event_templates_roles_signups;
+  event_templates_roles: typeof event_templates_roles;
+  event_templates: typeof event_templates;
+  event_templates_rels: typeof event_templates_rels;
+  events: typeof events;
+  events_rels: typeof events_rels;
+  locations: typeof locations;
+  roles: typeof roles;
+  sections: typeof sections;
+  signups: typeof signups;
+  tags: typeof tags;
+  user_notification_preferences: typeof user_notification_preferences;
+  users: typeof users;
+  payload_locked_documents: typeof payload_locked_documents;
+  payload_locked_documents_rels: typeof payload_locked_documents_rels;
+  payload_preferences: typeof payload_preferences;
+  payload_preferences_rels: typeof payload_preferences_rels;
+  payload_migrations: typeof payload_migrations;
+  relations_announcements: typeof relations_announcements;
+  relations_event_templates_sections_roles_signups: typeof relations_event_templates_sections_roles_signups;
+  relations_event_templates_sections_roles: typeof relations_event_templates_sections_roles;
+  relations_event_templates_sections: typeof relations_event_templates_sections;
+  relations_event_templates_roles_signups: typeof relations_event_templates_roles_signups;
+  relations_event_templates_roles: typeof relations_event_templates_roles;
+  relations_event_templates_rels: typeof relations_event_templates_rels;
+  relations_event_templates: typeof relations_event_templates;
+  relations_events_rels: typeof relations_events_rels;
+  relations_events: typeof relations_events;
+  relations_locations: typeof relations_locations;
+  relations_roles: typeof relations_roles;
+  relations_sections: typeof relations_sections;
+  relations_signups: typeof relations_signups;
+  relations_tags: typeof relations_tags;
+  relations_user_notification_preferences: typeof relations_user_notification_preferences;
+  relations_users: typeof relations_users;
+  relations_payload_locked_documents_rels: typeof relations_payload_locked_documents_rels;
+  relations_payload_locked_documents: typeof relations_payload_locked_documents;
+  relations_payload_preferences_rels: typeof relations_payload_preferences_rels;
+  relations_payload_preferences: typeof relations_payload_preferences;
+  relations_payload_migrations: typeof relations_payload_migrations;
+};
 
-declare module '@payloadcms/db-postgres' {
+declare module "@payloadcms/db-postgres" {
   export interface GeneratedDatabaseSchema {
-    schema: DatabaseSchema
+    schema: DatabaseSchema;
   }
 }

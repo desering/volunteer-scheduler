@@ -4,15 +4,14 @@ import { utc } from "@date-fns/utc";
 import { RichText } from "@payloadcms/richtext-lexical/react";
 import { useQuery } from "@tanstack/react-query";
 import {
-  addDays,
   addMonths,
   eachDayOfInterval,
   isSameDay,
   startOfDay,
-  subDays,
   subMonths,
 } from "date-fns";
 import { useEffect, useMemo, useState } from "react";
+import { css } from "styled-system/css";
 import { Box, type BoxProps, Container, Grid } from "styled-system/jsx";
 import { EventButton } from "@/components/event-button";
 import { EventDetailsDrawer } from "@/components/event-details-sheet";
@@ -36,27 +35,35 @@ export const EventOverviewClient = ({
 }: Props & BoxProps) => {
   const [selectedDate, setSelectedDate] = useState(startOfDay(new Date()));
   const [selectedEventId, setSelectedEventId] = useState<number>();
-  const [selectedTags, setSelectedTags] = useState<number[]>([]);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   // separation of selectedEvent and isDrawerOpen, otherwise breaks exitAnim
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: reset selected tags on date change
-  useEffect(() => {
-    setSelectedTags([]);
-  }, [selectedDate]);
+  useEffect(() => {}, [selectedDate]);
+
+  const start = startOfDay(new Date()); // add some disabled buttons
+  const earliestShownDate = subMonths(start, 1);
+  const latestShownDate = addMonths(start, 1);
 
   const {
     data: events,
     refetch,
     error,
   } = useQuery<EventsGroupedByDay>({
-    queryKey: ["eventsByDay", initialEvents],
+    queryKey: ["eventsByDay", initialEvents, selectedTags],
     queryFn: async () => {
       const url = "/api/events?";
       const searchParams = new URLSearchParams({
-        min_date: startOfDay(new Date(), { in: utc }).toISOString(),
+        min_date: startOfDay(earliestShownDate, { in: utc }).toISOString(),
       });
+
+      if (selectedTags.length > 0) {
+        selectedTags.forEach((tag) => {
+          searchParams.append("tags[]", tag);
+        });
+      }
 
       const res = await fetch(url + searchParams);
       const events = (await res.json()) as unknown as Event[];
@@ -70,66 +77,34 @@ export const EventOverviewClient = ({
     if (!events) return [];
 
     const entries = Object.entries(events);
-    const start = startOfDay(new Date()); // add some disabled buttons
-    const end = entries.reduce((max, [date]) => {
-      const d = new Date(date);
-      return d > max ? d : max;
-    }, startOfDay(new Date()));
 
-    return [
-      // fake days
-      ...eachDayOfInterval({
-        start: subMonths(start, 1),
-        end: subDays(start, 1),
-      }).map((date) => ({ date, hasEvents: false, isPublished: false })),
-      // real days
-      ...eachDayOfInterval({ start, end }).map((date) => {
-        const [, events] =
-          entries.find(([d]) => isSameDay(new Date(d), date)) ?? [];
-        const hasEvents = (events ?? []).length > 0;
+    return eachDayOfInterval({
+      start: earliestShownDate,
+      end: latestShownDate,
+    }).map((date) => {
+      const [, events] =
+        entries.find(([d]) => isSameDay(new Date(d), date)) ?? [];
+      const hasEvents = (events ?? []).length > 0;
 
-        return { date, hasEvents, isPublished: true };
-      }),
-      // fake days
-      ...eachDayOfInterval({
-        start: addDays(end, 1),
-        end: addMonths(end, 1),
-      }).map((date) => ({ date, hasEvents: false, isPublished: false })),
-    ];
-  }, [events]);
+      return { date, hasEvents };
+    });
+  }, [events, earliestShownDate, latestShownDate]);
 
   const eventsOnSelectedDate = useMemo(() => {
     if (!events) return;
-    const [, filteredEventsByDate] =
+    const [, eventsByDate] =
       Object.entries(events).find(([date]) => isSameDay(date, selectedDate)) ??
       [];
 
-    if (selectedTags.length === 0) {
-      return filteredEventsByDate;
-    }
+    return eventsByDate;
+  }, [events, selectedDate]);
 
-    return filteredEventsByDate?.filter((event) => {
-      if (!event.tags || !Array.isArray(event.tags)) return false;
-      const eventTagIds = event.tags.map((tag) =>
-        typeof tag === "object" && tag !== null ? tag.id : tag,
-      );
-      return selectedTags.some((tagId) => eventTagIds.includes(tagId));
-    });
-  }, [events, selectedDate, selectedTags]);
-
-  const availableTagIds = useMemo(() => {
-    if (!eventsOnSelectedDate) return [] as number[];
-    const ids = new Set<number>();
-    eventsOnSelectedDate.forEach((event) => {
-      if (!event.tags || !Array.isArray(event.tags)) return;
-      event.tags.forEach((tag) => {
-        if (typeof tag === "object" && tag !== null) {
-          ids.add(tag.id);
-        }
-      });
-    });
-    return Array.from(ids);
-  }, [eventsOnSelectedDate]);
+  const descriptionDetailCss = css({
+    "& a": {
+      textDecoration: "underline",
+      pointerEvents: "none",
+    },
+  });
 
   if (error) {
     return `Something went wrong, please try again later. ${error.message}`;
@@ -137,22 +112,23 @@ export const EventOverviewClient = ({
 
   return (
     <Box {...(cssProps as BoxProps)}>
+      <Container gap="4">
+        <TagFilter selectedTags={selectedTags} onTagsChange={setSelectedTags} />
+      </Container>
       <DateSelect
         selectedDate={selectedDate}
         items={completeDateRange}
         onDateSelect={setSelectedDate}
       />
       <Container>
-        {availableTagIds.length > 0 && (
-          <TagFilter
-            selectedTags={selectedTags}
-            onTagsChange={setSelectedTags}
-            onlyTagIds={availableTagIds}
-          />
-        )}
         <Grid gap="4">
           {eventsOnSelectedDate?.map((event) => {
             const signups = event.signups?.docs?.length;
+            const hasTags = Array.isArray(event.tags) && event.tags.length > 0;
+            const hasLocations =
+              Array.isArray(event.locations) && event.locations.length > 0;
+            const shouldShowBadges = hasTags || hasLocations;
+
             return (
               <EventButton.Root
                 key={event.id}
@@ -166,18 +142,21 @@ export const EventOverviewClient = ({
                   endDate={event.end_date}
                 />
                 <EventButton.Title>{event.title}</EventButton.Title>
-                {event.tags &&
-                  Array.isArray(event.tags) &&
-                  event.tags.length > 0 && (
-                    <Box display="flex" gap="2" marginY="2">
-                      {event.tags.map((tag) =>
-                        typeof tag === "object" && tag !== null ? (
-                          <Badge key={tag.id}>{tag.text}</Badge>
-                        ) : null,
-                      )}
-                    </Box>
-                  )}
-                <EventButton.Description>
+                {shouldShowBadges && (
+                  <Box display="flex" gap="2" marginY="2" flexWrap="wrap">
+                    {event.tags?.map((tag) =>
+                      typeof tag === "object" && tag !== null ? (
+                        <Badge key={tag.id}>{tag.text}</Badge>
+                      ) : null,
+                    )}
+                    {event.locations?.map((location) =>
+                      typeof location === "object" && location !== null ? (
+                        <Badge key={location.id}>{location.title}</Badge>
+                      ) : null,
+                    )}
+                  </Box>
+                )}
+                <EventButton.Description className={descriptionDetailCss}>
                   {event.description && <RichText data={event.description} />}
                 </EventButton.Description>
 
@@ -188,7 +167,7 @@ export const EventOverviewClient = ({
                 </Box>
               </EventButton.Root>
             );
-          }) ?? <NoEventsMessage />}
+          }) ?? <NoEventsMessage tagsSelected={selectedTags.length > 0} />}
         </Grid>
       </Container>
       <EventDetailsDrawer

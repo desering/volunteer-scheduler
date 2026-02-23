@@ -1,4 +1,6 @@
+import { render } from "@react-email/render";
 import type { CollectionConfig } from "payload";
+import { ResetPasswordEmail } from "@/email/templates/reset-password";
 import { admins } from "../access/admins";
 import { anyone } from "../access/anyone";
 import { adminAndThemselves } from "./access/admin-and-themselves";
@@ -19,8 +21,26 @@ export const Users: CollectionConfig = {
   auth: {
     loginWithUsername: false,
     maxLoginAttempts: 0,
-    tokenExpiration: 7 * 24 * 60 * 60, // 7 days in seconds
+    tokenExpiration: 31 * 24 * 60 * 60, // 31 days in seconds
     useSessions: false,
+    forgotPassword: {
+      generateEmailHTML: (args) => {
+        const { token, user } = args || {};
+
+        if (!token || !user) {
+          return "Error: Missing token or user information";
+        }
+
+        return render(
+          ResetPasswordEmail({ username: user.preferredName, token: token }),
+        );
+      },
+      generateEmailSubject: () => "Reset your password",
+    },
+    cookies: {
+      sameSite: "Lax",
+      secure: process.env.NODE_ENV === "production",
+    },
   },
   fields: [
     {

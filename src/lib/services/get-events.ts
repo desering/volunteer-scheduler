@@ -8,6 +8,14 @@ import { getPayload, type WhereField } from "payload";
 type GetEventsOptions = {
   minDate?: Date;
   maxDate?: Date;
+  tags?: string[];
+};
+
+type EventsWhereClause = {
+  start_date: WhereField;
+  tags?: {
+    in: number[];
+  };
 };
 
 export const getEvents = async (params?: GetEventsOptions) => {
@@ -21,10 +29,31 @@ export const getEvents = async (params?: GetEventsOptions) => {
     ...(maxDate && { less_than_equal: maxDate.toISOString() }),
   };
 
+  const where: EventsWhereClause = { start_date: startDateFilter };
+
+  if (params?.tags && params.tags.length > 0) {
+    const tags = await payload.find({
+      collection: "tags",
+      where: {
+        text: {
+          in: params.tags,
+        },
+      },
+    });
+
+    const tagIds = tags.docs.map((tag) => tag.id);
+
+    if (tagIds.length > 0) {
+      where.tags = {
+        in: tagIds,
+      };
+    }
+  }
+
   const events = await payload.find({
     collection: "events",
 
-    where: { start_date: startDateFilter },
+    where,
 
     joins: {
       roles: false,
