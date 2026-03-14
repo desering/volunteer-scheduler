@@ -1,10 +1,12 @@
 import config from "@payload-config";
 import type { SerializedEditorState } from "@payloadcms/richtext-lexical/lexical";
 import { convertLexicalToPlaintext } from "@payloadcms/richtext-lexical/plaintext";
-import { subWeeks } from "date-fns";
+import { subDays } from "date-fns";
 import ical, { ICalCalendarMethod } from "ical-generator";
 import { getPayload } from "payload";
-import type { Event, Location } from "@/payload-types";
+import type { Event, Location, Role } from "@/payload-types";
+
+const PAST_EVENT_RETENTION_DAYS = 7;
 
 export async function GET(
   _req: Request,
@@ -16,6 +18,7 @@ export async function GET(
   const result = await payload.find({
     collection: "calendar-tokens",
     where: { token: { equals: token } },
+    depth: 0,
     limit: 1,
   });
 
@@ -23,19 +26,15 @@ export async function GET(
     return new Response("Not found", { status: 404 });
   }
 
-  const calendarToken = result.docs[0];
-  const userId =
-    typeof calendarToken.user === "number"
-      ? calendarToken.user
-      : calendarToken.user.id;
-
-  const oneWeekAgo = subWeeks(new Date(), 1);
+  const { user: userId } = result.docs[0];
 
   const signups = await payload.find({
     collection: "signups",
     where: {
       user: { equals: userId },
-      "event.end_date": { greater_than_equal: oneWeekAgo },
+      "event.end_date": {
+        greater_than_equal: subDays(new Date(), PAST_EVENT_RETENTION_DAYS),
+      },
     },
     depth: 2,
     pagination: false,
@@ -43,8 +42,8 @@ export async function GET(
 
   const calendar = ical({
     name: process.env.ORG_NAME
-      ? `${process.env.ORG_NAME} Schedule`
-      : "De Sering Schedule",
+      ? `${process.env.ORG_NAME} Calendar`
+      : "Event Calendar",
     method: ICalCalendarMethod.PUBLISH,
   });
 
@@ -57,15 +56,21 @@ export async function GET(
     const location =
       (typedEvent.locations ?? [])
         .filter((l): l is Location => typeof l !== "number")
-        .map((l) => l.address ?? l.title)
-        .filter(Boolean)
-        .join(", ") || process.env.ORG_ADDRESS;
+        .map((l) => [l.title, l.address].filter(Boolean).join(", "))
+        .join("; ") || process.env.ORG_ADDRESS;
 
-    const description = typedEvent.description
+    const roleTitle =
+      typeof signup.role === "object"
+        ? (signup.role as Role).title
+        : "Volunteer";
+
+    const eventDescription = typedEvent.description
       ? convertLexicalToPlaintext({
           data: typedEvent.description as SerializedEditorState,
         })
-      : undefined;
+      : "";
+
+    const description = `You're joining as: ${roleTitle}\nDetails:\n${eventDescription}`;
 
     calendar.createEvent({
       id: String(typedEvent.id),

@@ -1,29 +1,35 @@
 "use client";
 
-import { Calendar, Trash2 } from "lucide-react";
-import { useTransition } from "react";
-import { panda, VStack } from "styled-system/jsx";
-import {
-  deleteCalendarToken,
-  generateCalendarToken,
-} from "@/actions/calendar-token";
+import { Calendar, Check, Copy, Trash2 } from "lucide-react";
+import { useState, useTransition } from "react";
+import { HStack, panda, VStack } from "styled-system/jsx";
+import { createCalendarToken } from "@/actions/create-calendar-token";
+import { deleteCalendarToken } from "@/actions/delete-calendar-token";
 import { Button } from "./ui/button";
+import { IconButton } from "./ui/icon-button";
 import { toaster } from "./ui/toast";
 
 type Props = {
   token: string | null;
-  tokenId: number | null;
 };
 
-export function CalendarLinkSection({ token, tokenId }: Props) {
+export function CalendarLinkSection({ token }: Props) {
   const calendarUrl = token
     ? `${window.location.origin}/api/calendar/${token}`
     : null;
   const [isPending, startTransition] = useTransition();
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    if (!calendarUrl) return;
+    await navigator.clipboard.writeText(calendarUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   const handleGenerate = () => {
     startTransition(async () => {
-      const result = await generateCalendarToken();
+      const result = await createCalendarToken();
       if (!result.success) {
         toaster.create({ type: "error", title: result.message });
       }
@@ -32,8 +38,7 @@ export function CalendarLinkSection({ token, tokenId }: Props) {
 
   const handleDelete = () => {
     startTransition(async () => {
-      if (!tokenId) return;
-      const result = await deleteCalendarToken(tokenId);
+      const result = await deleteCalendarToken();
       if (!result.success) {
         toaster.create({ type: "error", title: result.message });
       }
@@ -44,14 +49,34 @@ export function CalendarLinkSection({ token, tokenId }: Props) {
     return (
       <VStack alignItems="start" gap="3">
         <panda.p fontWeight="medium">Calendar subscription link</panda.p>
-        <panda.p
-          fontSize="sm"
-          color="gray.11"
-          wordBreak="break-all"
-          fontFamily="mono"
+        <HStack
+          gap="2"
+          p="3"
+          borderWidth="1"
+          borderRadius="lg"
+          borderColor="gray.6"
+          bg="gray.2"
+          width="full"
         >
-          {calendarUrl}
-        </panda.p>
+          <panda.p
+            fontSize="sm"
+            color="gray.11"
+            wordBreak="break-all"
+            fontFamily="mono"
+            flex="1"
+          >
+            {calendarUrl}
+          </panda.p>
+          <IconButton
+            variant="ghost"
+            size="sm"
+            aria-label="Copy calendar link"
+            onClick={handleCopy}
+            flexShrink="0"
+          >
+            {copied ? <Check /> : <Copy />}
+          </IconButton>
+        </HStack>
         <Button variant="outline" disabled={isPending} onClick={handleDelete}>
           <Trash2 />
           Revoke link

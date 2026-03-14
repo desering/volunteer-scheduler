@@ -38,10 +38,7 @@ export default async function Page() {
         <EditUserNotificationPreferences user={user} />
       </VStack>
 
-      <CalendarLinkSection
-        token={calendarToken?.token ?? null}
-        tokenId={calendarToken?.id ?? null}
-      />
+      <CalendarLinkSection token={calendarToken?.token ?? null} />
     </Container>
   );
 }

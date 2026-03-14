@@ -21,6 +21,7 @@ export interface Config {
   blocks: {};
   collections: {
     announcements: Announcement;
+    'calendar-tokens': CalendarToken;
     'event-templates': EventTemplate;
     events: Event;
     locations: Location;
@@ -49,6 +50,7 @@ export interface Config {
   };
   collectionsSelect: {
     announcements: AnnouncementsSelect<false> | AnnouncementsSelect<true>;
+    'calendar-tokens': CalendarTokensSelect<false> | CalendarTokensSelect<true>;
     'event-templates': EventTemplatesSelect<false> | EventTemplatesSelect<true>;
     events: EventsSelect<false> | EventsSelect<true>;
     locations: LocationsSelect<false> | LocationsSelect<true>;
@@ -119,6 +121,17 @@ export interface Announcement {
     [k: string]: unknown;
   } | null;
   status?: ('neutral' | 'info' | 'warning' | 'error' | 'success') | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "calendar-tokens".
+ */
+export interface CalendarToken {
+  id: number;
+  token: string;
+  user: number | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -508,6 +521,16 @@ export interface AnnouncementsSelect<T extends boolean = true> {
   title?: T;
   description?: T;
   status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "calendar-tokens_select".
+ */
+export interface CalendarTokensSelect<T extends boolean = true> {
+  token?: T;
+  user?: T;
   updatedAt?: T;
   createdAt?: T;
 }

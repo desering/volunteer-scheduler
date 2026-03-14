@@ -67,6 +67,39 @@ export const announcements = pgTable(
   ],
 );
 
+export const calendar_tokens = pgTable(
+  "calendar_tokens",
+  {
+    id: serial("id").primaryKey(),
+    token: varchar("token").notNull(),
+    user: integer("user_id")
+      .notNull()
+      .references(() => users.id, {
+        onDelete: "set null",
+      }),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    uniqueIndex("calendar_tokens_token_idx").on(columns.token),
+    uniqueIndex("calendar_tokens_user_idx").on(columns.user),
+    index("calendar_tokens_updated_at_idx").on(columns.updatedAt),
+    index("calendar_tokens_created_at_idx").on(columns.createdAt),
+  ],
+);
+
 export const event_templates_sections_roles_signups = pgTable(
   "event_templates_sections_roles_signups",
   {
@@ -769,6 +802,16 @@ export const payload_migrations = pgTable(
 );
 
 export const relations_announcements = relations(announcements, () => ({}));
+export const relations_calendar_tokens = relations(
+  calendar_tokens,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [calendar_tokens.user],
+      references: [users.id],
+      relationName: "user",
+    }),
+  }),
+);
 export const relations_event_templates_sections_roles_signups = relations(
   event_templates_sections_roles_signups,
   ({ one }) => ({
@@ -1039,6 +1082,7 @@ type DatabaseSchema = {
   enum_event_templates_start_time_tz: typeof enum_event_templates_start_time_tz;
   enum_users_roles: typeof enum_users_roles;
   announcements: typeof announcements;
+  calendar_tokens: typeof calendar_tokens;
   event_templates_sections_roles_signups: typeof event_templates_sections_roles_signups;
   event_templates_sections_roles: typeof event_templates_sections_roles;
   event_templates_sections: typeof event_templates_sections;
@@ -1061,6 +1105,7 @@ type DatabaseSchema = {
   payload_preferences_rels: typeof payload_preferences_rels;
   payload_migrations: typeof payload_migrations;
   relations_announcements: typeof relations_announcements;
+  relations_calendar_tokens: typeof relations_calendar_tokens;
   relations_event_templates_sections_roles_signups: typeof relations_event_templates_sections_roles_signups;
   relations_event_templates_sections_roles: typeof relations_event_templates_sections_roles;
   relations_event_templates_sections: typeof relations_event_templates_sections;
