@@ -1,7 +1,9 @@
 import { redirect } from "next/navigation";
 import { EditUserInfoButton } from "src/components/edit-user-info-button";
 import { Container, HStack, panda, VStack } from "styled-system/jsx";
+import { CalendarLinkSection } from "@/components/calendar-link-section";
 import { EditUserNotificationPreferences } from "@/components/edit-user-notifications-preference-button";
+import { getCalendarToken } from "@/lib/services/get-calendar-token";
 import { getUser } from "@/lib/services/get-user";
 
 export default async function Page() {
@@ -10,6 +12,8 @@ export default async function Page() {
   if (!user) {
     redirect("/auth/sign-in");
   }
+
+  const calendarToken = await getCalendarToken(user.id);
 
   return (
     <Container marginTop={{ base: 4, xl: 20 }} marginBottom="4">
@@ -30,7 +34,14 @@ export default async function Page() {
         <p>Phone Number: {user.phoneNumber}</p>
       </VStack>
 
-      <EditUserNotificationPreferences user={user} />
+      <VStack marginBottom="8" alignItems="start">
+        <EditUserNotificationPreferences user={user} />
+      </VStack>
+
+      <CalendarLinkSection
+        token={calendarToken?.token ?? null}
+        tokenId={calendarToken?.id ?? null}
+      />
     </Container>
   );
 }
