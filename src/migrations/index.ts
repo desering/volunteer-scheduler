@@ -9,6 +9,7 @@ import * as migration_20260112_112028_add_announcements_status from './20260112_
 import * as migration_20260120_173332_add_locations_collection from './20260120_173332_add_locations_collection';
 import * as migration_20260125_145020 from './20260125_145020';
 import * as migration_20260215_130411_add_locations_to_templates from './20260215_130411_add_locations_to_templates';
+import * as migration_20260216_081257_revert_locked_documents from './20260216_081257_revert_locked_documents';
 
 export const migrations = [
   {
@@ -64,6 +65,11 @@ export const migrations = [
   {
     up: migration_20260215_130411_add_locations_to_templates.up,
     down: migration_20260215_130411_add_locations_to_templates.down,
-    name: '20260215_130411_add_locations_to_templates'
+    name: '20260215_130411_add_locations_to_templates',
+  },
+  {
+    up: migration_20260216_081257_revert_locked_documents.up,
+    down: migration_20260216_081257_revert_locked_documents.down,
+    name: '20260216_081257_revert_locked_documents',
   },
 ];
