@@ -14,9 +14,13 @@ volunteer-scheduler
 │
 ├── 💻 /src - Source Code
 │   ├── app/              Next.js pages, layouts & API routes
+│   │   ├── (payload)/        Payload CMS admin panel
+│   │   └── (scheduler)/      Main app pages & layouts
+│   │       ├── api/              API routes (Next.js)
+│   │   │   └── ...               Additional API routes
 │   ├── collections/      Database schemas (Payload CMS)
 │   ├── migrations/       Database migrations
-│   ├── features/         Feature-specific code (e.g., scheduling, notifications)
+│   ├── features/         Feature-specific code (e.g., events)
 │   │   ├── feature xxx/      Code related to a specific feature
 │   │   │   ├── actions/      Server Actions specific to the feature
 │   │   │   ├── components/   Feature-specific components
@@ -28,6 +32,8 @@ volunteer-scheduler
 │   │   └── ...           Additional features
 │   └── shared/           Services & business logic
 │       ├── components/       Shared components
+│       │   ├── ui/               Shared UI components (presentational e.g., buttons, forms)
+│       │   └── component xxx/    Shared components non-specific to a single feature
 │       ├── actions/          Server Actions (backend operations)
 │       ├── utils/            General utilities
 │       ├── providers/        Context providers
