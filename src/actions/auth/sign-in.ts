@@ -49,6 +49,16 @@ export const signIn = async (formData: FormData): Promise<SignInResult> => {
       password,
     });
 
+    if (!result.user) {
+      return {
+        success: false,
+        message: {
+          formErrors: [`Sign-in failed: access denied`], // probably due to https://github.com/payloadcms/payload/pull/15404
+          fieldErrors: {},
+        },
+      };
+    }
+
     return {
       success: true,
       message: "Sign-in successful",
