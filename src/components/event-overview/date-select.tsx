@@ -1,6 +1,6 @@
 import { format, startOfDay } from "date-fns";
 import { useEffect, useRef } from "react";
-import { Grid, GridItem } from "styled-system/jsx";
+import { Box, Grid, GridItem, panda } from "styled-system/jsx";
 import { token } from "styled-system/tokens";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
@@ -42,6 +42,48 @@ export const DateSelect = (props: Props) => (
   </Grid>
 );
 
+// compute the inline start offset needed to align the sticky month with a centered max-width container
+// (viewport − minimum(viewport, containerMaxWidth)) / numberOfMarg`inAuto − paddingInline
+const containerInlineStartAlignment = `((100vw - min(100vw, ${token("sizes.8xl")})) / 2)`;
+
+const ContainerAlignedGridItem = panda(GridItem, {
+  base: {
+    "--bg-color": { base: "colors.gray.4", _dark: "colors.gray.2" },
+
+    position: "sticky",
+    overflow: "visible",
+    zIndex: "1",
+    width: "0",
+    gridRow: "1",
+
+    _before: {
+      display: "block",
+      position: "absolute",
+      content: '""',
+      backgroundImage: `linear-gradient(to right, transparent 0px, var(--bg-color) ${token("spacing.4")})`,
+      left: "-8",
+      width: "8",
+      height: "full",
+    },
+
+    // align with container
+    insetInlineStart: `calc(${containerInlineStartAlignment} + var(--inset-inline-start-offset))`,
+    "--inset-inline-start-offset": {
+      base: `spacing.4`,
+      md: `spacing.6`,
+      lg: `spacing.8`,
+    },
+  },
+});
+
+const ContainerAlignedGridItemInner = panda(Box, {
+  base: {
+    background: "var(--bg-color)",
+    whiteSpace: "nowrap",
+    width: "[250px]",
+  },
+});
+
 type DateButtonProps = {
   item: DateItem;
   itemIndex: number;
@@ -73,18 +115,11 @@ const DateButton = ({
   return (
     <>
       {showMonthLabel && (
-        <GridItem
-          background={{ base: "gray.4", _dark: "gray.2" }}
-          colSpan={4}
-          gridRow="1"
-          left="0"
-          paddingInline="4"
-          position="sticky"
-          zIndex="1"
-          maskImage={`linear-gradient(to right, transparent 0px, ${token("colors.bg.canvas")} 16px)`}
-        >
-          <Text>{format(item.date, "MMMM yyyy")}</Text>
-        </GridItem>
+        <ContainerAlignedGridItem aria-hidden="true">
+          <ContainerAlignedGridItemInner>
+            {format(item.date, "MMMM yyyy")}
+          </ContainerAlignedGridItemInner>
+        </ContainerAlignedGridItem>
       )}
 
       <GridItem gridRow="2">
