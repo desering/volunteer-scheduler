@@ -1,5 +1,9 @@
-import { expect, setSystemTime, test } from "bun:test";
+import { beforeAll, expect, setSystemTime, test } from "bun:test";
 import { createIcalEvent } from "./create-ical-event";
+
+beforeAll(() => {
+  delete process.env.ORG_NAME;
+});
 
 test("base case TZ UTC", () => {
   const now = new Date("June 15, 2025, 12:34:56 UTC");
