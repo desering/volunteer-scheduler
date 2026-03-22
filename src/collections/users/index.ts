@@ -1,6 +1,7 @@
 import { render } from "@react-email/render";
 import type { CollectionConfig } from "payload";
 import { ResetPasswordEmail } from "@/email/templates/reset-password";
+import { preferredNameSchema } from "@/lib/schemas/preferred-name";
 import { admins } from "../access/admins";
 import { anyone } from "../access/anyone";
 import { adminAndThemselves } from "./access/admin-and-themselves";
@@ -47,6 +48,13 @@ export const Users: CollectionConfig = {
       name: "preferredName",
       type: "text",
       required: true,
+      validate: (value: unknown) => {
+        const result = preferredNameSchema.safeParse(value);
+        if (!result.success) {
+          return result.error.message || "Invalid preferred name";
+        }
+        return true;
+      },
     },
     {
       name: "phoneNumber",
