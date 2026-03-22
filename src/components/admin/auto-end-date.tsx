@@ -7,23 +7,35 @@ import {
   useFormFields,
 } from "@payloadcms/ui";
 import { addHours } from "date-fns";
-import type React from "react";
 import { useEffect } from "react";
 
+type DateAdminConfig = {
+  displayFormat?: string;
+  pickerAppearance?: "dayOnly" | "dayAndTime";
+  timeFormat?: string;
+};
+
 type DateFieldConfig = {
+  admin?: {
+    date?: DateAdminConfig;
+  };
   label?: string;
   name?: string;
+  required?: boolean;
+  type?: "date";
 };
 
 type AutoEndDateProps = {
+  field: DateFieldConfig;
   path: string;
-  field?: DateFieldConfig;
+  permissions?: unknown;
+  schemaPath?: string;
   required?: boolean;
   disabled?: boolean;
   readOnly?: boolean;
 };
 
-export const AutoEndDate: React.FC<AutoEndDateProps> = (
+export const AutoEndDate = (
   props: AutoEndDateProps,
 ) => {
   const { value, setValue } = useField<string | Date>({ path: props.path });
@@ -34,7 +46,6 @@ export const AutoEndDate: React.FC<AutoEndDateProps> = (
     }),
   );
 
-  // sets date
   useEffect(() => {
     if (start_date && (!value || new Date(value) <= new Date(start_date))) {
       setValue(addHours(new Date(start_date), 1).toISOString());
@@ -42,13 +53,18 @@ export const AutoEndDate: React.FC<AutoEndDateProps> = (
   }, [start_date, value, setValue]);
 
   const currentValue = value ? new Date(value) : undefined;
+  const dateAdminConfig = props.field.admin?.date;
+  const label = props.field.label ?? props.field.name;
+  const isRequired = props.field.required ?? props.required;
+  const pickerAppearance = dateAdminConfig?.pickerAppearance ?? "dayAndTime";
+  const displayFormat = dateAdminConfig?.displayFormat ?? "dd/MM/y HH:mm";
+  const timeFormat = dateAdminConfig?.timeFormat ?? "HH:mm";
 
-  // creates new custom component including field
   return (
     <>
       <FieldLabel
-        label={props.field?.label || props.field?.name}
-        required={props.required}
+        label={label}
+        required={isRequired}
         htmlFor={props.path}
         path={props.path}
       />
@@ -63,14 +79,14 @@ export const AutoEndDate: React.FC<AutoEndDateProps> = (
 
           setValue(new Date(nextValue).toISOString());
         }}
-        displayFormat="dd/MM/y HH:mm"
-        pickerAppearance="dayAndTime"
-        timeFormat="HH:mm"
+        displayFormat={displayFormat}
+        pickerAppearance={pickerAppearance}
+        timeFormat={timeFormat}
         timeIntervals={15}
         timeInputLabel="Time"
         id={props.path}
         name={props.path}
-        required={props.required}
+        required={isRequired}
         disabled={props.disabled}
         readOnly={props.readOnly}
       />
