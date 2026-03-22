@@ -1,15 +1,38 @@
 "use client";
 
-import React, { useEffect } from "react";
-import { DatePicker, useField, useFormFields, FieldLabel } from "@payloadcms/ui";
+import {
+  DatePicker,
+  FieldLabel,
+  useField,
+  useFormFields,
+} from "@payloadcms/ui";
 import { addHours } from "date-fns";
+import type React from "react";
+import { useEffect } from "react";
 
-export const AutoEndDate: React.FC<any> = (props) => {
+type DateFieldConfig = {
+  label?: string;
+  name?: string;
+};
+
+type AutoEndDateProps = {
+  path: string;
+  field?: DateFieldConfig;
+  required?: boolean;
+  disabled?: boolean;
+  readOnly?: boolean;
+};
+
+export const AutoEndDate: React.FC<AutoEndDateProps> = (
+  props: AutoEndDateProps,
+) => {
   const { value, setValue } = useField<string | Date>({ path: props.path });
 
-  const { start_date } = useFormFields(([fields]: [any]) => ({
-    start_date: fields.start_date?.value,
-  }));
+  const { start_date } = useFormFields(
+    ([fields]: [Record<string, { value?: string | Date } | undefined>]) => ({
+      start_date: fields.start_date?.value,
+    }),
+  );
 
   // sets date
   useEffect(() => {
