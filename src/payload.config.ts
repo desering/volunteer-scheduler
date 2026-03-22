@@ -6,7 +6,6 @@ import { nodemailerAdapter } from "@payloadcms/email-nodemailer";
 import { buildConfig, inMemoryKVAdapter } from "payload";
 import sharp from "sharp";
 import { Announcements } from "./collections/announcements";
-import { CalendarTokens } from "./collections/calendar-tokens";
 import { EventTemplates } from "./collections/event-templates";
 import { Events } from "./collections/events";
 import { Locations } from "./collections/locations";
@@ -16,6 +15,7 @@ import { Signups } from "./collections/signups";
 import { Tags } from "./collections/tags";
 import { UserNotificationPreferences } from "./collections/user-notification-preferences";
 import { Users } from "./collections/users";
+import { WebcalTokens } from "./collections/webcal-tokens";
 import { editor } from "./editor.config";
 import { logger } from "./lib/logger";
 import { migrations } from "./migrations";
@@ -100,7 +100,7 @@ export default buildConfig({
 
   collections: [
     Announcements,
-    CalendarTokens,
+    WebcalTokens,
     EventTemplates,
     Events,
     Locations,

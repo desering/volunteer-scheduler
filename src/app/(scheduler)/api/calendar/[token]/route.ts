@@ -1,10 +1,9 @@
 import config from "@payload-config";
-import type { SerializedEditorState } from "@payloadcms/richtext-lexical/lexical";
-import { convertLexicalToPlaintext } from "@payloadcms/richtext-lexical/plaintext";
 import { subDays } from "date-fns";
 import ical, { ICalCalendarMethod } from "ical-generator";
 import { getPayload } from "payload";
-import type { Event, Location, Role } from "@/payload-types";
+import { buildSignupIcalEventData } from "@/lib/email/build-signup-ical-event-data";
+import type { Event, Role } from "@/payload-types";
 
 const PAST_EVENT_RETENTION_DAYS = 7;
 
@@ -16,7 +15,7 @@ export async function GET(
   const payload = await getPayload({ config });
 
   const result = await payload.find({
-    collection: "calendar-tokens",
+    collection: "webcal-tokens",
     where: { token: { equals: token } },
     depth: 0,
     limit: 1,
@@ -53,32 +52,20 @@ export async function GET(
 
     const typedEvent = event as Event;
 
-    const location =
-      (typedEvent.locations ?? [])
-        .filter((l): l is Location => typeof l !== "number")
-        .map((l) => [l.title, l.address].filter(Boolean).join(", "))
-        .join("; ") || process.env.ORG_ADDRESS;
-
-    const roleTitle =
+    const role =
       typeof signup.role === "object"
-        ? (signup.role as Role).title
-        : "Volunteer";
+        ? (signup.role as Role)
+        : { id: 0, title: "Volunteer" };
 
-    const eventDescription = typedEvent.description
-      ? convertLexicalToPlaintext({
-          data: typedEvent.description as SerializedEditorState,
-        })
-      : "";
-
-    const description = `You're joining as: ${roleTitle}\nDetails:\n${eventDescription}`;
+    const icalData = await buildSignupIcalEventData(typedEvent, role);
 
     calendar.createEvent({
-      id: String(typedEvent.id),
-      summary: typedEvent.title,
-      start: new Date(typedEvent.start_date),
-      end: new Date(typedEvent.end_date),
-      location: location || undefined,
-      description: { plain: description },
+      id: icalData.id,
+      summary: icalData.summary,
+      start: icalData.start,
+      end: icalData.end,
+      location: icalData.location,
+      description: { plain: icalData.description },
     });
   }
 

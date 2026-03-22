@@ -86,8 +86,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.calendar_tokens": {
-      "name": "calendar_tokens",
+    "public.webcal_tokens": {
+      "name": "webcal_tokens",
       "schema": "",
       "columns": {
         "id": {
@@ -124,8 +124,8 @@
         }
       },
       "indexes": {
-        "calendar_tokens_token_idx": {
-          "name": "calendar_tokens_token_idx",
+        "webcal_tokens_token_idx": {
+          "name": "webcal_tokens_token_idx",
           "columns": [
             {
               "expression": "token",
@@ -139,8 +139,8 @@
           "method": "btree",
           "with": {}
         },
-        "calendar_tokens_user_idx": {
-          "name": "calendar_tokens_user_idx",
+        "webcal_tokens_user_idx": {
+          "name": "webcal_tokens_user_idx",
           "columns": [
             {
               "expression": "user_id",
@@ -154,8 +154,8 @@
           "method": "btree",
           "with": {}
         },
-        "calendar_tokens_updated_at_idx": {
-          "name": "calendar_tokens_updated_at_idx",
+        "webcal_tokens_updated_at_idx": {
+          "name": "webcal_tokens_updated_at_idx",
           "columns": [
             {
               "expression": "updated_at",
@@ -169,8 +169,8 @@
           "method": "btree",
           "with": {}
         },
-        "calendar_tokens_created_at_idx": {
-          "name": "calendar_tokens_created_at_idx",
+        "webcal_tokens_created_at_idx": {
+          "name": "webcal_tokens_created_at_idx",
           "columns": [
             {
               "expression": "created_at",
@@ -186,9 +186,9 @@
         }
       },
       "foreignKeys": {
-        "calendar_tokens_user_id_users_id_fk": {
-          "name": "calendar_tokens_user_id_users_id_fk",
-          "tableFrom": "calendar_tokens",
+        "webcal_tokens_user_id_users_id_fk": {
+          "name": "webcal_tokens_user_id_users_id_fk",
+          "tableFrom": "webcal_tokens",
           "tableTo": "users",
           "columnsFrom": [
             "user_id"

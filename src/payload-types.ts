@@ -21,7 +21,7 @@ export interface Config {
   blocks: {};
   collections: {
     announcements: Announcement;
-    'calendar-tokens': CalendarToken;
+    'webcal-tokens': WebcalToken;
     'event-templates': EventTemplate;
     events: Event;
     locations: Location;
@@ -50,7 +50,7 @@ export interface Config {
   };
   collectionsSelect: {
     announcements: AnnouncementsSelect<false> | AnnouncementsSelect<true>;
-    'calendar-tokens': CalendarTokensSelect<false> | CalendarTokensSelect<true>;
+    'webcal-tokens': WebcalTokensSelect<false> | WebcalTokensSelect<true>;
     'event-templates': EventTemplatesSelect<false> | EventTemplatesSelect<true>;
     events: EventsSelect<false> | EventsSelect<true>;
     locations: LocationsSelect<false> | LocationsSelect<true>;
@@ -126,14 +126,33 @@ export interface Announcement {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "calendar-tokens".
+ * via the `definition` "webcal-tokens".
  */
-export interface CalendarToken {
+export interface WebcalToken {
   id: number;
   token: string;
   user: number | User;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users".
+ */
+export interface User {
+  id: number;
+  preferredName: string;
+  phoneNumber?: string | null;
+  roles?: ('admin' | 'editor' | 'volunteer') | null;
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  password?: string | null;
+  collection: 'users';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -270,25 +289,6 @@ export interface Location {
   address?: string | null;
   updatedAt: string;
   createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users".
- */
-export interface User {
-  id: number;
-  preferredName: string;
-  phoneNumber?: string | null;
-  roles?: ('admin' | 'editor' | 'volunteer') | null;
-  updatedAt: string;
-  createdAt: string;
-  email: string;
-  resetPasswordToken?: string | null;
-  resetPasswordExpiration?: string | null;
-  salt?: string | null;
-  hash?: string | null;
-  password?: string | null;
-  collection: 'users';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -526,9 +526,9 @@ export interface AnnouncementsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "calendar-tokens_select".
+ * via the `definition` "webcal-tokens_select".
  */
-export interface CalendarTokensSelect<T extends boolean = true> {
+export interface WebcalTokensSelect<T extends boolean = true> {
   token?: T;
   user?: T;
   updatedAt?: T;

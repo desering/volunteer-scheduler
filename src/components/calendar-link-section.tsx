@@ -3,8 +3,8 @@
 import { Calendar, Check, Copy, Trash2 } from "lucide-react";
 import { useState, useTransition } from "react";
 import { HStack, panda, VStack } from "styled-system/jsx";
-import { createCalendarToken } from "@/actions/create-calendar-token";
-import { deleteCalendarToken } from "@/actions/delete-calendar-token";
+import { createWebcalToken } from "@/actions/create-webcal-token";
+import { deleteWebcalToken } from "@/actions/delete-webcal-token";
 import { Button } from "./ui/button";
 import { IconButton } from "./ui/icon-button";
 import { toaster } from "./ui/toast";
@@ -29,7 +29,7 @@ export function CalendarLinkSection({ token }: Props) {
 
   const handleGenerate = () => {
     startTransition(async () => {
-      const result = await createCalendarToken();
+      const result = await createWebcalToken();
       if (!result.success) {
         toaster.create({ type: "error", title: result.message });
       }
@@ -38,7 +38,7 @@ export function CalendarLinkSection({ token }: Props) {
 
   const handleDelete = () => {
     startTransition(async () => {
-      const result = await deleteCalendarToken();
+      const result = await deleteWebcalToken();
       if (!result.success) {
         toaster.create({ type: "error", title: result.message });
       }

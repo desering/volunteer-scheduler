@@ -1,8 +1,8 @@
 import type { CollectionConfig } from "payload";
 import { admins } from "./access/admins";
 
-export const CalendarTokens: CollectionConfig = {
-  slug: "calendar-tokens",
+export const WebcalTokens: CollectionConfig = {
+  slug: "webcal-tokens",
   admin: {
     useAsTitle: "token",
     group: "Admin",
