@@ -14,6 +14,10 @@ describe("preferredNameSchema", () => {
     expect(() => preferredNameSchema.parse("")).toThrow();
   });
 
+  test("rejects name of only space", () => {
+    expect(() => preferredNameSchema.parse(" ")).toThrow();
+  });
+
   test("rejects name exceeding 50 characters", () => {
     expect(() => preferredNameSchema.parse("a".repeat(51))).toThrow();
   });

@@ -41,7 +41,10 @@ export const updateUser = async (
   if (!parse.success) {
     return {
       success: false,
-      errors: z.flattenError(parse.error),
+      errors: {
+        ...z.flattenError(parse.error),
+        formErrors: ["❌ Cannot save. See errors under the fields"],
+      },
     };
   }
 
