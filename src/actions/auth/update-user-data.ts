@@ -11,9 +11,7 @@ const schema = z.object({
   preferredName: preferredNameSchema,
   email: z.email({
     error: (issue) =>
-      !issue.input
-        ? "Email is required"
-        : issue.message | "Unknown email error",
+      !issue.input ? "Email is required" : (issue.message as string),
   }),
   phoneNumber: z.e164({
     error: (issue) =>
