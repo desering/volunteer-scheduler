@@ -10,7 +10,10 @@ import { preferredNameSchema } from "@/lib/schemas/preferred-name";
 const schema = z.object({
   preferredName: preferredNameSchema,
   email: z.email({
-    error: (issue) => (!issue.input ? "Email is required" : issue),
+    error: (issue) =>
+      !issue.input
+        ? "Email is required"
+        : issue.message | "Unknown email error",
   }),
   phoneNumber: z.e164({
     error: (issue) =>
