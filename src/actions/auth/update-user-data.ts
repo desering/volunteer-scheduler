@@ -9,12 +9,15 @@ import { preferredNameSchema } from "@/lib/schemas/preferred-name";
 
 const schema = z.object({
   preferredName: preferredNameSchema,
-  email: z
-    .email({error: (issue) =>
-      !issue.input ? "Email is required" : issue}),
-  phoneNumber: z
-    .e164({error: (issue) =>
-      !issue.input ? "Phone number is required" : "Invalid phone number e.g +31612345678"}),
+  email: z.email({
+    error: (issue) => (!issue.input ? "Email is required" : issue),
+  }),
+  phoneNumber: z.e164({
+    error: (issue) =>
+      !issue.input
+        ? "Phone number is required"
+        : "Invalid phone number e.g +31612345678",
+  }),
 });
 
 export type UpdateUserData = z.infer<typeof schema>;
