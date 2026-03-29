@@ -15,6 +15,7 @@ import { Signups } from "./collections/signups";
 import { Tags } from "./collections/tags";
 import { UserNotificationPreferences } from "./collections/user-notification-preferences";
 import { Users } from "./collections/users";
+import { WebcalTokens } from "./collections/webcal-tokens";
 import { editor } from "./editor.config";
 import { logger } from "./lib/logger";
 import { migrations } from "./migrations";
@@ -99,6 +100,7 @@ export default buildConfig({
 
   collections: [
     Announcements,
+    WebcalTokens,
     EventTemplates,
     Events,
     Locations,
