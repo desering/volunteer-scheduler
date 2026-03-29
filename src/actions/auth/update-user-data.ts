@@ -9,10 +9,16 @@ import { preferredNameSchema } from "@/lib/schemas/preferred-name";
 
 const schema = z.object({
   preferredName: preferredNameSchema,
-  email: z.email({ error: "Invalid email" }),
-  phoneNumber: z
-    .e164({ error: "Invalid phone number e.g +31612345678" })
-    .min(1, "Phone number is required"),
+  email: z.email({
+    error: (issue) =>
+      !issue.input ? "Email is required" : (issue.message as string),
+  }),
+  phoneNumber: z.e164({
+    error: (issue) =>
+      !issue.input
+        ? "Phone number is required"
+        : "Invalid phone number e.g +31612345678",
+  }),
 });
 
 export type UpdateUserData = z.infer<typeof schema>;
@@ -41,7 +47,10 @@ export const updateUser = async (
   if (!parse.success) {
     return {
       success: false,
-      errors: z.flattenError(parse.error),
+      errors: {
+        ...z.flattenError(parse.error),
+        formErrors: ["❌ Cannot save. See errors under the fields"],
+      },
     };
   }
 
