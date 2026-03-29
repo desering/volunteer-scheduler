@@ -1,8 +1,32 @@
+#!/bin/bash
+
+set -e
+
 echo "Running pre-commit checks..."
 
-if ! bun check:staged; then
+DOCKER_CONTAINER_NAME="husky-bun-runtime"
+
+if ! command -v bun >/dev/null 2>&1; then
+    echo "no local 'bun', using docker" >&2
+    if ! command -v docker >/dev/null 2>&1; then
+        echo "oh, no even 'docker'" >&2
+        exit 1
+    fi
+    docker rm -f "$DOCKER_CONTAINER_NAME" >/dev/null 2>&1 || true
+    BUN_RUNTIME_CMD="docker compose -f docker-compose.yml run --rm --no-deps --workdir /app --name $DOCKER_CONTAINER_NAME bun-dev"
+
+else
+    BUN_RUNTIME_CMD="bun"
+fi
+
+if ! command -v $BUN_RUNTIME_CMD >/dev/null 2>&1; then
+    echo "still no 'bun', this is an issue" >&2
+    exit 1
+fi
+
+if ! eval $BUN_RUNTIME_CMD check:staged; then
     echo ""
-    echo "X ERROR: Biome check failed!"
+    echo "✗ ERROR: Biome check failed!"
     echo ""
     echo "To fix the issues, run:"
     echo "  bun lint:staged"
@@ -15,3 +39,4 @@ if ! bun check:staged; then
 fi
 
 echo "✓ All pre-commit checks passed."
+
