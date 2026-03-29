@@ -67,6 +67,39 @@ export const announcements = pgTable(
   ],
 );
 
+export const webcal_tokens = pgTable(
+  "webcal_tokens",
+  {
+    id: serial("id").primaryKey(),
+    token: varchar("token").notNull(),
+    user: integer("user_id")
+      .notNull()
+      .references(() => users.id, {
+        onDelete: "set null",
+      }),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    uniqueIndex("webcal_tokens_token_idx").on(columns.token),
+    uniqueIndex("webcal_tokens_user_idx").on(columns.user),
+    index("webcal_tokens_updated_at_idx").on(columns.updatedAt),
+    index("webcal_tokens_created_at_idx").on(columns.createdAt),
+  ],
+);
+
 export const event_templates_sections_roles_signups = pgTable(
   "event_templates_sections_roles_signups",
   {
@@ -769,6 +802,13 @@ export const payload_migrations = pgTable(
 );
 
 export const relations_announcements = relations(announcements, () => ({}));
+export const relations_webcal_tokens = relations(webcal_tokens, ({ one }) => ({
+  user: one(users, {
+    fields: [webcal_tokens.user],
+    references: [users.id],
+    relationName: "user",
+  }),
+}));
 export const relations_event_templates_sections_roles_signups = relations(
   event_templates_sections_roles_signups,
   ({ one }) => ({
@@ -1039,6 +1079,7 @@ type DatabaseSchema = {
   enum_event_templates_start_time_tz: typeof enum_event_templates_start_time_tz;
   enum_users_roles: typeof enum_users_roles;
   announcements: typeof announcements;
+  webcal_tokens: typeof webcal_tokens;
   event_templates_sections_roles_signups: typeof event_templates_sections_roles_signups;
   event_templates_sections_roles: typeof event_templates_sections_roles;
   event_templates_sections: typeof event_templates_sections;
@@ -1061,6 +1102,7 @@ type DatabaseSchema = {
   payload_preferences_rels: typeof payload_preferences_rels;
   payload_migrations: typeof payload_migrations;
   relations_announcements: typeof relations_announcements;
+  relations_webcal_tokens: typeof relations_webcal_tokens;
   relations_event_templates_sections_roles_signups: typeof relations_event_templates_sections_roles_signups;
   relations_event_templates_sections_roles: typeof relations_event_templates_sections_roles;
   relations_event_templates_sections: typeof relations_event_templates_sections;
