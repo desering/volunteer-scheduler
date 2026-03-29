@@ -8,6 +8,7 @@ type CreateIcalEventParams = {
   id?: string;
   summary: string;
   description?: string;
+  roleTitle: string;
   start: string | Date;
   end: string | Date;
   location?: string;
@@ -28,12 +29,12 @@ export const createIcalEvent = (
   const endDate: Date =
     typeof params.end === "string" ? new Date(params.end) : params.end;
 
+  const description = `You're joining as: ${params.roleTitle}${params.description ? `\nDetails:\n${params.description}` : ""}`;
+
   calendar.createEvent({
     id: params.id,
     summary: params.summary,
-    description: {
-      plain: params.description,
-    },
+    description: { plain: description },
     start: startDate,
     end: endDate,
     location: params.location,
