@@ -15,7 +15,7 @@ export const LayoutFooter = () => (
         >
           &#10084;&#65039;
         </panda.span>
-        by volunteers at de&nbsp;Sering &ndash;&nbsp;
+        by volunteers at De&nbsp;Sering &ndash;&nbsp;
         <panda.a
           href="https://wiki.desering.org/en/circles/tech"
           target="_blank"
