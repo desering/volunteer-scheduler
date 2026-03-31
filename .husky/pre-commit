@@ -14,17 +14,11 @@ if ! command -v bun >/dev/null 2>&1; then
     fi
     docker rm -f "$DOCKER_CONTAINER_NAME" >/dev/null 2>&1 || true
     BUN_RUNTIME_CMD="docker compose -f docker-compose.yml run --rm --no-deps --workdir /app --name $DOCKER_CONTAINER_NAME bun-dev"
-
 else
     BUN_RUNTIME_CMD="bun"
 fi
 
-if ! command -v $BUN_RUNTIME_CMD >/dev/null 2>&1; then
-    echo "still no 'bun', this is an issue" >&2
-    exit 1
-fi
-
-if ! eval $BUN_RUNTIME_CMD check:staged; then
+if ! eval "$BUN_RUNTIME_CMD check:staged"; then
     echo ""
     echo "✗ ERROR: Biome check failed!"
     echo ""
