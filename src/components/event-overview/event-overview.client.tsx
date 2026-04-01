@@ -144,16 +144,18 @@ export const EventOverviewClient = ({
                 <EventButton.Title>{event.title}</EventButton.Title>
                 {shouldShowBadges && (
                   <Box display="flex" gap="2" marginY="2" flexWrap="wrap">
-                    {event.tags?.map((tag) =>
-                      typeof tag === "object" && tag !== null ? (
+                    {event.tags
+                      ?.filter((tag): tag is { id: string; text: string } => typeof tag === "object" && tag !== null)
+                      .sort((a, b) => a.text.localeCompare(b.text))
+                      .map((tag) => (
                         <Badge key={tag.id}>{tag.text}</Badge>
-                      ) : null,
-                    )}
-                    {event.locations?.map((location) =>
-                      typeof location === "object" && location !== null ? (
+                      ))}
+                    {event.locations
+                      ?.filter((location): location is { id: string; title: string } => typeof location === "object" && location !== null)
+                      .sort((a, b) => a.title.localeCompare(b.title))
+                      .map((location) => (
                         <Badge key={location.id}>{location.title}</Badge>
-                      ) : null,
-                    )}
+                      ))}
                   </Box>
                 )}
                 <EventButton.Description className={descriptionDetailCss}>
