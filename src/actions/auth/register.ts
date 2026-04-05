@@ -9,8 +9,16 @@ import { signIn } from "./sign-in";
 const schema = z
   .object({
     preferredName: preferredNameSchema,
-    email: z.email(),
-    phoneNumber: z.e164(),
+    email: z.email({
+      error: (issue) =>
+        !issue.input ? "Email is required" : (issue.message as string),
+    }),
+    phoneNumber: z.e164({
+      error: (issue) =>
+        !issue.input
+          ? "Phone number is required"
+          : "Invalid phone number e.g +31612345678",
+    }),
     password: z.string().min(8),
     passwordAgain: z.string().min(8),
   })
