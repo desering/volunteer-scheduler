@@ -64,6 +64,7 @@ export const sendConfirmationEmail: CollectionAfterChangeHook<Signup> = async ({
         role: icalData.roleTitle,
         description: icalData.description,
         date: formattedDate,
+        location: icalData.location,
       }),
     ),
   );
