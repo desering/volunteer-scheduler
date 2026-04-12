@@ -1,4 +1,7 @@
-FROM oven/bun:1.3.10-alpine AS base
+FROM oven/bun:1.3.12-alpine AS base
+
+# Patch OS-level vulnerabilities not yet fixed in the base image
+RUN apk upgrade --no-cache libcrypto3 libssl3
 
 WORKDIR /app
 
