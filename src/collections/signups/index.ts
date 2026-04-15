@@ -1,5 +1,5 @@
 import { APIError, type CollectionConfig } from "payload";
-import { sendConfirmationEmail } from "@/collections/signups/hooks/send-confirmation-email";
+import { logger } from "@/lib/logger";
 
 export const Signups: CollectionConfig = {
   slug: "signups",
@@ -9,7 +9,30 @@ export const Signups: CollectionConfig = {
     group: false,
   },
   hooks: {
-    afterChange: [sendConfirmationEmail],
+    afterChange: [
+      async ({ doc, operation, req: { payload } }) => {
+        if (operation !== "create") {
+          return doc;
+        }
+
+        try {
+          await payload.jobs.queue({
+            task: "send-event-signup-confirmation-email",
+            input: { signupId: doc.id },
+          });
+        } catch (error) {
+          logger.error(
+            {
+              signupId: doc.id,
+              error,
+            },
+            "Failed to queue signup confirmation email job",
+          );
+        }
+
+        return doc;
+      },
+    ],
   },
   fields: [
     {

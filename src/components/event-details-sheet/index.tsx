@@ -39,7 +39,11 @@ type Props = {
 export const EventDetailsDrawer = (props: Props) => {
   const { user } = useAuth();
 
-  const { data: details } = useQuery({
+  const {
+    data: details,
+    isStale,
+    isFetching,
+  } = useQuery({
     queryKey: ["events", props.eventId],
     queryFn: async (): ReturnType<typeof getEventDetails> => {
       const res = await fetch(`/api/events/${props.eventId}`);
@@ -50,6 +54,8 @@ export const EventDetailsDrawer = (props: Props) => {
     refetchOnWindowFocus: "always",
   });
 
+  const isFetchingEvents = isStale && isFetching;
+
   const isEventInThePast = details
     ? isBefore(details.end_date, new Date())
     : false;
@@ -59,7 +65,9 @@ export const EventDetailsDrawer = (props: Props) => {
   const queryClient = useQueryClient();
 
   const { mutate: deleteSignup, isPending: isDeleting } = useMutation({
-    mutationFn: async (id: number) => deleteSignupAction({ id }),
+    mutationFn: async (id: number) => {
+      await deleteSignupAction({ id });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["events", props.eventId] });
       setSelectedRoleId(undefined);
@@ -67,8 +75,9 @@ export const EventDetailsDrawer = (props: Props) => {
   });
 
   const { mutate: createSignup, isPending: isCreating } = useMutation({
-    mutationFn: async (variables: { eventId: number; roleId: number }) =>
-      await createSignupAction(variables),
+    mutationFn: async (variables: { eventId: number; roleId: number }) => {
+      await createSignupAction(variables);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["events", props.eventId] });
       selectCurrentRole();
@@ -341,7 +350,12 @@ export const EventDetailsDrawer = (props: Props) => {
                     disabled={
                       isEventInThePast || (!hasUserSignedUp && !selectedRoleId)
                     }
-                    loading={details === undefined || isCreating || isDeleting}
+                    loading={
+                      details === undefined ||
+                      isCreating ||
+                      isDeleting ||
+                      isFetchingEvents
+                    }
                     onClick={() => onSigningButtonClicked()}
                   >
                     {selectedRoleId ? (

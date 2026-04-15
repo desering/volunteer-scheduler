@@ -38,6 +38,18 @@ export const enum_users_roles = pgEnum("enum_users_roles", [
   "editor",
   "volunteer",
 ]);
+export const enum_payload_jobs_log_task_slug = pgEnum(
+  "enum_payload_jobs_log_task_slug",
+  ["inline", "send-event-signup-confirmation-email"],
+);
+export const enum_payload_jobs_log_state = pgEnum(
+  "enum_payload_jobs_log_state",
+  ["failed", "succeeded"],
+);
+export const enum_payload_jobs_task_slug = pgEnum(
+  "enum_payload_jobs_task_slug",
+  ["inline", "send-event-signup-confirmation-email"],
+);
 
 export const announcements = pgTable(
   "announcements",
@@ -629,6 +641,89 @@ export const users = pgTable(
   ],
 );
 
+export const payload_jobs_log = pgTable(
+  "payload_jobs_log",
+  {
+    _order: integer("_order").notNull(),
+    _parentID: integer("_parent_id").notNull(),
+    id: varchar("id").primaryKey(),
+    executedAt: timestamp("executed_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    }).notNull(),
+    completedAt: timestamp("completed_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    }).notNull(),
+    taskSlug: enum_payload_jobs_log_task_slug("task_slug").notNull(),
+    taskID: varchar("task_i_d").notNull(),
+    input: jsonb("input"),
+    output: jsonb("output"),
+    state: enum_payload_jobs_log_state("state").notNull(),
+    error: jsonb("error"),
+  },
+  (columns) => [
+    index("payload_jobs_log_order_idx").on(columns._order),
+    index("payload_jobs_log_parent_id_idx").on(columns._parentID),
+    foreignKey({
+      columns: [columns["_parentID"]],
+      foreignColumns: [payload_jobs.id],
+      name: "payload_jobs_log_parent_id_fk",
+    }).onDelete("cascade"),
+  ],
+);
+
+export const payload_jobs = pgTable(
+  "payload_jobs",
+  {
+    id: serial("id").primaryKey(),
+    input: jsonb("input"),
+    completedAt: timestamp("completed_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    }),
+    totalTried: numeric("total_tried", { mode: "number" }).default(0),
+    hasError: boolean("has_error").default(false),
+    error: jsonb("error"),
+    taskSlug: enum_payload_jobs_task_slug("task_slug"),
+    queue: varchar("queue").default("default"),
+    waitUntil: timestamp("wait_until", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    }),
+    processing: boolean("processing").default(false),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index("payload_jobs_completed_at_idx").on(columns.completedAt),
+    index("payload_jobs_total_tried_idx").on(columns.totalTried),
+    index("payload_jobs_has_error_idx").on(columns.hasError),
+    index("payload_jobs_task_slug_idx").on(columns.taskSlug),
+    index("payload_jobs_queue_idx").on(columns.queue),
+    index("payload_jobs_wait_until_idx").on(columns.waitUntil),
+    index("payload_jobs_processing_idx").on(columns.processing),
+    index("payload_jobs_updated_at_idx").on(columns.updatedAt),
+    index("payload_jobs_created_at_idx").on(columns.createdAt),
+  ],
+);
+
 export const payload_locked_documents = pgTable(
   "payload_locked_documents",
   {
@@ -1025,6 +1120,21 @@ export const relations_users = relations(users, ({ many }) => ({
     relationName: "sessions",
   }),
 }));
+export const relations_payload_jobs_log = relations(
+  payload_jobs_log,
+  ({ one }) => ({
+    _parentID: one(payload_jobs, {
+      fields: [payload_jobs_log._parentID],
+      references: [payload_jobs.id],
+      relationName: "log",
+    }),
+  }),
+);
+export const relations_payload_jobs = relations(payload_jobs, ({ many }) => ({
+  log: many(payload_jobs_log, {
+    relationName: "log",
+  }),
+}));
 export const relations_payload_locked_documents_rels = relations(
   payload_locked_documents_rels,
   ({ one }) => ({
@@ -1120,6 +1230,9 @@ type DatabaseSchema = {
   enum_announcements_status: typeof enum_announcements_status;
   enum_event_templates_start_time_tz: typeof enum_event_templates_start_time_tz;
   enum_users_roles: typeof enum_users_roles;
+  enum_payload_jobs_log_task_slug: typeof enum_payload_jobs_log_task_slug;
+  enum_payload_jobs_log_state: typeof enum_payload_jobs_log_state;
+  enum_payload_jobs_task_slug: typeof enum_payload_jobs_task_slug;
   announcements: typeof announcements;
   webcal_tokens: typeof webcal_tokens;
   event_templates_sections_roles_signups: typeof event_templates_sections_roles_signups;
@@ -1139,6 +1252,8 @@ type DatabaseSchema = {
   user_notification_preferences: typeof user_notification_preferences;
   users_sessions: typeof users_sessions;
   users: typeof users;
+  payload_jobs_log: typeof payload_jobs_log;
+  payload_jobs: typeof payload_jobs;
   payload_locked_documents: typeof payload_locked_documents;
   payload_locked_documents_rels: typeof payload_locked_documents_rels;
   payload_preferences: typeof payload_preferences;
@@ -1163,6 +1278,8 @@ type DatabaseSchema = {
   relations_user_notification_preferences: typeof relations_user_notification_preferences;
   relations_users_sessions: typeof relations_users_sessions;
   relations_users: typeof relations_users;
+  relations_payload_jobs_log: typeof relations_payload_jobs_log;
+  relations_payload_jobs: typeof relations_payload_jobs;
   relations_payload_locked_documents_rels: typeof relations_payload_locked_documents_rels;
   relations_payload_locked_documents: typeof relations_payload_locked_documents;
   relations_payload_preferences_rels: typeof relations_payload_preferences_rels;

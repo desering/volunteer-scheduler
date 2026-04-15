@@ -145,13 +145,19 @@ export const EventOverviewClient = ({
                 {shouldShowBadges && (
                   <Box display="flex" gap="2" marginY="2" flexWrap="wrap">
                     {event.tags
-                      ?.filter((tag): tag is Tag => typeof tag === "object" && tag !== null)
+                      ?.filter(
+                        (tag): tag is Tag =>
+                          typeof tag === "object" && tag !== null,
+                      )
                       .sort((a, b) => a.text.localeCompare(b.text))
                       .map((tag) => (
                         <Badge key={tag.id}>{tag.text}</Badge>
                       ))}
                     {event.locations
-                      ?.filter((location): location is Location => typeof location === "object" && location !== null)
+                      ?.filter(
+                        (location): location is Location =>
+                          typeof location === "object" && location !== null,
+                      )
                       .sort((a, b) => a.title.localeCompare(b.title))
                       .map((location) => (
                         <Badge key={location.id}>{location.title}</Badge>
