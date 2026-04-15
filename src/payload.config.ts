@@ -12,6 +12,7 @@ import { Locations } from "./collections/locations";
 import { Roles } from "./collections/roles";
 import { Sections } from "./collections/sections";
 import { Signups } from "./collections/signups";
+import { sendConfirmationEmailTask } from "./collections/signups/tasks/send-confirmation-email";
 import { Tags } from "./collections/tags";
 import { UserNotificationPreferences } from "./collections/user-notification-preferences";
 import { Users } from "./collections/users";
@@ -111,6 +112,16 @@ export default buildConfig({
     UserNotificationPreferences,
     Users,
   ],
+  jobs: {
+    tasks: [sendConfirmationEmailTask],
+    autoRun: [
+      {
+        cron: "*/5 * * * *", // every 5 minutes
+        limit: 50,
+      },
+    ],
+  },
+
   editor,
   secret: process.env.PAYLOAD_SECRET ?? "",
   typescript: {

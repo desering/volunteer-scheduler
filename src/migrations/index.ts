@@ -12,6 +12,7 @@ import * as migration_20260215_130411_add_locations_to_templates from './2026021
 import * as migration_20260216_081257_revert_locked_documents from './20260216_081257_revert_locked_documents';
 import * as migration_20260328_194746_enable_user_sessions from './20260328_194746_enable_user_sessions';
 import * as migration_20260412_225016_add_webcal_tokens_collection from './20260412_225016_add_webcal_tokens_collection';
+import * as migration_20260511_215545_add_payload_jobs from './20260511_215545_add_payload_jobs';
 
 export const migrations = [
   {
@@ -82,6 +83,11 @@ export const migrations = [
   {
     up: migration_20260412_225016_add_webcal_tokens_collection.up,
     down: migration_20260412_225016_add_webcal_tokens_collection.down,
-    name: '20260412_225016_add_webcal_tokens_collection'
+    name: '20260412_225016_add_webcal_tokens_collection',
+  },
+  {
+    up: migration_20260511_215545_add_payload_jobs.up,
+    down: migration_20260511_215545_add_payload_jobs.down,
+    name: '20260511_215545_add_payload_jobs'
   },
 ];
