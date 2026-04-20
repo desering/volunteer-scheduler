@@ -1,6 +1,6 @@
 import { format, startOfDay } from "date-fns";
 import { useEffect, useRef } from "react";
-import { Box, Grid, GridItem, panda } from "styled-system/jsx";
+import { Box, Container, Grid, GridItem, panda } from "styled-system/jsx";
 import { token } from "styled-system/tokens";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
@@ -16,31 +16,51 @@ type Props = {
   onDateSelect: (date: Date) => void;
 };
 
-export const DateSelect = (props: Props) => (
-  <Grid
-    scrollbarWidth="none"
-    overflow="scroll"
-    scrollSnapType="x mandatory"
-    columnGap="4"
-    gridTemplateRows="auto 1fr"
-    gridAutoFlow="column"
-    paddingBottom="4"
-    position="relative"
-  >
-    {props.items.map((item, index) => (
-      <DateButton
-        key={item.date.getTime()}
-        item={item}
-        itemIndex={index}
-        selected={
-          startOfDay(item.date).getTime() ===
-          startOfDay(props.selectedDate).getTime()
-        }
-        onDateSelect={props.onDateSelect}
-      />
-    ))}
-  </Grid>
-);
+export const DateSelect = (props: Props) => {
+  const isTodaySelected =
+    startOfDay(props.selectedDate).getTime() ===
+    startOfDay(new Date()).getTime();
+
+  const scrollToToday = () => props.onDateSelect(new Date());
+
+  return (
+    <Container>
+      <Button
+        position="sticky"
+        left="0"
+        variant={isTodaySelected ? "solid" : "outline"}
+        onClick={scrollToToday}
+        aria-label="Select today's date"
+        marginBottom="4"
+      >
+        Today
+      </Button>
+      <Grid
+        scrollbarWidth="none"
+        overflow="scroll"
+        scrollSnapType="x mandatory"
+        columnGap="4"
+        gridTemplateRows="auto 1fr"
+        gridAutoFlow="column"
+        paddingBottom="4"
+        position="relative"
+      >
+        {props.items.map((item, index) => (
+          <DateButton
+            key={item.date.getTime()}
+            item={item}
+            itemIndex={index}
+            selected={
+              startOfDay(item.date).getTime() ===
+              startOfDay(props.selectedDate).getTime()
+            }
+            onDateSelect={props.onDateSelect}
+          />
+        ))}
+      </Grid>
+    </Container>
+  );
+};
 
 // compute the inline start offset needed to align the sticky month with a centered max-width container
 // (viewport − minimum(viewport, containerMaxWidth)) / numberOfMarg`inAuto − paddingInline
@@ -102,6 +122,16 @@ const DateButton = ({
   const isFirstItem = itemIndex === 0;
   const showMonthLabel = isFirstOfMonth || isFirstItem;
 
+  // style for past dates and today
+  const isToday = item.date.getTime() === startOfDay(new Date()).getTime();
+  const isPast = item.date.getTime() < startOfDay(new Date()).getTime();
+  const pastStyle =
+    isPast && !isToday && !selected
+      ? { opacity: 0.5, background: `${token("colors.bg.muted")}` }
+      : {};
+  const todayStyle =
+    isToday && !selected ? { background: `${token("colors.bg.subtle")}` } : {};
+
   useEffect(() => {
     if (selected && ref.current) {
       ref.current.scrollIntoView({
@@ -128,6 +158,7 @@ const DateButton = ({
           ref={ref}
           variant={selected ? "solid" : item.hasEvents ? "outline" : "ghost"}
           onClick={() => onDateSelect(item.date)}
+          style={{ ...pastStyle, ...todayStyle }}
           display="block"
           height="auto"
           paddingY="4"
