@@ -21,7 +21,7 @@ import {
   type EventsGroupedByDay,
   groupEventsByDate,
 } from "@/lib/mappers/group-events-by-date";
-import type { Event, Tag } from "@/payload-types";
+import type { Event, Location, Tag } from "@/payload-types";
 import { DateSelect } from "./date-select";
 import { TagFilter } from "./tag-filter";
 
@@ -151,7 +151,7 @@ export const EventOverviewClient = ({
                         <Badge key={tag.id}>{tag.text}</Badge>
                       ))}
                     {event.locations
-                      ?.filter((location): location is { id: string; title: string } => typeof location === "object" && location !== null)
+                      ?.filter((location): location is Location => typeof location === "object" && location !== null)
                       .sort((a, b) => a.title.localeCompare(b.title))
                       .map((location) => (
                         <Badge key={location.id}>{location.title}</Badge>
