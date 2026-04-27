@@ -231,6 +231,7 @@ export const event_templates_rels = pgTable(
     path: varchar("path").notNull(),
     tagsID: integer("tags_id"),
     locationsID: integer("locations_id"),
+    skillsID: integer("skills_id"),
   },
   (columns) => [
     index("event_templates_rels_order_idx").on(columns.order),
@@ -238,6 +239,7 @@ export const event_templates_rels = pgTable(
     index("event_templates_rels_path_idx").on(columns.path),
     index("event_templates_rels_tags_id_idx").on(columns.tagsID),
     index("event_templates_rels_locations_id_idx").on(columns.locationsID),
+    index("event_templates_rels_skills_id_idx").on(columns.skillsID),
     foreignKey({
       columns: [columns["parent"]],
       foreignColumns: [event_templates.id],
@@ -252,6 +254,11 @@ export const event_templates_rels = pgTable(
       columns: [columns["locationsID"]],
       foreignColumns: [locations.id],
       name: "event_templates_rels_locations_fk",
+    }).onDelete("cascade"),
+    foreignKey({
+      columns: [columns["skillsID"]],
+      foreignColumns: [skills.id],
+      name: "event_templates_rels_skills_fk",
     }).onDelete("cascade"),
   ],
 );
@@ -301,6 +308,7 @@ export const events_rels = pgTable(
     parent: integer("parent_id").notNull(),
     path: varchar("path").notNull(),
     tagsID: integer("tags_id"),
+    skillsID: integer("skills_id"),
     locationsID: integer("locations_id"),
   },
   (columns) => [
@@ -308,6 +316,7 @@ export const events_rels = pgTable(
     index("events_rels_parent_idx").on(columns.parent),
     index("events_rels_path_idx").on(columns.path),
     index("events_rels_tags_id_idx").on(columns.tagsID),
+    index("events_rels_skills_id_idx").on(columns.skillsID),
     index("events_rels_locations_id_idx").on(columns.locationsID),
     foreignKey({
       columns: [columns["parent"]],
@@ -318,6 +327,11 @@ export const events_rels = pgTable(
       columns: [columns["tagsID"]],
       foreignColumns: [tags.id],
       name: "events_rels_tags_fk",
+    }).onDelete("cascade"),
+    foreignKey({
+      columns: [columns["skillsID"]],
+      foreignColumns: [skills.id],
+      name: "events_rels_skills_fk",
     }).onDelete("cascade"),
     foreignKey({
       columns: [columns["locationsID"]],
@@ -462,6 +476,34 @@ export const signups = pgTable(
     index("signups_user_idx").on(columns.user),
     index("signups_updated_at_idx").on(columns.updatedAt),
     index("signups_created_at_idx").on(columns.createdAt),
+  ],
+);
+
+export const skills = pgTable(
+  "skills",
+  {
+    id: serial("id").primaryKey(),
+    title: varchar("title").notNull(),
+    description: jsonb("description"),
+    badgeImage: varchar("badge_image"),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index("skills_updated_at_idx").on(columns.updatedAt),
+    index("skills_created_at_idx").on(columns.createdAt),
   ],
 );
 
@@ -637,6 +679,7 @@ export const payload_locked_documents_rels = pgTable(
     rolesID: integer("roles_id"),
     sectionsID: integer("sections_id"),
     signupsID: integer("signups_id"),
+    skillsID: integer("skills_id"),
     tagsID: integer("tags_id"),
     usersID: integer("users_id"),
   },
@@ -659,6 +702,7 @@ export const payload_locked_documents_rels = pgTable(
       columns.sectionsID,
     ),
     index("payload_locked_documents_rels_signups_id_idx").on(columns.signupsID),
+    index("payload_locked_documents_rels_skills_id_idx").on(columns.skillsID),
     index("payload_locked_documents_rels_tags_id_idx").on(columns.tagsID),
     index("payload_locked_documents_rels_users_id_idx").on(columns.usersID),
     foreignKey({
@@ -700,6 +744,11 @@ export const payload_locked_documents_rels = pgTable(
       columns: [columns["signupsID"]],
       foreignColumns: [signups.id],
       name: "payload_locked_documents_rels_signups_fk",
+    }).onDelete("cascade"),
+    foreignKey({
+      columns: [columns["skillsID"]],
+      foreignColumns: [skills.id],
+      name: "payload_locked_documents_rels_skills_fk",
     }).onDelete("cascade"),
     foreignKey({
       columns: [columns["tagsID"]],
@@ -884,6 +933,11 @@ export const relations_event_templates_rels = relations(
       references: [locations.id],
       relationName: "locations",
     }),
+    skillsID: one(skills, {
+      fields: [event_templates_rels.skillsID],
+      references: [skills.id],
+      relationName: "skills",
+    }),
   }),
 );
 export const relations_event_templates = relations(
@@ -910,6 +964,11 @@ export const relations_events_rels = relations(events_rels, ({ one }) => ({
     fields: [events_rels.tagsID],
     references: [tags.id],
     relationName: "tags",
+  }),
+  skillsID: one(skills, {
+    fields: [events_rels.skillsID],
+    references: [skills.id],
+    relationName: "skills",
   }),
   locationsID: one(locations, {
     fields: [events_rels.locationsID],
@@ -959,6 +1018,7 @@ export const relations_signups = relations(signups, ({ one }) => ({
     relationName: "user",
   }),
 }));
+export const relations_skills = relations(skills, () => ({}));
 export const relations_tags = relations(tags, () => ({}));
 export const relations_user_notification_preferences = relations(
   user_notification_preferences,
@@ -1028,6 +1088,11 @@ export const relations_payload_locked_documents_rels = relations(
       references: [signups.id],
       relationName: "signups",
     }),
+    skillsID: one(skills, {
+      fields: [payload_locked_documents_rels.skillsID],
+      references: [skills.id],
+      relationName: "skills",
+    }),
     tagsID: one(tags, {
       fields: [payload_locked_documents_rels.tagsID],
       references: [tags.id],
@@ -1094,6 +1159,7 @@ type DatabaseSchema = {
   roles: typeof roles;
   sections: typeof sections;
   signups: typeof signups;
+  skills: typeof skills;
   tags: typeof tags;
   user_notification_preferences: typeof user_notification_preferences;
   users_sessions: typeof users_sessions;
@@ -1117,6 +1183,7 @@ type DatabaseSchema = {
   relations_roles: typeof relations_roles;
   relations_sections: typeof relations_sections;
   relations_signups: typeof relations_signups;
+  relations_skills: typeof relations_skills;
   relations_tags: typeof relations_tags;
   relations_user_notification_preferences: typeof relations_user_notification_preferences;
   relations_users_sessions: typeof relations_users_sessions;

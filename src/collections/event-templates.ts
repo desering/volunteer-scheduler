@@ -156,6 +156,12 @@ export const EventTemplates: CollectionConfig = {
       hasMany: true,
     },
     {
+      name: "skills",
+      type: "relationship",
+      relationTo: "skills",
+      hasMany: true,
+    },
+    {
       name: "sections",
       label: "Sections",
       type: "array",
