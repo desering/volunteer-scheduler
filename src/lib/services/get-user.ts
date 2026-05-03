@@ -1,3 +1,5 @@
+import "server-only";
+
 import config from "@payload-config";
 import { headers as getHeaders } from "next/headers";
 import { getPayload } from "payload";

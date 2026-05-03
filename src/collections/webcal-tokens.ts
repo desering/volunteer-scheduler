@@ -3,7 +3,7 @@ import type { WebcalToken } from "@/payload-types";
 import { admins } from "./access/admins";
 import { themselves as _themselves } from "./access/themselves";
 
-const themselves = _themselves<WebcalToken>((data) => Number(data.user));
+const themselves = _themselves<WebcalToken>((data) => Number(data?.user));
 
 export const WebcalTokens: CollectionConfig = {
   slug: "webcal-tokens",
