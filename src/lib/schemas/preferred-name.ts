@@ -7,9 +7,16 @@ import { z } from "zod";
  * - Min length: 1 character
  * - Trim whitespace
  */
-export const preferredNameSchema = z
+export const preferredName = z
   .string()
+  .refine(
+    (name) => !(name.length > 0 && name.trim().length === 0),
+    "Preferred name cannot consist only of whitespace(s)",
+  )
   .min(1, "Preferred name is required")
   .max(50, "Preferred name must not exceed 50 characters")
-  .regex(/^[^,]*$/, "Preferred name cannot contain commas")
-  .transform((name) => name.trim());
+  .trim()
+  .refine(
+    (name) => !name.includes(","),
+    "Preferred name cannot contain commas",
+  );
