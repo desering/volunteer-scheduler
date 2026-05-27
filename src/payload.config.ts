@@ -9,11 +9,13 @@ import { Announcements } from "./collections/announcements";
 import { EventTemplates } from "./collections/event-templates";
 import { Events } from "./collections/events";
 import { Locations } from "./collections/locations";
+import { OidcPendingLinks } from "./collections/oidc-pending-links";
 import { Roles } from "./collections/roles";
 import { Sections } from "./collections/sections";
 import { Signups } from "./collections/signups";
 import { sendConfirmationEmailTask } from "./collections/signups/tasks/send-confirmation-email";
 import { Tags } from "./collections/tags";
+import { UserIdentities } from "./collections/user-identities";
 import { UserNotificationPreferences } from "./collections/user-notification-preferences";
 import { Users } from "./collections/users";
 import { WebcalTokens } from "./collections/webcal-tokens";
@@ -105,10 +107,12 @@ export default buildConfig({
     EventTemplates,
     Events,
     Locations,
+    OidcPendingLinks,
     Roles,
     Sections,
     Signups,
     Tags,
+    UserIdentities,
     UserNotificationPreferences,
     Users,
   ],

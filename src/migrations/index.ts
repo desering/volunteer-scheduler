@@ -13,6 +13,7 @@ import * as migration_20260216_081257_revert_locked_documents from './20260216_0
 import * as migration_20260328_194746_enable_user_sessions from './20260328_194746_enable_user_sessions';
 import * as migration_20260412_225016_add_webcal_tokens_collection from './20260412_225016_add_webcal_tokens_collection';
 import * as migration_20260511_215545_add_payload_jobs from './20260511_215545_add_payload_jobs';
+import * as migration_20260528_120000_oidc_identities_and_pending_links from './20260528_120000_oidc_identities_and_pending_links';
 
 export const migrations = [
   {
@@ -89,5 +90,10 @@ export const migrations = [
     up: migration_20260511_215545_add_payload_jobs.up,
     down: migration_20260511_215545_add_payload_jobs.down,
     name: '20260511_215545_add_payload_jobs'
+  },
+  {
+    up: migration_20260528_120000_oidc_identities_and_pending_links.up,
+    down: migration_20260528_120000_oidc_identities_and_pending_links.down,
+    name: '20260528_120000_oidc_identities_and_pending_links'
   },
 ];

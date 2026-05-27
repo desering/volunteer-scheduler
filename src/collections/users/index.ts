@@ -1,7 +1,6 @@
 import { render } from "@react-email/render";
 import type { CollectionConfig } from "payload";
 import { ResetPasswordEmail } from "@/email/templates/reset-password";
-import { authenticateWithOidcSession } from "@/lib/auth/oidc";
 import { preferredName } from "@/lib/schemas/preferred-name";
 import { admins } from "../access/admins";
 import { anyone } from "../access/anyone";
@@ -21,13 +20,6 @@ export const Users: CollectionConfig = {
     group: "Admin",
   },
   auth: {
-    strategies: [
-      {
-        name: "oidc",
-        authenticate: async ({ headers, payload }) =>
-          await authenticateWithOidcSession({ headers, payload }),
-      },
-    ],
     loginWithUsername: false,
     maxLoginAttempts: 0,
     tokenExpiration: 31 * 24 * 60 * 60, // 31 days in seconds
@@ -73,25 +65,6 @@ export const Users: CollectionConfig = {
       name: "roles",
       type: "select",
       options: ["admin", "editor", "volunteer"],
-    },
-    {
-      name: "oidcIssuer",
-      type: "text",
-      index: true,
-      admin: {
-        position: "sidebar",
-        readOnly: true,
-      },
-    },
-    {
-      name: "oidcSubject",
-      type: "text",
-      index: true,
-      unique: true,
-      admin: {
-        position: "sidebar",
-        readOnly: true,
-      },
     },
   ],
 };

@@ -25,10 +25,12 @@ export interface Config {
     'event-templates': EventTemplate;
     events: Event;
     locations: Location;
+    'oidc-pending-links': OidcPendingLink;
     roles: Role;
     sections: Section;
     signups: Signup;
     tags: Tag;
+    'user-identities': UserIdentity;
     'user-notification-preferences': UserNotificationPreference;
     users: User;
     'payload-jobs': PayloadJob;
@@ -55,10 +57,12 @@ export interface Config {
     'event-templates': EventTemplatesSelect<false> | EventTemplatesSelect<true>;
     events: EventsSelect<false> | EventsSelect<true>;
     locations: LocationsSelect<false> | LocationsSelect<true>;
+    'oidc-pending-links': OidcPendingLinksSelect<false> | OidcPendingLinksSelect<true>;
     roles: RolesSelect<false> | RolesSelect<true>;
     sections: SectionsSelect<false> | SectionsSelect<true>;
     signups: SignupsSelect<false> | SignupsSelect<true>;
     tags: TagsSelect<false> | TagsSelect<true>;
+    'user-identities': UserIdentitiesSelect<false> | UserIdentitiesSelect<true>;
     'user-notification-preferences': UserNotificationPreferencesSelect<false> | UserNotificationPreferencesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
@@ -152,8 +156,6 @@ export interface User {
   preferredName: string;
   phoneNumber?: string | null;
   roles?: ('admin' | 'editor' | 'volunteer') | null;
-  oidcIssuer?: string | null;
-  oidcSubject?: string | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -429,6 +431,37 @@ export interface Signup {
   user: number | User;
   title?: string | null;
   totalShifts?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "oidc-pending-links".
+ */
+export interface OidcPendingLink {
+  id: number;
+  token: string;
+  issuer: string;
+  subject: string;
+  email: string;
+  name: string;
+  expiresAt: string;
+  user: number | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "user-identities".
+ */
+export interface UserIdentity {
+  id: number;
+  kind: 'oidc';
+  issuer: string;
+  subject: string;
+  emailAtLinkTime?: string | null;
+  linkedAt: string;
+  user: number | User;
   updatedAt: string;
   createdAt: string;
 }
@@ -723,6 +756,21 @@ export interface LocationsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "oidc-pending-links_select".
+ */
+export interface OidcPendingLinksSelect<T extends boolean = true> {
+  token?: T;
+  issuer?: T;
+  subject?: T;
+  email?: T;
+  name?: T;
+  expiresAt?: T;
+  user?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "roles_select".
  */
 export interface RolesSelect<T extends boolean = true> {
@@ -771,6 +819,20 @@ export interface TagsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "user-identities_select".
+ */
+export interface UserIdentitiesSelect<T extends boolean = true> {
+  kind?: T;
+  issuer?: T;
+  subject?: T;
+  emailAtLinkTime?: T;
+  linkedAt?: T;
+  user?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "user-notification-preferences_select".
  */
 export interface UserNotificationPreferencesSelect<T extends boolean = true> {
@@ -789,8 +851,6 @@ export interface UsersSelect<T extends boolean = true> {
   preferredName?: T;
   phoneNumber?: T;
   roles?: T;
-  oidcIssuer?: T;
-  oidcSubject?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;

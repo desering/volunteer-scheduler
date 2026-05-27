@@ -3,15 +3,14 @@ import { NextResponse } from "next/server";
 import { getPayload } from "payload";
 import {
   authenticateOidcCode,
-  createOidcSessionToken,
   describeOidcError,
   getOidcCookieOptions,
   isOidcConfigured,
-  logOidcError,
   oidcCookieNames,
   readOidcState,
-  syncOidcUser,
+  resolveOidcIdentity,
 } from "@/lib/auth/oidc";
+import { createPayloadSessionForUser } from "@/lib/auth/payload-session";
 import config from "@/payload.config";
 
 export const GET = async (request: NextRequest) => {
@@ -50,24 +49,37 @@ export const GET = async (request: NextRequest) => {
     });
 
     const payload = await getPayload({ config });
-    await syncOidcUser(payload, identity);
+    const resolution = await resolveOidcIdentity(payload, identity);
+
+    if (resolution.kind === "link-required") {
+      const response = NextResponse.redirect(
+        new URL("/auth/oidc/link", request.url),
+      );
+      response.cookies.set(
+        oidcCookieNames.pendingLink,
+        resolution.token,
+        getOidcCookieOptions(10 * 60),
+      );
+      response.cookies.delete(oidcCookieNames.state);
+      return response;
+    }
+
+    const session = await createPayloadSessionForUser(payload, resolution.user);
 
     const response = NextResponse.redirect(
       new URL(state.returnTo || "/", request.url),
     );
+    const { name, value, ...options } = session.cookie;
 
-    response.cookies.set(
-      oidcCookieNames.session,
-      createOidcSessionToken(identity),
-      getOidcCookieOptions(31 * 24 * 60 * 60),
-    );
+    response.cookies.set(name, value, options);
+    response.cookies.delete(oidcCookieNames.pendingLink);
     response.cookies.delete(oidcCookieNames.state);
 
     return response;
   } catch (callbackError) {
-    logOidcError(callbackError);
     redirectUrl.searchParams.set("error", describeOidcError(callbackError));
     const response = NextResponse.redirect(redirectUrl);
+    response.cookies.delete(oidcCookieNames.pendingLink);
     response.cookies.delete(oidcCookieNames.state);
     return response;
   }

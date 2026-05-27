@@ -1,12 +1,18 @@
 import { createHmac, randomBytes, timingSafeEqual } from "node:crypto";
 import * as oidcClient from "openid-client";
-import type { Payload } from "payload";
-import { logger } from "@/lib/logger";
+import type { Payload, Where } from "payload";
 import type { User } from "@/payload-types";
+import {
+  authenticateLocalPassword,
+  incrementLoginAttempts,
+  isUserLocked,
+  type RawAuthUser,
+  resetLoginAttempts,
+} from "./payload-auth-helpers";
 
-const OIDC_SESSION_COOKIE = "oidc_session";
+const OIDC_PENDING_LINK_COOKIE = "oidc_pending_link";
 const OIDC_STATE_COOKIE = "oidc_state";
-const OIDC_SESSION_TTL_SECONDS = 31 * 24 * 60 * 60;
+const OIDC_PENDING_LINK_TTL_SECONDS = 10 * 60;
 const OIDC_STATE_TTL_SECONDS = 10 * 60;
 const OIDC_SCOPE = "openid profile email";
 
@@ -18,27 +24,38 @@ type OIDCState = {
   verifier: string;
 };
 
-type OIDCSession = {
-  email: string;
-  exp: number;
-  iss: string;
+export type OIDCIdentity = {
+  email?: string;
+  emailVerified: boolean;
+  issuer: string;
   name: string;
-  sub: string;
-};
-
-type OIDCIdentity = {
-  email: string;
-  iss: string;
-  name: string;
-  sub: string;
+  subject: string;
 };
 
 type OIDCUserInfo = {
   email?: string;
+  email_verified?: boolean | string;
   iss?: string;
   name?: string;
   preferred_username?: string;
   sub?: string;
+};
+
+type OIDCLinkedIdentityDoc = {
+  emailAtLinkTime?: string | null;
+  id: number | string;
+  user: number | User;
+};
+
+type OIDCPendingLinkDoc = {
+  email: string;
+  expiresAt: string;
+  id: number | string;
+  issuer: string;
+  name: string;
+  subject: string;
+  token: string;
+  user: number | User;
 };
 
 type ErrorWithCause = {
@@ -64,23 +81,6 @@ const base64UrlDecode = (value: string) => {
   const padding =
     normalized.length % 4 === 0 ? "" : "=".repeat(4 - (normalized.length % 4));
   return Buffer.from(`${normalized}${padding}`, "base64");
-};
-
-const decodeJwtHeader = (jwt: string) => {
-  const [header] = jwt.split(".");
-
-  if (!header) {
-    return null;
-  }
-
-  try {
-    return JSON.parse(base64UrlDecode(header).toString("utf8")) as Record<
-      string,
-      unknown
-    >;
-  } catch {
-    return null;
-  }
 };
 
 const jsonToSignedToken = <T>(value: T, secret: string) => {
@@ -163,14 +163,30 @@ const getClientSecret = () => {
   return process.env.AUTHENTIK_CLIENT_SECRET;
 };
 
-const normalizePreferredName = (name: string, email: string) => {
-  const fallback = email.split("@")[0] || "Volunteer";
+const asOptionalString = (value: unknown) =>
+  typeof value === "string" ? value : undefined;
+
+const asOptionalBoolean = (value: unknown) => {
+  if (typeof value === "boolean") {
+    return value;
+  }
+
+  if (value === "true") {
+    return true;
+  }
+
+  if (value === "false") {
+    return false;
+  }
+
+  return undefined;
+};
+
+const normalizePreferredName = (name: string, email?: string) => {
+  const fallback = email?.split("@")[0] || "Volunteer";
   const candidate = name.trim() || fallback;
   return candidate.slice(0, 50);
 };
-
-const asOptionalString = (value: unknown) =>
-  typeof value === "string" ? value : undefined;
 
 const GENERIC_OIDC_ERROR_MESSAGES = new Set([
   "invalid response encountered",
@@ -246,30 +262,6 @@ const flattenErrorChain = (error: unknown) => {
   return chain;
 };
 
-const parseCookieHeader = (cookieHeader: string | null) => {
-  if (!cookieHeader) {
-    return new Map<string, string>();
-  }
-
-  return new Map(
-    cookieHeader
-      .split(";")
-      .map((part) => part.trim())
-      .filter(Boolean)
-      .map((part) => {
-        const index = part.indexOf("=");
-        if (index === -1) {
-          return [part, ""] as const;
-        }
-
-        return [
-          part.slice(0, index),
-          decodeURIComponent(part.slice(index + 1)),
-        ] as const;
-      }),
-  );
-};
-
 const getCallbackUrl = () =>
   new URL("/auth/oidc/callback", getServerUrl()).toString();
 
@@ -281,6 +273,17 @@ const sanitizeReturnTo = (returnTo?: string | null) => {
   return returnTo;
 };
 
+const buildExpiresAt = (ttlSeconds: number) =>
+  new Date(Date.now() + ttlSeconds * 1000).toISOString();
+
+const getPendingLinkToken = (token: string | undefined | null) => {
+  if (!token || !/^[A-Za-z0-9_-]{20,}$/u.test(token)) {
+    return null;
+  }
+
+  return token;
+};
+
 const getOidcConfiguration = () => {
   if (!oidcConfigPromise) {
     oidcConfigPromise = oidcClient
@@ -290,42 +293,368 @@ const getOidcConfiguration = () => {
         undefined,
         oidcClient.ClientSecretPost(getClientSecret()),
       )
-      .then((configuration) => {
-        configuration[oidcClient.customFetch] = async (input, init) => {
-          const response = await fetch(input, init);
-          const url = input instanceof Request ? input.url : input.toString();
-
-          if (
-            url.includes("/token") &&
-            response.headers.get("content-type")?.includes("application/json")
-          ) {
-            try {
-              const body = (await response.clone().json()) as {
-                id_token?: unknown;
-              };
-
-              if (typeof body.id_token === "string") {
-                logger.error(
-                  { jwtHeader: decodeJwtHeader(body.id_token) },
-                  "OIDC token response header",
-                );
-              }
-            } catch (error) {
-              logger.warn(
-                { err: error },
-                "Failed to inspect OIDC token response header",
-              );
-            }
-          }
-
-          return response;
-        };
-
-        return configuration;
+      .catch((error) => {
+        oidcConfigPromise = null;
+        throw error;
       });
   }
 
   return oidcConfigPromise;
+};
+
+const getAuthoritativeIssuer = async () => {
+  const configuration = await getOidcConfiguration();
+  return configuration.serverMetadata().issuer ?? getIssuer();
+};
+
+const fetchUserInfo = async (
+  configuration: oidcClient.Configuration,
+  accessToken: string,
+  subject: string | typeof oidcClient.skipSubjectCheck,
+) => {
+  const response = await oidcClient.fetchUserInfo(
+    configuration,
+    accessToken,
+    subject,
+  );
+  return response as OIDCUserInfo;
+};
+
+const findUserById = async (payload: Payload, userId: number) => {
+  const result = await payload.find({
+    collection: "users",
+    depth: 0,
+    limit: 1,
+    overrideAccess: true,
+    pagination: false,
+    where: {
+      id: {
+        equals: userId,
+      },
+    },
+  });
+
+  return result.docs[0] ?? null;
+};
+
+const findLinkedIdentity = async (
+  payload: Payload,
+  identity: Pick<OIDCIdentity, "issuer" | "subject">,
+) => {
+  const result = await payload.find({
+    collection: "user-identities",
+    depth: 0,
+    limit: 1,
+    overrideAccess: true,
+    pagination: false,
+    where: {
+      and: [
+        {
+          issuer: {
+            equals: identity.issuer,
+          },
+        },
+        {
+          subject: {
+            equals: identity.subject,
+          },
+        },
+      ],
+    },
+  });
+
+  return (result.docs[0] as OIDCLinkedIdentityDoc | undefined) ?? null;
+};
+
+const findExistingUserByVerifiedEmail = async (
+  payload: Payload,
+  identity: OIDCIdentity,
+) => {
+  if (!identity.email || !identity.emailVerified) {
+    return null;
+  }
+
+  const result = await payload.find({
+    collection: "users",
+    depth: 0,
+    limit: 1,
+    overrideAccess: true,
+    pagination: false,
+    where: {
+      email: {
+        equals: identity.email,
+      },
+    },
+  });
+
+  return result.docs[0] ?? null;
+};
+
+const updateLinkedIdentityEmail = async (
+  payload: Payload,
+  linkedIdentityId: number | string,
+  identity: OIDCIdentity,
+) => {
+  if (!identity.email || !identity.emailVerified) {
+    return;
+  }
+
+  await payload.update({
+    collection: "user-identities",
+    id: linkedIdentityId,
+    data: {
+      emailAtLinkTime: identity.email,
+    },
+    depth: 0,
+    overrideAccess: true,
+  });
+};
+
+const updateLinkedUserFromOidcIdentity = async (
+  payload: Payload,
+  user: User,
+  identity: OIDCIdentity,
+) => {
+  if (user.preferredName === identity.name) {
+    return user;
+  }
+
+  return await payload.update({
+    collection: "users",
+    id: user.id,
+    data: {
+      preferredName: identity.name,
+    },
+    depth: 0,
+    overrideAccess: true,
+  });
+};
+
+const createUserFromOidcIdentity = async (
+  payload: Payload,
+  identity: OIDCIdentity,
+) => {
+  if (!identity.email || !identity.emailVerified) {
+    throw new Error(
+      "OIDC account creation requires a verified email address from the identity provider",
+    );
+  }
+
+  return await payload.create({
+    collection: "users",
+    data: {
+      email: identity.email,
+      password: randomBase64Url(24),
+      preferredName: identity.name,
+      roles: "volunteer",
+    },
+    depth: 0,
+    overrideAccess: true,
+  });
+};
+
+const createUserIdentity = async (
+  payload: Payload,
+  user: User,
+  identity: OIDCIdentity,
+) =>
+  await payload.create({
+    collection: "user-identities",
+    data: {
+      emailAtLinkTime:
+        identity.email && identity.emailVerified ? identity.email : undefined,
+      issuer: identity.issuer,
+      kind: "oidc",
+      linkedAt: new Date().toISOString(),
+      subject: identity.subject,
+      user: user.id,
+    },
+    depth: 0,
+    overrideAccess: true,
+  });
+
+const clearPendingLinksWhere = async (payload: Payload, where: Where) => {
+  const result = await payload.find({
+    collection: "oidc-pending-links",
+    depth: 0,
+    limit: 100,
+    overrideAccess: true,
+    pagination: false,
+    where,
+  });
+
+  await Promise.all(
+    result.docs.map((doc) =>
+      payload.delete({
+        collection: "oidc-pending-links",
+        id: doc.id,
+        overrideAccess: true,
+      }),
+    ),
+  );
+};
+
+const createPendingOidcLink = async (
+  payload: Payload,
+  user: User,
+  identity: OIDCIdentity,
+) => {
+  if (!identity.email || !identity.emailVerified) {
+    throw new Error(
+      "OIDC account linking requires a verified email address from the identity provider",
+    );
+  }
+
+  await clearPendingLinksWhere(payload, {
+    or: [
+      {
+        user: {
+          equals: user.id,
+        },
+      },
+      {
+        and: [
+          {
+            issuer: {
+              equals: identity.issuer,
+            },
+          },
+          {
+            subject: {
+              equals: identity.subject,
+            },
+          },
+        ],
+      },
+    ],
+  });
+
+  const token = randomBase64Url(32);
+  await payload.create({
+    collection: "oidc-pending-links",
+    data: {
+      email: identity.email,
+      expiresAt: buildExpiresAt(OIDC_PENDING_LINK_TTL_SECONDS),
+      issuer: identity.issuer,
+      name: identity.name,
+      subject: identity.subject,
+      token,
+      user: user.id,
+    },
+    depth: 0,
+    overrideAccess: true,
+  });
+
+  return token;
+};
+
+const deletePendingLinkById = async (
+  payload: Payload,
+  pendingLinkId: number | string,
+) => {
+  await payload.delete({
+    collection: "oidc-pending-links",
+    id: pendingLinkId,
+    overrideAccess: true,
+  });
+};
+
+const loadPendingLink = async (
+  payload: Payload,
+  token: string | undefined | null,
+) => {
+  const pendingToken = getPendingLinkToken(token);
+
+  if (!pendingToken) {
+    return null;
+  }
+
+  const result = await payload.find({
+    collection: "oidc-pending-links",
+    depth: 0,
+    limit: 1,
+    overrideAccess: true,
+    pagination: false,
+    where: {
+      token: {
+        equals: pendingToken,
+      },
+    },
+  });
+
+  const pendingLink =
+    (result.docs[0] as OIDCPendingLinkDoc | undefined) ?? null;
+
+  if (!pendingLink) {
+    return null;
+  }
+
+  if (new Date(pendingLink.expiresAt).getTime() <= Date.now()) {
+    await deletePendingLinkById(payload, pendingLink.id);
+    return null;
+  }
+
+  const userId =
+    typeof pendingLink.user === "number"
+      ? pendingLink.user
+      : pendingLink.user.id;
+  const user = await findUserById(payload, userId);
+
+  if (!user) {
+    await deletePendingLinkById(payload, pendingLink.id);
+    return null;
+  }
+
+  return {
+    ...pendingLink,
+    user,
+  };
+};
+
+const verifyLocalPasswordForUser = async (
+  payload: Payload,
+  user: User,
+  password: string,
+) => {
+  const collection = payload.collections.users.config;
+  const rawUser = (await payload.db.findOne({
+    collection: "users",
+    where: {
+      id: {
+        equals: user.id,
+      },
+    },
+  })) as RawAuthUser | null;
+
+  if (!rawUser) {
+    throw new Error("The local account could not be found");
+  }
+
+  if (rawUser.lockUntil && isUserLocked(new Date(rawUser.lockUntil))) {
+    throw new Error("The password confirmation failed");
+  }
+
+  const authenticated = await authenticateLocalPassword(rawUser, password);
+
+  if (!authenticated) {
+    if (collection.auth.maxLoginAttempts > 0) {
+      await incrementLoginAttempts({
+        lockTime: collection.auth.lockTime,
+        maxLoginAttempts: collection.auth.maxLoginAttempts,
+        payload,
+        user: rawUser,
+      });
+    }
+
+    throw new Error("The password confirmation failed");
+  }
+
+  if (collection.auth.maxLoginAttempts > 0) {
+    await resetLoginAttempts({
+      payload,
+      user: rawUser,
+    });
+  }
 };
 
 export const getOidcCookieOptions = (maxAge?: number) => ({
@@ -398,7 +727,7 @@ export const createOidcAuthorizationRequest = async (
   return { stateToken, url };
 };
 
-export const readOidcState = (token: string | undefined) => {
+export const readOidcState = (token: string | undefined | null) => {
   if (!token) {
     return null;
   }
@@ -412,19 +741,6 @@ export const readOidcState = (token: string | undefined) => {
   return state;
 };
 
-const fetchUserInfo = async (
-  configuration: oidcClient.Configuration,
-  accessToken: string,
-  subject: string | typeof oidcClient.skipSubjectCheck,
-) => {
-  const response = await oidcClient.fetchUserInfo(
-    configuration,
-    accessToken,
-    subject,
-  );
-  return response as OIDCUserInfo;
-};
-
 export const authenticateOidcCode = async (args: {
   code: string;
   expectedNonce: string;
@@ -432,6 +748,7 @@ export const authenticateOidcCode = async (args: {
   verifier: string;
 }) => {
   const configuration = await getOidcConfiguration();
+  const issuer = await getAuthoritativeIssuer();
   const currentUrl = new URL(args.redirectUri ?? getCallbackUrl());
   currentUrl.searchParams.set("code", args.code);
 
@@ -446,20 +763,31 @@ export const authenticateOidcCode = async (args: {
   );
 
   const idTokenClaims = tokens.claims();
+  const idTokenIssuer = asOptionalString(idTokenClaims?.iss);
+
+  if (idTokenIssuer && idTokenIssuer !== issuer) {
+    throw new Error("OIDC ID token issuer did not match the configured issuer");
+  }
+
   const userInfo = await fetchUserInfo(
     configuration,
     tokens.access_token,
-    idTokenClaims?.sub ?? oidcClient.skipSubjectCheck,
+    asOptionalString(idTokenClaims?.sub) ?? oidcClient.skipSubjectCheck,
   );
+  const userInfoIssuer = asOptionalString(userInfo.iss);
 
-  const issuer =
-    asOptionalString(userInfo.iss) ??
-    asOptionalString(idTokenClaims?.iss) ??
-    getIssuer();
+  if (userInfoIssuer && userInfoIssuer !== issuer) {
+    throw new Error("OIDC userinfo issuer did not match the configured issuer");
+  }
+
   const subject =
     asOptionalString(userInfo.sub) ?? asOptionalString(idTokenClaims?.sub);
   const email =
     asOptionalString(userInfo.email) ?? asOptionalString(idTokenClaims?.email);
+  const emailVerified =
+    asOptionalBoolean(userInfo.email_verified) ??
+    asOptionalBoolean(idTokenClaims?.email_verified) ??
+    false;
   const name =
     asOptionalString(userInfo.name) ??
     asOptionalString(userInfo.preferred_username) ??
@@ -471,16 +799,113 @@ export const authenticateOidcCode = async (args: {
     throw new Error("OIDC response did not include a subject");
   }
 
-  if (!email) {
-    throw new Error("OIDC response did not include an email address");
-  }
-
   return {
     email,
-    iss: issuer,
+    emailVerified,
+    issuer,
     name: normalizePreferredName(name, email),
-    sub: subject,
+    subject,
   } satisfies OIDCIdentity;
+};
+
+export const resolveOidcIdentity = async (
+  payload: Payload,
+  identity: OIDCIdentity,
+) => {
+  const linkedIdentity = await findLinkedIdentity(payload, identity);
+
+  if (linkedIdentity) {
+    const userId =
+      typeof linkedIdentity.user === "number"
+        ? linkedIdentity.user
+        : linkedIdentity.user.id;
+    const linkedUser = await findUserById(payload, userId);
+
+    if (!linkedUser) {
+      throw new Error("The linked OIDC account no longer has a local user");
+    }
+
+    await updateLinkedIdentityEmail(payload, linkedIdentity.id, identity);
+
+    return {
+      kind: "sign-in" as const,
+      user: await updateLinkedUserFromOidcIdentity(
+        payload,
+        linkedUser,
+        identity,
+      ),
+    };
+  }
+
+  const existingUser = await findExistingUserByVerifiedEmail(payload, identity);
+
+  if (existingUser) {
+    return {
+      kind: "link-required" as const,
+      token: await createPendingOidcLink(payload, existingUser, identity),
+    };
+  }
+
+  const createdUser = await createUserFromOidcIdentity(payload, identity);
+  await createUserIdentity(payload, createdUser, identity);
+
+  return {
+    kind: "sign-in" as const,
+    user: createdUser,
+  };
+};
+
+export const getPendingOidcLink = async (
+  payload: Payload,
+  token: string | undefined | null,
+) => await loadPendingLink(payload, token);
+
+export const clearPendingOidcLink = async (
+  payload: Payload,
+  token: string | undefined | null,
+) => {
+  const pendingToken = getPendingLinkToken(token);
+
+  if (!pendingToken) {
+    return;
+  }
+
+  await clearPendingLinksWhere(payload, {
+    token: {
+      equals: pendingToken,
+    },
+  });
+};
+
+export const confirmPendingOidcLink = async (args: {
+  password: string;
+  payload: Payload;
+  token: string | undefined | null;
+}) => {
+  const pendingLink = await loadPendingLink(args.payload, args.token);
+
+  if (!pendingLink) {
+    throw new Error("The OIDC linking session is invalid or has expired");
+  }
+
+  try {
+    await verifyLocalPasswordForUser(
+      args.payload,
+      pendingLink.user,
+      args.password,
+    );
+    await createUserIdentity(args.payload, pendingLink.user, {
+      email: pendingLink.email,
+      emailVerified: true,
+      issuer: pendingLink.issuer,
+      name: pendingLink.name,
+      subject: pendingLink.subject,
+    });
+
+    return pendingLink.user;
+  } finally {
+    await deletePendingLinkById(args.payload, pendingLink.id);
+  }
 };
 
 export const describeOidcError = (error: unknown) => {
@@ -527,176 +952,11 @@ export const describeOidcError = (error: unknown) => {
   return fallbackMessage;
 };
 
-export const logOidcError = (error: unknown) => {
-  logger.error({ err: error }, "OIDC callback failed");
-};
-
-export const createOidcSessionToken = (identity: OIDCIdentity) =>
-  jsonToSignedToken<OIDCSession>(
-    {
-      ...identity,
-      exp: Math.floor(Date.now() / 1000) + OIDC_SESSION_TTL_SECONDS,
-    },
-    getSessionSecret(),
-  );
-
-export const readOidcSession = (headers: Headers) => {
-  const cookies = parseCookieHeader(headers.get("cookie"));
-  const token = cookies.get(OIDC_SESSION_COOKIE);
-
-  if (!token) {
-    return null;
-  }
-
-  const session = signedTokenToJson<OIDCSession>(token, getSessionSecret());
-
-  if (!session || session.exp < Math.floor(Date.now() / 1000)) {
-    return null;
-  }
-
-  return session;
-};
-
-const findUserByOidcIdentity = async (
-  payload: Payload,
-  identity: OIDCIdentity,
-): Promise<User | null> => {
-  const result = await payload.find({
-    collection: "users",
-    depth: 0,
-    limit: 1,
-    overrideAccess: true,
-    pagination: false,
-    where: {
-      and: [
-        {
-          oidcIssuer: {
-            equals: identity.iss,
-          },
-        },
-        {
-          oidcSubject: {
-            equals: identity.sub,
-          },
-        },
-      ],
-    },
-  });
-
-  return result.docs[0] ?? null;
-};
-
-const findUserByEmail = async (
-  payload: Payload,
-  email: string,
-): Promise<User | null> => {
-  const result = await payload.find({
-    collection: "users",
-    depth: 0,
-    limit: 1,
-    overrideAccess: true,
-    pagination: false,
-    where: {
-      email: {
-        equals: email,
-      },
-    },
-  });
-
-  return result.docs[0] ?? null;
-};
-
-export const syncOidcUser = async (
-  payload: Payload,
-  identity: OIDCIdentity,
-): Promise<User> => {
-  const existingByIdentity = await findUserByOidcIdentity(payload, identity);
-
-  if (existingByIdentity) {
-    const updateData: Record<string, string> = {};
-
-    if (existingByIdentity.email !== identity.email) {
-      updateData.email = identity.email;
-    }
-
-    if (existingByIdentity.preferredName !== identity.name) {
-      updateData.preferredName = identity.name;
-    }
-
-    if (Object.keys(updateData).length === 0) {
-      return existingByIdentity;
-    }
-
-    return await payload.update({
-      collection: "users",
-      data: updateData,
-      depth: 0,
-      id: existingByIdentity.id,
-      overrideAccess: true,
-    });
-  }
-
-  const existingByEmail = await findUserByEmail(payload, identity.email);
-
-  if (existingByEmail) {
-    if (
-      existingByEmail.oidcSubject &&
-      existingByEmail.oidcSubject !== identity.sub
-    ) {
-      throw new Error(
-        "The matched local user is already linked to a different OIDC subject",
-      );
-    }
-
-    return await payload.update({
-      collection: "users",
-      data: {
-        oidcIssuer: identity.iss,
-        oidcSubject: identity.sub,
-        preferredName: identity.name,
-      },
-      depth: 0,
-      id: existingByEmail.id,
-      overrideAccess: true,
-    });
-  }
-
-  return await payload.create({
-    collection: "users",
-    data: {
-      email: identity.email,
-      oidcIssuer: identity.iss,
-      oidcSubject: identity.sub,
-      password: randomBase64Url(24),
-      preferredName: identity.name,
-      roles: "volunteer",
-    },
-    depth: 0,
-    overrideAccess: true,
-  });
-};
-
-export const authenticateWithOidcSession = async ({
-  headers,
-  payload,
-}: {
-  headers: Headers;
-  payload: Payload;
-}) => {
-  const session = readOidcSession(headers);
-
-  if (!session) {
-    return { user: null };
-  }
-
-  const user = await syncOidcUser(payload, session);
-
-  return {
-    user,
-  };
-};
-
 export const oidcCookieNames = {
-  session: OIDC_SESSION_COOKIE,
+  pendingLink: OIDC_PENDING_LINK_COOKIE,
   state: OIDC_STATE_COOKIE,
+};
+
+export const resetOidcConfigurationCacheForTests = () => {
+  oidcConfigPromise = null;
 };
