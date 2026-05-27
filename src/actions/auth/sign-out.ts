@@ -3,22 +3,13 @@
 import config from "@payload-config";
 import { logout as payloadLogout } from "@payloadcms/next/auth";
 import { redirect } from "next/navigation";
-import { getUser } from "@/lib/services/get-user";
 
 export async function signOut() {
-  const user = await getUser();
-
-  if (!user) {
-    return redirect("/");
-  }
-
   try {
     await payloadLogout({ config });
-  } catch (error) {
-    throw new Error(
-      `Sign-out failed: ${error instanceof Error ? error.message : "Unknown error"}`,
-    );
+  } catch {
+    // OIDC users do not necessarily have a Payload local auth cookie to clear.
   }
 
-  return redirect("/auth/signed-out");
+  return redirect("/auth/oidc/logout");
 }

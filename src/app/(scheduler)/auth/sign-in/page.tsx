@@ -3,10 +3,12 @@ import { redirect } from "next/navigation";
 import { Box, Container, Grid, panda, VStack } from "styled-system/jsx";
 import { link } from "styled-system/recipes";
 import { SignInForm } from "@/components/auth/sign-in-form";
+import { Alert } from "@/components/ui/alert";
 import { getUser } from "@/lib/services/get-user";
 
-export default async function Page() {
+export default async function Page(props: PageProps<"/auth/sign-in">) {
   const { user } = await getUser();
+  const { error } = await props.searchParams;
 
   if (user) {
     redirect("/");
@@ -36,6 +38,16 @@ export default async function Page() {
               Please enter your details to sign in
             </Box>
           </div>
+
+          {typeof error === "string" && error.length > 0 && (
+            <Alert.Root borderColor="red.500">
+              <Alert.Indicator />
+              <Alert.Content>
+                <Alert.Title>Sign-in failed</Alert.Title>
+                <Alert.Description>{error}</Alert.Description>
+              </Alert.Content>
+            </Alert.Root>
+          )}
 
           <SignInForm />
 

@@ -152,6 +152,8 @@ export interface User {
   preferredName: string;
   phoneNumber?: string | null;
   roles?: ('admin' | 'editor' | 'volunteer') | null;
+  oidcIssuer?: string | null;
+  oidcSubject?: string | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -787,6 +789,8 @@ export interface UsersSelect<T extends boolean = true> {
   preferredName?: T;
   phoneNumber?: T;
   roles?: T;
+  oidcIssuer?: T;
+  oidcSubject?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;

@@ -3,7 +3,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { css } from "styled-system/css";
-import { Grid } from "styled-system/jsx";
+import { Divider, Grid } from "styled-system/jsx";
 import { vstack } from "styled-system/patterns";
 import {
   type SignInFailure,
@@ -83,6 +83,28 @@ export const SignInForm = () => {
       <Button variant="solid" loading={isPending} type="submit">
         Sign in
       </Button>
+
+      <Divider borderColor="border.muted" />
+
+      <a
+        href="/auth/oidc/start"
+        className={css({
+          borderRadius: "l2",
+          borderWidth: "1px",
+          borderColor: "border.default",
+          display: "inline-flex",
+          justifyContent: "center",
+          paddingX: "4",
+          paddingY: "2.5",
+          textDecoration: "none",
+          width: "full",
+          _hover: {
+            background: "bg.muted",
+          },
+        })}
+      >
+        Continue with Authentik
+      </a>
     </form>
   );
 };
