@@ -33,6 +33,9 @@ export const enum_event_templates_start_time_tz = pgEnum(
   "enum_event_templates_start_time_tz",
   ["Europe/Amsterdam"],
 );
+export const enum_user_identities_kind = pgEnum("enum_user_identities_kind", [
+  "oidc",
+]);
 export const enum_users_roles = pgEnum("enum_users_roles", [
   "admin",
   "editor",
@@ -399,6 +402,49 @@ export const locations = pgTable(
   ],
 );
 
+export const oidc_pending_links = pgTable(
+  "oidc_pending_links",
+  {
+    id: serial("id").primaryKey(),
+    token: varchar("token").notNull(),
+    issuer: varchar("issuer").notNull(),
+    subject: varchar("subject").notNull(),
+    email: varchar("email").notNull(),
+    name: varchar("name").notNull(),
+    expiresAt: timestamp("expires_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    }).notNull(),
+    user: integer("user_id")
+      .notNull()
+      .references(() => users.id, {
+        onDelete: "set null",
+      }),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    uniqueIndex("oidc_pending_links_token_idx").on(columns.token),
+    index("oidc_pending_links_expires_at_idx").on(columns.expiresAt),
+    index("oidc_pending_links_user_idx").on(columns.user),
+    index("oidc_pending_links_updated_at_idx").on(columns.updatedAt),
+    index("oidc_pending_links_created_at_idx").on(columns.createdAt),
+  ],
+);
+
 export const roles = pgTable(
   "roles",
   {
@@ -533,6 +579,48 @@ export const tags = pgTable(
   (columns) => [
     index("tags_updated_at_idx").on(columns.updatedAt),
     index("tags_created_at_idx").on(columns.createdAt),
+  ],
+);
+
+export const user_identities = pgTable(
+  "user_identities",
+  {
+    id: serial("id").primaryKey(),
+    kind: enum_user_identities_kind("kind").notNull().default("oidc"),
+    issuer: varchar("issuer").notNull(),
+    subject: varchar("subject").notNull(),
+    emailAtLinkTime: varchar("email_at_link_time"),
+    linkedAt: timestamp("linked_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    }).notNull(),
+    user: integer("user_id")
+      .notNull()
+      .references(() => users.id, {
+        onDelete: "set null",
+      }),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index("user_identities_issuer_idx").on(columns.issuer),
+    index("user_identities_subject_idx").on(columns.subject),
+    index("user_identities_user_idx").on(columns.user),
+    index("user_identities_updated_at_idx").on(columns.updatedAt),
+    index("user_identities_created_at_idx").on(columns.createdAt),
   ],
 );
 
@@ -1058,6 +1146,16 @@ export const relations_events = relations(events, ({ many }) => ({
   }),
 }));
 export const relations_locations = relations(locations, () => ({}));
+export const relations_oidc_pending_links = relations(
+  oidc_pending_links,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [oidc_pending_links.user],
+      references: [users.id],
+      relationName: "user",
+    }),
+  }),
+);
 export const relations_roles = relations(roles, ({ one }) => ({
   event: one(events, {
     fields: [roles.event],
@@ -1095,6 +1193,16 @@ export const relations_signups = relations(signups, ({ one }) => ({
   }),
 }));
 export const relations_tags = relations(tags, () => ({}));
+export const relations_user_identities = relations(
+  user_identities,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [user_identities.user],
+      references: [users.id],
+      relationName: "user",
+    }),
+  }),
+);
 export const relations_user_notification_preferences = relations(
   user_notification_preferences,
   ({ one }) => ({
@@ -1229,6 +1337,7 @@ export const relations_payload_migrations = relations(
 type DatabaseSchema = {
   enum_announcements_status: typeof enum_announcements_status;
   enum_event_templates_start_time_tz: typeof enum_event_templates_start_time_tz;
+  enum_user_identities_kind: typeof enum_user_identities_kind;
   enum_users_roles: typeof enum_users_roles;
   enum_payload_jobs_log_task_slug: typeof enum_payload_jobs_log_task_slug;
   enum_payload_jobs_log_state: typeof enum_payload_jobs_log_state;
@@ -1245,10 +1354,12 @@ type DatabaseSchema = {
   events: typeof events;
   events_rels: typeof events_rels;
   locations: typeof locations;
+  oidc_pending_links: typeof oidc_pending_links;
   roles: typeof roles;
   sections: typeof sections;
   signups: typeof signups;
   tags: typeof tags;
+  user_identities: typeof user_identities;
   user_notification_preferences: typeof user_notification_preferences;
   users_sessions: typeof users_sessions;
   users: typeof users;
@@ -1271,10 +1382,12 @@ type DatabaseSchema = {
   relations_events_rels: typeof relations_events_rels;
   relations_events: typeof relations_events;
   relations_locations: typeof relations_locations;
+  relations_oidc_pending_links: typeof relations_oidc_pending_links;
   relations_roles: typeof relations_roles;
   relations_sections: typeof relations_sections;
   relations_signups: typeof relations_signups;
   relations_tags: typeof relations_tags;
+  relations_user_identities: typeof relations_user_identities;
   relations_user_notification_preferences: typeof relations_user_notification_preferences;
   relations_users_sessions: typeof relations_users_sessions;
   relations_users: typeof relations_users;
