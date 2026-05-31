@@ -1,0 +1,50 @@
+{
+  "name": "volunteer-scheduler",
+  "short_name": "Scheduler",
+  "start_url": "https://schedule.desering.org/",
+  "display": "standalone",
+  "description": "View and sign up for volunteer shifts at De Sering",
+  "lang": "en",
+  "dir": "auto",
+  "theme_color": "#8d8d86",
+  "background_color": "#fdfdfc",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "48x48",
+      "type": "image/ico"
+    },
+    {
+      "src": "apple-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "icon1.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "icon0.svg",
+      "sizes": "48x48",
+      "type": "image/svg"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "image.png",
+      "sizes": "1686x1394",
+      "type": "image/png",
+      "description": "A screenshot of the home page"
+    }
+  ],
+  "prefer_related_applications": false,
+  "shortcuts": [
+    {
+      "name": "The name you would like to be displayed for your shortcut",
+      "url": "The url you would like to open when the user chooses this shortcut. This must be a URL local to your PWA. For example: If my start_url is /, this URL must be something like /shortcut",
+      "description": "A description of the functionality of this shortcut"
+    }
+  ]
+}
