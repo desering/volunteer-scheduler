@@ -1,13 +1,13 @@
 {
-  "name": "volunteer-scheduler",
+  "name": "De Sering: Scheduler",
   "short_name": "Scheduler",
-  "start_url": "https://schedule.desering.org/",
+  "start_url": "/",
   "display": "standalone",
   "description": "View and sign up for volunteer shifts at De Sering",
   "lang": "en",
   "dir": "auto",
-  "theme_color": "#8d8d86",
-  "background_color": "#fdfdfc",
+  "theme_color": "#FF3F00",
+  "background_color": "#F3F1EC",
   "orientation": "any",
   "icons": [
     {
@@ -16,35 +16,47 @@
       "type": "image/ico"
     },
     {
+      "src": "/favicon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "1000x1000",
+      "type": "image/svg"
+    },
+    {
       "src": "apple-icon.png",
       "sizes": "180x180",
       "type": "image/png"
     },
     {
-      "src": "icon1.png",
-      "sizes": "96x96",
-      "type": "image/png"
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
-      "src": "icon0.svg",
-      "sizes": "48x48",
-      "type": "image/svg"
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ],
   "screenshots": [
     {
-      "src": "image.png",
+      "src": "/screenshot-home-wide.png",
       "sizes": "1686x1394",
       "type": "image/png",
-      "description": "A screenshot of the home page"
-    }
-  ],
-  "prefer_related_applications": false,
-  "shortcuts": [
+      "form_factor": "wide",
+      "label": "A screenshot of the home page"
+    },
     {
-      "name": "The name you would like to be displayed for your shortcut",
-      "url": "The url you would like to open when the user chooses this shortcut. This must be a URL local to your PWA. For example: If my start_url is /, this URL must be something like /shortcut",
-      "description": "A description of the functionality of this shortcut"
+      "src": "/screenshot-home-narrow-dark.png",
+      "type": "image/png",
+      "sizes": "514x975",
+      "form_factor": "narrow",
+      "label": "A screenshot of the home page"
     }
   ]
 }
