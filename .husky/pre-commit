@@ -9,7 +9,7 @@ DOCKER_CONTAINER_NAME="husky-bun-runtime"
 if ! command -v bun >/dev/null 2>&1; then
     echo "no local 'bun', using docker" >&2
     if ! command -v docker >/dev/null 2>&1; then
-        echo "oh, no even 'docker'" >&2
+        echo "no even 'docker', cannot run the check" >&2
         exit 1
     fi
     docker rm -f "$DOCKER_CONTAINER_NAME" >/dev/null 2>&1 || true
