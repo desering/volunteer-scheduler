@@ -2,6 +2,7 @@
   "name": "De Sering: Scheduler",
   "short_name": "Scheduler",
   "start_url": "/",
+  "id": "/",
   "display": "standalone",
   "description": "View and sign up for volunteer shifts at De Sering",
   "lang": "en",
@@ -46,7 +47,7 @@
   "screenshots": [
     {
       "src": "/screenshot-home-wide.png",
-      "sizes": "1686x1394",
+      "sizes": "1886x1020",
       "type": "image/png",
       "form_factor": "wide",
       "label": "A screenshot of the home page"
