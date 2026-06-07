@@ -9,6 +9,8 @@ WORKDIR /app
 ###
 FROM base AS dev
 
+RUN apk add git # for "staged" biome commands
+
 RUN chown -R bun .
 
 COPY package.json bun.lock ./
