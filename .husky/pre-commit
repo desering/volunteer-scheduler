@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-
 set -e
 
 echo "Running pre-commit checks..."
@@ -9,7 +8,7 @@ DOCKER_CONTAINER_NAME="husky-bun-runtime"
 if ! command -v bun >/dev/null 2>&1; then
     echo "no local 'bun', using docker" >&2
     if ! command -v docker >/dev/null 2>&1; then
-        echo "no even 'docker', cannot run the check" >&2
+        echo "cannot find 'docker', check failed to run" >&2
         exit 1
     fi
     docker rm -f "$DOCKER_CONTAINER_NAME" >/dev/null 2>&1 || true
