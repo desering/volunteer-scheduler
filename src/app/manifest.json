@@ -6,7 +6,7 @@
   "display": "standalone",
   "description": "View and sign up for volunteer shifts at De Sering",
   "lang": "en",
-  "dir": "auto",
+  "dir": "ltr",
   "theme_color": "#FF3F00",
   "background_color": "#F3F1EC",
   "orientation": "any",
