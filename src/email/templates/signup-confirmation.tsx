@@ -18,12 +18,14 @@ export const SignupConfirmation = ({
   role,
   description,
   date,
+  location,
 }: {
   name: string;
   eventSummary: string;
   role: string;
   description: string;
   date: string;
+  location?: string;
 }) => {
   return (
     <Html lang="en">
@@ -44,6 +46,7 @@ export const SignupConfirmation = ({
 
               <Heading as="h2">Your Signup Details</Heading>
               <Text>Your role: {role}</Text>
+              {location ? <Text>Where: {location}</Text> : null}
               <Text>When: {date}</Text>
               <Text>About:</Text>
               <Markdown>{description}</Markdown>

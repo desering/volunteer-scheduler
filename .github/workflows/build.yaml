@@ -62,11 +62,11 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: "Trivy: generate report"
-        uses: aquasecurity/trivy-action@0.35.0
+        uses: aquasecurity/trivy-action@v0.36.0
         with:
           trivy-config: trivy.yaml
           image-ref: '${{ env.DOCKER_REPO }}/${{ github.event.repository.name }}:${{ github.sha }}'
-          version: 'v0.68.2'
+          version: 'v0.69.3'
 
       - name: "Trivy: render results as table"
         run: trivy convert --scanners vuln,misconfig,secret,license --format table --table-mode detailed --output trivy-detail-table.txt trivy-result.json
@@ -75,7 +75,7 @@ jobs:
         run: cat trivy-detail-table.txt
 
       - name: "Trivy: post results to PR"
-        uses: actions/github-script@v8
+        uses: actions/github-script@v9
         if: github.event_name == 'pull_request'
         with:
           script: |

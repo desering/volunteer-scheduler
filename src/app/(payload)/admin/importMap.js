@@ -28,6 +28,7 @@ import { BackToSchedule as BackToSchedule_ed8fa7269d6e99d15d1949d13c717bd3 } fro
 import { CalendarView as CalendarView_38e806c25d81fcefba307a609b16ade2 } from '../../../views/calendar-view'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 
+/** @type import('payload').ImportMap */
 export const importMap = {
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalCell": RscEntryLexicalCell_44fe37237e0ebf4470c9990d8cb7b07e,
   "@payloadcms/richtext-lexical/rsc#RscEntryLexicalField": RscEntryLexicalField_44fe37237e0ebf4470c9990d8cb7b07e,

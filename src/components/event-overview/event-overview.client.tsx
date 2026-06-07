@@ -21,7 +21,7 @@ import {
   type EventsGroupedByDay,
   groupEventsByDate,
 } from "@/lib/mappers/group-events-by-date";
-import type { Event } from "@/payload-types";
+import type { Event, Location, Tag } from "@/payload-types";
 import { DateSelect } from "./date-select";
 import { TagFilter } from "./tag-filter";
 
@@ -144,16 +144,24 @@ export const EventOverviewClient = ({
                 <EventButton.Title>{event.title}</EventButton.Title>
                 {shouldShowBadges && (
                   <Box display="flex" gap="2" marginY="2" flexWrap="wrap">
-                    {event.tags?.map((tag) =>
-                      typeof tag === "object" && tag !== null ? (
+                    {event.tags
+                      ?.filter(
+                        (tag): tag is Tag =>
+                          typeof tag === "object" && tag !== null,
+                      )
+                      .sort((a, b) => a.text.localeCompare(b.text))
+                      .map((tag) => (
                         <Badge key={tag.id}>{tag.text}</Badge>
-                      ) : null,
-                    )}
-                    {event.locations?.map((location) =>
-                      typeof location === "object" && location !== null ? (
+                      ))}
+                    {event.locations
+                      ?.filter(
+                        (location): location is Location =>
+                          typeof location === "object" && location !== null,
+                      )
+                      .sort((a, b) => a.title.localeCompare(b.title))
+                      .map((location) => (
                         <Badge key={location.id}>{location.title}</Badge>
-                      ) : null,
-                    )}
+                      ))}
                   </Box>
                 )}
                 <EventButton.Description className={descriptionDetailCss}>

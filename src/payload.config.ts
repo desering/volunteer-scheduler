@@ -12,9 +12,11 @@ import { Locations } from "./collections/locations";
 import { Roles } from "./collections/roles";
 import { Sections } from "./collections/sections";
 import { Signups } from "./collections/signups";
+import { sendConfirmationEmailTask } from "./collections/signups/tasks/send-confirmation-email";
 import { Tags } from "./collections/tags";
 import { UserNotificationPreferences } from "./collections/user-notification-preferences";
 import { Users } from "./collections/users";
+import { WebcalTokens } from "./collections/webcal-tokens";
 import { editor } from "./editor.config";
 import { logger } from "./lib/logger";
 import { migrations } from "./migrations";
@@ -99,6 +101,7 @@ export default buildConfig({
 
   collections: [
     Announcements,
+    WebcalTokens,
     EventTemplates,
     Events,
     Locations,
@@ -109,6 +112,16 @@ export default buildConfig({
     UserNotificationPreferences,
     Users,
   ],
+  jobs: {
+    tasks: [sendConfirmationEmailTask],
+    autoRun: [
+      {
+        cron: "*/5 * * * *", // every 5 minutes
+        limit: 50,
+      },
+    ],
+  },
+
   editor,
   secret: process.env.PAYLOAD_SECRET ?? "",
   typescript: {

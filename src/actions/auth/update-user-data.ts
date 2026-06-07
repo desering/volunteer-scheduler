@@ -5,14 +5,13 @@ import { revalidatePath } from "next/cache";
 import { headers as getHeaders } from "next/headers";
 import { getPayload } from "payload";
 import { z } from "zod";
-import { preferredNameSchema } from "@/lib/schemas/preferred-name";
+import { preferredName } from "@/lib/schemas/preferred-name";
+import { email, phoneNumber } from "@/lib/schemas/zod-fields";
 
 const schema = z.object({
-  preferredName: preferredNameSchema,
-  email: z.email({ error: "Invalid email" }),
-  phoneNumber: z
-    .e164({ error: "Invalid phone number e.g +31612345678" })
-    .min(1, "Phone number is required"),
+  preferredName,
+  email,
+  phoneNumber,
 });
 
 export type UpdateUserData = z.infer<typeof schema>;
