@@ -1,0 +1,63 @@
+{
+  "name": "De Sering: Scheduler",
+  "short_name": "Scheduler",
+  "start_url": "/",
+  "id": "/",
+  "display": "standalone",
+  "description": "View and sign up for volunteer shifts at De Sering",
+  "lang": "en",
+  "dir": "ltr",
+  "theme_color": "#FF3F00",
+  "background_color": "#F3F1EC",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "favicon.ico",
+      "sizes": "48x48",
+      "type": "image/ico"
+    },
+    {
+      "src": "/favicon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon.svg",
+      "sizes": "1000x1000",
+      "type": "image/svg"
+    },
+    {
+      "src": "apple-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshot-home-wide.png",
+      "sizes": "1886x1020",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "A screenshot of the home page"
+    },
+    {
+      "src": "/screenshot-home-narrow-dark.png",
+      "type": "image/png",
+      "sizes": "514x975",
+      "form_factor": "narrow",
+      "label": "A screenshot of the home page"
+    }
+  ]
+}
