@@ -9,6 +9,8 @@ WORKDIR /app
 ###
 FROM base AS dev
 
+RUN apk add git # for "staged" biome commands
+
 RUN chown -R bun .
 
 COPY package.json bun.lock ./
@@ -69,6 +71,7 @@ RUN addgroup --system --gid 1001 nodejs && \
 # https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=build --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=build --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=build --chown=nextjs:nodejs /app/public ./public
 
 USER nextjs
 
