@@ -4,7 +4,7 @@ import { utc } from "@date-fns/utc";
 import config from "@payload-config";
 import { startOfDay } from "date-fns";
 import { getPayload, type WhereField } from "payload";
-import { traced } from "@/utils/otel";
+import { withTrace } from "@/utils/otel";
 
 type GetEventsOptions = {
   minDate?: Date;
@@ -20,7 +20,7 @@ type EventsWhereClause = {
 };
 
 export const getEvents = async (params?: GetEventsOptions) => {
-  return await traced(
+  return await withTrace(
     "homepage.getEvents",
     async (span) => {
       const payload = await getPayload({ config });

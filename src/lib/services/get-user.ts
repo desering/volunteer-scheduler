@@ -1,10 +1,10 @@
 import config from "@payload-config";
 import { headers as getHeaders } from "next/headers";
 import { getPayload } from "payload";
-import { traced } from "@/utils/otel";
+import { withTrace } from "@/utils/otel";
 
 export const getUser = async () => {
-  return await traced(
+  return await withTrace(
     "homepage.getUser",
     async (span) => {
       const headers = await getHeaders();

@@ -6,7 +6,7 @@ import {
   trace,
 } from "@opentelemetry/api";
 
-type TracedOptions = {
+type WithTraceOptions = {
   attributes?: Attributes;
   tracer?: Tracer;
   tracerName?: string;
@@ -14,10 +14,10 @@ type TracedOptions = {
 
 const defaultTracerName = "volunteer-scheduler";
 
-export const traced = async <T>(
+export const withTrace = async <T>(
   name: string,
   fn: (span: Span) => Promise<T>,
-  options?: TracedOptions,
+  options?: WithTraceOptions,
 ): Promise<T> => {
   const tracer =
     options?.tracer ??

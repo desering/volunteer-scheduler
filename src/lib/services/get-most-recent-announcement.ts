@@ -3,10 +3,10 @@
 import config from "@payload-config";
 import { connection } from "next/server";
 import { getPayload } from "payload";
-import { traced } from "@/utils/otel";
+import { withTrace } from "@/utils/otel";
 
 export const getMostRecentAnnouncement = async () => {
-  return await traced(
+  return await withTrace(
     "homepage.getMostRecentAnnouncement",
     async (span) => {
       await connection(); // Disable caching for this function
