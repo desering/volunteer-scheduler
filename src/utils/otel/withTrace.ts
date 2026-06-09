@@ -14,30 +14,33 @@ type WithTraceOptions = {
 
 const defaultTracerName = "volunteer-scheduler";
 
-export const withTrace = async <T>(
+export const withTrace = <TArgs extends unknown[], TReturn>(
   name: string,
-  fn: (span: Span) => Promise<T>,
+  fn: (span: Span) => (...args: TArgs) => TReturn | Promise<TReturn>,
   options?: WithTraceOptions,
-): Promise<T> => {
+): ((...args: TArgs) => Promise<TReturn>) => {
   const tracer =
     options?.tracer ??
     trace.getTracer(options?.tracerName ?? defaultTracerName);
 
-  return await tracer.startActiveSpan(name, async (span) => {
-    if (options?.attributes) {
-      span.setAttributes(options.attributes);
-    }
+  return (...args: TArgs): Promise<TReturn> => {
+    return tracer.startActiveSpan(name, async (span): Promise<TReturn> => {
+      if (options?.attributes) {
+        span.setAttributes(options.attributes);
+      }
 
-    try {
-      return await fn(span);
-    } catch (error) {
-      span.recordException(
-        error instanceof Error ? error : new Error(String(error)),
-      );
-      span.setStatus({ code: SpanStatusCode.ERROR });
-      throw error;
-    } finally {
-      span.end();
-    }
-  });
+      try {
+        return await fn(span)(...args);
+      } catch (error) {
+        span.recordException(
+          error instanceof Error ? error : new Error(String(error)),
+        );
+        span.setStatus({ code: SpanStatusCode.ERROR });
+
+        throw error;
+      } finally {
+        span.end();
+      }
+    });
+  };
 };
