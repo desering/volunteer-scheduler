@@ -11,6 +11,7 @@ export async function register() {
     wall: {
       collectCpuTime: true,
     },
+    profileTypes: [Pyroscope.ProfileTypes.Cpu, Pyroscope.ProfileTypes.Wall],
   });
 
   Pyroscope.start();
