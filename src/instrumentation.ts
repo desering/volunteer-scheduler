@@ -8,8 +8,6 @@ export async function register() {
   Pyroscope.init({
     serverAddress: "http://localhost:4040",
     appName: "volunteer-scheduler",
-    // Enable CPU time collection for wall profiles
-    // This is required for CPU profiling functionality
     wall: {
       collectCpuTime: true,
     },
