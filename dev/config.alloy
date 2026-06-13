@@ -4,6 +4,10 @@ logging {
 	level  = "warn"
 }
 
+livedebugging {
+	enabled = true
+}
+
 // OpenTelemetry metrics and traces
 // https://grafana.com/docs/alloy/latest/reference/components/otelcol/otelcol.receiver.otlp/
 otelcol.receiver.otlp "default" {
