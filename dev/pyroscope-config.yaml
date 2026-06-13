@@ -7,7 +7,7 @@ show_banner: false # disable logging the pyroscope banner on startup
 server:
   http_listen_port: 4040
   log_format: logfmt
-  log_level: info
+  log_level: warn
 
 multitenancy_enabled: false
 
