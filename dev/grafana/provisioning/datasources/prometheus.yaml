@@ -3,6 +3,7 @@ apiVersion: 1
 datasources:
   # https://grafana.com/docs/grafana/latest/datasources/prometheus/
   - name: Prometheus
+    uid: prometheus
     type: prometheus
     access: proxy
     url: http://prometheus:9090

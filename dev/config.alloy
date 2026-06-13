@@ -21,7 +21,7 @@ otelcol.receiver.otlp "default" {
 
 	output {
 		metrics = [otelcol.exporter.prometheus.local.input]
-		traces  = [otelcol.exporter.otlp.tempo.input]
+		traces  = [otelcol.exporter.otlp.tempo.input, otelcol.exporter.otlphttp.tempo.input]
 	}
 }
 
@@ -38,6 +38,17 @@ prometheus.remote_write "local" {
 otelcol.exporter.otlp "tempo" {
 	client {
 		endpoint = "tempo:4317"
+
+		tls {
+			insecure             = true
+			insecure_skip_verify = true
+		}
+	}
+}
+
+otelcol.exporter.otlphttp "tempo" {
+	client {
+		endpoint = "http://tempo:4318"
 
 		tls {
 			insecure             = true
