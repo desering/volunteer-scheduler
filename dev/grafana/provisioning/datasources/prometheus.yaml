@@ -3,17 +3,20 @@ apiVersion: 1
 datasources:
   # https://grafana.com/docs/grafana/latest/datasources/prometheus/
   - name: Prometheus
-    uid: prom
     type: prometheus
     access: proxy
-    url: http://prometheus:9090/prometheus
+    url: http://prometheus:9090
     isDefault: true
     basicAuth: false
     editable: false
     jsonData:
       httpMethod: POST
-      prometheusType: Mimir
-      cacheLevel: High
-      httpHeaderName1: X-Scope-OrgID
-    secureJsonData:
-      httpHeaderValue1: anonymous
+      manageAlerts: true
+      allowAsRecordingRulesTarget: true
+      prometheusType: Prometheus
+      prometheusVersion: 3.3.0
+      cacheLevel: 'High'
+      disableRecordingRules: false
+      seriesEndpoint: false
+      timeInterval: 10s # Prometheus scrape interval
+      incrementalQueryOverlapWindow: 10m
