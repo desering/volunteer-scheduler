@@ -1,0 +1,18 @@
+# https://grafana.com/docs/tempo/latest/configuration/
+
+server:
+  http_listen_port: 3200
+  log_format: "logfmt"
+  log_level: "warn"
+
+storage:
+  trace:
+    backend: local
+    local:
+      path: /var/tempo
+
+# https://grafana.com/docs/tempo/latest/configuration/#metrics-generator
+# I think this should point to the remote-write endpoint of mimir?
+metrics_generator:
+  storage:
+    path: /var/tempo/metrics
