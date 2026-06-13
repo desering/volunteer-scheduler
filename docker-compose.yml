@@ -54,6 +54,7 @@ services:
       - ./dev/pyroscope-config.yaml:/etc/pyroscope/config.yaml
     ports:
       - "4040:4040"
+    stop_grace_period: 60s # pyroscope gracefully shuts down after ~30s
 
   grafana:
     image: docker.io/grafana/grafana:13.0.2

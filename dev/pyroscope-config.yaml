@@ -11,6 +11,9 @@ server:
 
 multitenancy_enabled: false
 
+self_profiling:
+  disable_push: true
+
 analytics:
   reporting_enabled: false
 
