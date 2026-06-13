@@ -23,6 +23,18 @@ services:
       - "1025:1025"  # SMTP
     restart: always
 
+  # Beyla relies on eBPF and requires a Linux kernel.
+  # It does not work on a macOS host. It DOES work if run on macOS inside docker, instrumenting another docker container.
+  beyla:
+    image: docker.io/grafana/beyla:3.22.2
+    volumes:
+      - ./dev/beyla-config.yaml:/config/beyla-config.yaml
+    pid: "host" # beyla needs to share the PID space with the process that is being instrumented
+    network_mode: host
+    privileged: true
+    environment:
+      BEYLA_CONFIG_PATH: /config/beyla-config.yaml
+
   alloy: # OpenTelemetry Collector
     image: docker.io/grafana/alloy:v1.17.0
     volumes:

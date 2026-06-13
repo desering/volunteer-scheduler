@@ -1,0 +1,42 @@
+# Global properties
+# https://grafana.com/docs/beyla/latest/configure/options/
+
+shutdown_timeout: 10s
+
+log_level: info # debug, info, warn, error
+log_format: text # text, json
+
+trace_printer: text # options: disabled, text, json, json_indent
+
+###################
+##   Discovery   ##
+###################
+
+discovery:
+  instrument:
+    - open_ports: 3000
+  exclude_instrument:
+    - exe_path: "*grafana*"
+
+exclude_otel_instrumented_services: false
+
+otel_metrics_export:
+  endpoint: http://localhost:4318
+otel_traces_export:
+  endpoint: http://localhost:4318
+
+network:
+  enable: true
+
+ebpf:
+  wakeup_len: 100
+
+#prometheus_export:
+#  port: 8999
+#  path: /metrics
+
+#internal_metrics:
+#  exporter: prometheus
+#  prometheus:
+#    port: 6060
+#    path: /internal/metrics

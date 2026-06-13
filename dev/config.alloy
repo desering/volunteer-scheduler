@@ -1,4 +1,9 @@
+////////////////////
+//  Alloy config  //
+////////////////////
+
 // https://grafana.com/docs/alloy/latest/reference/config-blocks/
+
 logging {
 	format = "logfmt"
 	level  = "warn"
@@ -8,8 +13,12 @@ livedebugging {
 	enabled = true
 }
 
-// OpenTelemetry metrics and traces
+////////////////////////////////////////
+//  OpenTelemetry metrics and traces  //
+////////////////////////////////////////
+
 // https://grafana.com/docs/alloy/latest/reference/components/otelcol/otelcol.receiver.otlp/
+
 otelcol.receiver.otlp "default" {
 	grpc {
 		endpoint = "0.0.0.0:4317"
@@ -57,9 +66,13 @@ otelcol.exporter.otlphttp "tempo" {
 	}
 }
 
-// Pyroscope profiles
+//////////////////////////
+//  Pyroscope profiles  //
+//////////////////////////
+
 // for use with https://github.com/grafana/pyroscope-nodejs
 // https://grafana.com/docs/alloy/latest/reference/components/pyroscope/pyroscope.receive_http/
+
 pyroscope.receive_http "default" {
 	http {
 		listen_address = "0.0.0.0"
