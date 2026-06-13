@@ -1,0 +1,50 @@
+// https://grafana.com/docs/alloy/latest/reference/config-blocks/
+logging {
+	format = "logfmt"
+	level  = "warn"
+}
+
+// OpenTelemetry metrics and traces
+// https://grafana.com/docs/alloy/latest/reference/components/otelcol/otelcol.receiver.otlp/
+otelcol.receiver.otlp "default" {
+	grpc {
+		endpoint = "0.0.0.0:4317"
+	}
+
+	http {
+		endpoint = "0.0.0.0:4318"
+	}
+
+	output {
+		metrics = [otelcol.exporter.prometheus.local.input]
+		traces  = [otelcol.exporter.prometheus.local.input]
+	}
+}
+
+otelcol.exporter.prometheus "local" {
+	forward_to = [prometheus.remote_write.local.receiver]
+}
+
+prometheus.remote_write "local" {
+	endpoint {
+		url = "http://prometheus:9090/api/v1/write"
+	}
+}
+
+// Pyroscope profiles
+// for use with https://github.com/grafana/pyroscope-nodejs
+// https://grafana.com/docs/alloy/latest/reference/components/pyroscope/pyroscope.receive_http/
+pyroscope.receive_http "default" {
+	http {
+		listen_address = "0.0.0.0"
+		listen_port    = 9999
+	}
+	forward_to = [pyroscope.write.backend.receiver]
+}
+
+// Forward profiles to Pyroscope
+pyroscope.write "backend" {
+	endpoint {
+		url = "http://pyroscope:4040"
+	}
+}

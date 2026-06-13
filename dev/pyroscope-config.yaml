@@ -1,0 +1,25 @@
+# https://grafana.com/docs/pyroscope/latest/configure-server/reference-configuration-parameters/
+
+target: all # run in single-binary mode
+
+show_banner: false # disable logging the pyroscope banner on startup
+
+server:
+  http_listen_port: 4040
+  log_format: logfmt
+  log_level: info
+
+multitenancy_enabled: false
+
+analytics:
+  reporting_enabled: false
+
+pyroscopedb:
+  data_path: /data
+
+compactor:
+  data_dir: /data-compactor
+
+store_gateway:
+  bucket_store:
+    sync_dir: /data/pyroscope-sync
