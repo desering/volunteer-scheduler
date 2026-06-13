@@ -52,6 +52,8 @@ services:
     command: ["-config.file=/etc/pyroscope/config.yaml"]
     volumes:
       - ./dev/pyroscope-config.yaml:/etc/pyroscope/config.yaml
+      - pyroscope-data:/data
+      - pyroscope-compactor:/data-compactor
     ports:
       - "4040:4040"
     stop_grace_period: 60s # pyroscope gracefully shuts down after ~30s
@@ -94,3 +96,5 @@ volumes:
   pgdata:
   bun_next_cache:
   grafana-storage:
+  pyroscope-data:
+  pyroscope-compactor:
