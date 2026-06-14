@@ -22,7 +22,7 @@ if ! eval "$BUN_RUNTIME_CMD check:staged"; then
     echo "✗ ERROR: Biome check failed!"
     echo ""
     echo "To fix the issues, run:"
-    echo "  bun lint:staged"
+    echo "  $BUN_RUNTIME_CMD lint:staged"
     echo ""
     echo "Then stage your changes and commit again:"
     echo "  git add ."

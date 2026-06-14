@@ -27,35 +27,30 @@
   // Uncomment the next line if you want start specific services in your Docker Compose config.
   "runServices": ["maildev", "postgres"],
   // Uncomment the next line if you want to keep your containers running after VS Code shuts down.
-  "shutdownAction": "stopCompose"
+  "shutdownAction": "stopCompose",
   // Uncomment the next line to run commands after the container is created.
   // "postCreateCommand": "cat /etc/os-release",
   // Configure tool-specific properties.
-  // "customizations": {
-  // 	"codespaces": {
-  // 		"openFiles": [
-  // 			"pages/index.js"
-  // 		]
-  // 	},
-  // 	"vscode": {
-  // 		"extensions": [
-  // 			"biomejs.biome",
-  // 			"ms-vsliveshare.vsliveshare"
-  // 		],
-  // 		"settings": {
-  // 			"editor.formatOnSave": true,
-  // 			"[json]": {
-  // 				"editor.defaultFormatter": "biomejs.biome"
-  // 			},
-  // 			"[typescriptreact]": {
-  // 				"editor.defaultFormatter": "biomejs.biome"
-  // 			},
-  // 			"[typescript]": {
-  // 				"editor.defaultFormatter": "biomejs.biome"
-  // 			}
-  // 		}
-  // 	}
-  // 	// Uncomment to connect as an existing user other than the container default. More info: https://aka.ms/dev-containers-non-root.
-  // 	// "remoteUser": "devcontainer"
-  // }
+  "customizations": {
+    "codespaces": {
+      "openFiles": ["pages/index.js"]
+    },
+    "vscode": {
+      "extensions": ["biomejs.biome", "ms-vsliveshare.vsliveshare"],
+      "settings": {
+        "editor.formatOnSave": true,
+        "[json]": {
+          "editor.defaultFormatter": "biomejs.biome"
+        },
+        "[typescriptreact]": {
+          "editor.defaultFormatter": "biomejs.biome"
+        },
+        "[typescript]": {
+          "editor.defaultFormatter": "biomejs.biome"
+        }
+      }
+    }
+    // Uncomment to connect as an existing user other than the container default. More info: https://aka.ms/dev-containers-non-root.
+    // "remoteUser": "devcontainer"
+  }
 }
