@@ -10,7 +10,7 @@
   "service": "bun-dev",
   // The optional 'workspaceFolder' property is the path VS Code should open by default when
   // connected. This is typically a file mount in .devcontainer/docker-compose.yml
-  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "workspaceFolder": "/app",
   // Features to add to the dev container. More info: https://containers.dev/features.
   // "features": {},
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
@@ -42,10 +42,10 @@
         "[json]": {
           "editor.defaultFormatter": "biomejs.biome"
         },
-        "[typescriptreact]": {
+        "[typescript]": {
           "editor.defaultFormatter": "biomejs.biome"
         },
-        "[typescript]": {
+        "[typescriptreact]": {
           "editor.defaultFormatter": "biomejs.biome"
         }
       }

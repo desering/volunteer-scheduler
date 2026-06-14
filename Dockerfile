@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:1
+
 FROM oven/bun:1.3.13-alpine AS base
 
 # Patch OS-level vulnerabilities not yet fixed in the base image
