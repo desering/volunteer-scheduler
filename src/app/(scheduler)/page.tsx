@@ -1,6 +1,7 @@
 import { css } from "styled-system/css";
 import { AnnouncementBanner } from "@/components/announcement-banner";
 import { EventOverview } from "@/components/event-overview";
+import { PushNotificationManager } from "@/components/push-notification";
 
 export const dynamic = "force-dynamic";
 
@@ -14,6 +15,7 @@ export default async function Page() {
           marginTop: "4",
         })}
       />
+      <PushNotificationManager />
     </>
   );
 }
