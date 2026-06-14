@@ -1,6 +1,7 @@
 services:
   # Update this to the name of the service you want to work with in your docker-compose.yml file
   bun-dev:
+    ports:
     # Uncomment if you want to override the service's Dockerfile to one in the .devcontainer 
     # folder. Note that the path of the Dockerfile and context is relative to the *primary* 
     # docker-compose.yml file (the first in the devcontainer.json "dockerComposeFile"
@@ -14,9 +15,9 @@ services:
     # profiles:
     #  - bun
 
-    volumes:
+    # volumes:
       # Update this to wherever you want VS Code to mount the folder of your project
-      - .:/app:cached
+      # - .:/workspaces/${}:cached
 
     # Uncomment the next four lines if you will use a ptrace-based debugger like C++, Go, and Rust.
     # cap_add:
