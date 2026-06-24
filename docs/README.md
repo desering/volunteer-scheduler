@@ -23,50 +23,61 @@ and interfaces exposed by Payload.
 ## How to get started with development
 
 > [!IMPORTANT]
-> This guide is tested on macOS & Linux. If you run into steps that work
-> differently on Windows, please open a PR to improve it.
-
-### Prerequisites
-
-Install the following prerequisites:
-
-1. docker runtime, pick one:
-   * [Docker "Engine"](https://docs.docker.com/engine/)
-   * [Docker Desktop](https://docs.docker.com/desktop/)
-     * macOS tip: `brew install --cask rancher`
-   * [Rancher Desktop](https://rancherdesktop.io/)
-     * macOS tip: `brew install --cask docker-desktop`
-
-2. optionally, get the [Bun Javascript Runtime](https://bun.com/)
-   * macOS Homebrew: `brew tap oven-sh/bun; brew install bun`
-
-**Payload compatibility with the Bun Runtime**
-
-Payload only officially supports the Node.js runtime. However, the Payload
-CLI seems to work with Bun without issues when using the `--disable-transpile`
-option as documented in
-[using alternative runtimes with Payload](https://payloadcms.com/docs/local-api/outside-nextjs#option-2-use-an-alternative-runtime-like-bun).
-
-This is only relevant for the use of the `payload` cli during development and
-not for the build process. See
-[this issue](https://github.com/payloadcms/payload/issues/15015) for details.
+> This guide is tested on MacOS and Linux. If any one is using Windows and
+> encounters issues, please open an issue in the repository. 
 
 ### Run the project locally
+
+### DevContainer (recommended)
+
+The easiest way to get started with development is to use the provided
+[DevContainer](https://code.visualstudio.com/docs/devcontainers/containers):
+
+#### Prequisites
+
+1. Any IDE with DevContainer support (e.g., [Visual Studio Code](https://code.visualstudio.com/)) installed
+2. [Docker Desktop](https://docs.docker.com/desktop/) or [Rancher Desktop](https://rancherdesktop.io/)
+   running
+
+#### Setup
 
 1. Clone the repository:
    ```shell
    git clone git@github.com:desering/volunteer-scheduler.git
    ```
 
-2. Because of macOS, and its BSD `sed`:
+2. If using Visual Studio Code, make sure the [DevContainer extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+   is installed.
+
+3. Open the `volunteer-scheduler` project folder in Visual Studio Code.
+
+4. When prompted, reopen the project in the DevContainer.
+
+This will set up the development environment automatically, including all
+prerequisites, dependencies, and services.
+
+### Local Setup
+
+If you prefer to set up the development environment manually on your local
+machine without using a DevContainer, follow the instructions below.
+
+#### Prequisites
+
+1. [Docker Desktop](https://docs.docker.com/desktop/) or [Rancher Desktop](https://rancherdesktop.io/)
+   running
+2. [Bun Javascript Runtime](https://bun.com/) installed
+3. Only MacOs | [Node.js Javascript Runtime](https://nodejs.org/en/download) installed
+
+#### Setup
+
+1. Clone the repository:
    ```shell
-   source .github/scripts/functions.sh
+   git clone git@github.com:desering/volunteer-scheduler.git
    ```
 
-3. Create a `.env` file and generate a secret key for Payload:
+2. Create a `.env` file and generate a secret key for Payload:
    ```shell
-   cp .env.example .env
-   sedi -e "s/PAYLOAD_SECRET_PLACEHOLDER/$(openssl rand -hex 32)/g" .env
+   .github/scripts/assert-env.sh
    ```
 
 Then choose between:
@@ -76,12 +87,12 @@ Then choose between:
 
 ### _with docker only_
 
-4. Start development services (database, mail, bun):
+3. Start development services (database, mail, bun):
    ```shell
    docker compose --profile bun up
    ```
 
-5. If your dependencies change, rebuild the image:
+4. If your dependencies change, rebuild the image:
    ```shell
    docker compose --profile bun build
    ```
@@ -96,23 +107,17 @@ Then choose between:
 
 ### _using standalone `bun`_
 
-4. Replace docker container names with localhost
-   ```shell
-   sedi '/^SMTP_HOST=/s|maildev|localhost|' .env
-   sedi '/^DATABASE_URI=/s|@postgres:|@localhost:|' .env
-   ```
-
-5. Install all dependencies:
+3. Install all dependencies:
    ```shell
    bun install
    ```
 
-6. Start additional development services (database, mail):
+4. Start additional development services (database, mail):
    ```shell
    docker compose up
    ```
 
-7. Start the Next.js development server:
+5. Start the Next.js development server:
    ```shell
    bun --bun dev
    ```
