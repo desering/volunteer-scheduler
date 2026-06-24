@@ -10,7 +10,7 @@ jobs:
   biome:
     runs-on: [ ubuntu-24.04 ]
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version-file: ".bun-version"
@@ -20,7 +20,7 @@ jobs:
   types:
     runs-on: [ ubuntu-24.04 ]
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version-file: ".bun-version"
@@ -34,7 +34,7 @@ jobs:
     env:
       PAYLOAD_SECRET: dummy-for-generate-db-schema
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version-file: ".bun-version"
@@ -46,7 +46,7 @@ jobs:
   importmap:
     runs-on: [ ubuntu-24.04 ]
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version-file: ".bun-version"
@@ -60,7 +60,7 @@ jobs:
     env:
       PAYLOAD_SECRET: dummy-for-migrate-create
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version-file: ".bun-version"
@@ -74,7 +74,7 @@ jobs:
   test:
     runs-on: [ ubuntu-24.04 ]
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version-file: ".bun-version"
