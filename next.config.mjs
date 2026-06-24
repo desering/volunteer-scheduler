@@ -6,6 +6,7 @@ const nextConfig = {
   outputFileTracingIncludes: {
     "*": ["node_modules/jose/**"],
   },
+  serverExternalPackages: ["@datadog/pprof"],
 };
 
 export default withPayload(nextConfig);

@@ -3,29 +3,37 @@
 import config from "@payload-config";
 import { connection } from "next/server";
 import { getPayload } from "payload";
+import { withTrace } from "@/utils/otel";
 
-export const getMostRecentAnnouncement = async () => {
-  await connection(); // Disable caching for this function
+export const getMostRecentAnnouncement = withTrace(
+  "homepage.getMostRecentAnnouncement",
+  (span) => async () => {
+    await connection(); // Disable caching for this function
 
-  const payload = await getPayload({ config });
+    const payload = await getPayload({ config });
 
-  const result = await payload.find({
-    collection: "announcements",
-    limit: 1,
-    sort: "-updatedAt",
-  });
+    const result = await payload.find({
+      collection: "announcements",
+      limit: 1,
+      sort: "-updatedAt",
+    });
 
-  const announcement = result.docs[0];
+    const announcement = result.docs[0];
 
-  if (!announcement) {
-    return null;
-  }
+    span.setAttribute("announcement.found", Boolean(announcement));
+    span.setAttribute("announcement.result_count", result.docs.length);
 
-  // Return only serializable data to avoid React Server Component issues
-  return {
-    id: announcement.id,
-    title: announcement.title,
-    description: announcement.description,
-    status: announcement.status,
-  };
-};
+    if (!announcement) {
+      return null;
+    }
+
+    // Return only serializable data to avoid React Server Component issues
+    return {
+      id: announcement.id,
+      title: announcement.title,
+      description: announcement.description,
+      status: announcement.status,
+    };
+  },
+  { tracerName: "volunteer-scheduler.homepage" },
+);
