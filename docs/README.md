@@ -75,14 +75,9 @@ machine without using a DevContainer, follow the instructions below.
    git clone git@github.com:desering/volunteer-scheduler.git
    ```
 
-2. Because of macOS, and its BSD `sed`:
+2. Create a `.env` file and generate a secret key for Payload:
    ```shell
-   source .github/scripts/functions.sh
-   ```
-
-3. Create a `.env` file and generate a secret key for Payload:
-   ```shell
-   bun generate:env
+   .github/scripts/assert-env.sh
    ```
 
 Then choose between:
@@ -92,12 +87,12 @@ Then choose between:
 
 ### _with docker only_
 
-4. Start development services (database, mail, bun):
+3. Start development services (database, mail, bun):
    ```shell
    docker compose --profile bun up
    ```
 
-5. If your dependencies change, rebuild the image:
+4. If your dependencies change, rebuild the image:
    ```shell
    docker compose --profile bun build
    ```
@@ -112,23 +107,17 @@ Then choose between:
 
 ### _using standalone `bun`_
 
-4. Replace docker container names with localhost
-   ```shell
-   sedi '/^SMTP_HOST=/s|maildev|localhost|' .env
-   sedi '/^DATABASE_URI=/s|@postgres:|@localhost:|' .env
-   ```
-
-5. Install all dependencies:
+3. Install all dependencies:
    ```shell
    bun install
    ```
 
-6. Start additional development services (database, mail):
+4. Start additional development services (database, mail):
    ```shell
    docker compose up
    ```
 
-7. Start the Next.js development server:
+5. Start the Next.js development server:
    ```shell
    bun --bun dev
    ```

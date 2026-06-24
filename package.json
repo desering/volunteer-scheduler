@@ -14,7 +14,6 @@
     "payload": "cross-env PAYLOAD_CONFIG_PATH=src/payload.config.ts payload --disable-transpile",
     "start": "next start",
     "generate": "bun run --bun generate:importmap && bun run --bun generate:types && bun run --bun generate:panda",
-    "generate:env": "bun run ./scripts/generate-env.ts",
     "generate:panda": "panda codegen",
     "generate:importmap": "bun run --bun payload generate:importmap",
     "generate:types": "bun run --bun payload generate:types",

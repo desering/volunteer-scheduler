@@ -12,6 +12,7 @@ WORKDIR /app
 FROM base AS dev
 
 RUN apk add git # for "staged" biome commands
+RUN apk add openssl # for generating env secrets
 
 RUN chown -R bun .
 

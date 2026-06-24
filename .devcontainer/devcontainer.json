@@ -23,13 +23,12 @@
       "label": "scheduler UI"
     }
   },
-  "initializeCommand": ".github/scripts/assert-env.sh",
   // Uncomment the next line if you want start specific services in your Docker Compose config.
   "runServices": ["maildev", "postgres"],
   // Uncomment the next line if you want to keep your containers running after VS Code shuts down.
   "shutdownAction": "stopCompose",
   // Uncomment the next line to run commands after the container is created.
-  // "postCreateCommand": "cat /etc/os-release",
+  "postCreateCommand": ".github/scripts/assert-env.sh", // already runs in the container
   // Configure tool-specific properties.
   "customizations": {
     "codespaces": {
