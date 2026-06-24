@@ -10,23 +10,20 @@
   "service": "bun-dev",
   // The optional 'workspaceFolder' property is the path VS Code should open by default when
   // connected. This is typically a file mount in .devcontainer/docker-compose.yml
-  "workspaceFolder": "/app/",
-  "workspaceMount": "source=${localWorkspaceFolder},target=/app,type=bind"
+  "workspaceFolder": "/app",
   // Features to add to the dev container. More info: https://containers.dev/features.
   // "features": {},
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
-  // "forwardPorts": [
-  // ],
+  "forwardPorts": [3000, 1080],
   "portsAttributes": {
-    "bun-dev:3000": {
-      "label": "App UI",
-      "onAutoForward": "notify"
+    "1080": {
+      "label": "maildev UI"
     },
-    "maildev:1080": {
-      "label": "MailDev UI",
-      "onAutoForward": "openBrowser"
+    "3000": {
+      "label": "scheduler UI"
     }
   },
+  "initializeCommand": ".github/scripts/assert-env.sh",
   // Uncomment the next line if you want start specific services in your Docker Compose config.
   "runServices": ["maildev", "postgres"],
   // Uncomment the next line if you want to keep your containers running after VS Code shuts down.
