@@ -58,6 +58,10 @@ export const Events: CollectionConfig = {
                   timeFormat: "HH:mm",
                   displayFormat: "dd/MM/y HH:mm",
                 },
+                // change behaviour of end_date to default to startdate+1hr when start date is inited
+                components: {
+                  Field: "/components/admin/auto-end-date#AutoEndDate",
+                },
               },
               validate: (
                 val,
