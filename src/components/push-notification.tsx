@@ -1,34 +1,7 @@
-'use client'
-
-import { useState, useEffect } from "react"
+"use client";
 
 export function PushNotificationManager() {
-  const [isSupported, setIsSupported] = useState(false)
-  const [subscription, setSubscription] = useState<PushSubscription | null>(
-    null
-  )
-  const [message, setMessage] = useState('')
- 
-  useEffect(() => {
-    if ('serviceWorker' in navigator && 'PushManager' in window) {
-      setIsSupported(true)
-      registerServiceWorker()
-    }
-  })
-
-
-async function registerServiceWorker() {
-    const registration = await navigator.serviceWorker.register('/service-worker.js', {
-        scope: '/',
-        updateViaCache: 'none',
-    })
-    const sub = await registration.pushManager.getSubscription()
-    setSubscription(sub)
-    console.log("Service worker registered");
-    }
-
-return (
-    <> 
-    </>
-  )
+  // Where to put this? I want it to be asked when the user downloads the PWA
+  //Notification.requestPermission()
+  //registration.pushManager.subscribe()
 }
