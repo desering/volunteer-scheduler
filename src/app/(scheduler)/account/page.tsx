@@ -1,11 +1,9 @@
-import { BellDot } from "lucide-react";
 import { redirect } from "next/navigation";
 import { EditUserInfoButton } from "src/components/edit-user-info-button";
-import { Button } from "src/components/ui/button";
 import { Container, HStack, panda, VStack } from "styled-system/jsx";
 import { CalendarLinkSection } from "@/components/calendar-link-section";
 import { EditUserNotificationPreferences } from "@/components/edit-user-notifications-preference-button";
-import { registerPushNotification } from "@/components/push-notification";
+import { RegisterPushNotificationsButton } from "@/components/register-push-test-button";
 import { getUser } from "@/lib/services/get-user";
 import { getWebcalToken } from "@/lib/services/get-webcal-token";
 
@@ -44,9 +42,7 @@ export default async function Page() {
       <CalendarLinkSection token={webcalToken?.token ?? null} />
 
       <VStack marginTop="8" alignItems="start">
-        <Button variant="outline" onClick={registerPushNotification}>
-          <BellDot /> Register push notifications{" "}
-        </Button>
+        <RegisterPushNotificationsButton />
       </VStack>
     </Container>
   );
