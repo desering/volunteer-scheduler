@@ -3,7 +3,7 @@
 import { utc } from "@date-fns/utc";
 import { RichText } from "@payloadcms/richtext-lexical/react";
 import { useQuery } from "@tanstack/react-query";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import {
   addMonths,
   eachDayOfInterval,
@@ -37,7 +37,6 @@ export const EventOverviewClient = ({
   placeholder: initialEvents,
   ...cssProps
 }: Props & BoxProps) => {
-  const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -51,11 +50,21 @@ export const EventOverviewClient = ({
 
   const [selectedDate, setSelectedDate] = useState(getInitialDate());
 
-  const [selectedEventId, setSelectedEventId] = useState<number>();
+  function getInitialEventId(): number | undefined {
+    const value = searchParams.get("eventId");
+    if (!value) return undefined;
+
+    const parsed = Number.parseInt(value, 10);
+    return Number.isNaN(parsed) ? undefined : parsed;
+  }
+
+  const [selectedEventId, setSelectedEventId] = useState<number | undefined>(
+    getInitialEventId(),
+  );
   const [selectedFilters, setSelectedFilters] = useState<Filter[]>([]);
 
   // separation of selectedEvent and isDrawerOpen, otherwise breaks exitAnim
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(selectedEventId !== undefined);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: reset selected tags on date change
   useEffect(() => {}, [selectedDate]);
@@ -131,11 +140,22 @@ export const EventOverviewClient = ({
     return `Something went wrong, please try again later. ${error.message}`;
   }
 
+  function updateUrlParams(mutate: (params: URLSearchParams) => void) {
+    const params = new URLSearchParams(window.location.search);
+    mutate(params);
+    const query = params.toString();
+    window.history.pushState(null, "", query ? `${pathname}?${query}` : pathname);
+  }
+
   function handleDateSelect(date: Date) {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("date", format(date, "yyyy-MM-dd"));
-    router.push(`${pathname}?${params.toString()}`);
+    updateUrlParams((params) => params.set("date", format(date, "yyyy-MM-dd")));
     setSelectedDate(date);
+  }
+
+  function handleEventSelect(eventId: number) {
+    updateUrlParams((params) => params.set("eventId", eventId.toString()));
+    setSelectedEventId(eventId);
+    setIsDrawerOpen(true);
   }
 
   return (
@@ -149,7 +169,7 @@ export const EventOverviewClient = ({
       <DateSelect
         selectedDate={selectedDate}
         items={completeDateRange}
-        onDateSelect={(date) => {handleDateSelect(date)}}
+        onDateSelect={handleDateSelect}
       />
       <Container>
         <Grid gap="4">
@@ -164,8 +184,7 @@ export const EventOverviewClient = ({
               <EventButton.Root
                 key={event.id}
                 onClick={() => {
-                  setIsDrawerOpen(true);
-                  setSelectedEventId(event.id);
+                  handleEventSelect(event.id);
                 }}
               >
                 <EventButton.Time
@@ -214,6 +233,7 @@ export const EventOverviewClient = ({
         eventId={selectedEventId}
         onClose={() => {
           setIsDrawerOpen(false);
+          updateUrlParams((params) => params.delete("eventId"));
           refetch();
         }}
         onExitComplete={() => setSelectedEventId(undefined)}
