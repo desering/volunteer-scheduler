@@ -3,10 +3,14 @@
 import { utc } from "@date-fns/utc";
 import { RichText } from "@payloadcms/richtext-lexical/react";
 import { useQuery } from "@tanstack/react-query";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import {
   addMonths,
   eachDayOfInterval,
+  format,
   isSameDay,
+  isValid,
+  parse,
   startOfDay,
   subMonths,
 } from "date-fns";
@@ -33,7 +37,20 @@ export const EventOverviewClient = ({
   placeholder: initialEvents,
   ...cssProps
 }: Props & BoxProps) => {
-  const [selectedDate, setSelectedDate] = useState(startOfDay(new Date()));
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  function getInitialDate(): Date {
+    const value = searchParams.get("date");
+    if (!value) return startOfDay(new Date());
+
+    const parsed = parse(value, "yyyy-MM-dd", new Date());
+    return isValid(parsed) ? parsed : startOfDay(new Date());
+  }
+
+  const [selectedDate, setSelectedDate] = useState(getInitialDate());
+
   const [selectedEventId, setSelectedEventId] = useState<number>();
   const [selectedFilters, setSelectedFilters] = useState<Filter[]>([]);
 
@@ -114,6 +131,13 @@ export const EventOverviewClient = ({
     return `Something went wrong, please try again later. ${error.message}`;
   }
 
+  function handleDateSelect(date: Date) {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("date", format(date, "yyyy-MM-dd"));
+    router.push(`${pathname}?${params.toString()}`);
+    setSelectedDate(date);
+  }
+
   return (
     <Box {...(cssProps as BoxProps)}>
       <Container gap="4">
@@ -125,7 +149,7 @@ export const EventOverviewClient = ({
       <DateSelect
         selectedDate={selectedDate}
         items={completeDateRange}
-        onDateSelect={setSelectedDate}
+        onDateSelect={(date) => {handleDateSelect(date)}}
       />
       <Container>
         <Grid gap="4">
