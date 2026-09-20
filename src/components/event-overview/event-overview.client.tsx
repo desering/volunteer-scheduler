@@ -3,7 +3,6 @@
 import { utc } from "@date-fns/utc";
 import { RichText } from "@payloadcms/richtext-lexical/react";
 import { useQuery } from "@tanstack/react-query";
-import { usePathname, useSearchParams } from "next/navigation";
 import {
   addMonths,
   eachDayOfInterval,
@@ -14,6 +13,7 @@ import {
   startOfDay,
   subMonths,
 } from "date-fns";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { css } from "styled-system/css";
 import { Box, type BoxProps, Container, Grid } from "styled-system/jsx";
@@ -64,7 +64,9 @@ export const EventOverviewClient = ({
   const [selectedFilters, setSelectedFilters] = useState<Filter[]>([]);
 
   // separation of selectedEvent and isDrawerOpen, otherwise breaks exitAnim
-  const [isDrawerOpen, setIsDrawerOpen] = useState(selectedEventId !== undefined);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(
+    selectedEventId !== undefined,
+  );
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: reset selected tags on date change
   useEffect(() => {}, [selectedDate]);
@@ -144,7 +146,11 @@ export const EventOverviewClient = ({
     const params = new URLSearchParams(window.location.search);
     mutate(params);
     const query = params.toString();
-    window.history.pushState(null, "", query ? `${pathname}?${query}` : pathname);
+    window.history.pushState(
+      null,
+      "",
+      query ? `${pathname}?${query}` : pathname,
+    );
   }
 
   function handleDateSelect(date: Date) {
