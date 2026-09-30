@@ -37,19 +37,9 @@ export const EventOverviewClient = ({
   placeholder: initialEvents,
   ...cssProps
 }: Props & BoxProps) => {
-  const router = useRouter();
   const pathname = usePathname();
+  const router = useRouter();
   const searchParams = useSearchParams();
-
-  const setParam = useCallback(
-    (key: string, value: string | null) => {
-      const params = new URLSearchParams(searchParams);
-      if (value === null) params.delete(key);
-      else params.set(key, value);
-      router.push(`${pathname}?${params}`, { scroll: false });
-    },
-    [searchParams, pathname, router],
-  );
 
   const [selectedDate, setSelectedDate] = useState(getInitialDate());
   const [selectedEventId, setSelectedEventId] = useState<number | undefined>(
@@ -61,9 +51,6 @@ export const EventOverviewClient = ({
   const [isDrawerOpen, setIsDrawerOpen] = useState(
     selectedEventId !== undefined,
   );
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: reset selected tags on date change
-  useEffect(() => {}, [selectedDate]);
 
   const start = startOfDay(new Date()); // add some disabled buttons
   const earliestShownDate = subMonths(start, 1);
@@ -124,6 +111,19 @@ export const EventOverviewClient = ({
 
     return eventsByDate;
   }, [events, selectedDate]);
+
+  const setParam = useCallback(
+    (key: string, value: string | null) => {
+      const params = new URLSearchParams(searchParams);
+      if (value === null) params.delete(key);
+      else params.set(key, value);
+      router.push(`${pathname}?${params}`, { scroll: false });
+    },
+    [searchParams, pathname, router],
+  );
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: reset selected tags on date change
+  useEffect(() => {}, [selectedDate]);
 
   const descriptionDetailCss = css({
     "& a": {
