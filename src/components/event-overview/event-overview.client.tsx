@@ -13,8 +13,8 @@ import {
   startOfDay,
   subMonths,
 } from "date-fns";
-import { usePathname, useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { css } from "styled-system/css";
 import { Box, type BoxProps, Container, Grid } from "styled-system/jsx";
 import { EventButton } from "@/components/event-button";
@@ -37,27 +37,21 @@ export const EventOverviewClient = ({
   placeholder: initialEvents,
   ...cssProps
 }: Props & BoxProps) => {
+  const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  function getInitialDate(): Date {
-    const value = searchParams.get("date");
-    if (!value) return startOfDay(new Date());
-
-    const parsed = parse(value, "yyyy-MM-dd", new Date());
-    return isValid(parsed) ? parsed : startOfDay(new Date());
-  }
+  const setParam = useCallback(
+    (key: string, value: string | null) => {
+      const params = new URLSearchParams(searchParams);
+      if (value === null) params.delete(key);
+      else params.set(key, value);
+      router.push(`${pathname}?${params}`, { scroll: false });
+    },
+    [searchParams, pathname, router],
+  );
 
   const [selectedDate, setSelectedDate] = useState(getInitialDate());
-
-  function getInitialEventId(): number | undefined {
-    const value = searchParams.get("eventId");
-    if (!value) return undefined;
-
-    const parsed = Number.parseInt(value, 10);
-    return Number.isNaN(parsed) ? undefined : parsed;
-  }
-
   const [selectedEventId, setSelectedEventId] = useState<number | undefined>(
     getInitialEventId(),
   );
@@ -142,24 +136,29 @@ export const EventOverviewClient = ({
     return `Something went wrong, please try again later. ${error.message}`;
   }
 
-  function updateUrlParams(mutate: (params: URLSearchParams) => void) {
-    const params = new URLSearchParams(window.location.search);
-    mutate(params);
-    const query = params.toString();
-    window.history.pushState(
-      null,
-      "",
-      query ? `${pathname}?${query}` : pathname,
-    );
+  function getInitialDate(): Date {
+    const value = searchParams.get("date");
+    if (!value) return startOfDay(new Date());
+
+    const parsed = parse(value, "yyyy-MM-dd", new Date());
+    return isValid(parsed) ? parsed : startOfDay(new Date());
+  }
+
+  function getInitialEventId(): number | undefined {
+    const value = searchParams.get("eventId");
+    if (!value) return undefined;
+
+    const parsed = Number.parseInt(value, 10);
+    return Number.isNaN(parsed) ? undefined : parsed;
   }
 
   function handleDateSelect(date: Date) {
-    updateUrlParams((params) => params.set("date", format(date, "yyyy-MM-dd")));
+    setParam("date", format(date, "yyyy-MM-dd"));
     setSelectedDate(date);
   }
 
   function handleEventSelect(eventId: number) {
-    updateUrlParams((params) => params.set("eventId", eventId.toString()));
+    setParam("eventId", eventId.toString());
     setSelectedEventId(eventId);
     setIsDrawerOpen(true);
   }
@@ -239,7 +238,7 @@ export const EventOverviewClient = ({
         eventId={selectedEventId}
         onClose={() => {
           setIsDrawerOpen(false);
-          updateUrlParams((params) => params.delete("eventId"));
+          setParam("eventId", null);
           refetch();
         }}
         onExitComplete={() => setSelectedEventId(undefined)}
