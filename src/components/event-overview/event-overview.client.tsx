@@ -6,11 +6,15 @@ import { useQuery } from "@tanstack/react-query";
 import {
   addMonths,
   eachDayOfInterval,
+  format,
   isSameDay,
+  isValid,
+  parse,
   startOfDay,
   subMonths,
 } from "date-fns";
-import { useEffect, useMemo, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { css } from "styled-system/css";
 import { Box, type BoxProps, Container, Grid } from "styled-system/jsx";
 import { EventButton } from "@/components/event-button";
@@ -33,15 +37,20 @@ export const EventOverviewClient = ({
   placeholder: initialEvents,
   ...cssProps
 }: Props & BoxProps) => {
-  const [selectedDate, setSelectedDate] = useState(startOfDay(new Date()));
-  const [selectedEventId, setSelectedEventId] = useState<number>();
+  const pathname = usePathname();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const [selectedDate, setSelectedDate] = useState(getInitialDate());
+  const [selectedEventId, setSelectedEventId] = useState<number | undefined>(
+    getInitialEventId(),
+  );
   const [selectedFilters, setSelectedFilters] = useState<Filter[]>([]);
 
   // separation of selectedEvent and isDrawerOpen, otherwise breaks exitAnim
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: reset selected tags on date change
-  useEffect(() => {}, [selectedDate]);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(
+    selectedEventId !== undefined,
+  );
 
   const start = startOfDay(new Date()); // add some disabled buttons
   const earliestShownDate = subMonths(start, 1);
@@ -103,6 +112,19 @@ export const EventOverviewClient = ({
     return eventsByDate;
   }, [events, selectedDate]);
 
+  const setParam = useCallback(
+    (key: string, value: string | null) => {
+      const params = new URLSearchParams(searchParams);
+      if (value === null) params.delete(key);
+      else params.set(key, value);
+      router.push(`${pathname}?${params}`, { scroll: false });
+    },
+    [searchParams, pathname, router],
+  );
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: reset selected tags on date change
+  useEffect(() => {}, [selectedDate]);
+
   const descriptionDetailCss = css({
     "& a": {
       textDecoration: "underline",
@@ -112,6 +134,33 @@ export const EventOverviewClient = ({
 
   if (error) {
     return `Something went wrong, please try again later. ${error.message}`;
+  }
+
+  function getInitialDate(): Date {
+    const value = searchParams.get("date");
+    if (!value) return startOfDay(new Date());
+
+    const parsed = parse(value, "yyyy-MM-dd", new Date());
+    return isValid(parsed) ? parsed : startOfDay(new Date());
+  }
+
+  function getInitialEventId(): number | undefined {
+    const value = searchParams.get("eventId");
+    if (!value) return undefined;
+
+    const parsed = Number.parseInt(value, 10);
+    return Number.isNaN(parsed) ? undefined : parsed;
+  }
+
+  function handleDateSelect(date: Date) {
+    setParam("date", format(date, "yyyy-MM-dd"));
+    setSelectedDate(date);
+  }
+
+  function handleEventSelect(eventId: number) {
+    setParam("eventId", eventId.toString());
+    setSelectedEventId(eventId);
+    setIsDrawerOpen(true);
   }
 
   return (
@@ -125,7 +174,7 @@ export const EventOverviewClient = ({
       <DateSelect
         selectedDate={selectedDate}
         items={completeDateRange}
-        onDateSelect={setSelectedDate}
+        onDateSelect={handleDateSelect}
       />
       <Container>
         <Grid gap="4">
@@ -140,8 +189,7 @@ export const EventOverviewClient = ({
               <EventButton.Root
                 key={event.id}
                 onClick={() => {
-                  setIsDrawerOpen(true);
-                  setSelectedEventId(event.id);
+                  handleEventSelect(event.id);
                 }}
               >
                 <EventButton.Time
@@ -190,6 +238,7 @@ export const EventOverviewClient = ({
         eventId={selectedEventId}
         onClose={() => {
           setIsDrawerOpen(false);
+          setParam("eventId", null);
           refetch();
         }}
         onExitComplete={() => setSelectedEventId(undefined)}
