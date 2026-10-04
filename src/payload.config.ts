@@ -98,6 +98,7 @@ export default buildConfig({
   serverURL: process.env.SERVER_URL,
   cors: [process.env.SERVER_URL ?? ""].filter(Boolean),
   csrf: [process.env.SERVER_URL ?? ""].filter(Boolean),
+  graphQL: { disable: true },
 
   collections: [
     Announcements,
