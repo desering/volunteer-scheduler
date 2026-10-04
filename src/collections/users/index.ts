@@ -2,7 +2,7 @@ import { render } from "@react-email/render";
 import type { CollectionConfig } from "payload";
 import { ResetPasswordEmail } from "@/email/templates/reset-password";
 import { preferredName } from "@/lib/schemas/preferred-name";
-import { admins } from "../access/admins";
+import { adminFieldLevel, admins } from "../access/admins";
 import { anyone } from "../access/anyone";
 import { adminAndThemselves } from "./access/admin-and-themselves";
 
@@ -64,6 +64,11 @@ export const Users: CollectionConfig = {
     {
       name: "roles",
       type: "select",
+      access: {
+        create: adminFieldLevel,
+        update: adminFieldLevel,
+      },
+      defaultValue: "volunteer",
       options: ["admin", "editor", "volunteer"],
     },
   ],

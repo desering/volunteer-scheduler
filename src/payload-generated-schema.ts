@@ -609,7 +609,7 @@ export const users = pgTable(
     id: serial("id").primaryKey(),
     preferredName: varchar("preferred_name").notNull(),
     phoneNumber: varchar("phone_number"),
-    roles: enum_users_roles("roles"),
+    roles: enum_users_roles("roles").default("volunteer"),
     updatedAt: timestamp("updated_at", {
       mode: "string",
       withTimezone: true,
