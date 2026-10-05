@@ -65,7 +65,7 @@
     "@pandacss/dev": "1.12.0",
     "@pandacss/preset-base": "1.12.0",
     "@park-ui/panda-preset": "0.43.1",
-    "@types/bun": "1.4.0",
+    "@types/bun": "1.4.2",
     "@types/node": "25.9.5",
     "@types/nodemailer": "7.0.12",
     "@types/react": "19.2.18",
