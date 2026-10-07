@@ -33,14 +33,60 @@ export const enum_event_templates_start_time_tz = pgEnum(
   "enum_event_templates_start_time_tz",
   ["Europe/Amsterdam"],
 );
+export const enum_signups_attendance = pgEnum("enum_signups_attendance", [
+  "attended",
+  "no-show",
+]);
+export const enum_users_regular_override = pgEnum(
+  "enum_users_regular_override",
+  ["auto", "always", "never"],
+);
 export const enum_users_roles = pgEnum("enum_users_roles", [
   "admin",
   "editor",
   "volunteer",
 ]);
+export const enum_skill_awards_source = pgEnum("enum_skill_awards_source", [
+  "training",
+  "coordinator",
+]);
+export const enum_messages_audience_regulars = pgEnum(
+  "enum_messages_audience_regulars",
+  ["any", "only", "exclude"],
+);
+export const enum_messages_audience_did_shift_weekday = pgEnum(
+  "enum_messages_audience_did_shift_weekday",
+  [
+    "sunday",
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+  ],
+);
+export const enum_messages_status = pgEnum("enum_messages_status", [
+  "draft",
+  "sending",
+  "sent",
+]);
+export const enum_message_deliveries_kind = pgEnum(
+  "enum_message_deliveries_kind",
+  ["message", "after-shift"],
+);
+export const enum_message_deliveries_status = pgEnum(
+  "enum_message_deliveries_status",
+  ["sent", "failed"],
+);
 export const enum_payload_jobs_log_task_slug = pgEnum(
   "enum_payload_jobs_log_task_slug",
-  ["inline", "send-event-signup-confirmation-email"],
+  [
+    "inline",
+    "send-event-signup-confirmation-email",
+    "process-ended-shifts",
+    "send-volunteer-message",
+  ],
 );
 export const enum_payload_jobs_log_state = pgEnum(
   "enum_payload_jobs_log_state",
@@ -48,7 +94,12 @@ export const enum_payload_jobs_log_state = pgEnum(
 );
 export const enum_payload_jobs_task_slug = pgEnum(
   "enum_payload_jobs_task_slug",
-  ["inline", "send-event-signup-confirmation-email"],
+  [
+    "inline",
+    "send-event-signup-confirmation-email",
+    "process-ended-shifts",
+    "send-volunteer-message",
+  ],
 );
 
 export const announcements = pgTable(
@@ -276,6 +327,7 @@ export const event_templates_rels = pgTable(
     path: varchar("path").notNull(),
     tagsID: integer("tags_id"),
     locationsID: integer("locations_id"),
+    skillsID: integer("skills_id"),
   },
   (columns) => [
     index("event_templates_rels_order_idx").on(columns.order),
@@ -283,6 +335,7 @@ export const event_templates_rels = pgTable(
     index("event_templates_rels_path_idx").on(columns.path),
     index("event_templates_rels_tags_id_idx").on(columns.tagsID),
     index("event_templates_rels_locations_id_idx").on(columns.locationsID),
+    index("event_templates_rels_skills_id_idx").on(columns.skillsID),
     foreignKey({
       columns: [columns["parent"]],
       foreignColumns: [event_templates.id],
@@ -297,6 +350,11 @@ export const event_templates_rels = pgTable(
       columns: [columns["locationsID"]],
       foreignColumns: [locations.id],
       name: "event_templates_rels_locations_fk",
+    }).onDelete("cascade"),
+    foreignKey({
+      columns: [columns["skillsID"]],
+      foreignColumns: [skills.id],
+      name: "event_templates_rels_skills_fk",
     }).onDelete("cascade"),
   ],
 );
@@ -346,6 +404,7 @@ export const events_rels = pgTable(
     parent: integer("parent_id").notNull(),
     path: varchar("path").notNull(),
     tagsID: integer("tags_id"),
+    skillsID: integer("skills_id"),
     locationsID: integer("locations_id"),
   },
   (columns) => [
@@ -353,6 +412,7 @@ export const events_rels = pgTable(
     index("events_rels_parent_idx").on(columns.parent),
     index("events_rels_path_idx").on(columns.path),
     index("events_rels_tags_id_idx").on(columns.tagsID),
+    index("events_rels_skills_id_idx").on(columns.skillsID),
     index("events_rels_locations_id_idx").on(columns.locationsID),
     foreignKey({
       columns: [columns["parent"]],
@@ -363,6 +423,11 @@ export const events_rels = pgTable(
       columns: [columns["tagsID"]],
       foreignColumns: [tags.id],
       name: "events_rels_tags_fk",
+    }).onDelete("cascade"),
+    foreignKey({
+      columns: [columns["skillsID"]],
+      foreignColumns: [skills.id],
+      name: "events_rels_skills_fk",
     }).onDelete("cascade"),
     foreignKey({
       columns: [columns["locationsID"]],
@@ -485,6 +550,12 @@ export const signups = pgTable(
       .references(() => users.id, {
         onDelete: "set null",
       }),
+    attendance: enum_signups_attendance("attendance"),
+    afterShiftProcessedAt: timestamp("after_shift_processed_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    }),
     title: varchar("title"),
     updatedAt: timestamp("updated_at", {
       mode: "string",
@@ -609,6 +680,8 @@ export const users = pgTable(
     id: serial("id").primaryKey(),
     preferredName: varchar("preferred_name").notNull(),
     phoneNumber: varchar("phone_number"),
+    regularOverride:
+      enum_users_regular_override("regular_override").default("auto"),
     roles: enum_users_roles("roles").default("volunteer"),
     updatedAt: timestamp("updated_at", {
       mode: "string",
@@ -638,6 +711,291 @@ export const users = pgTable(
     index("users_updated_at_idx").on(columns.updatedAt),
     index("users_created_at_idx").on(columns.createdAt),
     uniqueIndex("users_email_idx").on(columns.email),
+  ],
+);
+
+export const skills = pgTable(
+  "skills",
+  {
+    id: serial("id").primaryKey(),
+    badge: varchar("badge").notNull().default("⭐"),
+    title: varchar("title").notNull(),
+    description: jsonb("description"),
+    inviteAfterShifts: numeric("invite_after_shifts", { mode: "number" })
+      .notNull()
+      .default(0),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index("skills_updated_at_idx").on(columns.updatedAt),
+    index("skills_created_at_idx").on(columns.createdAt),
+  ],
+);
+
+export const skills_rels = pgTable(
+  "skills_rels",
+  {
+    id: serial("id").primaryKey(),
+    order: integer("order"),
+    parent: integer("parent_id").notNull(),
+    path: varchar("path").notNull(),
+    skillsID: integer("skills_id"),
+  },
+  (columns) => [
+    index("skills_rels_order_idx").on(columns.order),
+    index("skills_rels_parent_idx").on(columns.parent),
+    index("skills_rels_path_idx").on(columns.path),
+    index("skills_rels_skills_id_idx").on(columns.skillsID),
+    foreignKey({
+      columns: [columns["parent"]],
+      foreignColumns: [skills.id],
+      name: "skills_rels_parent_fk",
+    }).onDelete("cascade"),
+    foreignKey({
+      columns: [columns["skillsID"]],
+      foreignColumns: [skills.id],
+      name: "skills_rels_skills_fk",
+    }).onDelete("cascade"),
+  ],
+);
+
+export const skill_awards = pgTable(
+  "skill_awards",
+  {
+    id: serial("id").primaryKey(),
+    user: integer("user_id")
+      .notNull()
+      .references(() => users.id, {
+        onDelete: "set null",
+      }),
+    skill: integer("skill_id")
+      .notNull()
+      .references(() => skills.id, {
+        onDelete: "set null",
+      }),
+    source: enum_skill_awards_source("source").notNull().default("coordinator"),
+    event: integer("event_id").references(() => events.id, {
+      onDelete: "set null",
+    }),
+    awardedAt: timestamp("awarded_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    }).notNull(),
+    awardedBy: integer("awarded_by_id").references(() => users.id, {
+      onDelete: "set null",
+    }),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index("skill_awards_user_idx").on(columns.user),
+    index("skill_awards_skill_idx").on(columns.skill),
+    index("skill_awards_event_idx").on(columns.event),
+    index("skill_awards_awarded_by_idx").on(columns.awardedBy),
+    index("skill_awards_updated_at_idx").on(columns.updatedAt),
+    index("skill_awards_created_at_idx").on(columns.createdAt),
+    uniqueIndex("user_skill_idx").on(columns.user, columns.skill),
+  ],
+);
+
+export const messages = pgTable(
+  "messages",
+  {
+    id: serial("id").primaryKey(),
+    subject: varchar("subject").notNull(),
+    body: varchar("body").notNull(),
+    audience_minShifts: numeric("audience_min_shifts", { mode: "number" }),
+    audience_maxShifts: numeric("audience_max_shifts", { mode: "number" }),
+    audience_activeWithinDays: numeric("audience_active_within_days", {
+      mode: "number",
+    }),
+    audience_inactiveForDays: numeric("audience_inactive_for_days", {
+      mode: "number",
+    }),
+    audience_regulars:
+      enum_messages_audience_regulars("audience_regulars").default("any"),
+    audience_didShift_roleContains: varchar("audience_did_shift_role_contains"),
+    audience_didShift_weekday: enum_messages_audience_did_shift_weekday(
+      "audience_did_shift_weekday",
+    ),
+    audience_didShift_withinDays: numeric("audience_did_shift_within_days", {
+      mode: "number",
+    }),
+    status: enum_messages_status("status").notNull().default("draft"),
+    sentAt: timestamp("sent_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    }),
+    sentBy: integer("sent_by_id").references(() => users.id, {
+      onDelete: "set null",
+    }),
+    recipientCount: numeric("recipient_count", { mode: "number" }),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index("messages_sent_by_idx").on(columns.sentBy),
+    index("messages_updated_at_idx").on(columns.updatedAt),
+    index("messages_created_at_idx").on(columns.createdAt),
+  ],
+);
+
+export const messages_rels = pgTable(
+  "messages_rels",
+  {
+    id: serial("id").primaryKey(),
+    order: integer("order"),
+    parent: integer("parent_id").notNull(),
+    path: varchar("path").notNull(),
+    skillsID: integer("skills_id"),
+    tagsID: integer("tags_id"),
+  },
+  (columns) => [
+    index("messages_rels_order_idx").on(columns.order),
+    index("messages_rels_parent_idx").on(columns.parent),
+    index("messages_rels_path_idx").on(columns.path),
+    index("messages_rels_skills_id_idx").on(columns.skillsID),
+    index("messages_rels_tags_id_idx").on(columns.tagsID),
+    foreignKey({
+      columns: [columns["parent"]],
+      foreignColumns: [messages.id],
+      name: "messages_rels_parent_fk",
+    }).onDelete("cascade"),
+    foreignKey({
+      columns: [columns["skillsID"]],
+      foreignColumns: [skills.id],
+      name: "messages_rels_skills_fk",
+    }).onDelete("cascade"),
+    foreignKey({
+      columns: [columns["tagsID"]],
+      foreignColumns: [tags.id],
+      name: "messages_rels_tags_fk",
+    }).onDelete("cascade"),
+  ],
+);
+
+export const message_deliveries = pgTable(
+  "message_deliveries",
+  {
+    id: serial("id").primaryKey(),
+    user: integer("user_id")
+      .notNull()
+      .references(() => users.id, {
+        onDelete: "set null",
+      }),
+    kind: enum_message_deliveries_kind("kind").notNull(),
+    message: integer("message_id").references(() => messages.id, {
+      onDelete: "set null",
+    }),
+    signup: integer("signup_id").references(() => signups.id, {
+      onDelete: "set null",
+    }),
+    subject: varchar("subject").notNull(),
+    status: enum_message_deliveries_status("status").notNull(),
+    error: varchar("error"),
+    sentAt: timestamp("sent_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    }).notNull(),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index("message_deliveries_user_idx").on(columns.user),
+    index("message_deliveries_message_idx").on(columns.message),
+    index("message_deliveries_signup_idx").on(columns.signup),
+    index("message_deliveries_updated_at_idx").on(columns.updatedAt),
+    index("message_deliveries_created_at_idx").on(columns.createdAt),
+    uniqueIndex("message_user_idx").on(columns.message, columns.user),
+  ],
+);
+
+export const regular_card_views = pgTable(
+  "regular_card_views",
+  {
+    id: serial("id").primaryKey(),
+    user: integer("user_id")
+      .notNull()
+      .references(() => users.id, {
+        onDelete: "set null",
+      }),
+    viewedAt: timestamp("viewed_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    }).notNull(),
+    updatedAt: timestamp("updated_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+    createdAt: timestamp("created_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  (columns) => [
+    index("regular_card_views_user_idx").on(columns.user),
+    index("regular_card_views_viewed_at_idx").on(columns.viewedAt),
+    index("regular_card_views_updated_at_idx").on(columns.updatedAt),
+    index("regular_card_views_created_at_idx").on(columns.createdAt),
   ],
 );
 
@@ -696,6 +1054,7 @@ export const payload_jobs = pgTable(
       precision: 3,
     }),
     processing: boolean("processing").default(false),
+    meta: jsonb("meta"),
     updatedAt: timestamp("updated_at", {
       mode: "string",
       withTimezone: true,
@@ -767,6 +1126,9 @@ export const payload_locked_documents_rels = pgTable(
     signupsID: integer("signups_id"),
     tagsID: integer("tags_id"),
     usersID: integer("users_id"),
+    skillsID: integer("skills_id"),
+    "skill-awardsID": integer("skill_awards_id"),
+    messagesID: integer("messages_id"),
   },
   (columns) => [
     index("payload_locked_documents_rels_order_idx").on(columns.order),
@@ -789,6 +1151,13 @@ export const payload_locked_documents_rels = pgTable(
     index("payload_locked_documents_rels_signups_id_idx").on(columns.signupsID),
     index("payload_locked_documents_rels_tags_id_idx").on(columns.tagsID),
     index("payload_locked_documents_rels_users_id_idx").on(columns.usersID),
+    index("payload_locked_documents_rels_skills_id_idx").on(columns.skillsID),
+    index("payload_locked_documents_rels_skill_awards_id_idx").on(
+      columns["skill-awardsID"],
+    ),
+    index("payload_locked_documents_rels_messages_id_idx").on(
+      columns.messagesID,
+    ),
     foreignKey({
       columns: [columns["parent"]],
       foreignColumns: [payload_locked_documents.id],
@@ -838,6 +1207,21 @@ export const payload_locked_documents_rels = pgTable(
       columns: [columns["usersID"]],
       foreignColumns: [users.id],
       name: "payload_locked_documents_rels_users_fk",
+    }).onDelete("cascade"),
+    foreignKey({
+      columns: [columns["skillsID"]],
+      foreignColumns: [skills.id],
+      name: "payload_locked_documents_rels_skills_fk",
+    }).onDelete("cascade"),
+    foreignKey({
+      columns: [columns["skill-awardsID"]],
+      foreignColumns: [skill_awards.id],
+      name: "payload_locked_documents_rels_skill_awards_fk",
+    }).onDelete("cascade"),
+    foreignKey({
+      columns: [columns["messagesID"]],
+      foreignColumns: [messages.id],
+      name: "payload_locked_documents_rels_messages_fk",
     }).onDelete("cascade"),
   ],
 );
@@ -923,6 +1307,94 @@ export const payload_migrations = pgTable(
     index("payload_migrations_created_at_idx").on(columns.createdAt),
   ],
 );
+
+export const volunteer_settings_perks = pgTable(
+  "volunteer_settings_perks",
+  {
+    _order: integer("_order").notNull(),
+    _parentID: integer("_parent_id").notNull(),
+    id: varchar("id").primaryKey(),
+    text: varchar("text").notNull(),
+  },
+  (columns) => [
+    index("volunteer_settings_perks_order_idx").on(columns._order),
+    index("volunteer_settings_perks_parent_id_idx").on(columns._parentID),
+    foreignKey({
+      columns: [columns["_parentID"]],
+      foreignColumns: [volunteer_settings.id],
+      name: "volunteer_settings_perks_parent_id_fk",
+    }).onDelete("cascade"),
+  ],
+);
+
+export const volunteer_settings_milestones = pgTable(
+  "volunteer_settings_milestones",
+  {
+    _order: integer("_order").notNull(),
+    _parentID: integer("_parent_id").notNull(),
+    id: varchar("id").primaryKey(),
+    shifts: numeric("shifts", { mode: "number" }).notNull(),
+    label: varchar("label").notNull(),
+    badge: varchar("badge").notNull(),
+  },
+  (columns) => [
+    index("volunteer_settings_milestones_order_idx").on(columns._order),
+    index("volunteer_settings_milestones_parent_id_idx").on(columns._parentID),
+    foreignKey({
+      columns: [columns["_parentID"]],
+      foreignColumns: [volunteer_settings.id],
+      name: "volunteer_settings_milestones_parent_id_fk",
+    }).onDelete("cascade"),
+  ],
+);
+
+export const volunteer_settings = pgTable("volunteer_settings", {
+  id: serial("id").primaryKey(),
+  regularMinShifts: numeric("regular_min_shifts", { mode: "number" })
+    .notNull()
+    .default(4),
+  regularWindowDays: numeric("regular_window_days", { mode: "number" })
+    .notNull()
+    .default(60),
+  cardNote: varchar("card_note").default("Show this screen at the bar."),
+  afterShiftEmails: boolean("after_shift_emails").default(false),
+  afterShiftDelayHours: numeric("after_shift_delay_hours", { mode: "number" })
+    .notNull()
+    .default(3),
+  afterShiftSubject: varchar("after_shift_subject")
+    .notNull()
+    .default("Thank you for your shift, {name}!"),
+  afterShiftBody: varchar("after_shift_body")
+    .notNull()
+    .default(
+      "Hi {name},\n\nThank you for volunteering at {event}. Every shift keeps De Sering going, and we are really glad you were there.\n\nHope to see you again soon!",
+    ),
+  updatedAt: timestamp("updated_at", {
+    mode: "string",
+    withTimezone: true,
+    precision: 3,
+  }),
+  createdAt: timestamp("created_at", {
+    mode: "string",
+    withTimezone: true,
+    precision: 3,
+  }),
+});
+
+export const payload_jobs_stats = pgTable("payload_jobs_stats", {
+  id: serial("id").primaryKey(),
+  stats: jsonb("stats"),
+  updatedAt: timestamp("updated_at", {
+    mode: "string",
+    withTimezone: true,
+    precision: 3,
+  }),
+  createdAt: timestamp("created_at", {
+    mode: "string",
+    withTimezone: true,
+    precision: 3,
+  }),
+});
 
 export const relations_announcements = relations(announcements, () => ({}));
 export const relations_webcal_tokens = relations(webcal_tokens, ({ one }) => ({
@@ -1019,6 +1491,11 @@ export const relations_event_templates_rels = relations(
       references: [locations.id],
       relationName: "locations",
     }),
+    skillsID: one(skills, {
+      fields: [event_templates_rels.skillsID],
+      references: [skills.id],
+      relationName: "skills",
+    }),
   }),
 );
 export const relations_event_templates = relations(
@@ -1045,6 +1522,11 @@ export const relations_events_rels = relations(events_rels, ({ one }) => ({
     fields: [events_rels.tagsID],
     references: [tags.id],
     relationName: "tags",
+  }),
+  skillsID: one(skills, {
+    fields: [events_rels.skillsID],
+    references: [skills.id],
+    relationName: "skills",
   }),
   locationsID: one(locations, {
     fields: [events_rels.locationsID],
@@ -1120,6 +1602,102 @@ export const relations_users = relations(users, ({ many }) => ({
     relationName: "sessions",
   }),
 }));
+export const relations_skills_rels = relations(skills_rels, ({ one }) => ({
+  parent: one(skills, {
+    fields: [skills_rels.parent],
+    references: [skills.id],
+    relationName: "_rels",
+  }),
+  skillsID: one(skills, {
+    fields: [skills_rels.skillsID],
+    references: [skills.id],
+    relationName: "skills",
+  }),
+}));
+export const relations_skills = relations(skills, ({ many }) => ({
+  _rels: many(skills_rels, {
+    relationName: "_rels",
+  }),
+}));
+export const relations_skill_awards = relations(skill_awards, ({ one }) => ({
+  user: one(users, {
+    fields: [skill_awards.user],
+    references: [users.id],
+    relationName: "user",
+  }),
+  skill: one(skills, {
+    fields: [skill_awards.skill],
+    references: [skills.id],
+    relationName: "skill",
+  }),
+  event: one(events, {
+    fields: [skill_awards.event],
+    references: [events.id],
+    relationName: "event",
+  }),
+  awardedBy: one(users, {
+    fields: [skill_awards.awardedBy],
+    references: [users.id],
+    relationName: "awardedBy",
+  }),
+}));
+export const relations_messages_rels = relations(messages_rels, ({ one }) => ({
+  parent: one(messages, {
+    fields: [messages_rels.parent],
+    references: [messages.id],
+    relationName: "_rels",
+  }),
+  skillsID: one(skills, {
+    fields: [messages_rels.skillsID],
+    references: [skills.id],
+    relationName: "skills",
+  }),
+  tagsID: one(tags, {
+    fields: [messages_rels.tagsID],
+    references: [tags.id],
+    relationName: "tags",
+  }),
+}));
+export const relations_messages = relations(messages, ({ one, many }) => ({
+  sentBy: one(users, {
+    fields: [messages.sentBy],
+    references: [users.id],
+    relationName: "sentBy",
+  }),
+  _rels: many(messages_rels, {
+    relationName: "_rels",
+  }),
+}));
+export const relations_message_deliveries = relations(
+  message_deliveries,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [message_deliveries.user],
+      references: [users.id],
+      relationName: "user",
+    }),
+    message: one(messages, {
+      fields: [message_deliveries.message],
+      references: [messages.id],
+      relationName: "message",
+    }),
+    signup: one(signups, {
+      fields: [message_deliveries.signup],
+      references: [signups.id],
+      relationName: "signup",
+    }),
+  }),
+);
+export const relations_regular_card_views = relations(
+  regular_card_views,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [regular_card_views.user],
+      references: [users.id],
+      relationName: "user",
+    }),
+  }),
+);
 export const relations_payload_jobs_log = relations(
   payload_jobs_log,
   ({ one }) => ({
@@ -1188,6 +1766,21 @@ export const relations_payload_locked_documents_rels = relations(
       references: [users.id],
       relationName: "users",
     }),
+    skillsID: one(skills, {
+      fields: [payload_locked_documents_rels.skillsID],
+      references: [skills.id],
+      relationName: "skills",
+    }),
+    "skill-awardsID": one(skill_awards, {
+      fields: [payload_locked_documents_rels["skill-awardsID"]],
+      references: [skill_awards.id],
+      relationName: "skill-awards",
+    }),
+    messagesID: one(messages, {
+      fields: [payload_locked_documents_rels.messagesID],
+      references: [messages.id],
+      relationName: "messages",
+    }),
   }),
 );
 export const relations_payload_locked_documents = relations(
@@ -1225,11 +1818,54 @@ export const relations_payload_migrations = relations(
   payload_migrations,
   () => ({}),
 );
+export const relations_volunteer_settings_perks = relations(
+  volunteer_settings_perks,
+  ({ one }) => ({
+    _parentID: one(volunteer_settings, {
+      fields: [volunteer_settings_perks._parentID],
+      references: [volunteer_settings.id],
+      relationName: "perks",
+    }),
+  }),
+);
+export const relations_volunteer_settings_milestones = relations(
+  volunteer_settings_milestones,
+  ({ one }) => ({
+    _parentID: one(volunteer_settings, {
+      fields: [volunteer_settings_milestones._parentID],
+      references: [volunteer_settings.id],
+      relationName: "milestones",
+    }),
+  }),
+);
+export const relations_volunteer_settings = relations(
+  volunteer_settings,
+  ({ many }) => ({
+    perks: many(volunteer_settings_perks, {
+      relationName: "perks",
+    }),
+    milestones: many(volunteer_settings_milestones, {
+      relationName: "milestones",
+    }),
+  }),
+);
+export const relations_payload_jobs_stats = relations(
+  payload_jobs_stats,
+  () => ({}),
+);
 
 type DatabaseSchema = {
   enum_announcements_status: typeof enum_announcements_status;
   enum_event_templates_start_time_tz: typeof enum_event_templates_start_time_tz;
+  enum_signups_attendance: typeof enum_signups_attendance;
+  enum_users_regular_override: typeof enum_users_regular_override;
   enum_users_roles: typeof enum_users_roles;
+  enum_skill_awards_source: typeof enum_skill_awards_source;
+  enum_messages_audience_regulars: typeof enum_messages_audience_regulars;
+  enum_messages_audience_did_shift_weekday: typeof enum_messages_audience_did_shift_weekday;
+  enum_messages_status: typeof enum_messages_status;
+  enum_message_deliveries_kind: typeof enum_message_deliveries_kind;
+  enum_message_deliveries_status: typeof enum_message_deliveries_status;
   enum_payload_jobs_log_task_slug: typeof enum_payload_jobs_log_task_slug;
   enum_payload_jobs_log_state: typeof enum_payload_jobs_log_state;
   enum_payload_jobs_task_slug: typeof enum_payload_jobs_task_slug;
@@ -1252,6 +1888,13 @@ type DatabaseSchema = {
   user_notification_preferences: typeof user_notification_preferences;
   users_sessions: typeof users_sessions;
   users: typeof users;
+  skills: typeof skills;
+  skills_rels: typeof skills_rels;
+  skill_awards: typeof skill_awards;
+  messages: typeof messages;
+  messages_rels: typeof messages_rels;
+  message_deliveries: typeof message_deliveries;
+  regular_card_views: typeof regular_card_views;
   payload_jobs_log: typeof payload_jobs_log;
   payload_jobs: typeof payload_jobs;
   payload_locked_documents: typeof payload_locked_documents;
@@ -1259,6 +1902,10 @@ type DatabaseSchema = {
   payload_preferences: typeof payload_preferences;
   payload_preferences_rels: typeof payload_preferences_rels;
   payload_migrations: typeof payload_migrations;
+  volunteer_settings_perks: typeof volunteer_settings_perks;
+  volunteer_settings_milestones: typeof volunteer_settings_milestones;
+  volunteer_settings: typeof volunteer_settings;
+  payload_jobs_stats: typeof payload_jobs_stats;
   relations_announcements: typeof relations_announcements;
   relations_webcal_tokens: typeof relations_webcal_tokens;
   relations_event_templates_sections_roles_signups: typeof relations_event_templates_sections_roles_signups;
@@ -1278,6 +1925,13 @@ type DatabaseSchema = {
   relations_user_notification_preferences: typeof relations_user_notification_preferences;
   relations_users_sessions: typeof relations_users_sessions;
   relations_users: typeof relations_users;
+  relations_skills_rels: typeof relations_skills_rels;
+  relations_skills: typeof relations_skills;
+  relations_skill_awards: typeof relations_skill_awards;
+  relations_messages_rels: typeof relations_messages_rels;
+  relations_messages: typeof relations_messages;
+  relations_message_deliveries: typeof relations_message_deliveries;
+  relations_regular_card_views: typeof relations_regular_card_views;
   relations_payload_jobs_log: typeof relations_payload_jobs_log;
   relations_payload_jobs: typeof relations_payload_jobs;
   relations_payload_locked_documents_rels: typeof relations_payload_locked_documents_rels;
@@ -1285,6 +1939,10 @@ type DatabaseSchema = {
   relations_payload_preferences_rels: typeof relations_payload_preferences_rels;
   relations_payload_preferences: typeof relations_payload_preferences;
   relations_payload_migrations: typeof relations_payload_migrations;
+  relations_volunteer_settings_perks: typeof relations_volunteer_settings_perks;
+  relations_volunteer_settings_milestones: typeof relations_volunteer_settings_milestones;
+  relations_volunteer_settings: typeof relations_volunteer_settings;
+  relations_payload_jobs_stats: typeof relations_payload_jobs_stats;
 };
 
 declare module "@payloadcms/db-postgres" {

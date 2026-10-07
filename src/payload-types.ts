@@ -31,6 +31,11 @@ export interface Config {
     tags: Tag;
     'user-notification-preferences': UserNotificationPreference;
     users: User;
+    skills: Skill;
+    'skill-awards': SkillAward;
+    messages: Message;
+    'message-deliveries': MessageDelivery;
+    'regular-card-views': RegularCardView;
     'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -48,6 +53,12 @@ export interface Config {
     sections: {
       roles: 'roles';
     };
+    skills: {
+      awards: 'skill-awards';
+    };
+    messages: {
+      deliveries: 'message-deliveries';
+    };
   };
   collectionsSelect: {
     announcements: AnnouncementsSelect<false> | AnnouncementsSelect<true>;
@@ -61,6 +72,11 @@ export interface Config {
     tags: TagsSelect<false> | TagsSelect<true>;
     'user-notification-preferences': UserNotificationPreferencesSelect<false> | UserNotificationPreferencesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
+    skills: SkillsSelect<false> | SkillsSelect<true>;
+    'skill-awards': SkillAwardsSelect<false> | SkillAwardsSelect<true>;
+    messages: MessagesSelect<false> | MessagesSelect<true>;
+    'message-deliveries': MessageDeliveriesSelect<false> | MessageDeliveriesSelect<true>;
+    'regular-card-views': RegularCardViewsSelect<false> | RegularCardViewsSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -70,8 +86,14 @@ export interface Config {
     defaultIDType: number;
   };
   fallbackLocale: null;
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    'volunteer-settings': VolunteerSetting;
+    'payload-jobs-stats': PayloadJobsStat;
+  };
+  globalsSelect: {
+    'volunteer-settings': VolunteerSettingsSelect<false> | VolunteerSettingsSelect<true>;
+    'payload-jobs-stats': PayloadJobsStatsSelect<false> | PayloadJobsStatsSelect<true>;
+  };
   locale: null;
   widgets: {
     collections: CollectionsWidget;
@@ -80,6 +102,8 @@ export interface Config {
   jobs: {
     tasks: {
       'send-event-signup-confirmation-email': TaskSendEventSignupConfirmationEmail;
+      'process-ended-shifts': TaskProcessEndedShifts;
+      'send-volunteer-message': TaskSendVolunteerMessage;
       inline: {
         input: unknown;
         output: unknown;
@@ -151,6 +175,10 @@ export interface User {
   id: number;
   preferredName: string;
   phoneNumber?: string | null;
+  /**
+   * Use Always for staff and coordinators who should get the perks regardless of shifts.
+   */
+  regularOverride?: ('auto' | 'always' | 'never') | null;
   roles?: ('admin' | 'editor' | 'volunteer') | null;
   updatedAt: string;
   createdAt: string;
@@ -197,6 +225,10 @@ export interface EventTemplate {
   } | null;
   tags?: (number | Tag)[] | null;
   locations?: (number | Location)[] | null;
+  /**
+   * Makes events from this template trainings: attendees earn these skills.
+   */
+  skills?: (number | Skill)[] | null;
   sections?:
     | {
         title: string;
@@ -306,6 +338,76 @@ export interface Location {
   createdAt: string;
 }
 /**
+ * Something a volunteer can learn, in a training or on a shift. Volunteers see each skill they have as a badge.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "skills".
+ */
+export interface Skill {
+  id: number;
+  /**
+   * An emoji, e.g. 🔪 or ☕
+   */
+  badge: string;
+  title: string;
+  /**
+   * What a volunteer learns. Doubles as the teaching guide for whoever runs the training.
+   */
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Skills a volunteer needs first. We only invite people who have all of them.
+   */
+  prerequisites?: (number | Skill)[] | null;
+  /**
+   * Invite volunteers to learn this once they have done this many shifts. 0 = from the start.
+   */
+  inviteAfterShifts: number;
+  awards?: {
+    docs?: (number | SkillAward)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Who has which skill. Trainings add rows automatically once the training is over; you can also add one by hand when someone learns a skill on a shift.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "skill-awards".
+ */
+export interface SkillAward {
+  id: number;
+  user: number | User;
+  skill: number | Skill;
+  source: 'training' | 'coordinator';
+  /**
+   * The training or shift where it was learned, if any.
+   */
+  event?: (number | null) | Event;
+  awardedAt: string;
+  /**
+   * Empty when the after-shift job awarded it.
+   */
+  awardedBy?: (number | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "events".
  */
@@ -330,6 +432,10 @@ export interface Event {
     [k: string]: unknown;
   } | null;
   tags?: (number | Tag)[] | null;
+  /**
+   * Makes this a training: everyone who attends earns these skills (shown as badges) once it is over.
+   */
+  skills?: (number | Skill)[] | null;
   locations?: (number | Location)[] | null;
   sections?: {
     docs?: (number | Section)[];
@@ -425,6 +531,11 @@ export interface Signup {
   event?: (number | null) | Event;
   role: number | Role;
   user: number | User;
+  /**
+   * Leave empty unless someone did not show up: an unmarked signup counts as attended once the shift is over.
+   */
+  attendance?: ('attended' | 'no-show') | null;
+  afterShiftProcessedAt?: string | null;
   title?: string | null;
   totalShifts?: number | null;
   updatedAt: string;
@@ -440,6 +551,88 @@ export interface UserNotificationPreference {
   type: string;
   channel: string;
   preference: boolean;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Email a group of volunteers, picked by what they have done. Nothing is sent until you press Send on the message.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "messages".
+ */
+export interface Message {
+  id: number;
+  subject: string;
+  /**
+   * Plain text; leave an empty line between paragraphs. {name} becomes the volunteer's name. A link to their volunteering page and how to unsubscribe are added below.
+   */
+  body: string;
+  /**
+   * Who receives this. Every filter you fill in must match; leave a filter empty to ignore it. Volunteers who switched off invitations never receive it.
+   */
+  audience?: {
+    minShifts?: number | null;
+    maxShifts?: number | null;
+    activeWithinDays?: number | null;
+    /**
+     * Finds people we may be losing.
+     */
+    inactiveForDays?: number | null;
+    hasSkills?: (number | Skill)[] | null;
+    lacksSkills?: (number | Skill)[] | null;
+    regulars?: ('any' | 'only' | 'exclude') | null;
+    /**
+     * e.g. role contains "coordinator", on a Tuesday, in the last 90 days.
+     */
+    didShift?: {
+      roleContains?: string | null;
+      weekday?: ('sunday' | 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday') | null;
+      tags?: (number | Tag)[] | null;
+      withinDays?: number | null;
+    };
+  };
+  status: 'draft' | 'sending' | 'sent';
+  sentAt?: string | null;
+  sentBy?: (number | null) | User;
+  recipientCount?: number | null;
+  deliveries?: {
+    docs?: (number | MessageDelivery)[];
+    hasNextPage?: boolean;
+    totalDocs?: number;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Every email the volunteer features sent, and to whom.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "message-deliveries".
+ */
+export interface MessageDelivery {
+  id: number;
+  user: number | User;
+  kind: 'message' | 'after-shift';
+  message?: (number | null) | Message;
+  /**
+   * The shift an after-shift email was about.
+   */
+  signup?: (number | null) | Signup;
+  subject: string;
+  status: 'sent' | 'failed';
+  error?: string | null;
+  sentAt: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "regular-card-views".
+ */
+export interface RegularCardView {
+  id: number;
+  user: number | User;
+  viewedAt: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -495,7 +688,7 @@ export interface PayloadJob {
     | {
         executedAt: string;
         completedAt: string;
-        taskSlug: 'inline' | 'send-event-signup-confirmation-email';
+        taskSlug: 'inline' | 'send-event-signup-confirmation-email' | 'process-ended-shifts' | 'send-volunteer-message';
         taskID: string;
         input?:
           | {
@@ -528,10 +721,20 @@ export interface PayloadJob {
         id?: string | null;
       }[]
     | null;
-  taskSlug?: ('inline' | 'send-event-signup-confirmation-email') | null;
+  taskSlug?:
+    ('inline' | 'send-event-signup-confirmation-email' | 'process-ended-shifts' | 'send-volunteer-message') | null;
   queue?: string | null;
   waitUntil?: string | null;
   processing?: boolean | null;
+  meta?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -577,6 +780,18 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'users';
         value: number | User;
+      } | null)
+    | ({
+        relationTo: 'skills';
+        value: number | Skill;
+      } | null)
+    | ({
+        relationTo: 'skill-awards';
+        value: number | SkillAward;
+      } | null)
+    | ({
+        relationTo: 'messages';
+        value: number | Message;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -654,6 +869,7 @@ export interface EventTemplatesSelect<T extends boolean = true> {
   description?: T;
   tags?: T;
   locations?: T;
+  skills?: T;
   sections?:
     | T
     | {
@@ -702,6 +918,7 @@ export interface EventsSelect<T extends boolean = true> {
   end_date?: T;
   description?: T;
   tags?: T;
+  skills?: T;
   locations?: T;
   sections?: T;
   roles?: T;
@@ -753,6 +970,8 @@ export interface SignupsSelect<T extends boolean = true> {
   event?: T;
   role?: T;
   user?: T;
+  attendance?: T;
+  afterShiftProcessedAt?: T;
   title?: T;
   totalShifts?: T;
   updatedAt?: T;
@@ -786,6 +1005,7 @@ export interface UserNotificationPreferencesSelect<T extends boolean = true> {
 export interface UsersSelect<T extends boolean = true> {
   preferredName?: T;
   phoneNumber?: T;
+  regularOverride?: T;
   roles?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -801,6 +1021,94 @@ export interface UsersSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "skills_select".
+ */
+export interface SkillsSelect<T extends boolean = true> {
+  badge?: T;
+  title?: T;
+  description?: T;
+  prerequisites?: T;
+  inviteAfterShifts?: T;
+  awards?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "skill-awards_select".
+ */
+export interface SkillAwardsSelect<T extends boolean = true> {
+  user?: T;
+  skill?: T;
+  source?: T;
+  event?: T;
+  awardedAt?: T;
+  awardedBy?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "messages_select".
+ */
+export interface MessagesSelect<T extends boolean = true> {
+  subject?: T;
+  body?: T;
+  audience?:
+    | T
+    | {
+        minShifts?: T;
+        maxShifts?: T;
+        activeWithinDays?: T;
+        inactiveForDays?: T;
+        hasSkills?: T;
+        lacksSkills?: T;
+        regulars?: T;
+        didShift?:
+          | T
+          | {
+              roleContains?: T;
+              weekday?: T;
+              tags?: T;
+              withinDays?: T;
+            };
+      };
+  status?: T;
+  sentAt?: T;
+  sentBy?: T;
+  recipientCount?: T;
+  deliveries?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "message-deliveries_select".
+ */
+export interface MessageDeliveriesSelect<T extends boolean = true> {
+  user?: T;
+  kind?: T;
+  message?: T;
+  signup?: T;
+  subject?: T;
+  status?: T;
+  error?: T;
+  sentAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "regular-card-views_select".
+ */
+export interface RegularCardViewsSelect<T extends boolean = true> {
+  user?: T;
+  viewedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -830,6 +1138,7 @@ export interface PayloadJobsSelect<T extends boolean = true> {
   queue?: T;
   waitUntil?: T;
   processing?: T;
+  meta?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -867,6 +1176,106 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "volunteer-settings".
+ */
+export interface VolunteerSetting {
+  id: number;
+  regularMinShifts: number;
+  regularWindowDays: number;
+  /**
+   * Shown on the regular card, one line each.
+   */
+  perks?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  cardNote?: string | null;
+  milestones?:
+    | {
+        shifts: number;
+        label: string;
+        badge: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Off by default. Shifts that end while this is off never get an email later.
+   */
+  afterShiftEmails?: boolean | null;
+  /**
+   * Time for coordinators to mark no-shows before badges and emails go out.
+   */
+  afterShiftDelayHours: number;
+  afterShiftSubject: string;
+  /**
+   * {name} = their name, {event} = the shift, {shifts} = how many shifts they have done. Progress and next steps are added below automatically.
+   */
+  afterShiftBody: string;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-jobs-stats".
+ */
+export interface PayloadJobsStat {
+  id: number;
+  stats?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "volunteer-settings_select".
+ */
+export interface VolunteerSettingsSelect<T extends boolean = true> {
+  regularMinShifts?: T;
+  regularWindowDays?: T;
+  perks?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  cardNote?: T;
+  milestones?:
+    | T
+    | {
+        shifts?: T;
+        label?: T;
+        badge?: T;
+        id?: T;
+      };
+  afterShiftEmails?: T;
+  afterShiftDelayHours?: T;
+  afterShiftSubject?: T;
+  afterShiftBody?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-jobs-stats_select".
+ */
+export interface PayloadJobsStatsSelect<T extends boolean = true> {
+  stats?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "collections_widget".
  */
 export interface CollectionsWidget {
@@ -882,6 +1291,24 @@ export interface CollectionsWidget {
 export interface TaskSendEventSignupConfirmationEmail {
   input: {
     signupId: number;
+  };
+  output?: unknown;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskProcess-ended-shifts".
+ */
+export interface TaskProcessEndedShifts {
+  input?: unknown;
+  output?: unknown;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskSend-volunteer-message".
+ */
+export interface TaskSendVolunteerMessage {
+  input: {
+    messageId: number;
   };
   output?: unknown;
 }

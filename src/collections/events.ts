@@ -8,6 +8,16 @@ export const Events: CollectionConfig = {
     group: "Event Management",
     components: {
       views: {
+        edit: {
+          attendance: {
+            Component: "/components/event-attendance#EventAttendance",
+            path: "/attendance",
+            tab: {
+              label: "Attendance",
+              href: "/attendance",
+            },
+          },
+        },
         list: {
           actions: [
             {
@@ -84,6 +94,17 @@ export const Events: CollectionConfig = {
               type: "relationship",
               relationTo: "tags",
               hasMany: true,
+            },
+            {
+              name: "skills",
+              label: "Skills taught",
+              type: "relationship",
+              relationTo: "skills",
+              hasMany: true,
+              admin: {
+                description:
+                  "Makes this a training: everyone who attends earns these skills (shown as badges) once it is over.",
+              },
             },
             {
               name: "locations",

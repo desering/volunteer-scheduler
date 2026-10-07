@@ -22,10 +22,15 @@ import { UnderlineFeatureClient as UnderlineFeatureClient_e70f5e05f09f93e00b997e
 import { BoldFeatureClient as BoldFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { ItalicFeatureClient as ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { PublishEventTemplate as PublishEventTemplate_1e3fcc053ab5e0eb55a23f0b1fa2bd4e } from '../../../components/publish-event-template'
+import { EventAttendance as EventAttendance_0889f65a9e9c2333c24770c5d342ed5a } from '../../../components/event-attendance'
 import { SwitchToCalendarView as SwitchToCalendarView_5a247bd8b1f39ad5c39e286ac7a32a34 } from '../../../components/switch-to-calendar-view'
+import { VolunteerSummary as VolunteerSummary_7274c0e9958065564ca515894dc8bc5e } from '@/components/admin/volunteer-summary'
+import { MessageAudience as MessageAudience_1d73205698118a6a5d0884ad3fa6ff17 } from '@/components/admin/message-audience'
+import { InsightsNavLink as InsightsNavLink_cec3cf70f5610e955efb35a267b3c6fb } from '@/components/admin/insights-nav-link'
 import { DashboardHeader as DashboardHeader_0c59d0d196f0404bf841cd4d190d7596 } from '@/components/dashboard-header'
 import { BackToSchedule as BackToSchedule_ed8fa7269d6e99d15d1949d13c717bd3 } from '@/components/admin/back-to-schedule'
 import { CalendarView as CalendarView_38e806c25d81fcefba307a609b16ade2 } from '../../../views/calendar-view'
+import { InsightsView as InsightsView_43aa7fb409a94e9f271982eafd27f2ef } from '../../../views/insights-view'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 
 /** @type import('payload').ImportMap */
@@ -54,9 +59,14 @@ export const importMap = {
   "@payloadcms/richtext-lexical/client#BoldFeatureClient": BoldFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#ItalicFeatureClient": ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "/components/publish-event-template#PublishEventTemplate": PublishEventTemplate_1e3fcc053ab5e0eb55a23f0b1fa2bd4e,
+  "/components/event-attendance#EventAttendance": EventAttendance_0889f65a9e9c2333c24770c5d342ed5a,
   "/components/switch-to-calendar-view#SwitchToCalendarView": SwitchToCalendarView_5a247bd8b1f39ad5c39e286ac7a32a34,
+  "@/components/admin/volunteer-summary#VolunteerSummary": VolunteerSummary_7274c0e9958065564ca515894dc8bc5e,
+  "@/components/admin/message-audience#MessageAudience": MessageAudience_1d73205698118a6a5d0884ad3fa6ff17,
+  "@/components/admin/insights-nav-link#InsightsNavLink": InsightsNavLink_cec3cf70f5610e955efb35a267b3c6fb,
   "@/components/dashboard-header#DashboardHeader": DashboardHeader_0c59d0d196f0404bf841cd4d190d7596,
   "@/components/admin/back-to-schedule#BackToSchedule": BackToSchedule_ed8fa7269d6e99d15d1949d13c717bd3,
   "/views/calendar-view#CalendarView": CalendarView_38e806c25d81fcefba307a609b16ade2,
+  "/views/insights-view#InsightsView": InsightsView_43aa7fb409a94e9f271982eafd27f2ef,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1
 }

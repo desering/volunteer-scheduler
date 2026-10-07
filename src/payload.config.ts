@@ -9,15 +9,23 @@ import { Announcements } from "./collections/announcements";
 import { EventTemplates } from "./collections/event-templates";
 import { Events } from "./collections/events";
 import { Locations } from "./collections/locations";
+import { MessageDeliveries } from "./collections/message-deliveries";
+import { Messages } from "./collections/messages";
+import { sendVolunteerMessageTask } from "./collections/messages/tasks/send-volunteer-message";
+import { RegularCardViews } from "./collections/regular-card-views";
 import { Roles } from "./collections/roles";
 import { Sections } from "./collections/sections";
 import { Signups } from "./collections/signups";
+import { processEndedShiftsTask } from "./collections/signups/tasks/process-ended-shifts";
 import { sendConfirmationEmailTask } from "./collections/signups/tasks/send-confirmation-email";
+import { SkillAwards } from "./collections/skill-awards";
+import { Skills } from "./collections/skills";
 import { Tags } from "./collections/tags";
 import { UserNotificationPreferences } from "./collections/user-notification-preferences";
 import { Users } from "./collections/users";
 import { WebcalTokens } from "./collections/webcal-tokens";
 import { editor } from "./editor.config";
+import { VolunteerSettings } from "./globals/volunteer-settings";
 import { logger } from "./lib/logger";
 import { migrations } from "./migrations";
 
@@ -80,12 +88,17 @@ export default buildConfig({
     },
     components: {
       beforeNavLinks: ["@/components/admin/back-to-schedule#BackToSchedule"],
+      afterNavLinks: ["@/components/admin/insights-nav-link#InsightsNavLink"],
       beforeDashboard: ["@/components/dashboard-header#DashboardHeader"],
 
       views: {
         calendar: {
           Component: "/views/calendar-view#CalendarView",
           path: "/calendar/:collectionSlug",
+        },
+        insights: {
+          Component: "/views/insights-view#InsightsView",
+          path: "/insights",
         },
       },
     },
@@ -112,9 +125,19 @@ export default buildConfig({
     Tags,
     UserNotificationPreferences,
     Users,
+    Skills,
+    SkillAwards,
+    Messages,
+    MessageDeliveries,
+    RegularCardViews,
   ],
+  globals: [VolunteerSettings],
   jobs: {
-    tasks: [sendConfirmationEmailTask],
+    tasks: [
+      sendConfirmationEmailTask,
+      processEndedShiftsTask,
+      sendVolunteerMessageTask,
+    ],
     autoRun: [
       {
         cron: "*/5 * * * *", // every 5 minutes

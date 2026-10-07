@@ -120,6 +120,10 @@ const eventTemplateToEvent = (template: EventTemplate, day: UTCDate) => {
     typeof location === "object" ? location.id : location,
   );
 
+  const skillIds = template.skills?.map((skill) =>
+    typeof skill === "object" ? skill.id : skill,
+  );
+
   return {
     title: template.event_title,
     description: template.description,
@@ -127,5 +131,6 @@ const eventTemplateToEvent = (template: EventTemplate, day: UTCDate) => {
     end_date: endTime.toISOString(),
     tags: tagIds,
     locations: locationIds,
+    skills: skillIds,
   } satisfies RequiredDataFromCollectionSlug<"events">;
 };

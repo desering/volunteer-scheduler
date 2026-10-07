@@ -1,11 +1,12 @@
 import { APIError, type CollectionConfig } from "payload";
 import { logger } from "@/lib/logger";
+import { adminFieldLevel } from "../access/admins";
 
 export const Signups: CollectionConfig = {
   slug: "signups",
   admin: {
     useAsTitle: "title",
-    defaultColumns: ["role", "user", "totalShifts"],
+    defaultColumns: ["role", "user", "attendance", "totalShifts"],
     group: false,
   },
   hooks: {
@@ -126,6 +127,39 @@ export const Signups: CollectionConfig = {
       maxDepth: 1,
     },
 
+    {
+      name: "attendance",
+      type: "select",
+      options: [
+        { label: "Attended", value: "attended" },
+        { label: "No-show", value: "no-show" },
+      ],
+      // Admin-only in every direction: who missed a shift is not for other
+      // volunteers to see (event details list signups by name).
+      access: {
+        create: adminFieldLevel,
+        read: adminFieldLevel,
+        update: adminFieldLevel,
+      },
+      admin: {
+        description:
+          "Leave empty unless someone did not show up: an unmarked signup counts as attended once the shift is over.",
+      },
+    },
+    {
+      // Set by the after-shift job (lib/engagement/after-shift.ts) when it has
+      // awarded training skills and sent the thank-you email for this signup.
+      name: "afterShiftProcessedAt",
+      type: "date",
+      access: {
+        create: () => false,
+        read: adminFieldLevel,
+        update: () => false,
+      },
+      admin: {
+        hidden: true,
+      },
+    },
     // Lets show the user's preferred name instead of boring ID's
     {
       name: "title",

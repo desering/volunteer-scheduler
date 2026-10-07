@@ -156,6 +156,17 @@ export const EventTemplates: CollectionConfig = {
       hasMany: true,
     },
     {
+      name: "skills",
+      label: "Skills taught",
+      type: "relationship",
+      relationTo: "skills",
+      hasMany: true,
+      admin: {
+        description:
+          "Makes events from this template trainings: attendees earn these skills.",
+      },
+    },
+    {
       name: "sections",
       label: "Sections",
       type: "array",

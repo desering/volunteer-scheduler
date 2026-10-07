@@ -39,7 +39,7 @@ export const getEventDetails = async (id: number) => {
                 ...role.signups,
                 docs: mapObjects(
                   event.signups?.docs,
-                  (signup) => signup,
+                  (signup) => publicSignup(signup),
                   (signup) => signup.role === role.id,
                 ),
               },
@@ -60,7 +60,7 @@ export const getEventDetails = async (id: number) => {
             ...role.signups,
             docs: mapObjects(
               event.signups?.docs,
-              (signup) => signup,
+              (signup) => publicSignup(signup),
               (signup) => signup.role === role.id,
             ),
           },
@@ -71,12 +71,28 @@ export const getEventDetails = async (id: number) => {
     signups: {
       ...event.signups,
       docs: mapObjects(event.signups?.docs, (signup) => ({
-        ...signup,
+        ...publicSignup(signup),
         user: forceNumber(signup.user),
         role: forceNumber(signup.role),
       })),
     },
   };
+};
+
+/**
+ * This service feeds the public /api/events/[id] route and reads with the
+ * Local API (which skips field access), so admin-only signup fields are
+ * removed here by hand.
+ */
+const publicSignup = <T>(signup: T) => {
+  type Public = Omit<T, "attendance" | "afterShiftProcessedAt">;
+  if (!signup || typeof signup !== "object") return signup as Public;
+  const {
+    attendance: _attendance,
+    afterShiftProcessedAt: _processed,
+    ...rest
+  } = signup as T & { attendance?: unknown; afterShiftProcessedAt?: unknown };
+  return rest as Public;
 };
 
 const forceNumber = (value: unknown) =>

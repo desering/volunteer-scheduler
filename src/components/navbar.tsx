@@ -1,8 +1,10 @@
 import {
+  AwardIcon,
   CalendarDaysIcon,
   CalendarSyncIcon,
   CircleUserRoundIcon,
   History,
+  IdCardIcon,
   LogOutIcon,
   MenuIcon,
 } from "lucide-react";
@@ -46,6 +48,22 @@ export const NavBar = async () => {
                         <HStack gap="2">
                           <CircleUserRoundIcon />
                           Account
+                        </HStack>
+                      </Link>
+                    </Menu.Item>
+                    <Menu.Item asChild value="progress">
+                      <Link href="/account/progress">
+                        <HStack gap="2">
+                          <AwardIcon />
+                          My Volunteering
+                        </HStack>
+                      </Link>
+                    </Menu.Item>
+                    <Menu.Item asChild value="regular-card">
+                      <Link href="/card">
+                        <HStack gap="2">
+                          <IdCardIcon />
+                          Regular Card
                         </HStack>
                       </Link>
                     </Menu.Item>

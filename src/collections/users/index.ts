@@ -62,6 +62,36 @@ export const Users: CollectionConfig = {
       required: false,
     },
     {
+      name: "regularOverride",
+      label: "Regular volunteer",
+      type: "select",
+      defaultValue: "auto",
+      options: [
+        { label: "Automatic (rule in Volunteer settings)", value: "auto" },
+        { label: "Always a regular", value: "always" },
+        { label: "Never a regular", value: "never" },
+      ],
+      access: {
+        create: adminFieldLevel,
+        read: adminFieldLevel,
+        update: adminFieldLevel,
+      },
+      admin: {
+        position: "sidebar",
+        description:
+          "Use Always for staff and coordinators who should get the perks regardless of shifts.",
+      },
+    },
+    {
+      name: "volunteerSummary",
+      type: "ui",
+      admin: {
+        components: {
+          Field: "@/components/admin/volunteer-summary#VolunteerSummary",
+        },
+      },
+    },
+    {
       name: "roles",
       type: "select",
       access: {
