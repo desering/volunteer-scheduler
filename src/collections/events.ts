@@ -1,4 +1,5 @@
 import type { CollectionConfig } from "payload";
+import { hasRole } from "./access";
 
 export const Events: CollectionConfig = {
   slug: "events",
@@ -19,7 +20,10 @@ export const Events: CollectionConfig = {
     },
   },
   access: {
-    read: () => true,
+    read: hasRole("admin", "editor"),
+    create: hasRole("admin", "editor"),
+    update: hasRole("admin", "editor"),
+    delete: hasRole("admin", "editor"),
   },
   fields: [
     {

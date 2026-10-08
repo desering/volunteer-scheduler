@@ -5,6 +5,7 @@ import { postgresAdapter } from "@payloadcms/db-postgres";
 import { nodemailerAdapter } from "@payloadcms/email-nodemailer";
 import { buildConfig, inMemoryKVAdapter } from "payload";
 import sharp from "sharp";
+import { hasRole } from "./collections/access";
 import { Announcements } from "./collections/announcements";
 import { EventTemplates } from "./collections/event-templates";
 import { Events } from "./collections/events";
@@ -114,6 +115,21 @@ export default buildConfig({
     Users,
   ],
   jobs: {
+    access: {
+      run: hasRole("admin", "editor"),
+      queue: hasRole("admin", "editor"),
+      cancel: hasRole("admin", "editor"),
+    },
+    jobsCollectionOverrides: ({ defaultJobsCollection }) => ({
+      ...defaultJobsCollection,
+      access: {
+        ...defaultJobsCollection.access,
+        read: hasRole("admin"),
+        delete: hasRole("admin"),
+        create: () => false,
+        update: () => false,
+      },
+    }),
     tasks: [sendConfirmationEmailTask],
     autoRun: [
       {

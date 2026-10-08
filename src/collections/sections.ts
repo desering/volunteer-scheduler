@@ -1,7 +1,14 @@
 import type { CollectionConfig } from "payload";
+import { hasRole } from "./access";
 
 export const Sections: CollectionConfig = {
   slug: "sections",
+  access: {
+    read: hasRole("admin", "editor"),
+    create: hasRole("admin", "editor"),
+    update: hasRole("admin", "editor"),
+    delete: hasRole("admin", "editor"),
+  },
   admin: {
     useAsTitle: "title",
     group: false,

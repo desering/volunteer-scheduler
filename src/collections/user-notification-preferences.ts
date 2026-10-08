@@ -1,6 +1,5 @@
 import type { CollectionConfig } from "payload";
-import { admins } from "@/collections/access/admins";
-import { adminAndThemselves } from "@/collections/users/access/admin-and-themselves";
+import { hasRole } from "./access";
 
 export const UserNotificationPreferences: CollectionConfig = {
   slug: "user-notification-preferences",
@@ -8,11 +7,11 @@ export const UserNotificationPreferences: CollectionConfig = {
     group: false,
   },
   access: {
-    admin: admins,
-    create: adminAndThemselves,
-    read: adminAndThemselves,
-    update: adminAndThemselves,
-    delete: adminAndThemselves,
+    admin: hasRole("admin"),
+    create: hasRole("admin"),
+    read: hasRole("admin"),
+    update: hasRole("admin"),
+    delete: hasRole("admin"),
   },
   fields: [
     {

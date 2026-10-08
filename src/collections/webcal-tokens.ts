@@ -1,5 +1,5 @@
 import type { CollectionConfig } from "payload";
-import { admins } from "./access/admins";
+import { hasRole } from "./access";
 
 export const WebcalTokens: CollectionConfig = {
   slug: "webcal-tokens",
@@ -8,11 +8,11 @@ export const WebcalTokens: CollectionConfig = {
     group: "Admin",
   },
   access: {
-    admin: admins,
+    admin: hasRole("admin"),
     create: () => false,
-    read: admins,
+    read: hasRole("admin"),
     update: () => false,
-    delete: admins,
+    delete: hasRole("admin"),
   },
   fields: [
     {

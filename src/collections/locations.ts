@@ -1,4 +1,5 @@
 import type { CollectionConfig } from "payload";
+import { hasRole } from "./access";
 
 export const Locations: CollectionConfig = {
   slug: "locations",
@@ -7,7 +8,10 @@ export const Locations: CollectionConfig = {
     group: "Event Management",
   },
   access: {
-    read: () => true,
+    read: hasRole("admin", "editor"),
+    create: hasRole("admin", "editor"),
+    update: hasRole("admin", "editor"),
+    delete: hasRole("admin", "editor"),
   },
   fields: [
     {

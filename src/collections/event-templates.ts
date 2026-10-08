@@ -1,5 +1,5 @@
 import type { ArrayField, CollectionConfig } from "payload";
-import { admins } from "./access/admins";
+import { hasRole } from "./access";
 
 const rolesField = (arg?: {
   adminDescription?: string;
@@ -51,10 +51,10 @@ const rolesField = (arg?: {
 export const EventTemplates: CollectionConfig = {
   slug: "event-templates",
   access: {
-    read: admins,
-    create: admins,
-    delete: admins,
-    update: admins,
+    read: hasRole("admin", "editor"),
+    create: hasRole("admin", "editor"),
+    delete: hasRole("admin", "editor"),
+    update: hasRole("admin", "editor"),
   },
   admin: {
     useAsTitle: "template_title",

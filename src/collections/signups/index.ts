@@ -1,8 +1,15 @@
 import { APIError, type CollectionConfig } from "payload";
 import { logger } from "@/lib/logger";
+import { hasRole } from "../access";
 
 export const Signups: CollectionConfig = {
   slug: "signups",
+  access: {
+    read: hasRole("admin", "editor"),
+    create: hasRole("admin", "editor"),
+    update: hasRole("admin", "editor"),
+    delete: hasRole("admin", "editor"),
+  },
   admin: {
     useAsTitle: "title",
     defaultColumns: ["role", "user", "totalShifts"],
