@@ -24,7 +24,8 @@
       "@payload-types": ["./src/payload-types.ts"],
       "styled-system": ["./styled-system"]
     },
-    "target": "ES2017"
+    "target": "esnext",
+    "types": ["bun-types"]
   },
   "include": [
     ".next/types/**/*.ts",
