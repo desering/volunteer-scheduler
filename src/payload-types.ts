@@ -25,6 +25,7 @@ export interface Config {
     'event-templates': EventTemplate;
     events: Event;
     locations: Location;
+    'notification-registrations': NotificationRegistration;
     roles: Role;
     sections: Section;
     signups: Signup;
@@ -55,6 +56,7 @@ export interface Config {
     'event-templates': EventTemplatesSelect<false> | EventTemplatesSelect<true>;
     events: EventsSelect<false> | EventsSelect<true>;
     locations: LocationsSelect<false> | LocationsSelect<true>;
+    'notification-registrations': NotificationRegistrationsSelect<false> | NotificationRegistrationsSelect<true>;
     roles: RolesSelect<false> | RolesSelect<true>;
     sections: SectionsSelect<false> | SectionsSelect<true>;
     signups: SignupsSelect<false> | SignupsSelect<true>;
@@ -432,6 +434,26 @@ export interface Signup {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "notification-registrations".
+ */
+export interface NotificationRegistration {
+  id: number;
+  endpoint: string;
+  registration:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  user: number | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "user-notification-preferences".
  */
 export interface UserNotificationPreference {
@@ -716,6 +738,17 @@ export interface EventsSelect<T extends boolean = true> {
 export interface LocationsSelect<T extends boolean = true> {
   title?: T;
   address?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "notification-registrations_select".
+ */
+export interface NotificationRegistrationsSelect<T extends boolean = true> {
+  endpoint?: T;
+  registration?: T;
+  user?: T;
   updatedAt?: T;
   createdAt?: T;
 }

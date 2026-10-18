@@ -9,6 +9,7 @@ import { Announcements } from "./collections/announcements";
 import { EventTemplates } from "./collections/event-templates";
 import { Events } from "./collections/events";
 import { Locations } from "./collections/locations";
+import { NotificationRegistrations } from "./collections/notification-registrations";
 import { Roles } from "./collections/roles";
 import { Sections } from "./collections/sections";
 import { Signups } from "./collections/signups";
@@ -105,6 +106,7 @@ export default buildConfig({
     EventTemplates,
     Events,
     Locations,
+    NotificationRegistrations,
     Roles,
     Sections,
     Signups,

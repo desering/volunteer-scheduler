@@ -1,5 +1,7 @@
 "use client";
 
+import { createNotificationRegistration } from "@/actions/create-notification-registration";
+
 function urlBase64ToUint8Array(base64String: string): Uint8Array<ArrayBuffer> {
   const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
   const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
@@ -34,16 +36,22 @@ export async function registerPushNotification(): Promise<PushSubscription | nul
     const existingSubscription =
       await swRegistration.pushManager.getSubscription();
 
-    const applicationServerKey = urlBase64ToUint8Array(
-      "BIjlQbxc_Cz7FE2o4HKxZkPFeVL0XyMVRqVMUzfxOIYBwuJBUV8UHwccGGa47cyVrAp9KcQOZIN8NDgJLyBAv_c",
-    );
+    const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+    if (!publicKey) {
+      throw new Error("NEXT_PUBLIC_VAPID_PUBLIC_KEY is not configured");
+    }
 
     const subscription =
       existingSubscription ??
       (await swRegistration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: applicationServerKey, // have a safer way to fetch the public key?
+        applicationServerKey: urlBase64ToUint8Array(publicKey),
       }));
+
+    const result = await createNotificationRegistration(subscription.toJSON());
+    if (!result.success) {
+      throw new Error(result.message);
+    }
 
     console.log("Notification registration success");
     return subscription;
