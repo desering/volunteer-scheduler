@@ -1,99 +1,105 @@
-import * as migration_20250107_215304 from './20250107_215304';
-import * as migration_20250131_082459_add_phone_number from './20250131_082459_add_phone_number';
-import * as migration_20250402_113720_timezones_in_event_template from './20250402_113720_timezones_in_event_template';
-import * as migration_20251027_155038_payload_version_migration from './20251027_155038_payload_version_migration';
-import * as migration_20251116_184923_add_tags_collection from './20251116_184923_add_tags_collection';
-import * as migration_20251220_014719_add_user_notification_preferences_collection from './20251220_014719_add_user_notification_preferences_collection';
-import * as migration_20260105_132536_add_announcements_collection from './20260105_132536_add_announcements_collection';
-import * as migration_20260112_112028_add_announcements_status from './20260112_112028_add_announcements_status';
-import * as migration_20260120_173332_add_locations_collection from './20260120_173332_add_locations_collection';
-import * as migration_20260125_145020 from './20260125_145020';
-import * as migration_20260215_130411_add_locations_to_templates from './20260215_130411_add_locations_to_templates';
-import * as migration_20260216_081257_revert_locked_documents from './20260216_081257_revert_locked_documents';
-import * as migration_20260328_194746_enable_user_sessions from './20260328_194746_enable_user_sessions';
-import * as migration_20260412_225016_add_webcal_tokens_collection from './20260412_225016_add_webcal_tokens_collection';
-import * as migration_20260511_215545_add_payload_jobs from './20260511_215545_add_payload_jobs';
-import * as migration_20261004_160945_add_default_role from './20261004_160945_add_default_role';
+import * as migration_20250107_215304 from "./20250107_215304";
+import * as migration_20250131_082459_add_phone_number from "./20250131_082459_add_phone_number";
+import * as migration_20250402_113720_timezones_in_event_template from "./20250402_113720_timezones_in_event_template";
+import * as migration_20251027_155038_payload_version_migration from "./20251027_155038_payload_version_migration";
+import * as migration_20251116_184923_add_tags_collection from "./20251116_184923_add_tags_collection";
+import * as migration_20251220_014719_add_user_notification_preferences_collection from "./20251220_014719_add_user_notification_preferences_collection";
+import * as migration_20260105_132536_add_announcements_collection from "./20260105_132536_add_announcements_collection";
+import * as migration_20260112_112028_add_announcements_status from "./20260112_112028_add_announcements_status";
+import * as migration_20260120_173332_add_locations_collection from "./20260120_173332_add_locations_collection";
+import * as migration_20260125_145020 from "./20260125_145020";
+import * as migration_20260215_130411_add_locations_to_templates from "./20260215_130411_add_locations_to_templates";
+import * as migration_20260216_081257_revert_locked_documents from "./20260216_081257_revert_locked_documents";
+import * as migration_20260328_194746_enable_user_sessions from "./20260328_194746_enable_user_sessions";
+import * as migration_20260412_225016_add_webcal_tokens_collection from "./20260412_225016_add_webcal_tokens_collection";
+import * as migration_20260511_215545_add_payload_jobs from "./20260511_215545_add_payload_jobs";
+import * as migration_20261004_160945_add_default_role from "./20261004_160945_add_default_role";
+import * as migration_20261022_084245_payload_v3_91_0 from "./20261022_084245_payload_v3_91_0";
 
 export const migrations = [
   {
     up: migration_20250107_215304.up,
     down: migration_20250107_215304.down,
-    name: '20250107_215304',
+    name: "20250107_215304",
   },
   {
     up: migration_20250131_082459_add_phone_number.up,
     down: migration_20250131_082459_add_phone_number.down,
-    name: '20250131_082459_add_phone_number',
+    name: "20250131_082459_add_phone_number",
   },
   {
     up: migration_20250402_113720_timezones_in_event_template.up,
     down: migration_20250402_113720_timezones_in_event_template.down,
-    name: '20250402_113720_timezones_in_event_template',
+    name: "20250402_113720_timezones_in_event_template",
   },
   {
     up: migration_20251027_155038_payload_version_migration.up,
     down: migration_20251027_155038_payload_version_migration.down,
-    name: '20251027_155038_payload_version_migration',
+    name: "20251027_155038_payload_version_migration",
   },
   {
     up: migration_20251116_184923_add_tags_collection.up,
     down: migration_20251116_184923_add_tags_collection.down,
-    name: '20251116_184923_add_tags_collection',
+    name: "20251116_184923_add_tags_collection",
   },
   {
     up: migration_20251220_014719_add_user_notification_preferences_collection.up,
     down: migration_20251220_014719_add_user_notification_preferences_collection.down,
-    name: '20251220_014719_add_user_notification_preferences_collection',
+    name: "20251220_014719_add_user_notification_preferences_collection",
   },
   {
     up: migration_20260105_132536_add_announcements_collection.up,
     down: migration_20260105_132536_add_announcements_collection.down,
-    name: '20260105_132536_add_announcements_collection',
+    name: "20260105_132536_add_announcements_collection",
   },
   {
     up: migration_20260112_112028_add_announcements_status.up,
     down: migration_20260112_112028_add_announcements_status.down,
-    name: '20260112_112028_add_announcements_status',
+    name: "20260112_112028_add_announcements_status",
   },
   {
     up: migration_20260120_173332_add_locations_collection.up,
     down: migration_20260120_173332_add_locations_collection.down,
-    name: '20260120_173332_add_locations_collection',
+    name: "20260120_173332_add_locations_collection",
   },
   {
     up: migration_20260125_145020.up,
     down: migration_20260125_145020.down,
-    name: '20260125_145020',
+    name: "20260125_145020",
   },
   {
     up: migration_20260215_130411_add_locations_to_templates.up,
     down: migration_20260215_130411_add_locations_to_templates.down,
-    name: '20260215_130411_add_locations_to_templates',
+    name: "20260215_130411_add_locations_to_templates",
   },
   {
     up: migration_20260216_081257_revert_locked_documents.up,
     down: migration_20260216_081257_revert_locked_documents.down,
-    name: '20260216_081257_revert_locked_documents',
+    name: "20260216_081257_revert_locked_documents",
   },
   {
     up: migration_20260328_194746_enable_user_sessions.up,
     down: migration_20260328_194746_enable_user_sessions.down,
-    name: '20260328_194746_enable_user_sessions',
+    name: "20260328_194746_enable_user_sessions",
   },
   {
     up: migration_20260412_225016_add_webcal_tokens_collection.up,
     down: migration_20260412_225016_add_webcal_tokens_collection.down,
-    name: '20260412_225016_add_webcal_tokens_collection',
+    name: "20260412_225016_add_webcal_tokens_collection",
   },
   {
     up: migration_20260511_215545_add_payload_jobs.up,
     down: migration_20260511_215545_add_payload_jobs.down,
-    name: '20260511_215545_add_payload_jobs',
+    name: "20260511_215545_add_payload_jobs",
   },
   {
     up: migration_20261004_160945_add_default_role.up,
     down: migration_20261004_160945_add_default_role.down,
-    name: '20261004_160945_add_default_role'
+    name: "20261004_160945_add_default_role",
+  },
+  {
+    up: migration_20261022_084245_payload_v3_91_0.up,
+    down: migration_20261022_084245_payload_v3_91_0.down,
+    name: "20261022_084245_payload_v3_91_0",
   },
 ];
