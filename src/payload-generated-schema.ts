@@ -633,6 +633,11 @@ export const users = pgTable(
     }),
     salt: varchar("salt"),
     hash: varchar("hash"),
+    resetPasswordRequestedAt: timestamp("reset_password_requested_at", {
+      mode: "string",
+      withTimezone: true,
+      precision: 3,
+    }),
   },
   (columns) => [
     index("users_updated_at_idx").on(columns.updatedAt),
