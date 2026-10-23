@@ -32,7 +32,7 @@ type Props = {
   eventId?: number;
 
   open: boolean;
-  onClose: () => void;
+  onClose: (eventStartDate?: Date) => void;
   onExitComplete?: () => void;
 };
 
@@ -175,7 +175,8 @@ export const EventDetailsDrawer = (props: Props) => {
     <Sheet.Root
       open={props.open}
       onOpenChange={({ open }) => {
-        !open && props.onClose();
+        !open &&
+          props.onClose(details ? new Date(details.start_date) : undefined);
       }}
       onExitComplete={props.onExitComplete}
       variant={{

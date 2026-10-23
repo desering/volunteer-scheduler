@@ -33,6 +33,20 @@ type Props = {
   placeholder?: EventsGroupedByDay;
 };
 
+const useSanitizeSearchParams = () => {
+  const pathname = usePathname();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    if (searchParams.has("eventId") && searchParams.has("date")) {
+      const params = new URLSearchParams(searchParams);
+      params.delete("date");
+      router.replace(`${pathname}?${params}`, { scroll: false });
+    }
+  }, [searchParams, pathname, router]);
+};
+
 export const EventOverviewClient = ({
   placeholder: initialEvents,
   ...cssProps
@@ -40,6 +54,7 @@ export const EventOverviewClient = ({
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
+  useSanitizeSearchParams();
 
   const [selectedDate, setSelectedDate] = useState(getInitialDate());
   const [selectedEventId, setSelectedEventId] = useState<number | undefined>(
@@ -112,12 +127,16 @@ export const EventOverviewClient = ({
     return eventsByDate;
   }, [events, selectedDate]);
 
-  const setParam = useCallback(
-    (key: string, value: string | null) => {
+  const setParams = useCallback(
+    (values: Record<string, string | null>) => {
       const params = new URLSearchParams(searchParams);
-      if (value === null) params.delete(key);
-      else params.set(key, value);
-      router.push(`${pathname}?${params}`, { scroll: false });
+      for (const [key, value] of Object.entries(values)) {
+        if (value === null) params.delete(key);
+        else params.set(key, value);
+      }
+      const query = params.toString();
+      const url = query ? `${pathname}?${query}` : pathname;
+      router.push(url, { scroll: false });
     },
     [searchParams, pathname, router],
   );
@@ -153,12 +172,12 @@ export const EventOverviewClient = ({
   }
 
   function handleDateSelect(date: Date) {
-    setParam("date", format(date, "yyyy-MM-dd"));
+    setParams({ date: format(date, "yyyy-MM-dd"), eventId: null });
     setSelectedDate(date);
   }
 
   function handleEventSelect(eventId: number) {
-    setParam("eventId", eventId.toString());
+    setParams({ eventId: eventId.toString(), date: null });
     setSelectedEventId(eventId);
     setIsDrawerOpen(true);
   }
@@ -236,9 +255,13 @@ export const EventOverviewClient = ({
       <EventDetailsDrawer
         open={isDrawerOpen}
         eventId={selectedEventId}
-        onClose={() => {
+        onClose={(eventStartDate) => {
           setIsDrawerOpen(false);
-          setParam("eventId", null);
+          const date = eventStartDate
+            ? startOfDay(eventStartDate)
+            : selectedDate;
+          setSelectedDate(date);
+          setParams({ eventId: null, date: format(date, "yyyy-MM-dd") });
           refetch();
         }}
         onExitComplete={() => setSelectedEventId(undefined)}
