@@ -23,7 +23,7 @@ import { Button } from "@/components/ui/button";
 import { IconButton } from "@/components/ui/icon-button";
 import { RadioButtonGroup } from "@/components/ui/radio-button-group";
 import { Sheet } from "@/components/ui/sheet";
-import type { getEventDetails } from "@/lib/services/get-event-details";
+import type { EventDetails } from "@/lib/services/get-event-details";
 import { useAuth } from "@/providers/auth";
 import { format } from "@/utils/tz-format";
 import { RoleRadioItems } from "./role-radio-items";
@@ -34,6 +34,7 @@ type Props = {
   open: boolean;
   onClose: () => void;
   onExitComplete?: () => void;
+  onGoToToday?: () => void;
 };
 
 export const EventDetailsDrawer = (props: Props) => {
@@ -45,11 +46,12 @@ export const EventDetailsDrawer = (props: Props) => {
     isFetching,
   } = useQuery({
     queryKey: ["events", props.eventId],
-    queryFn: async (): ReturnType<typeof getEventDetails> => {
+    queryFn: async (): Promise<EventDetails | null> => {
       const res = await fetch(`/api/events/${props.eventId}`);
+      if (res.status === 404) return null;
       return await res.json();
     },
-    enabled: !!props.eventId,
+    enabled: props.eventId !== undefined,
     refetchInterval: 1000 * 60, // refetch every minute
     refetchOnWindowFocus: "always",
   });
@@ -108,7 +110,8 @@ export const EventDetailsDrawer = (props: Props) => {
     [userSignups],
   );
 
-  const newEventLoading = details?.id !== props.eventId;
+  const isEventNotFound = details === null;
+  const newEventLoading = !isEventNotFound && details?.id !== props.eventId;
   const timeRange = useMemo(() => {
     const start = details?.start_date;
     const end = details?.end_date;
@@ -195,190 +198,237 @@ export const EventDetailsDrawer = (props: Props) => {
               display: newEventLoading ? "none" : undefined,
             }}
           >
-            <Suspense>
-              <Sheet.Header>
-                <Flex gap="2" alignItems={"flex-end"}>
-                  <Sheet.Title fontSize="2xl">{details?.title}</Sheet.Title>
-                  {user?.roles?.includes("admin") && (
-                    <Link
-                      href={`/admin/collections/events/${details?.id}`}
-                      target={"_blank"}
-                      className={css({
-                        textDecoration: "underline",
-                        fontSize: "xl",
-                      })}
-                    >
-                      <HStack gap={1}>
-                        edit
-                        <SquarePenIcon size={16} />
+            {isEventNotFound ? (
+              <EventNotFound onGoToToday={props.onGoToToday} />
+            ) : (
+              <Suspense>
+                <Sheet.Header>
+                  <Flex gap="2" alignItems={"flex-end"}>
+                    <Sheet.Title fontSize="2xl">{details?.title}</Sheet.Title>
+                    {user?.roles?.includes("admin") && (
+                      <Link
+                        href={`/admin/collections/events/${details?.id}`}
+                        target={"_blank"}
+                        className={css({
+                          textDecoration: "underline",
+                          fontSize: "xl",
+                        })}
+                      >
+                        <HStack gap={1}>
+                          edit
+                          <SquarePenIcon size={16} />
+                        </HStack>
+                      </Link>
+                    )}
+                  </Flex>
+                  <Sheet.Description>
+                    <Badge>{timeRange}</Badge>
+                  </Sheet.Description>
+                  <Sheet.Description>
+                    {((details?.tags &&
+                      Array.isArray(details.tags) &&
+                      details.tags.length > 0) ||
+                      (details?.locations &&
+                        Array.isArray(details.locations) &&
+                        details.locations.length > 0)) && (
+                      <HStack gap="2" marginY="2" flexWrap="wrap">
+                        {details?.tags?.map((tag) =>
+                          typeof tag === "object" && tag !== null ? (
+                            <Badge key={tag.id}>{tag.text}</Badge>
+                          ) : null,
+                        )}
+                        {details?.locations?.map((location) =>
+                          typeof location === "object" && location !== null ? (
+                            <Badge key={location.id}>{location.title}</Badge>
+                          ) : null,
+                        )}
                       </HStack>
-                    </Link>
-                  )}
-                </Flex>
-                <Sheet.Description>
-                  <Badge>{timeRange}</Badge>
-                </Sheet.Description>
-                <Sheet.Description>
-                  {((details?.tags &&
-                    Array.isArray(details.tags) &&
-                    details.tags.length > 0) ||
-                    (details?.locations &&
-                      Array.isArray(details.locations) &&
-                      details.locations.length > 0)) && (
-                    <HStack gap="2" marginY="2" flexWrap="wrap">
-                      {details?.tags?.map((tag) =>
-                        typeof tag === "object" && tag !== null ? (
-                          <Badge key={tag.id}>{tag.text}</Badge>
-                        ) : null,
-                      )}
-                      {details?.locations?.map((location) =>
-                        typeof location === "object" && location !== null ? (
-                          <Badge key={location.id}>{location.title}</Badge>
-                        ) : null,
-                      )}
+                    )}
+                  </Sheet.Description>
+                  <Sheet.Description className={descriptionDetailCss}>
+                    {details?.description && (
+                      <RichText data={details.description} />
+                    )}
+                  </Sheet.Description>
+                  <Sheet.CloseTrigger
+                    position="absolute"
+                    top={{
+                      base: "3",
+                      md: "4",
+                    }}
+                    right={{ base: "2", md: "4" }}
+                    asChild
+                  >
+                    <IconButton variant="ghost" size="lg">
+                      <XIcon />
+                    </IconButton>
+                  </Sheet.CloseTrigger>
+                </Sheet.Header>
+                <Sheet.Body justifyContent="end">
+                  <panda.h2
+                    fontSize="xl"
+                    fontWeight="semibold"
+                    marginBottom="2"
+                  >
+                    Select a role
+                  </panda.h2>
+                  <RadioButtonGroup.Root
+                    direction="vertical"
+                    value={selectedRoleId ?? null}
+                    onValueChange={(event) =>
+                      setSelectedRoleId(event.value ?? undefined)
+                    }
+                    disabled={details === undefined}
+                  >
+                    <RoleRadioItems
+                      details={details}
+                      roles={
+                        details?.roles?.docs.filter((role) => !role.section) ??
+                        []
+                      }
+                    />
+                    {details?.sections?.docs.map((section) => (
+                      <Fragment key={section.id}>
+                        <panda.h3
+                          fontSize="lg"
+                          fontWeight="medium"
+                          marginTop="4"
+                        >
+                          {section.title}
+                        </panda.h3>
+
+                        {section?.description && (
+                          <Sheet.Description>
+                            <RichText data={section.description} />
+                          </Sheet.Description>
+                        )}
+
+                        <RoleRadioItems
+                          details={details}
+                          roles={section.roles?.docs ?? []}
+                        />
+                      </Fragment>
+                    ))}
+                  </RadioButtonGroup.Root>
+                  {user &&
+                    (isEventInThePast ? (
+                      <Alert.Root
+                        marginBottom="-4"
+                        marginTop="8"
+                        borderColor="border.default"
+                      >
+                        <Alert.Indicator />
+                        <Alert.Content>
+                          <Alert.Title>This event is in the past</Alert.Title>
+                          <Alert.Description>
+                            You cannot alter your signup for this event, as it
+                            has already happened.
+                          </Alert.Description>
+                        </Alert.Content>
+                      </Alert.Root>
+                    ) : (
+                      <Alert.Root
+                        marginBottom="-4"
+                        marginTop="8"
+                        borderColor="border.default"
+                      >
+                        <Alert.Indicator />
+                        <Alert.Content>
+                          <Alert.Title>
+                            We are counting on your help
+                          </Alert.Title>
+                          <Alert.Description>
+                            Only apply for roles you are sure you can attend. If
+                            you are no longer able to attend, please remove your
+                            signup.
+                          </Alert.Description>
+                        </Alert.Content>
+                      </Alert.Root>
+                    ))}
+                </Sheet.Body>
+                <Sheet.Footer justifyContent="center">
+                  {!user && (
+                    <HStack>
+                      Want to help out?{" "}
+                      <Button asChild>
+                        <Link href="/auth/sign-in">Sign in</Link>
+                      </Button>{" "}
+                      or{" "}
+                      <Button asChild>
+                        <Link href="/auth/register">Register</Link>
+                      </Button>
                     </HStack>
                   )}
-                </Sheet.Description>
-                <Sheet.Description className={descriptionDetailCss}>
-                  {details?.description && (
-                    <RichText data={details.description} />
-                  )}
-                </Sheet.Description>
-                <Sheet.CloseTrigger
-                  position="absolute"
-                  top={{
-                    base: "3",
-                    md: "4",
-                  }}
-                  right={{ base: "2", md: "4" }}
-                  asChild
-                >
-                  <IconButton variant="ghost" size="lg">
-                    <XIcon />
-                  </IconButton>
-                </Sheet.CloseTrigger>
-              </Sheet.Header>
-              <Sheet.Body justifyContent="end">
-                <panda.h2 fontSize="xl" fontWeight="semibold" marginBottom="2">
-                  Select a role
-                </panda.h2>
-                <RadioButtonGroup.Root
-                  direction="vertical"
-                  value={selectedRoleId ?? null}
-                  onValueChange={(event) =>
-                    setSelectedRoleId(event.value ?? undefined)
-                  }
-                  disabled={details === undefined}
-                >
-                  <RoleRadioItems
-                    details={details}
-                    roles={
-                      details?.roles?.docs.filter((role) => !role.section) ?? []
-                    }
-                  />
-                  {details?.sections?.docs.map((section) => (
-                    <Fragment key={section.id}>
-                      <panda.h3 fontSize="lg" fontWeight="medium" marginTop="4">
-                        {section.title}
-                      </panda.h3>
-
-                      {section?.description && (
-                        <Sheet.Description>
-                          <RichText data={section.description} />
-                        </Sheet.Description>
+                  {user && (
+                    <Button
+                      width="full"
+                      variant="solid"
+                      colorPalette={hasUserSignedUp ? "tomato" : "olive"}
+                      disabled={
+                        isEventInThePast ||
+                        (!hasUserSignedUp && !selectedRoleId)
+                      }
+                      loading={
+                        details === undefined ||
+                        isCreating ||
+                        isDeleting ||
+                        isFetchingEvents
+                      }
+                      onClick={() => onSigningButtonClicked()}
+                    >
+                      {selectedRoleId ? (
+                        <>
+                          {hasUserSignedUp ? "Sign out of" : "Sign up for"}
+                          <panda.span fontWeight="black">
+                            {selectedRole?.title}
+                          </panda.span>
+                          role
+                        </>
+                      ) : (
+                        "Select a role"
                       )}
-
-                      <RoleRadioItems
-                        details={details}
-                        roles={section.roles?.docs ?? []}
-                      />
-                    </Fragment>
-                  ))}
-                </RadioButtonGroup.Root>
-                {user &&
-                  (isEventInThePast ? (
-                    <Alert.Root
-                      marginBottom="-4"
-                      marginTop="8"
-                      borderColor="border.default"
-                    >
-                      <Alert.Indicator />
-                      <Alert.Content>
-                        <Alert.Title>This event is in the past</Alert.Title>
-                        <Alert.Description>
-                          You cannot alter your signup for this event, as it has
-                          already happened.
-                        </Alert.Description>
-                      </Alert.Content>
-                    </Alert.Root>
-                  ) : (
-                    <Alert.Root
-                      marginBottom="-4"
-                      marginTop="8"
-                      borderColor="border.default"
-                    >
-                      <Alert.Indicator />
-                      <Alert.Content>
-                        <Alert.Title>We are counting on your help</Alert.Title>
-                        <Alert.Description>
-                          Only apply for roles you are sure you can attend. If
-                          you are no longer able to attend, please remove your
-                          signup.
-                        </Alert.Description>
-                      </Alert.Content>
-                    </Alert.Root>
-                  ))}
-              </Sheet.Body>
-              <Sheet.Footer justifyContent="center">
-                {!user && (
-                  <HStack>
-                    Want to help out?{" "}
-                    <Button asChild>
-                      <Link href="/auth/sign-in">Sign in</Link>
-                    </Button>{" "}
-                    or{" "}
-                    <Button asChild>
-                      <Link href="/auth/register">Register</Link>
                     </Button>
-                  </HStack>
-                )}
-                {user && (
-                  <Button
-                    width="full"
-                    variant="solid"
-                    colorPalette={hasUserSignedUp ? "tomato" : "olive"}
-                    disabled={
-                      isEventInThePast || (!hasUserSignedUp && !selectedRoleId)
-                    }
-                    loading={
-                      details === undefined ||
-                      isCreating ||
-                      isDeleting ||
-                      isFetchingEvents
-                    }
-                    onClick={() => onSigningButtonClicked()}
-                  >
-                    {selectedRoleId ? (
-                      <>
-                        {hasUserSignedUp ? "Sign out of" : "Sign up for"}
-                        <panda.span fontWeight="black">
-                          {selectedRole?.title}
-                        </panda.span>
-                        role
-                      </>
-                    ) : (
-                      "Select a role"
-                    )}
-                  </Button>
-                )}
-              </Sheet.Footer>
-            </Suspense>
+                  )}
+                </Sheet.Footer>
+              </Suspense>
+            )}
           </Sheet.Content>
         </Sheet.Positioner>
       </Portal>
     </Sheet.Root>
   );
 };
+
+const EventNotFound = (props: { onGoToToday?: () => void }) => (
+  <>
+    <Sheet.Header>
+      <Sheet.Title fontSize="2xl">Event not found</Sheet.Title>
+      <Sheet.Description>
+        This event doesn't exist or has been removed.
+      </Sheet.Description>
+      <Sheet.CloseTrigger
+        position="absolute"
+        top={{
+          base: "3",
+          md: "4",
+        }}
+        right={{ base: "2", md: "4" }}
+        asChild
+      >
+        <IconButton variant="ghost" size="lg">
+          <XIcon />
+        </IconButton>
+      </Sheet.CloseTrigger>
+    </Sheet.Header>
+    {props.onGoToToday && (
+      <Sheet.Footer justifyContent="center">
+        <Button width="full" variant="solid" onClick={props.onGoToToday}>
+          Go to today's shifts
+        </Button>
+      </Sheet.Footer>
+    )}
+  </>
+);
 
 const colors = ["#bb0000", "#ffffff"];
 const animateFireworks = (end: number) => {
