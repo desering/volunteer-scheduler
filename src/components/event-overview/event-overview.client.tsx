@@ -163,6 +163,12 @@ export const EventOverviewClient = ({
     setIsDrawerOpen(true);
   }
 
+  function handleGoToToday() {
+    setSelectedDate(startOfDay(new Date()));
+    setIsDrawerOpen(false);
+    router.push(pathname, { scroll: false });
+  }
+
   return (
     <Box {...(cssProps as BoxProps)}>
       <Container gap="4">
@@ -242,6 +248,7 @@ export const EventOverviewClient = ({
           refetch();
         }}
         onExitComplete={() => setSelectedEventId(undefined)}
+        onGoToToday={handleGoToToday}
       />
     </Box>
   );
