@@ -122,6 +122,17 @@ export const EventOverviewClient = ({
     [searchParams, pathname, router],
   );
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: getInitialDate and getInitialEventId read searchParams
+  useEffect(() => {
+    if (searchParams.has("date") || !searchParams.has("eventId")) {
+      const date = getInitialDate();
+      setSelectedDate((current) => (isSameDay(current, date) ? current : date));
+    }
+    const eventId = getInitialEventId();
+    if (eventId !== undefined) setSelectedEventId(eventId);
+    setIsDrawerOpen(eventId !== undefined);
+  }, [searchParams]);
+
   // biome-ignore lint/correctness/useExhaustiveDependencies: reset selected tags on date change
   useEffect(() => {}, [selectedDate]);
 
