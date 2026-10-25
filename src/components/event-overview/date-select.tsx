@@ -123,14 +123,23 @@ const DateButton = ({
   const showMonthLabel = isFirstOfMonth || isFirstItem;
 
   // style for past dates and today
+  const todayStyle = {
+    boxShadow: `inset 0 0 0 1px ${token("colors.fg.subtle")}`,
+  };
+  const pastStyle = { opacity: 0.4, background: `${token("colors.bg.muted")}` };
+
   const isToday = item.date.getTime() === startOfDay(new Date()).getTime();
   const isPast = item.date.getTime() < startOfDay(new Date()).getTime();
-  const pastStyle =
-    isPast && !isToday && !selected
-      ? { opacity: 0.5, background: `${token("colors.bg.muted")}` }
-      : {};
-  const todayStyle =
-    isToday && !selected ? { background: `${token("colors.bg.subtle")}` } : {};
+
+  // determine extra styling for a button
+  let extraStyle = {};
+  if (!selected) {
+    if (isToday) {
+      extraStyle = todayStyle;
+    } else if (isPast) {
+      extraStyle = pastStyle;
+    }
+  }
 
   useEffect(() => {
     if (selected && ref.current) {
@@ -158,7 +167,7 @@ const DateButton = ({
           ref={ref}
           variant={selected ? "solid" : item.hasEvents ? "outline" : "ghost"}
           onClick={() => onDateSelect(item.date)}
-          style={{ ...pastStyle, ...todayStyle }}
+          style={extraStyle}
           display="block"
           height="auto"
           paddingY="4"
