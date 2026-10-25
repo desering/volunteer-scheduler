@@ -122,21 +122,15 @@ const DateButton = ({
   const isFirstItem = itemIndex === 0;
   const showMonthLabel = isFirstOfMonth || isFirstItem;
 
-  // style for past dates and today
-  const todayStyle = {
-    boxShadow: `inset 0 0 0 1px ${token("colors.fg.subtle")}`,
-  };
+  // style for past dates
   const pastStyle = { opacity: 0.4, background: `${token("colors.bg.muted")}` };
 
-  const isToday = item.date.getTime() === startOfDay(new Date()).getTime();
   const isPast = item.date.getTime() < startOfDay(new Date()).getTime();
 
   // determine extra styling for a button
   let extraStyle = {};
   if (!selected) {
-    if (isToday) {
-      extraStyle = todayStyle;
-    } else if (isPast) {
+    if (isPast) {
       extraStyle = pastStyle;
     }
   }
