@@ -6,6 +6,7 @@ import { EditUserNotificationPreferences } from "@/components/edit-user-notifica
 import { RegisterPushNotificationsButton } from "@/components/register-push-test-button";
 import { getUser } from "@/lib/services/get-user";
 import { getWebcalToken } from "@/lib/services/get-webcal-token";
+import { SendPushNotification } from "@/components/send-push-test-button";
 
 export default async function Page() {
   const { user } = await getUser();
@@ -41,8 +42,12 @@ export default async function Page() {
 
       <CalendarLinkSection token={webcalToken?.token ?? null} />
 
-      <VStack marginTop="8" alignItems="start">
+      <VStack marginBottom="8" marginTop="8" alignItems="start">
         <RegisterPushNotificationsButton />
+      </VStack>
+
+      <VStack marginBottom="8" alignItems="start">
+        <SendPushNotification />
       </VStack>
     </Container>
   );
