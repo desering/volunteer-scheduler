@@ -272,12 +272,12 @@ export const EventOverviewClient = ({
       <EventDetailsDrawer
         open={isDrawerOpen}
         eventId={selectedEventId}
+        onEventLoaded={setSelectedDate}
         onClose={(eventStartDate) => {
           setIsDrawerOpen(false);
           const date = eventStartDate
             ? startOfDay(eventStartDate)
             : selectedDate;
-          setSelectedDate(date);
           setParams({ eventId: null, date: format(date, "yyyy-MM-dd") });
           refetch();
         }}
