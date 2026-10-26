@@ -2,7 +2,7 @@ import { Portal } from "@ark-ui/react";
 import { RichText } from "@payloadcms/richtext-lexical/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import confetti from "canvas-confetti";
-import { isBefore } from "date-fns";
+import { isBefore, startOfDay } from "date-fns";
 import { SquarePenIcon, XIcon } from "lucide-react";
 import Link from "next/link";
 import {
@@ -30,8 +30,8 @@ import { RoleRadioItems } from "./role-radio-items";
 
 type Props = {
   eventId?: number;
-
   open: boolean;
+  onEventLoaded?: (eventStartDate: Date) => void;
   onClose: (eventStartDate?: Date) => void;
   onExitComplete?: () => void;
   onGoToToday?: () => void;
@@ -136,12 +136,24 @@ export const EventDetailsDrawer = (props: Props) => {
       setSelectedRoleId(undefined);
     }
 
+    if (props.open && details?.start_date) {
+      props.onEventLoaded?.(startOfDay(new Date(details.start_date)));
+    }
+
     // On loading a new event, select the role the user has signed up for
     const shouldSelectRole = !selectedRoleId && !newEventLoading;
     if (shouldSelectRole) {
       selectCurrentRole();
     }
-  }, [props.eventId, selectedRoleId, newEventLoading, selectCurrentRole]);
+  }, [
+    props.eventId,
+    props.onEventLoaded,
+    props.open,
+    details?.start_date,
+    selectedRoleId,
+    newEventLoading,
+    selectCurrentRole,
+  ]);
 
   const onSigningButtonClicked = () => {
     const id = details?.id;
