@@ -92,4 +92,4 @@ jobs:
     environment: production
     steps:
       - run: |
-          curl --request GET --header 'Authorization: Bearer ${{ secrets.COOLIFY_API_TOKEN }}' '${{ secrets.COOLIFY_DEPLOY_WEBHOOK }}'
+          curl --request POST --header 'Authorization: Bearer ${{ secrets.COOLIFY_API_TOKEN }}' '${{ secrets.COOLIFY_DEPLOY_WEBHOOK }}'
