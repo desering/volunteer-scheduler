@@ -43,21 +43,5 @@
       "type": "image/png",
       "purpose": "any"
     }
-  ],
-  "screenshots": [
-    {
-      "src": "/screenshot-home-wide.png",
-      "sizes": "1886x1020",
-      "type": "image/png",
-      "form_factor": "wide",
-      "label": "A screenshot of the home page"
-    },
-    {
-      "src": "/screenshot-home-narrow-dark.png",
-      "type": "image/png",
-      "sizes": "514x975",
-      "form_factor": "narrow",
-      "label": "A screenshot of the home page"
-    }
   ]
 }
