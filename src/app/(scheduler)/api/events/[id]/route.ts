@@ -1,4 +1,5 @@
 import type { NextRequest } from "next/server";
+import { NotFound } from "payload";
 import { getEventDetails } from "@/lib/services/get-event-details";
 import { route } from "@/utils/http";
 
@@ -13,6 +14,13 @@ export const GET = route(
       return Response.json({ error: "Invalid ID" }, { status: 400 });
     }
 
-    return Response.json(await getEventDetails(parsedId));
+    try {
+      return Response.json(await getEventDetails(parsedId));
+    } catch (error) {
+      if (error instanceof NotFound) {
+        return Response.json({ error: "Event not found" }, { status: 404 });
+      }
+      throw error;
+    }
   },
 );
