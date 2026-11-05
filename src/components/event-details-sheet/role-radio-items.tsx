@@ -59,7 +59,7 @@ export const RoleRadioItems = (props: RoleItemsProps) => {
             <panda.p whiteSpace="normal">
               {props.details?.signups?.docs
                 ?.filter((su) => su.role === role.id)
-                ?.map((su) => su.title)
+                ?.map((su) => (su.totalShifts === 0 ? '🌱 ': '') + su.title)
                 .join(", ")}
             </panda.p>
           ) : (
