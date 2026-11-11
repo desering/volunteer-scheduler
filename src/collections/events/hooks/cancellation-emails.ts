@@ -1,48 +1,71 @@
-import type { CollectionBeforeDeleteHook } from "payload";
+import type {
+  CollectionAfterDeleteHook,
+  CollectionBeforeDeleteHook,
+} from "payload";
 import { logger } from "@/lib/logger";
 
-// Queued before the delete on purpose: a click on delete means the event is cancelled, so attendees are told even if the delete itself fails
-export const queueCancellationEmails: CollectionBeforeDeleteHook = async ({
-  id,
+type CancellationRecipients = { userIds: number[] };
+
+const contextKeyFor = (eventId: number | string) =>
+  `cancellationRecipients:${eventId}`;
+
+// Signups lose their event reference once the event is gone, so attendees have to be read beforehand
+export const collectCancellationRecipients: CollectionBeforeDeleteHook =
+  async ({ id, req }) => {
+    const event = await req.payload.findByID({
+      collection: "events",
+      id,
+      depth: 0,
+      disableErrors: true,
+    });
+
+    if (!event || new Date(event.end_date) < new Date()) {
+      return;
+    }
+
+    const signups = await req.payload.find({
+      collection: "signups",
+      where: { event: { equals: id } },
+      depth: 0,
+      pagination: false,
+      select: { user: true },
+    });
+
+    const userIds = [
+      ...new Set(signups.docs.map((signup) => signup.user as number)),
+    ];
+
+    req.context[contextKeyFor(id)] = {
+      userIds,
+    } satisfies CancellationRecipients;
+  };
+
+export const queueCancellationEmails: CollectionAfterDeleteHook = async ({
+  doc,
   req,
 }) => {
-  const event = await req.payload.findByID({
-    collection: "events",
-    id,
-    depth: 0,
-    disableErrors: true,
-  });
+  const recipients = req.context[contextKeyFor(doc.id)] as
+    | CancellationRecipients
+    | undefined;
 
-  if (!event || new Date(event.end_date) < new Date()) {
-    return;
-  }
-
-  const signups = await req.payload.find({
-    collection: "signups",
-    where: { event: { equals: id } },
-    depth: 0,
-    pagination: false,
-    select: { user: true },
-  });
-
-  const userIds = new Set(signups.docs.map((signup) => signup.user as number));
-
-  for (const userId of userIds) {
+  for (const userId of recipients?.userIds ?? []) {
     try {
       await req.payload.jobs.queue({
         task: "send-event-cancellation-email",
         input: {
           userId,
-          eventTitle: event.title,
-          startDate: event.start_date,
-          endDate: event.end_date,
+          eventTitle: doc.title,
+          startDate: doc.start_date,
+          endDate: doc.end_date,
         },
       });
     } catch (error) {
       logger.error(
-        { userId, eventId: id, error },
+        { userId, eventId: doc.id, error },
         "Failed to queue event cancellation email job",
       );
     }
   }
+
+  return doc;
 };
