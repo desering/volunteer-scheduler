@@ -1,5 +1,9 @@
 import type { CollectionConfig } from "payload";
-import { hasRole } from "./access";
+import { hasRole } from "../access";
+import {
+  collectCancellationRecipients,
+  queueCancellationEmails,
+} from "./hooks/cancellation-emails";
 
 export const Events: CollectionConfig = {
   slug: "events",
@@ -152,6 +156,7 @@ export const Events: CollectionConfig = {
   ],
   hooks: {
     beforeDelete: [
+      collectCancellationRecipients,
       async ({ id, req }) => {
         // Delete all related sections first, as of 22-12-2024 payload does not do cascade delete on one to one relationships
         await req.payload.delete({
@@ -164,5 +169,6 @@ export const Events: CollectionConfig = {
         });
       },
     ],
+    afterDelete: [queueCancellationEmails],
   },
 };
