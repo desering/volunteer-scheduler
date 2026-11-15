@@ -17,6 +17,7 @@ export default defineConfig({
       ? "bun run --bun build && bun run --bun start"
       : "bun run --bun dev",
     url: "http://localhost:3000/health/ready",
+    stdout: "pipe",
     reuseExistingServer: !process.env.CI,
     timeout: 5 * 60 * 1000,
   },
