@@ -20,22 +20,18 @@ type SendEmailResult = {
 export const sendEmail = async (params: SendEmailOptions) => {
   const payload = await getPayload({ config });
 
-  try {
-    const result = (await payload.sendEmail({
-      from: `${process.env.EMAIL_FROM_NAME} <${process.env.EMAIL_FROM_ADDRESS}>`,
-      ...params,
-    })) as SendEmailResult;
+  const result = (await payload.sendEmail({
+    from: `${process.env.EMAIL_FROM_NAME} <${process.env.EMAIL_FROM_ADDRESS}>`,
+    ...params,
+  })) as SendEmailResult;
 
-    logger.info(
-      {
-        accepted: result.accepted.length,
-        rejected: result.rejected.length,
-        response: result.response,
-        messageId: result.messageId,
-      },
-      "Email sent",
-    );
-  } catch (error) {
-    logger.error({ error }, "Error sending email");
-  }
+  logger.info(
+    {
+      accepted: result.accepted.length,
+      rejected: result.rejected.length,
+      response: result.response,
+      messageId: result.messageId,
+    },
+    "Email sent",
+  );
 };

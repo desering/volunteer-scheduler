@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { Check, ChevronDown } from "lucide-react";
-import { Box, Flex } from "styled-system/jsx";
+import { Check, ChevronDown, MapPinIcon, TagIcon } from "lucide-react";
+import { Box, Flex, HStack } from "styled-system/jsx";
 import { Button } from "@/components/ui/button";
 import { Menu } from "@/components/ui/menu";
 import { Text } from "@/components/ui/text";
@@ -10,55 +10,90 @@ type Tag = {
   text: string;
 };
 
-type TagFilterProps = {
-  selectedTags: string[];
-  onTagsChange: (tags: string[]) => void;
-  onlyTags?: string[];
+type Location = {
+  id: number;
+  title: string;
+};
+
+export type Filter = {
+  id: number;
+  label: string;
+  type: "location" | "tag";
+};
+
+const fetchTagsAndLocations = async (): Promise<Filter[]> => {
+  const tagRes = await fetch("/api/tags");
+  const locationsRes = await fetch("/api/locations");
+  const tagData = (await tagRes.json()) as { docs: Tag[] };
+  const locationsData = (await locationsRes.json()) as { docs: Location[] };
+  const tagFilters: Filter[] = tagData.docs.map((tag) => ({
+    id: tag.id,
+    label: tag.text,
+    type: "tag",
+  }));
+  const locationFilters: Filter[] = locationsData.docs.map((loc) => ({
+    id: loc.id,
+    label: loc.title,
+    type: "location",
+  }));
+  const result = [...tagFilters, ...locationFilters];
+  return result;
+};
+
+type FilterFilterProps = {
+  selectedFilters: Filter[];
+  onFilterChange: (tags: Filter[]) => void;
 };
 
 export const TagFilter = ({
-  selectedTags,
-  onTagsChange,
-  onlyTags,
-}: TagFilterProps) => {
-  const { data: tags = [] } = useQuery<Tag[]>({
-    queryKey: ["tags"],
-    queryFn: async () => {
-      const res = await fetch("/api/tags");
-      const data = (await res.json()) as { docs: Tag[] };
-      return data.docs;
-    },
+  selectedFilters,
+  onFilterChange,
+}: FilterFilterProps) => {
+  const { data: filters = [], isPending } = useQuery<Filter[]>({
+    queryKey: ["filters"],
+    queryFn: fetchTagsAndLocations,
   });
 
-  if (tags.length === 0) {
+  if (isPending) {
+    return (
+      <Box>
+        <Flex alignItems="center" gap="2" marginBottom="4" position="relative">
+          <Button variant="outline" disabled>
+            Filter
+            <ChevronDown size={16} />
+          </Button>
+        </Flex>
+      </Box>
+    );
+  }
+
+  if (filters.length === 0) {
     return null;
   }
 
-  const handleToggleTag = (tag: string) => {
-    if (selectedTags.includes(tag)) {
-      onTagsChange(selectedTags.filter((t) => t !== tag));
+  const handleToggleFilter = (filter: Filter) => {
+    if (selectedFilters.includes(filter)) {
+      onFilterChange(selectedFilters.filter((t) => t !== filter));
     } else {
-      onTagsChange([...selectedTags, tag]);
+      onFilterChange([...selectedFilters, filter]);
     }
   };
 
   const handleClearTags = () => {
-    onTagsChange([]);
+    onFilterChange([]);
   };
 
-  const visibleTags =
-    onlyTags && onlyTags.length > 0
-      ? tags.filter((t) => onlyTags.includes(t.text))
-      : tags;
+  const visibleTags = filters?.filter((l) => l.type === "tag") ?? [];
+  const visibleLocations = filters?.filter((l) => l.type === "location") ?? [];
 
-  const getButtonLabel = () => {
-    if (selectedTags.length === 0) {
-      return "Filter by tags";
+  const getButtonFilter = () => {
+    if (selectedFilters.length === 0) {
+      return "Filter";
     }
-    if (selectedTags.length === 1) {
-      return "1 tag selected";
+    if (selectedFilters.length === 1) {
+      return "1 filter selected";
     }
-    return `${selectedTags.length} tags selected`;
+    return `${selectedFilters.length} filters selected`;
   };
 
   return (
@@ -67,7 +102,7 @@ export const TagFilter = ({
         <Menu.Root closeOnSelect={false}>
           <Menu.Trigger asChild data-menu-trigger>
             <Button variant="outline">
-              {getButtonLabel()}
+              {getButtonFilter()}
               <ChevronDown size={16} />
             </Button>
           </Menu.Trigger>
@@ -79,29 +114,64 @@ export const TagFilter = ({
             top="100%"
             marginTop="2"
           >
-            {visibleTags.map((tag) => (
-              <Menu.CheckboxItem
-                key={tag.text}
-                value={tag.text}
-                checked={selectedTags.includes(tag.text)}
-                onCheckedChange={() => handleToggleTag(tag.text)}
-              >
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="space-between"
-                  width="100%"
+            <Menu.ItemGroup>
+              <Menu.ItemGroupLabel fontWeight="bold">
+                <HStack gap="2">
+                  <TagIcon size={16} style={{ color: "#9ca3af" }} />
+                  Tags
+                </HStack>
+              </Menu.ItemGroupLabel>
+              {visibleTags.map((tag) => (
+                <Menu.CheckboxItem
+                  key={tag.label}
+                  value={tag.label}
+                  checked={selectedFilters.includes(tag)}
+                  onCheckedChange={() => handleToggleFilter(tag)}
                 >
-                  <Text>{tag.text}</Text>
-                  {selectedTags.includes(tag.text) && <Check size={16} />}
-                </Box>
-              </Menu.CheckboxItem>
-            ))}
-            <Menu.Separator />
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="space-between"
+                    width="100%"
+                  >
+                    <Text>{tag.label}</Text>
+                    {selectedFilters.includes(tag) && <Check size={16} />}
+                  </Box>
+                </Menu.CheckboxItem>
+              ))}
+            </Menu.ItemGroup>
+            <Menu.Separator borderColor="border.default" />
+            <Menu.ItemGroup>
+              <Menu.ItemGroupLabel fontWeight="bold">
+                <HStack gap="2">
+                  <MapPinIcon size={16} style={{ color: "#9ca3af" }} />
+                  Locations
+                </HStack>
+              </Menu.ItemGroupLabel>
+              {visibleLocations.map((loc) => (
+                <Menu.CheckboxItem
+                  key={loc.label}
+                  value={loc.label}
+                  checked={selectedFilters.includes(loc)}
+                  onCheckedChange={() => handleToggleFilter(loc)}
+                >
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    justifyContent="space-between"
+                    width="100%"
+                  >
+                    <Text>{loc.label}</Text>
+                    {selectedFilters.includes(loc) && <Check size={16} />}
+                  </Box>
+                </Menu.CheckboxItem>
+              ))}
+            </Menu.ItemGroup>
+            <Menu.Separator borderColor="border.default" />
             <Menu.Item
               value="clear-all"
               onClick={handleClearTags}
-              disabled={selectedTags.length === 0}
+              disabled={selectedFilters.length === 0}
             >
               Clear
             </Menu.Item>

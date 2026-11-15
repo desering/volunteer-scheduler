@@ -9,11 +9,15 @@ type GetEventsOptions = {
   minDate?: Date;
   maxDate?: Date;
   tags?: string[];
+  locations?: string[];
 };
 
 type EventsWhereClause = {
   start_date: WhereField;
   tags?: {
+    in: number[];
+  };
+  locations?: {
     in: number[];
   };
 };
@@ -46,6 +50,25 @@ export const getEvents = async (params?: GetEventsOptions) => {
     if (tagIds.length > 0) {
       where.tags = {
         in: tagIds,
+      };
+    }
+  }
+
+  if (params?.locations && params.locations.length > 0) {
+    const locations = await payload.find({
+      collection: "locations",
+      where: {
+        title: {
+          in: params.locations,
+        },
+      },
+    });
+
+    const locationIds = locations.docs.map((loc) => loc.id);
+
+    if (locationIds.length > 0) {
+      where.locations = {
+        in: locationIds,
       };
     }
   }

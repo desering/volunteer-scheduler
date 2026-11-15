@@ -1,10 +1,15 @@
-FROM oven/bun:1.3.10-alpine AS base
+FROM oven/bun:1.4.4-alpine AS base
+
+# Patch OS-level vulnerabilities not yet fixed in the base image
+RUN apk upgrade --no-cache libcrypto3 libssl3 musl musl-utils zlib
 
 WORKDIR /app
 
 ### Stage: development build, no more stages
 ###
 FROM base AS dev
+
+RUN apk add git # for "staged" biome commands
 
 RUN chown -R bun .
 
@@ -66,6 +71,7 @@ RUN addgroup --system --gid 1001 nodejs && \
 # https://nextjs.org/docs/advanced-features/output-file-tracing
 COPY --from=build --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=build --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=build --chown=nextjs:nodejs /app/public ./public
 
 USER nextjs
 

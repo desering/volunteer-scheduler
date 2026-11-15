@@ -3,16 +3,17 @@
 import config from "@payload-config";
 import { getPayload } from "payload";
 import { z } from "zod";
-import { preferredNameSchema } from "@/lib/schemas/preferred-name";
+import { preferredName } from "@/lib/schemas/preferred-name";
+import { email, password, phoneNumber } from "@/lib/schemas/zod-fields";
 import { signIn } from "./sign-in";
 
 const schema = z
   .object({
-    preferredName: preferredNameSchema,
-    email: z.email(),
-    phoneNumber: z.e164(),
-    password: z.string().min(8),
-    passwordAgain: z.string().min(8),
+    preferredName,
+    email,
+    phoneNumber,
+    password,
+    passwordAgain: password,
   })
   .refine((data) => data.password === data.passwordAgain, {
     message: "Passwords don't match",

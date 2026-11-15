@@ -65,7 +65,9 @@ export const NavBar = async () => {
                         </HStack>
                       </Link>
                     </Menu.Item>
-                    {user?.roles?.includes("admin") && (
+                    {["admin", "editor"].some((role) =>
+                      user?.roles?.includes(role),
+                    ) && (
                       <Menu.Item asChild value="manage-shifts">
                         <Link href="/admin">
                           <HStack gap="2">

@@ -1,6 +1,5 @@
 import type { CollectionConfig } from "payload";
-import { admins } from "./access/admins";
-import { anyone } from "./access/anyone";
+import { hasRole } from "./access";
 
 export const Announcements: CollectionConfig = {
   slug: "announcements",
@@ -9,10 +8,10 @@ export const Announcements: CollectionConfig = {
     group: "Admin",
   },
   access: {
-    read: anyone,
-    create: admins,
-    update: admins,
-    delete: admins,
+    read: hasRole("admin", "editor"),
+    create: hasRole("admin", "editor"),
+    update: hasRole("admin", "editor"),
+    delete: hasRole("admin", "editor"),
   },
   fields: [
     {

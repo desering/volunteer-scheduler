@@ -11,10 +11,10 @@ permissions:
 jobs:
   dependabot-only:
     if: ${{ github.actor == 'dependabot[bot]' && contains( github.event.pull_request.title, 'bump oven/bun from') }}
-    runs-on: [ ubuntu-24.04 ]
+    runs-on: [ubuntu-26.04]
     steps:
       - uses: oven-sh/setup-bun@v2
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           ref: ${{ github.event.pull_request.head.ref }}
           token: ${{ secrets.DEPENDABOT_BUN_GITHUB_TOKEN }} # custom token is necessary to trigger workflows and jobs required to merge a PR

@@ -6,11 +6,15 @@ import { useQuery } from "@tanstack/react-query";
 import {
   addMonths,
   eachDayOfInterval,
+  format,
   isSameDay,
+  isValid,
+  parse,
   startOfDay,
   subMonths,
 } from "date-fns";
-import { useEffect, useMemo, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { css } from "styled-system/css";
 import { Box, type BoxProps, Container, Grid } from "styled-system/jsx";
 import { EventButton } from "@/components/event-button";
@@ -21,27 +25,47 @@ import {
   type EventsGroupedByDay,
   groupEventsByDate,
 } from "@/lib/mappers/group-events-by-date";
-import type { Event } from "@/payload-types";
+import type { Event, Location, Tag } from "@/payload-types";
 import { DateSelect } from "./date-select";
-import { TagFilter } from "./tag-filter";
+import { type Filter, TagFilter } from "./tag-filter";
 
 type Props = {
   placeholder?: EventsGroupedByDay;
+};
+
+const useSanitizeSearchParams = () => {
+  const pathname = usePathname();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    if (searchParams.has("eventId") && searchParams.has("date")) {
+      const params = new URLSearchParams(searchParams);
+      params.delete("date");
+      router.replace(`${pathname}?${params}`, { scroll: false });
+    }
+  }, [searchParams, pathname, router]);
 };
 
 export const EventOverviewClient = ({
   placeholder: initialEvents,
   ...cssProps
 }: Props & BoxProps) => {
-  const [selectedDate, setSelectedDate] = useState(startOfDay(new Date()));
-  const [selectedEventId, setSelectedEventId] = useState<number>();
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const pathname = usePathname();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  useSanitizeSearchParams();
+
+  const [selectedDate, setSelectedDate] = useState(getInitialDate());
+  const [selectedEventId, setSelectedEventId] = useState<number | undefined>(
+    getInitialEventId(),
+  );
+  const [selectedFilters, setSelectedFilters] = useState<Filter[]>([]);
 
   // separation of selectedEvent and isDrawerOpen, otherwise breaks exitAnim
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: reset selected tags on date change
-  useEffect(() => {}, [selectedDate]);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(
+    selectedEventId !== undefined,
+  );
 
   const start = startOfDay(new Date()); // add some disabled buttons
   const earliestShownDate = subMonths(start, 1);
@@ -52,16 +76,20 @@ export const EventOverviewClient = ({
     refetch,
     error,
   } = useQuery<EventsGroupedByDay>({
-    queryKey: ["eventsByDay", initialEvents, selectedTags],
+    queryKey: ["eventsByDay", initialEvents, selectedFilters],
     queryFn: async () => {
       const url = "/api/events?";
       const searchParams = new URLSearchParams({
         min_date: startOfDay(earliestShownDate, { in: utc }).toISOString(),
       });
 
-      if (selectedTags.length > 0) {
-        selectedTags.forEach((tag) => {
-          searchParams.append("tags[]", tag);
+      if (selectedFilters.length > 0) {
+        selectedFilters.forEach((filter) => {
+          if (filter.type === "tag") {
+            searchParams.append("tags", filter.label);
+          } else {
+            searchParams.append("locations", filter.label);
+          }
         });
       }
 
@@ -99,6 +127,34 @@ export const EventOverviewClient = ({
     return eventsByDate;
   }, [events, selectedDate]);
 
+  const setParams = useCallback(
+    (values: Record<string, string | null>) => {
+      const params = new URLSearchParams(searchParams);
+      for (const [key, value] of Object.entries(values)) {
+        if (value === null) params.delete(key);
+        else params.set(key, value);
+      }
+      const query = params.toString();
+      const url = query ? `${pathname}?${query}` : pathname;
+      router.push(url, { scroll: false });
+    },
+    [searchParams, pathname, router],
+  );
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: getInitialDate and getInitialEventId read searchParams
+  useEffect(() => {
+    if (searchParams.has("date") || !searchParams.has("eventId")) {
+      const date = getInitialDate();
+      setSelectedDate((current) => (isSameDay(current, date) ? current : date));
+    }
+    const eventId = getInitialEventId();
+    if (eventId !== undefined) setSelectedEventId(eventId);
+    setIsDrawerOpen(eventId !== undefined);
+  }, [searchParams]);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: reset selected tags on date change
+  useEffect(() => {}, [selectedDate]);
+
   const descriptionDetailCss = css({
     "& a": {
       textDecoration: "underline",
@@ -110,15 +166,51 @@ export const EventOverviewClient = ({
     return `Something went wrong, please try again later. ${error.message}`;
   }
 
+  function getInitialDate(): Date {
+    const value = searchParams.get("date");
+    if (!value) return startOfDay(new Date());
+
+    const parsed = parse(value, "yyyy-MM-dd", new Date());
+    return isValid(parsed) ? parsed : startOfDay(new Date());
+  }
+
+  function getInitialEventId(): number | undefined {
+    const value = searchParams.get("eventId");
+    if (!value) return undefined;
+
+    const parsed = Number.parseInt(value, 10);
+    return Number.isNaN(parsed) ? undefined : parsed;
+  }
+
+  function handleDateSelect(date: Date) {
+    setParams({ date: format(date, "yyyy-MM-dd"), eventId: null });
+    setSelectedDate(date);
+  }
+
+  function handleEventSelect(eventId: number) {
+    setParams({ eventId: eventId.toString(), date: null });
+    setSelectedEventId(eventId);
+    setIsDrawerOpen(true);
+  }
+
+  function handleGoToToday() {
+    setSelectedDate(startOfDay(new Date()));
+    setIsDrawerOpen(false);
+    router.push(pathname, { scroll: false });
+  }
+
   return (
     <Box {...(cssProps as BoxProps)}>
       <Container gap="4">
-        <TagFilter selectedTags={selectedTags} onTagsChange={setSelectedTags} />
+        <TagFilter
+          selectedFilters={selectedFilters}
+          onFilterChange={setSelectedFilters}
+        />
       </Container>
       <DateSelect
         selectedDate={selectedDate}
         items={completeDateRange}
-        onDateSelect={setSelectedDate}
+        onDateSelect={handleDateSelect}
       />
       <Container>
         <Grid gap="4">
@@ -133,8 +225,7 @@ export const EventOverviewClient = ({
               <EventButton.Root
                 key={event.id}
                 onClick={() => {
-                  setIsDrawerOpen(true);
-                  setSelectedEventId(event.id);
+                  handleEventSelect(event.id);
                 }}
               >
                 <EventButton.Time
@@ -144,16 +235,24 @@ export const EventOverviewClient = ({
                 <EventButton.Title>{event.title}</EventButton.Title>
                 {shouldShowBadges && (
                   <Box display="flex" gap="2" marginY="2" flexWrap="wrap">
-                    {event.tags?.map((tag) =>
-                      typeof tag === "object" && tag !== null ? (
+                    {event.tags
+                      ?.filter(
+                        (tag): tag is Tag =>
+                          typeof tag === "object" && tag !== null,
+                      )
+                      .sort((a, b) => a.text.localeCompare(b.text))
+                      .map((tag) => (
                         <Badge key={tag.id}>{tag.text}</Badge>
-                      ) : null,
-                    )}
-                    {event.locations?.map((location) =>
-                      typeof location === "object" && location !== null ? (
+                      ))}
+                    {event.locations
+                      ?.filter(
+                        (location): location is Location =>
+                          typeof location === "object" && location !== null,
+                      )
+                      .sort((a, b) => a.title.localeCompare(b.title))
+                      .map((location) => (
                         <Badge key={location.id}>{location.title}</Badge>
-                      ) : null,
-                    )}
+                      ))}
                   </Box>
                 )}
                 <EventButton.Description className={descriptionDetailCss}>
@@ -167,17 +266,23 @@ export const EventOverviewClient = ({
                 </Box>
               </EventButton.Root>
             );
-          }) ?? <NoEventsMessage tagsSelected={selectedTags.length > 0} />}
+          }) ?? <NoEventsMessage tagsSelected={selectedFilters.length > 0} />}
         </Grid>
       </Container>
       <EventDetailsDrawer
         open={isDrawerOpen}
         eventId={selectedEventId}
-        onClose={() => {
+        onEventLoaded={setSelectedDate}
+        onClose={(eventStartDate) => {
           setIsDrawerOpen(false);
+          const date = eventStartDate
+            ? startOfDay(eventStartDate)
+            : selectedDate;
+          setParams({ eventId: null, date: format(date, "yyyy-MM-dd") });
           refetch();
         }}
         onExitComplete={() => setSelectedEventId(undefined)}
+        onGoToToday={handleGoToToday}
       />
     </Box>
   );

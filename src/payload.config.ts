@@ -5,6 +5,7 @@ import { postgresAdapter } from "@payloadcms/db-postgres";
 import { nodemailerAdapter } from "@payloadcms/email-nodemailer";
 import { buildConfig, inMemoryKVAdapter } from "payload";
 import sharp from "sharp";
+import { hasRole } from "./collections/access";
 import { Announcements } from "./collections/announcements";
 import { EventTemplates } from "./collections/event-templates";
 import { Events } from "./collections/events";
@@ -12,9 +13,11 @@ import { Locations } from "./collections/locations";
 import { Roles } from "./collections/roles";
 import { Sections } from "./collections/sections";
 import { Signups } from "./collections/signups";
+import { sendConfirmationEmailTask } from "./collections/signups/tasks/send-confirmation-email";
 import { Tags } from "./collections/tags";
 import { UserNotificationPreferences } from "./collections/user-notification-preferences";
 import { Users } from "./collections/users";
+import { WebcalTokens } from "./collections/webcal-tokens";
 import { editor } from "./editor.config";
 import { logger } from "./lib/logger";
 import { migrations } from "./migrations";
@@ -96,9 +99,11 @@ export default buildConfig({
   serverURL: process.env.SERVER_URL,
   cors: [process.env.SERVER_URL ?? ""].filter(Boolean),
   csrf: [process.env.SERVER_URL ?? ""].filter(Boolean),
+  graphQL: { disable: true },
 
   collections: [
     Announcements,
+    WebcalTokens,
     EventTemplates,
     Events,
     Locations,
@@ -109,6 +114,31 @@ export default buildConfig({
     UserNotificationPreferences,
     Users,
   ],
+  jobs: {
+    access: {
+      run: hasRole("admin", "editor"),
+      queue: hasRole("admin", "editor"),
+      cancel: hasRole("admin", "editor"),
+    },
+    jobsCollectionOverrides: ({ defaultJobsCollection }) => ({
+      ...defaultJobsCollection,
+      access: {
+        ...defaultJobsCollection.access,
+        read: hasRole("admin"),
+        delete: hasRole("admin"),
+        create: () => false,
+        update: () => false,
+      },
+    }),
+    tasks: [sendConfirmationEmailTask],
+    autoRun: [
+      {
+        cron: "*/5 * * * *", // every 5 minutes
+        limit: 50,
+      },
+    ],
+  },
+
   editor,
   secret: process.env.PAYLOAD_SECRET ?? "",
   typescript: {

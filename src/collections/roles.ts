@@ -1,7 +1,14 @@
 import type { CollectionConfig } from "payload";
+import { hasRole } from "./access";
 
 export const Roles: CollectionConfig = {
   slug: "roles",
+  access: {
+    read: hasRole("admin", "editor"),
+    create: hasRole("admin", "editor"),
+    update: hasRole("admin", "editor"),
+    delete: hasRole("admin", "editor"),
+  },
   admin: {
     useAsTitle: "title",
     defaultColumns: ["title", "event", "section", "signups"],

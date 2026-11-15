@@ -1,15 +1,45 @@
 import { APIError, type CollectionConfig } from "payload";
-import { sendConfirmationEmail } from "@/collections/signups/hooks/send-confirmation-email";
+import { logger } from "@/lib/logger";
+import { hasRole } from "../access";
 
 export const Signups: CollectionConfig = {
   slug: "signups",
+  access: {
+    read: hasRole("admin", "editor"),
+    create: hasRole("admin", "editor"),
+    update: hasRole("admin", "editor"),
+    delete: hasRole("admin", "editor"),
+  },
   admin: {
     useAsTitle: "title",
     defaultColumns: ["role", "user", "totalShifts"],
     group: false,
   },
   hooks: {
-    afterChange: [sendConfirmationEmail],
+    afterChange: [
+      async ({ doc, operation, req: { payload } }) => {
+        if (operation !== "create") {
+          return doc;
+        }
+
+        try {
+          await payload.jobs.queue({
+            task: "send-event-signup-confirmation-email",
+            input: { signupId: doc.id },
+          });
+        } catch (error) {
+          logger.error(
+            {
+              signupId: doc.id,
+              error,
+            },
+            "Failed to queue signup confirmation email job",
+          );
+        }
+
+        return doc;
+      },
+    ],
   },
   fields: [
     {
@@ -19,7 +49,7 @@ export const Signups: CollectionConfig = {
       label: "Event",
       hasMany: false,
       required: true,
-      maxDepth: 1,
+      maxDepth: 2,
       admin: {
         condition: (siblingData) => {
           return !(
