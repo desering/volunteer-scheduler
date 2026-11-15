@@ -150,3 +150,7 @@ shift reminders. To view emails sent from your local development environment,
 use [MailDev](https://maildev.github.io/maildev/):
 
 * with above dev docker compose it should be running on http://localhost:1080/#/
+
+### Running end-to-end tests
+
+See [Run end-to-end tests locally](how-to-guides/run-e2e-tests-locally.md).
