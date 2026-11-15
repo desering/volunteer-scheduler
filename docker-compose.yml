@@ -46,6 +46,7 @@ services:
       interval: 10s
       timeout: 30s
       start_period: 120s
+      start_interval: 2s
     restart: always
     profiles:
       - bun
