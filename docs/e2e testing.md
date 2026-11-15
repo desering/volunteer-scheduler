@@ -51,6 +51,18 @@ bunx playwright show-report            # open the HTML report of the last run
 
 Failed tests leave traces and screenshots in `test-results/` (git-ignored).
 
+## CI
+
+The `playwright` job in `.github/workflows/check.yaml` runs on every push. It
+sets the project up like the "with docker only" steps in the README (`.env` from
+`.env.example`, `docker compose --profile bun up`), runs all three browsers,
+retries failures twice and uploads the HTML report as the `playwright-report`
+artifact. The dev image is built with a GitHub Actions layer cache, so only
+changed layers are rebuilt.
+
+To look at a failed run, download the artifact from the run's summary page,
+unzip it and open it with `bunx playwright show-report <unzipped-folder>`.
+
 ## Write a test
 
 Add a `something.e2e.ts` file to `e2e/`. The base URL is configured in

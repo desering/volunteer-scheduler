@@ -42,7 +42,6 @@ services:
         condition: service_healthy
     command: sh -c "bun run --bun dev"
     healthcheck:
-      # "/" also warms up the first page compile and the database connection
       test: ["CMD-SHELL", "wget -q -O /dev/null http://localhost:3000/ || exit 1"]
       interval: 10s
       timeout: 30s

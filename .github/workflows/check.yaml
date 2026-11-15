@@ -99,8 +99,6 @@ jobs:
           source .github/scripts/functions.sh
           cp .env.example .env
           sedi -e "s/PAYLOAD_SECRET_PLACEHOLDER/dummy-for-playwright/g" .env
-      # the container runs as uid 1000, the runner checkout is owned by uid 1001
-      - run: chmod -R a+rwX .
 
       # builds the image `docker compose --profile bun up` would build, but with layer caching
       - uses: docker/setup-buildx-action@v4
