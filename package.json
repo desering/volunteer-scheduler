@@ -18,7 +18,8 @@
     "generate:importmap": "bun run --bun payload generate:importmap",
     "generate:types": "bun run --bun payload generate:types",
     "generate:db-schema": "bun run --bun payload generate:db-schema",
-    "prepare": "husky"
+    "prepare": "husky",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@ark-ui/react": "5.39.3",
@@ -65,6 +66,7 @@
     "@pandacss/dev": "1.12.1",
     "@pandacss/preset-base": "1.12.0",
     "@park-ui/panda-preset": "0.43.1",
+    "@playwright/test": "1.65.1",
     "@types/bun": "1.4.4",
     "@types/node": "25.9.5",
     "@types/nodemailer": "7.0.12",
