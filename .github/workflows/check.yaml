@@ -80,3 +80,38 @@ jobs:
           bun-version-file: ".bun-version"
       - run: bun ci
       - run: bun --bun test
+
+  playwright:
+    runs-on: [ubuntu-26.04]
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: schedule
+          POSTGRES_USER: schedule
+          POSTGRES_PASSWORD: schedule
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U schedule -d schedule"
+          --health-interval 5s
+          --health-retries 10
+    env:
+      DATABASE_URI: postgresql://schedule:schedule@localhost:5432/schedule
+      PAYLOAD_SECRET: dummy-for-playwright
+      SERVER_URL: http://localhost:3000
+    steps:
+      - uses: actions/checkout@v7
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: ".bun-version"
+      - run: bun ci
+      - run: bunx playwright install --with-deps
+      # starts the app itself, see `webServer` in playwright.config.ts
+      - run: bun run test:e2e
+      - uses: actions/upload-artifact@v7
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7

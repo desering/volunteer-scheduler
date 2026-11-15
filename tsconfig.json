@@ -25,7 +25,7 @@
       "styled-system": ["./styled-system"]
     },
     "target": "esnext",
-    "types": ["bun-types"]
+    "types": ["bun"]
   },
   "include": [
     ".next/types/**/*.ts",
