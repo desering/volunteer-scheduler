@@ -12,6 +12,14 @@ export default defineConfig({
     baseURL: "http://localhost:3000",
     trace: "on-first-retry",
   },
+  webServer: {
+    command: process.env.CI
+      ? "bun run --bun build && bun run --bun start"
+      : "bun run --bun dev",
+    url: "http://localhost:3000/health/ready",
+    reuseExistingServer: !process.env.CI,
+    timeout: 5 * 60 * 1000,
+  },
   projects: [
     { name: "chromium", use: { ...devices["Desktop Chrome"] } },
     { name: "firefox", use: { ...devices["Desktop Firefox"] } },

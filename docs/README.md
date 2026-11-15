@@ -153,4 +153,4 @@ use [MailDev](https://maildev.github.io/maildev/):
 
 ### Running end-to-end tests
 
-See [Run end-to-end tests locally](how-to-guides/run-e2e-tests-locally.md).
+See [Run end-to-end tests locally](e2e%20testing.md).

@@ -28,16 +28,20 @@ Every test runs in all three browsers (see `projects` in
 
 ## Run the tests
 
-1. Start the app, it must be reachable on http://localhost:3000:
+1. Start Postgres:
    ```shell
-   docker compose --profile bun up
+   docker compose up -d postgres
    ```
-   or, with standalone bun, `docker compose up` and `bun --bun dev`.
 
-2. In another terminal, run the tests:
+2. Run the tests:
    ```shell
    bun run test:e2e
    ```
+
+Playwright starts the app itself (`bun run --bun dev`, see `webServer` in
+`playwright.config.ts`) and waits until it is ready. If something already
+serves http://localhost:3000, e.g. `docker compose --profile bun up`, it is
+reused instead.
 
 Useful variations:
 
@@ -53,12 +57,12 @@ Failed tests leave traces and screenshots in `test-results/` (git-ignored).
 
 ## CI
 
-The `playwright` job in `.github/workflows/check.yaml` runs on every push. It
-sets the project up like the "with docker only" steps in the README (`.env` from
-`.env.example`, `docker compose --profile bun up`), runs all three browsers,
-retries failures twice and uploads the HTML report as the `playwright-report`
-artifact. The dev image is built with a GitHub Actions layer cache, so only
-changed layers are rebuilt.
+The `playwright` job in `.github/workflows/check.yaml` runs on every push, like
+the other checks. It starts Postgres as a service container, installs the
+browsers and runs `bun run test:e2e`. Playwright builds and starts the
+production app (`bun run --bun build && bun run --bun start`), so migrations
+are applied on startup. All three browsers run, failures are retried twice and
+the HTML report is uploaded as the `playwright-report` artifact.
 
 To look at a failed run, download the artifact from the run's summary page,
 unzip it and open it with `bunx playwright show-report <unzipped-folder>`.
