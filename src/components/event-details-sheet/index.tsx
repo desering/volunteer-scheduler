@@ -2,6 +2,7 @@ import { Portal } from "@ark-ui/react";
 import { RichText } from "@payloadcms/richtext-lexical/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import confetti from "canvas-confetti";
+import { SendIcon } from 'lucide-react'
 import { isBefore } from "date-fns";
 import { SquarePenIcon, XIcon } from "lucide-react";
 import Link from "next/link";
@@ -38,6 +39,7 @@ type Props = {
 
 export const EventDetailsDrawer = (props: Props) => {
   const { user } = useAuth();
+  const [copied, setCopied] = useState(false)
 
   const {
     data: details,
@@ -161,6 +163,13 @@ export const EventDetailsDrawer = (props: Props) => {
     createSignup({ eventId: id, roleId: _selectedRole });
   };
 
+  const onShareButtonClicked = async () => {
+    const eventUrl = window.location.href;
+    await navigator.clipboard.writeText(eventUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000)
+  }
+
   const descriptionDetailCss = css({
     "& a": {
       color: "blue.light.7",
@@ -199,6 +208,16 @@ export const EventDetailsDrawer = (props: Props) => {
               <Sheet.Header>
                 <Flex gap="2" alignItems={"flex-end"}>
                   <Sheet.Title fontSize="2xl">{details?.title}</Sheet.Title>
+                  <Button
+                    size="sm"
+                    colorPalette={copied ? "tomato" : "olive"}
+                    loading={
+                      details === undefined ||
+                      isCreating ||
+                      isDeleting ||
+                      isFetchingEvents
+                    }
+                    onClick={() => onShareButtonClicked()}><SendIcon/>{copied ? "Copied!" : "Share"}</Button>
                   {user?.roles?.includes("admin") && (
                     <Link
                       href={`/admin/collections/events/${details?.id}`}
