@@ -9,8 +9,12 @@ export function SendPushNotification() {
     <Button
       type="button"
       variant="outline"
-      onClick={() => {
-        void sendTestNotification();
+      onClick={async () => {
+        const reg = await navigator.serviceWorker.ready;
+        const subscription = await reg.pushManager.getSubscription();
+        if (subscription) {
+          await sendTestNotification("Test", subscription.toJSON());
+        }
       }}
     >
       <BellDot />
