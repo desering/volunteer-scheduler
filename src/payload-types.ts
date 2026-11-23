@@ -80,6 +80,7 @@ export interface Config {
   jobs: {
     tasks: {
       'send-event-signup-confirmation-email': TaskSendEventSignupConfirmationEmail;
+      'send-event-cancellation-email': TaskSendEventCancellationEmail;
       inline: {
         input: unknown;
         output: unknown;
@@ -496,7 +497,7 @@ export interface PayloadJob {
     | {
         executedAt: string;
         completedAt: string;
-        taskSlug: 'inline' | 'send-event-signup-confirmation-email';
+        taskSlug: 'inline' | 'send-event-signup-confirmation-email' | 'send-event-cancellation-email';
         taskID: string;
         input?:
           | {
@@ -529,7 +530,7 @@ export interface PayloadJob {
         id?: string | null;
       }[]
     | null;
-  taskSlug?: ('inline' | 'send-event-signup-confirmation-email') | null;
+  taskSlug?: ('inline' | 'send-event-signup-confirmation-email' | 'send-event-cancellation-email') | null;
   queue?: string | null;
   waitUntil?: string | null;
   processing?: boolean | null;
@@ -884,6 +885,19 @@ export interface CollectionsWidget {
 export interface TaskSendEventSignupConfirmationEmail {
   input: {
     signupId: number;
+  };
+  output?: unknown;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskSend-event-cancellation-email".
+ */
+export interface TaskSendEventCancellationEmail {
+  input: {
+    userId: number;
+    eventTitle: string;
+    startDate: string;
+    endDate: string;
   };
   output?: unknown;
 }

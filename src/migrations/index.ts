@@ -15,6 +15,7 @@ import * as migration_20260412_225016_add_webcal_tokens_collection from "./20260
 import * as migration_20260511_215545_add_payload_jobs from "./20260511_215545_add_payload_jobs";
 import * as migration_20261004_160945_add_default_role from "./20261004_160945_add_default_role";
 import * as migration_20261022_084245_payload_v3_91_0 from "./20261022_084245_payload_v3_91_0";
+import * as migration_20261024_163050_add_event_cancellation_email_task from "./20261024_163050_add_event_cancellation_email_task";
 
 export const migrations = [
   {
@@ -101,5 +102,10 @@ export const migrations = [
     up: migration_20261022_084245_payload_v3_91_0.up,
     down: migration_20261022_084245_payload_v3_91_0.down,
     name: "20261022_084245_payload_v3_91_0",
+  },
+  {
+    up: migration_20261024_163050_add_event_cancellation_email_task.up,
+    down: migration_20261024_163050_add_event_cancellation_email_task.down,
+    name: "20261024_163050_add_event_cancellation_email_task"
   },
 ];

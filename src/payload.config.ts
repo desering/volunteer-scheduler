@@ -9,6 +9,7 @@ import { hasRole } from "./collections/access";
 import { Announcements } from "./collections/announcements";
 import { EventTemplates } from "./collections/event-templates";
 import { Events } from "./collections/events";
+import { sendCancellationEmailTask } from "./collections/events/tasks/send-event-cancellation-email";
 import { Locations } from "./collections/locations";
 import { Roles } from "./collections/roles";
 import { Sections } from "./collections/sections";
@@ -130,7 +131,7 @@ export default buildConfig({
         update: () => false,
       },
     }),
-    tasks: [sendConfirmationEmailTask],
+    tasks: [sendConfirmationEmailTask, sendCancellationEmailTask],
     autoRun: [
       {
         cron: "*/5 * * * *", // every 5 minutes

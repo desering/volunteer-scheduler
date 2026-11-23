@@ -40,7 +40,11 @@ export const enum_users_roles = pgEnum("enum_users_roles", [
 ]);
 export const enum_payload_jobs_log_task_slug = pgEnum(
   "enum_payload_jobs_log_task_slug",
-  ["inline", "send-event-signup-confirmation-email"],
+  [
+    "inline",
+    "send-event-signup-confirmation-email",
+    "send-event-cancellation-email",
+  ],
 );
 export const enum_payload_jobs_log_state = pgEnum(
   "enum_payload_jobs_log_state",
@@ -48,7 +52,11 @@ export const enum_payload_jobs_log_state = pgEnum(
 );
 export const enum_payload_jobs_task_slug = pgEnum(
   "enum_payload_jobs_task_slug",
-  ["inline", "send-event-signup-confirmation-email"],
+  [
+    "inline",
+    "send-event-signup-confirmation-email",
+    "send-event-cancellation-email",
+  ],
 );
 
 export const announcements = pgTable(
